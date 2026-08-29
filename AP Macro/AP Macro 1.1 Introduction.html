@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 1.1 — Introduction: What is Macroeconomics?</title>
+<style>
+  /* ═══════════ 最小字号 ≥ 22px，正文 ≥ 24px，标题 ≥ 28px ═══════════ */
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1;min-height:0;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  .cn{font-size:clamp(20px,2vh,24px);color:var(--sub);}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(28px,3.1vh,38px);color:var(--ink);line-height:1.3;margin-bottom:1vh;}
+  p{font-size:clamp(23px,2.4vh,28px);line-height:1.55;margin-bottom:1vh;}
+  .sub-para{font-size:clamp(22px,2.3vh,27px);color:var(--sub);}
+  ul,ol{margin-left:1.6em;margin-bottom:1vh;}
+  li{font-size:clamp(23px,2.4vh,28px);line-height:1.5;margin-bottom:.6vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .grid-3x2{display:grid;grid-template-columns:repeat(3,1fr);gap:.8vw;}
+  .grid-2x2{display:grid;grid-template-columns:repeat(2,1fr);gap:.8vw;}
+  .grid-3x2 .card{padding:1.2vh .8vw;}
+  .grid-3x2 .card h3{font-size:clamp(21px,2.2vh,26px);margin-bottom:.5vh;}
+  .grid-3x2 .card p{font-size:clamp(19px,2vh,24px);margin-bottom:.4vh;}
+  .compact-card{padding:1.2vh 1vw;}
+  .compact-card h3{font-size:clamp(22px,2.3vh,27px);margin-bottom:.6vh;}
+  .compact-card p{font-size:clamp(20px,2.1vh,25px);margin-bottom:.5vh;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.6vh 1.4vw;flex:1 1 0;min-width:26%;}
+  .card h3{font-size:clamp(24px,2.5vh,30px);color:var(--accent-dark);margin-bottom:.8vh;}
+  .card p{font-size:clamp(22px,2.3vh,27px);}
+  .card .big{font-size:clamp(26px,2.8vh,33px);font-weight:700;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  .scroll{overflow-y:auto;max-height:46vh;border-radius:10px;}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:1vh .9vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  tr.hl td{background:var(--amber-light);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.2vh;flex-wrap:wrap;}
+  .btnrow.side{position:absolute;right:1.6vw;top:50%;transform:translateY(-50%);flex-direction:column;align-items:stretch;margin:0;z-index:30;}
+  .btnrow.side .btn{white-space:normal;max-width:12vw;text-align:center;box-shadow:0 4px 14px rgba(14,127,174,.25);}
+  .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;pointer-events:none;}
+  .reveal.show{opacity:1;transform:none;pointer-events:auto;}
+  .s-foot{margin-top:auto;padding-top:1.4vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.2vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,28px);font-weight:700;color:var(--ink);
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;}
+  .cover h1{font-size:clamp(48px,6.4vh,84px);line-height:1.18;}
+  .cover .q{font-size:clamp(32px,4vh,50px);color:var(--accent-dark);font-weight:700;max-width:88%;}
+  .cover p{font-size:clamp(26px,3vh,36px);}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:var(--sub);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.8vh 1.4vw;margin:1vh 0;flex:1;min-height:0;overflow-y:auto;}
+  .qtext{font-size:clamp(24px,2.6vh,30px);font-weight:700;color:var(--accent-dark);margin-bottom:1vh;}
+  /* ── 单元地图 ── */
+  .unit-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.8vw;margin:1vh 0;}
+  .unit-cell{
+    background:var(--card);border:2px solid var(--line);border-radius:12px;
+    padding:1.2vh .6vw;text-align:center;cursor:pointer;transition:all .2s;
+  }
+  .unit-cell:hover{border-color:var(--accent);}
+  .unit-cell.on{background:var(--accent-light);border-color:var(--accent);}
+  .unit-cell .no{font-size:clamp(22px,2.2vh,26px);font-weight:800;color:var(--accent-dark);}
+  .unit-cell .nm{font-size:clamp(20px,2vh,24px);font-weight:700;line-height:1.25;margin-top:.4vh;}
+  .unit-detail{background:var(--accent-light);border:2px solid var(--accent);border-radius:12px;padding:1.4vh 1.2vw;margin-top:1vh;}
+  .unit-detail h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.5vh;}
+  .unit-detail p{font-size:clamp(22px,2.3vh,26px);margin:0;}
+  .story-line{display:flex;gap:.5vw;align-items:center;justify-content:center;margin:1vh 0;flex-wrap:wrap;}
+  .story-chip{background:var(--ink);color:#fff;border-radius:20px;padding:.6vh 1.2vw;font-size:clamp(20px,2vh,24px);font-weight:700;}
+  .story-arrow{font-size:clamp(22px,2.2vh,26px);color:var(--accent-dark);font-weight:800;}
+  /* ── Quiz ── */
+  .quiz-box{margin-bottom:2vh;}
+  .quiz-q{font-size:clamp(23px,2.4vh,28px);font-weight:700;margin-bottom:.8vh;}
+  .quiz-opts{display:flex;flex-direction:column;gap:.6vh;margin-bottom:1vh;}
+  .quiz-opt{
+    background:var(--card);border:2px solid var(--line);border-radius:10px;
+    font-size:clamp(22px,2.3vh,26px);padding:.9vh 1vw;cursor:pointer;transition:background .2s,border .2s;
+  }
+  .quiz-opt:hover{border-color:var(--accent);}
+  .quiz-opt.correct{background:var(--green-light);border-color:var(--green);font-weight:700;}
+  .quiz-opt.wrong{background:var(--red-light);border-color:var(--red);}
+  .quiz-fb{font-size:clamp(22px,2.3vh,26px);min-height:2.4em;color:var(--sub);}
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  /* ── 导航 ── */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.2vh 2vw;background:#fff;border-top:2px solid var(--line);
+  }
+  .navbtn{
+    background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;
+  }
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.5vw;align-items:center;}
+  .dot{width:14px;height:14px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .unit-grid{grid-template-columns:repeat(3,1fr);}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<!-- ═══════════ P1 封面 ═══════════ -->
+<section class="slide cover active" id="s0">
+  <div class="tag">AP Macroeconomics · Unit 1 · Lesson 1</div>
+  <h1>What is<br>Macroeconomics?</h1>
+  <div class="q">From the <span class="accent">trees</span> to the <span class="accent">forest</span></div>
+  <p>One economy · millions of markets · a whole new view</p>
+  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+</section>
+
+<!-- ═══════════ P2 回顾引入 ═══════════ -->
+<section class="slide" id="s1">
+  <div class="tag">Warm-up · Recall</div>
+  <h2>Last year: AP Microeconomics</h2>
+  <div class="stage" style="padding-right:14vw;">
+    <p class="qtext">You have already built a full toolbox. Tick what you remember:</p>
+    <div class="grid-3x2">
+      <div class="card"><h3>Unit 1 · Basic Economic Concepts</h3><p>Scarcity · PPC · <b>Comparative advantage</b> · S&amp;D</p></div>
+      <div class="card"><h3>Unit 2 · Supply &amp; Demand</h3><p>Elasticity · <b>Social welfare</b> · CS &amp; PS</p></div>
+      <div class="card"><h3>Unit 3 · Production, Cost &amp;<br>Perfect Competition</h3><p>Production · Costs · <b>Profit max</b></p></div>
+      <div class="card"><h3>Unit 4 · Imperfect Competition</h3><p><b>Monopoly</b> · Oligopoly · Monopolistic competition</p></div>
+      <div class="card"><h3>Unit 5 · Factor Markets</h3><p><b>Labor market</b> · Derived demand · Wages</p></div>
+      <div class="card"><h3>Unit 6 · Market Failure &amp;<br>the Role of Government</h3><p><b>Externalities</b> · Public goods</p></div>
+    </div>
+    <p class="sub-para" style="margin-top:1.2vh;">Every tool carries over — macro changes the lens, not the logic.</p>
+    <div class="reveal" id="s1ans">
+      <div class="hl amber" style="margin-top:1.2vh;">All last year we studied <b>one market at a time</b>.<br>
+      What about the <b>whole economy at once</b>?</div>
+    </div>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" onclick="revealAnswer('s1ans')">One question<br>was missing…</button>
+  </div>
+</section>
+
+<!-- ═══════════ P3 两分支 ═══════════ -->
+<section class="slide" id="s2">
+  <div class="tag">Two branches of economics</div>
+  <h2>Trees vs. forest</h2>
+  <div class="stage" style="padding:1.4vh 1vw;">
+    <div style="display:flex;gap:.8vw;flex:1;min-height:0;">
+      <div style="flex:1;display:flex;flex-direction:column;gap:1vh;justify-content:center;">
+        <div class="card compact-card">
+          <h3>Microeconomics 🌲</h3>
+          <p><b>Individual</b> markets, households, firms</p>
+          <p>· Why did coffee prices rise?<br>· How many workers to hire?</p>
+        </div>
+        <div class="card win compact-card">
+          <h3>Macroeconomics 🌲🌲🌲</h3>
+          <p>The economy <b>as a whole</b></p>
+          <p>· Why is there a <b>recession</b>?<br>· Why are prices <b>rising</b>?<br>· Why can't everyone find a <b>job</b>?</p>
+        </div>
+      </div>
+      <div style="flex:1.15;background:#fff;border:2px solid var(--line);border-radius:12px;padding:.8vh .6vw;display:flex;flex-direction:column;">
+        <img src="circular-flow.png" alt="The circular flow of income (with injections &amp; leakages)" style="width:100%;flex:1;display:block;object-fit:contain;">
+        <div style="text-align:center;font-size:clamp(20px,2vh,24px);font-weight:700;color:var(--accent-dark);margin:.2vh 0;">The circular flow of income</div>
+      </div>
+    </div>
+    <div class="s-foot" style="padding-top:.8vh;">
+      <div class="hl">Micro is about the <b>trees</b>; macro is about the <b>forest</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P4 三大指标 ═══════════ -->
+<section class="slide" id="s3">
+  <div class="tag">The three macro indicators</div>
+  <h2>How do we measure the forest?</h2>
+  <div class="stage" style="padding-right:14vw;">
+    <div class="cards">
+      <div class="card">
+        <div class="big">GDP</div>
+        <p><b>Total output</b> of the economy — its size &amp; growth</p>
+      </div>
+      <div class="card">
+        <div class="big">Unemployment</div>
+        <p>Share of labor force <b>wanting work</b> but can't find it</p>
+      </div>
+      <div class="card">
+        <div class="big">Inflation</div>
+        <p>The rate at which <b>prices rise</b> over time</p>
+      </div>
+    </div>
+    <div class="reveal" id="s3ans">
+      <div class="hl green" style="margin-top:1.2vh;">Government spending &amp; taxes (<b>fiscal policy</b>) · interest rates &amp; money supply (<b>monetary policy</b>)</div>
+    </div>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" onclick="revealAnswer('s3ans')">And the policies<br>that move them…</button>
+  </div>
+</section>
+
+<!-- ═══════════ P5 三大差异 ═══════════ -->
+<section class="slide" id="s4">
+  <div class="tag">Macro vs. Micro — 3 key differences</div>
+  <h2>What will feel different this year?</h2>
+  <div class="stage" style="padding-right:14vw;">
+    <div id="diffBox" style="margin-top:0;display:flex;flex-direction:column;gap:1.2vh;justify-content:center;flex:1;"></div>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" id="dfBtn" onclick="nextDiff()">Reveal<br>difference ①</button>
+    <button class="btn ghost" onclick="resetDiff()">Reset</button>
+  </div>
+</section>
+
+<!-- ═══════════ P6 六单元地图 ═══════════ -->
+<section class="slide" id="s5">
+  <div class="tag">Course map</div>
+  <h2>Six units, one story</h2>
+  <div class="stage">
+    <div class="story-line">
+      <span class="story-chip">Foundation</span><span class="story-arrow">→</span>
+      <span class="story-chip">Measure</span><span class="story-arrow">→</span>
+      <span class="story-chip">Model</span><span class="story-arrow">→</span>
+      <span class="story-chip">Policy</span><span class="story-arrow">→</span>
+      <span class="story-chip">Open</span>
+    </div>
+    <p class="sub-para" style="text-align:center;">Click any unit to see what it covers:</p>
+    <div class="unit-grid" id="unitGrid"></div>
+    <div class="unit-detail" id="unitDetail" style="display:none;">
+      <h3 id="udTitle"></h3>
+      <p id="udText"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P7 考试 ═══════════ -->
+<section class="slide" id="s6">
+  <div class="tag">Assessment · The AP Macro exam</div>
+  <h2>What the test looks like</h2>
+  <div class="stage" style="padding-right:14vw;">
+    <div class="hl" style="margin-bottom:1.2vh;">The AP Macro exam uses the <b>same format as AP Micro</b> — no surprises.</div>
+    <div class="reveal" id="s6ans">
+      <div class="grid-2x2">
+        <div class="card"><h3>Principles</h3><p>Define &amp; use <b>concepts</b></p></div>
+        <div class="card"><h3>Interpretation</h3><p>Explain <b>data &amp; events</b></p></div>
+        <div class="card"><h3>Manipulation</h3><p>Predict the <b>impact of changes</b></p></div>
+        <div class="card"><h3>Graphing</h3><p>Draw &amp; shift <b>AD-AS, money market, Phillips curve</b></p></div>
+      </div>
+    </div>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" onclick="revealAnswer('s6ans')">Four core<br>skills</button>
+  </div>
+</section>
+
+<!-- ═══════════ P8 学习建议 ═══════════ -->
+<section class="slide" id="s7">
+  <div class="tag">How to succeed</div>
+  <h2>Six habits for AP Macro</h2>
+  <div class="stage" style="padding-right:14vw;">
+    <div id="tipBox" style="margin-top:0;display:flex;flex-direction:column;gap:1vh;justify-content:center;flex:1;"></div>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" id="tipBtn" onclick="nextTip()">Next<br>habit</button>
+    <button class="btn ghost" onclick="resetTip()">Reset</button>
+  </div>
+</section>
+
+<!-- ═══════════ P9 词汇热身 Quiz ═══════════ -->
+<section class="slide" id="s8">
+  <div class="tag">Vocabulary warm-up</div>
+  <h2>Meet the new terms</h2>
+  <div class="stage" style="padding-right:14vw;" id="quizCol"></div>
+  <div class="btnrow side">
+    <button class="btn green" onclick="resetQuiz()">Try<br>again</button>
+  </div>
+</section>
+
+<!-- ═══════════ P10 Summary 填空 ═══════════ -->
+<section class="slide" id="s9">
+  <div class="tag">Summary</div>
+  <h2>Today in five blanks</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:1.6vh;justify-content:center;padding-right:14vw;">
+    <p style="margin:0;">① Macroeconomics studies the economy <span class="fill" data-a="as a whole">as a whole</span>.</p>
+    <p style="margin:0;">② Three indicators: <span class="fill" data-a="GDP">GDP</span>, unemployment, and <span class="fill" data-a="inflation">inflation</span>.</p>
+    <p style="margin:0;">③ Macro has more specialized <span class="fill" data-a="vocabulary">vocabulary</span> than micro.</p>
+    <p style="margin:0;">④ Macro theories are more <span class="fill" data-a="controversial">controversial</span> — they depend on the system.</p>
+    <p style="margin:0;">⑤ Unit 1 reviews micro foundations: scarcity, PPC, comparative advantage, and <span class="fill" data-a="supply and demand">supply and demand</span>.</p>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" onclick="fillNext()">Reveal next<br>answer</button>
+    <button class="btn ghost" onclick="fillReset()">Hide all</button>
+  </div>
+</section>
+
+<!-- ═══════════ P11 结束页 ═══════════ -->
+<section class="slide cover" id="s10">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">Next week: a review of <span class="accent">micro foundations</span> — that is <span class="accent">Unit 1</span> of macro.</div>
+  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+</section>
+
+</main>
+
+<!-- ═══════════ 底部导航 ═══════════ -->
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 11</div>
+  <div class="copy">© 2026 Dr. Xiangyu Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+let tx0=null;
+document.addEventListener("touchstart",e=>tx0=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{
+  if(tx0===null) return;
+  const dx = e.changedTouches[0].clientX - tx0;
+  if(Math.abs(dx)>60){ dx<0 ? gotoSlide(cur+1) : gotoSlide(cur-1); }
+  tx0=null;
+},{passive:true});
+const hashInit = parseInt(location.hash.slice(1)||"0",10);
+if(!isNaN(hashInit)&&hashInit<TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+
+/* ═══════════ Reveal 工具 ═══════════ */
+function revealAnswer(id){ document.getElementById(id).classList.add("show"); }
+function resetReveal(id){ document.getElementById(id).classList.remove("show"); }
+
+/* ═══════════ P5 三大差异 分步 ═══════════ */
+const DIFFS = [
+  `<div class="card"><h3>① Vocabulary</h3>
+   <p>Micro is close to daily life — you already know "price" and "buying". Macro is further away: <b>GDP, CPI, quantitative easing, fiscal multiplier…</b></p></div>`,
+  `<div class="card warn"><h3>② Practicality</h3>
+   <p>Micro can feel idealized — perfect competition, rational consumers. Macro faces reality: after this course you can <b>understand most financial news</b> and begin self-studying finance &amp; investing.</p></div>`,
+  `<div class="card lose"><h3>③ Controversy</h3>
+   <p>Micro principles are <b>largely universal</b>. Macro theories depend on the <b>current economic system</b> — institutions change, theories change. Learn the models AND their assumptions.</p></div>`
+];
+let diffI = -1;
+function nextDiff(){
+  diffI++;
+  if(diffI >= DIFFS.length){ document.getElementById("dfBtn").disabled = true; document.getElementById("dfBtn").textContent = "All shown ✓"; return; }
+  const box = document.createElement("div");
+  box.innerHTML = DIFFS[diffI];
+  document.getElementById("diffBox").appendChild(box);
+  if(diffI === DIFFS.length-1){ document.getElementById("dfBtn").disabled = true; document.getElementById("dfBtn").textContent = "All shown ✓"; }
+}
+function resetDiff(){
+  diffI = -1;
+  document.getElementById("diffBox").innerHTML = "";
+  document.getElementById("dfBtn").disabled = false;
+  document.getElementById("dfBtn").textContent = "Reveal difference ①";
+}
+
+/* ═══════════ P6 单元地图 ═══════════ */
+const UNITS = [
+  {no:"U1", nm:"Basic Economic Concepts", txt:"Scarcity, PPC, comparative advantage, supply & demand."},
+  {no:"U2", nm:"Economic Indicators & Business Cycle", txt:"GDP, unemployment, inflation, business cycles."},
+  {no:"U3", nm:"National Income & Price Determination", txt:"The AD-AS model — the core framework of macro."},
+  {no:"U4", nm:"Financial Sector", txt:"Money, banks, interest rates & monetary policy."},
+  {no:"U5", nm:"Long-Run Consequences of Stabilization Policies", txt:"Fiscal & monetary policy in the long run."},
+  {no:"U6", nm:"Open Economy", txt:"International trade & finance."}
+];
+const grid = document.getElementById("unitGrid");
+UNITS.forEach((u,i)=>{
+  const cell = document.createElement("div");
+  cell.className = "unit-cell";
+  cell.innerHTML = `<div class="no">${u.no}</div><div class="nm">${u.nm}</div>`;
+  cell.onclick = ()=>{
+    document.querySelectorAll(".unit-cell").forEach(c=>c.classList.remove("on"));
+    cell.classList.add("on");
+    document.getElementById("unitDetail").style.display = "block";
+    document.getElementById("udTitle").textContent = u.no + " · " + u.nm;
+    document.getElementById("udText").textContent = u.txt;
+  };
+  grid.appendChild(cell);
+});
+
+/* ═══════════ P8 学习建议 分步 ═══════════ */
+const TIPS = [
+  `<div class="hl">① <b>Master the vocabulary.</b> More jargon than micro — keep a glossary, review weekly.</div>`,
+  `<div class="hl">② <b>Anchor on supply &amp; demand.</b> Many models, many markets — but every "market" runs on S&amp;D logic.</div>`,
+  `<div class="hl">③ <b>Take notes by hand.</b> Keywords and diagrams, not slide-copying.</div>`,
+  `<div class="hl">④ <b>Think in graphs.</b> Every model has a graph — practice with full labels.</div>`,
+  `<div class="hl">⑤ <b>Connect to the real world.</b> Read financial news; ask "which model explains this?"</div>`,
+  `<div class="hl green">⑥ <b>Participate.</b> Answer in complete English sentences. Ask when lost.</div>`
+];
+let tipI = -1;
+function nextTip(){
+  tipI++;
+  if(tipI >= TIPS.length){ document.getElementById("tipBtn").disabled = true; document.getElementById("tipBtn").textContent = "All shown ✓"; return; }
+  const box = document.createElement("div");
+  box.innerHTML = TIPS[tipI];
+  document.getElementById("tipBox").appendChild(box);
+  if(tipI === TIPS.length-1){ document.getElementById("tipBtn").disabled = true; document.getElementById("tipBtn").textContent = "All shown ✓"; }
+}
+function resetTip(){
+  tipI = -1;
+  document.getElementById("tipBox").innerHTML = "";
+  document.getElementById("tipBtn").disabled = false;
+  document.getElementById("tipBtn").textContent = "Next habit";
+}
+
+/* ═══════════ P9 词汇 Quiz ═══════════ */
+const QUIZ = [
+  {q:"GDP stands for…",
+   opts:["Gross Domestic Product","General Domestic Price","Gross Demand Parity","Global Development Plan"], ans:0,
+   fb:"Gross Domestic Product — the total output of an economy (Unit 2)."},
+  {q:"A sustained rise in the general price level is called…",
+   opts:["Recession","Inflation","Unemployment","Stagnation"], ans:1,
+   fb:"Inflation — one of the three macro indicators."},
+  {q:"Government spending and taxes make up…",
+   opts:["Monetary policy","Fiscal policy","Trade policy","Income policy"], ans:1,
+   fb:"Fiscal policy = government spending + taxes. Monetary policy belongs to the central bank."},
+  {q:"A significant, widespread decline in economic activity is a…",
+   opts:["Boom","Peak","Recession","Expansion"], ans:2,
+   fb:"Recession — part of the business cycle (Unit 2)."}
+];
+function buildQuiz(){
+  const col = document.getElementById("quizCol");
+  col.innerHTML = "";
+  QUIZ.forEach((q, qi)=>{
+    const box = document.createElement("div");
+    box.className = "quiz-box";
+    box.innerHTML = `<div class="quiz-q">Q${qi+1}. ${q.q}</div>
+      <div class="quiz-opts" id="qopts${qi}"></div>
+      <div class="quiz-fb" id="qfb${qi}"></div>`;
+    col.appendChild(box);
+    const optsBox = document.getElementById("qopts"+qi);
+    q.opts.forEach((t, oi)=>{
+      const opt = document.createElement("div");
+      opt.className = "quiz-opt";
+      opt.textContent = String.fromCharCode(65+oi) + ". " + t;
+      opt.onclick = ()=>{
+        const fb = document.getElementById("qfb"+qi);
+        if(oi === q.ans){
+          opt.classList.add("correct");
+          fb.textContent = "✓ Correct! " + q.fb;
+        }else{
+          opt.classList.add("wrong");
+          document.getElementById("qopts"+qi).children[q.ans].classList.add("correct");
+          fb.textContent = "✗ The answer is " + String.fromCharCode(65+q.ans) + ". " + q.fb;
+        }
+        optsBox.querySelectorAll(".quiz-opt").forEach(o=>o.style.pointerEvents="none");
+      };
+      optsBox.appendChild(opt);
+    });
+  });
+}
+function resetQuiz(){ buildQuiz(); }
+buildQuiz();
+
+/* ═══════════ P10 Summary 填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+</script>
+</body>
+</html>
