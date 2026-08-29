@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 1.2 — From Scarcity to Comparative Advantage</title>
+<style>
+  /* ═══════════ 最小字号 ≥ 22px，正文 ≥ 24px，标题 ≥ 28px ═══════════ */
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1;min-height:0;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  .cn{font-size:clamp(20px,2vh,24px);color:var(--sub);}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(28px,3.1vh,38px);color:var(--ink);line-height:1.3;margin-bottom:1vh;}
+  p{font-size:clamp(23px,2.4vh,28px);line-height:1.55;margin-bottom:1vh;}
+  .sub-para{font-size:clamp(22px,2.3vh,27px);color:var(--sub);}
+  ul,ol{margin-left:1.6em;margin-bottom:1vh;}
+  li{font-size:clamp(23px,2.4vh,28px);line-height:1.5;margin-bottom:.6vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.6vh 1.4vw;flex:1 1 0;min-width:22%;}
+  .card h3{font-size:clamp(24px,2.5vh,30px);color:var(--accent-dark);margin-bottom:.8vh;}
+  .card p{font-size:clamp(22px,2.3vh,27px);}
+  .card .big{font-size:clamp(26px,2.8vh,33px);font-weight:700;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  .scroll{overflow-y:auto;max-height:46vh;border-radius:10px;}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:1vh .9vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  tr.hl td{background:var(--amber-light);font-weight:700;}
+  tr.ok td{background:var(--green-light);}
+  td.no{color:var(--red);font-weight:700;}
+  td.maybe{color:var(--amber);font-weight:700;}
+  td.yes{color:var(--green);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.2vh;flex-wrap:wrap;}
+  .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;pointer-events:none;}
+  .reveal.show{opacity:1;transform:none;pointer-events:auto;}
+  .s-foot{margin-top:auto;padding-top:1.4vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.2vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,28px);font-weight:700;color:var(--ink);
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;}
+  .cover h1{font-size:clamp(48px,6.4vh,84px);line-height:1.18;}
+  .cover .q{font-size:clamp(32px,4vh,50px);color:var(--accent-dark);font-weight:700;max-width:88%;}
+  .cover p{font-size:clamp(26px,3vh,36px);}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:var(--sub);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.8vh 1.4vw;margin:1vh 0;flex:1;min-height:0;overflow-y:auto;}
+  .qtext{font-size:clamp(24px,2.6vh,30px);font-weight:700;color:var(--accent-dark);margin-bottom:1vh;}
+  /* ── 静态 PPC 图（SVG） ── */
+  .svgwrap{display:flex;justify-content:center;gap:2vw;flex-wrap:wrap;align-items:center;}
+  .svgbox{background:#fff;border:2px solid var(--line);border-radius:12px;padding:1vh;}
+  .svgbox .cap{text-align:center;font-size:clamp(22px,2.2vh,26px);font-weight:700;color:var(--accent-dark);margin-top:.4vh;}
+  /* ── PPC 交互小程序 ── */
+  .lab{
+    background:var(--card);border:3px solid var(--accent);border-radius:14px;
+    padding:1.6vh 1.4vw;flex:1;min-height:0;display:flex;flex-direction:column;
+  }
+  .lab-head{display:flex;justify-content:space-between;align-items:center;gap:1vw;flex-wrap:wrap;margin-bottom:1vh;}
+  .lab-title{font-size:clamp(24px,2.6vh,30px);font-weight:800;color:var(--accent-dark);}
+  .lab-nav{display:flex;gap:.6vw;align-items:center;}
+  .lab-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;
+    font-size:clamp(20px,2.1vh,24px);padding:.8vh 1.2vw;cursor:pointer;}
+  .lab-btn:hover{background:var(--accent-dark);}
+  .lab-btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .lab-desc{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 8px 8px 0;
+    padding:1vh 1vw;font-size:clamp(21px,2.2vh,25px);margin-bottom:1vh;line-height:1.5;}
+  .lab-grid{display:flex;gap:1.2vw;flex:1;min-height:0;}
+  .lab-graph{flex:1;background:#fff;border:1px solid var(--line);border-radius:10px;position:relative;min-height:30vh;}
+  .lab-graph canvas{width:100%;height:100%;display:block;}
+  .lab-ctrl{display:flex;align-items:center;gap:1.2vw;margin-top:1.2vh;flex-wrap:wrap;}
+  .lab-ctrl label{font-size:clamp(21px,2.2vh,25px);font-weight:700;color:var(--ink);white-space:nowrap;}
+  .lab-ctrl input[type=range]{flex:1;min-width:200px;cursor:pointer;height:8px;}
+  .lab-val{font-weight:800;color:var(--accent-dark);font-size:clamp(21px,2.2vh,25px);}
+  .lab-hint{font-size:clamp(20px,2vh,24px);color:var(--sub);margin-top:.6vh;}
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  /* ── 导航 ── */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.2vh 2vw;background:#fff;border-top:2px solid var(--line);
+  }
+  .navbtn{
+    background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;
+  }
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.5vw;align-items:center;}
+  .dot{width:14px;height:14px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .lab-grid{flex-direction:column;}
+  }
+
+  /* ── right-side floating controls & diagram layout (v2) ── */
+  .btnrow.side{position:absolute;right:1.4vw;top:50%;transform:translateY(-50%);flex-direction:column;align-items:stretch;margin:0;z-index:30;}
+  .btnrow.side .btn{white-space:normal;max-width:11vw;text-align:center;box-shadow:0 4px 14px rgba(14,127,174,.25);}
+  .svgwrap{flex:1;min-height:0;flex-wrap:nowrap;align-items:stretch;}
+  .svgbox{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4vh;}
+  .svgbox svg{flex:1;min-height:0;width:100%;}
+  @media (max-width:900px){.svgwrap{flex-wrap:wrap;}}
+
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+/* ── 比较优势计算器 ── */
+  .clab{
+    background:var(--card);border:3px solid var(--accent);border-radius:14px;
+    padding:1.6vh 1.4vw;flex:1;min-height:0;display:flex;flex-direction:column;
+  }
+  .clab-head{display:flex;justify-content:space-between;align-items:center;gap:1vw;flex-wrap:wrap;margin-bottom:1vh;}
+  .clab-title{font-size:clamp(24px,2.6vh,30px);font-weight:800;color:var(--accent-dark);}
+  .clab-desc{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 8px 8px 0;
+    padding:1vh 1vw;font-size:clamp(21px,2.2vh,25px);margin-bottom:1vh;line-height:1.5;}
+  .ctabs{display:flex;gap:.8vw;margin-bottom:1vh;flex-wrap:wrap;}
+  .ctab{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(21px,2.2vh,25px);font-weight:700;padding:.8vh 1.2vw;cursor:pointer;}
+  .ctab.on{background:var(--accent);color:#fff;}
+  .cnumcell{width:5.2em;font-size:clamp(22px,2.3vh,26px);text-align:center;border:2px solid var(--line);
+    border-radius:7px;padding:.3vh .2vw;color:var(--ink);}
+  .cnumcell:focus{outline:none;border-color:var(--accent);}
+  .clab-out{margin-top:1vh;display:flex;flex-direction:column;gap:1vh;}
+  .cformula{font-family:Georgia,serif;font-style:italic;font-weight:700;color:var(--accent-dark);font-size:clamp(23px,2.4vh,28px);}
+  /* ── 贸易条件探索器 ── */
+  .tctrl{display:flex;align-items:center;gap:1.4vw;margin-top:1.2vh;flex-wrap:wrap;}
+  .tctrl label{font-size:clamp(22px,2.3vh,26px);font-weight:700;white-space:nowrap;}
+  .tctrl input[type=range]{flex:1;min-width:220px;cursor:pointer;height:8px;}
+  .tval{font-weight:800;color:var(--accent-dark);font-size:clamp(23px,2.4vh,27px);}
+  .tverdict{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1vw;border-radius:10px;line-height:1.45;}
+  .tverdict.good{background:var(--green-light);color:var(--green);}
+  .tverdict.bad{background:var(--red-light);color:var(--red);}
+  </style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<!-- ═══════════ P1 封面 ═══════════ -->
+<section class="slide cover active" id="s0">
+  <div class="tag">AP Macroeconomics · Unit 1 · Lesson 2</div>
+  <h1>From Scarcity to<br>Comparative Advantage</h1>
+  <div class="q">One toolkit: <span class="accent">scarcity → PPC → trade</span></div>
+  <p>Micro foundations rebuilt fast, then the gains from trade</p>
+  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+</section>
+
+<!-- ═══════════ P2 回顾引入 ═══════════ -->
+<section class="slide" id="s1">
+  <div class="tag">Warm-up </div>
+  <h2>Today's plan</h2>
+  <div class="stage">
+    <p class="qtext">Last lesson: macro studies the economy <b>as a whole</b>.<br>
+    First tool for thinking about a whole economy — start from the beginning:</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.8vw;">
+      <div class="card">
+        <div class="big">① Scarcity</div>
+        <p>Why choices are <b>unavoidable</b></p>
+      </div>
+      <div class="card">
+        <div class="big">② Opportunity cost</div>
+        <p>The cost of <b>any</b> choice</p>
+      </div>
+      <div class="card">
+        <div class="big">③ PPC</div>
+        <p>A model of <b>trade-offs &amp; growth</b></p>
+      </div>
+      <div class="card win">
+        <div class="big">④ Trade</div>
+        <p>Comparative advantage &amp; <b>gains from trade</b></p>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">You learned all four in micro — today we <b>rebuild them fast</b>, then finish with the gains from trade. </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P3 稀缺性 ═══════════ -->
+<section class="slide" id="s2">
+  <div class="tag">Concept ① </div>
+  <h2>Scarcity: the fundamental problem</h2>
+  <div class="stage">
+    <div class="btnrow side" style="margin-top:0;">
+      <button class="btn" id="scBtn" onclick="nextSc()">Reveal next</button>
+      <button class="btn ghost" onclick="resetSc()">Reset</button>
+    </div>
+    <div id="scBox" style="margin-top:1vh;display:flex;flex-direction:column;gap:1vh;"></div>
+  </div>
+</section>
+
+<!-- ═══════════ P4 生产要素 ═══════════ -->
+<section class="slide" id="s3">
+  <div class="tag">Economic resources </div>
+  <h2>Four factors of production</h2>
+  <div class="stage">
+    <div class="cards">
+      <div class="card">
+        <h3>Land 🌍</h3>
+        <p>Natural resources: forests, minerals, water</p>
+        <p class="big">Rent</p>
+        
+      </div>
+      <div class="card">
+        <h3>Labor 👷</h3>
+        <p>Physical &amp; mental human effort</p>
+        <p class="big">Wages</p>
+        
+      </div>
+      <div class="card win">
+        <h3>Capital 🏭</h3>
+        <p>Man-made aids: machinery, buildings</p>
+        <p class="big">Interest</p>
+        <p class="sub-para"><b>Macro focus:</b> interest is THE return to capital</p>
+      </div>
+      <div class="card">
+        <h3>Entrepreneurship 💡</h3>
+        <p>Risk-taking &amp; organizing production</p>
+        <p class="big">Profit</p>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Factor payments = the <b>income categories in GDP</b> (Unit 2).</div>
+      <div class="hl green" style="margin-top:.8vh;"><b>Macro lens:</b> <b>interest is the return to capital</b> — interest rates take center stage in macro (Unit 4). And here "capital" includes <b>financial capital</b> that flows between sectors; in micro it meant physical tools only.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P5 机会成本 ═══════════ -->
+<section class="slide" id="s4">
+  <div class="tag">Concept ② </div>
+  <h2>Opportunity cost</h2>
+  <div class="stage">
+    <div class="hl" style="margin-bottom:1.2vh;">OC = the <b>next-best alternative foregone</b>. </div>
+    <div class="btnrow side">
+      <button class="btn" id="ocBtn" onclick="nextOc()">Reveal key points</button>
+      <button class="btn ghost" onclick="resetOc()">Reset</button>
+    </div>
+    <div id="ocBox" style="margin-top:1vh;display:flex;flex-direction:column;gap:1vh;"></div>
+  </div>
+</section>
+
+<!-- ═══════════ P6 PPC 定义与点位 ═══════════ -->
+<section class="slide" id="s5">
+  <div class="tag">Concept ③ · The PPC and its points</div>
+  <div class="stage" style="display:flex;flex-direction:column;">
+    <p><b>PPC</b> = maximum combinations of two goods an economy can produce with available resources &amp; technology.</p>
+    <div class="svgwrap">
+      <div class="svgbox">
+        <svg width="440" height="330" viewBox="0 0 440 330">
+          <line x1="60" y1="30" x2="60" y2="280" stroke="#343a40" stroke-width="3"/>
+          <line x1="60" y1="280" x2="410" y2="280" stroke="#343a40" stroke-width="3"/>
+          <text x="20" y="45" font-size="18" font-weight="bold" fill="#343a40">Good B</text>
+          <text x="330" y="308" font-size="18" font-weight="bold" fill="#343a40">Good A</text>
+          <path d="M 60 55 Q 200 40 400 280" fill="none" stroke="#1CADE4" stroke-width="5"/>
+          <circle cx="149" cy="69" r="8" fill="#2e9e6b"/>
+          <text x="162" y="63" font-size="18" font-weight="bold" fill="#2e9e6b">A · on curve</text>
+          <circle cx="185" cy="131" r="8" fill="#e6a23c"/>
+          <text x="185" y="158" font-size="18" font-weight="bold" fill="#e6a23c" text-anchor="middle">B · inside</text>
+          <circle cx="255" cy="91" r="8" fill="#d9534f"/>
+          <text x="268" y="85" font-size="18" font-weight="bold" fill="#d9534f">C · outside</text>
+        </svg>
+        <div class="cap">PPC — three kinds of points</div>
+      </div>
+      <div style="flex:1;min-width:280px;display:flex;flex-direction:column;gap:1vh;">
+        <div class="cards" style="flex-direction:column;">
+          <div class="card win"><h3>A — on the curve</h3><p><b>Efficient</b> — full employment of resources</p></div>
+          <div class="card warn"><h3>B — inside the curve</h3><p><b>Inefficient</b> — unused or misallocated resources</p></div>
+          <div class="card lose"><h3>C — outside the curve</h3><p><b>Unattainable</b> — beyond current capacity</p></div>
+        </div>
+        <div class="hl amber" style="margin-top:auto;">Macro lens: outside the PPC is unattainable in the long run — but short-run output can temporarily exceed potential (overtime). Macro calls this an <b>inflationary gap</b> — the economy "overheats".</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P7 PPC 形状 ═══════════ -->
+<section class="slide" id="s6">
+  <div class="tag">PPC shape · Constant vs. increasing OC</div>
+  <div class="stage" style="display:flex;flex-direction:column;">
+    <div class="svgwrap">
+      <div class="svgbox">
+        <svg width="400" height="300" viewBox="0 0 400 300">
+          <line x1="55" y1="25" x2="55" y2="255" stroke="#343a40" stroke-width="3"/>
+          <line x1="55" y1="255" x2="380" y2="255" stroke="#343a40" stroke-width="3"/>
+          <line x1="55" y1="50" x2="375" y2="255" stroke="#1CADE4" stroke-width="5"/>
+          <text x="80" y="40" font-size="17" fill="#5b7288">B</text>
+          <text x="360" y="285" font-size="17" fill="#5b7288">A</text>
+        </svg>
+        <div class="cap">Straight — constant OC</div>
+      </div>
+      <div class="svgbox">
+        <svg width="400" height="300" viewBox="0 0 400 300">
+          <line x1="55" y1="25" x2="55" y2="255" stroke="#343a40" stroke-width="3"/>
+          <line x1="55" y1="255" x2="380" y2="255" stroke="#343a40" stroke-width="3"/>
+          <path d="M 55 50 Q 185 57.5 375 255" fill="none" stroke="#1CADE4" stroke-width="5"/>
+          <text x="80" y="40" font-size="17" fill="#5b7288">B</text>
+          <text x="360" y="285" font-size="17" fill="#5b7288">A</text>
+        </svg>
+        <div class="cap">Bowed out — increasing OC</div>
+      </div>
+    </div>
+    <div class="btnrow side">
+      <button class="btn" id="shBtn" onclick="nextSh()">Why the difference?</button>
+      <button class="btn ghost" onclick="resetSh()">Reset</button>
+    </div>
+    <div id="shBox" style="margin-top:1vh;display:flex;flex-direction:column;gap:1vh;"></div>
+  </div>
+</section>
+
+<!-- ═══════════ P8 PPC 交互小程序 ═══════════ -->
+<section class="slide" id="s7">
+  <div class="tag">Live model </div>
+  <h2>Drag the slider — watch the curve grow</h2>
+  <div class="lab" id="ppcLab">
+    <div class="lab-head">
+      <div class="lab-title" id="scenarioTitle">Loading…</div>
+      <div class="lab-nav">
+        <button class="lab-btn" id="labPrev" disabled>« Prev</button>
+        <button class="lab-btn" id="labNext">Next scenario »</button>
+      </div>
+    </div>
+    <div class="lab-desc" id="promptBox">Loading…</div>
+    <div class="lab-grid">
+      <div class="lab-graph"><canvas id="ppcCanvas"></canvas></div>
+      <div class="lab-graph"><canvas id="ocCanvas"></canvas></div>
+    </div>
+    <div class="lab-ctrl">
+      <label>Hours on rabbits: <span class="lab-val" id="hoursVal">0.0</span> / 8</label>
+      <input type="range" id="hourSlider" min="0" max="8" step="0.02" value="0">
+    </div>
+    <div class="lab-hint">Left: PPC with tangent line (slope = OC). Right: marginal OC of a rabbit in fish. Watch how the OC curve behaves in each scenario. </div>
+  </div>
+</section>
+
+<!-- ═══════════ P9 移动 vs 位移 ═══════════ -->
+<section class="slide" id="s8">
+  <div class="tag">Growth &amp; choice · Movement vs. shift</div>
+  <div class="stage" style="display:flex;flex-direction:column;">
+    <div class="svgwrap">
+      <div class="svgbox">
+        <svg width="400" height="300" viewBox="0 0 400 300">
+          <line x1="55" y1="25" x2="55" y2="255" stroke="#343a40" stroke-width="3"/>
+          <line x1="55" y1="255" x2="380" y2="255" stroke="#343a40" stroke-width="3"/>
+          <path d="M 55 50 Q 185 57.5 375 255" fill="none" stroke="#9aa8b5" stroke-width="4" stroke-dasharray="7 5"/>
+          <circle cx="124" cy="66" r="8" fill="#1CADE4"/>
+          <circle cx="271" cy="157" r="8" fill="#d9534f"/>
+          <line x1="134" y1="60" x2="262" y2="164" stroke="#d9534f" stroke-width="3" marker-end="url(#arr)"/>
+          <defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#d9534f"/></marker></defs>
+        </svg>
+        <div class="cap">Movement ALONG — reallocate</div>
+      </div>
+      <div class="svgbox">
+        <svg width="400" height="300" viewBox="0 0 400 300">
+          <line x1="55" y1="25" x2="55" y2="255" stroke="#343a40" stroke-width="3"/>
+          <line x1="55" y1="255" x2="380" y2="255" stroke="#343a40" stroke-width="3"/>
+          <path d="M 55 50 Q 185 57.5 375 255" fill="none" stroke="#9aa8b5" stroke-width="4" stroke-dasharray="7 5"/>
+          <path d="M 55 25 Q 195 30 395 255" fill="none" stroke="#2e9e6b" stroke-width="5"/>
+          <line x1="70" y1="49" x2="70" y2="28" stroke="#2e9e6b" stroke-width="3.5" marker-end="url(#arr2)"/>
+          <text x="105" y="22" font-size="17" font-weight="bold" fill="#2e9e6b" text-anchor="middle">shift outward</text>
+          <defs><marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2e9e6b"/></marker></defs>
+        </svg>
+        <div class="cap">SHIFT — grow or shrink</div>
+      </div>
+    </div>
+    <div class="btnrow side">
+      <button class="btn" id="mvBtn" onclick="nextMv()">Reveal the rules</button>
+      <button class="btn ghost" onclick="resetMv()">Reset</button>
+    </div>
+    <div id="mvBox" style="margin-top:1vh;display:flex;flex-direction:column;gap:1vh;"></div>
+  </div>
+</section>
+
+<!-- ═══════════ P11 PPC 看比较优势 ═══════════ -->
+<section class="slide" id="ca0">
+  <div class="tag">PPC reveals comparative advantage</div>
+  <h2>Two PPCs, two slopes</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;align-items:stretch;height:100%;">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:1vh;">
+        <p>Same resources, two slopes. England can make <b>more</b> of everything — but trade follows the <b>slopes</b>:</p>
+        <div class="btnrow">
+          <button class="btn" id="ca0Btn" onclick="nextCa0()">Reveal the insight</button>
+          <button class="btn ghost" onclick="resetCa0()">Reset</button>
+        </div>
+        <div id="ca0Box" style="display:flex;flex-direction:column;gap:.6vh;"></div>
+      </div>
+      <div class="svgbox" style="flex:1.15;max-width:560px;display:flex;flex-direction:column;justify-content:center;">
+        <svg viewBox="0 0 460 330">
+          <line x1="60" y1="30" x2="60" y2="280" stroke="#343a40" stroke-width="3"/>
+          <line x1="60" y1="280" x2="430" y2="280" stroke="#343a40" stroke-width="3"/>
+          <text x="18" y="45" font-size="19" font-weight="bold" fill="#343a40">Cloth</text>
+          <text x="380" y="308" font-size="19" font-weight="bold" fill="#343a40">Wine</text>
+          <line x1="60" y1="30" x2="245" y2="280" stroke="#1CADE4" stroke-width="5"/>
+          <line x1="60" y1="155" x2="430" y2="280" stroke="#2e9e6b" stroke-width="5"/>
+          <text x="135" y="130" font-size="18" font-weight="bold" fill="#0e7fae" transform="rotate(-40 135 130)">England · steep</text>
+          <text x="240" y="230" font-size="18" font-weight="bold" fill="#1f7a4d" transform="rotate(-18 240 230)">Portugal · flat</text>
+          <circle cx="152" cy="155" r="6" fill="#1CADE4"/>
+          <text x="180" y="265" font-size="17" fill="#5b7288">1 wine = 10 cloth</text>
+          <circle cx="245" cy="217" r="6" fill="#2e9e6b"/>
+          <text x="320" y="265" font-size="17" fill="#5b7288">1 wine = 2.5 cloth</text>
+        </svg>
+        <div class="cap">Straight PPCs — the slope IS the opportunity cost</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 从自给到贸易：消费点超出 PPC（统一比例尺 + TOT 可调） ═══════════ -->
+<section class="slide" id="trb">
+  <div class="tag">From autarky to trade</div>
+  <h2>Specialise, then trade — beyond the PPC</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;align-items:stretch;height:100%;">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:1vh;">
+        <p>Autarky → specialise → trade:</p>
+        <div class="btnrow">
+          <button class="btn" id="trbBtn" onclick="nextTrb()">Next step</button>
+          <button class="btn ghost" onclick="resetTrb()">Reset</button>
+        </div>
+        <div id="trbBox" style="display:flex;flex-direction:column;gap:.6vh;"></div>
+      </div>
+      <div class="svgbox" style="flex:1.15;display:flex;flex-direction:column;justify-content:center;">
+        <div style="display:flex;gap:1vw;justify-content:center;">
+          <svg viewBox="0 0 300 250" style="width:46%;">
+            <line x1="60" y1="30" x2="60" y2="210" stroke="#343a40" stroke-width="3"/>
+            <line x1="60" y1="210" x2="255" y2="210" stroke="#343a40" stroke-width="3"/>
+            <text x="18" y="45" font-size="19" font-weight="bold" fill="#343a40">Cloth</text>
+            <text x="230" y="234" font-size="19" font-weight="bold" fill="#343a40">Wine</text>
+            <text x="70" y="72" font-size="18" font-weight="bold" fill="#1CADE4">England</text>
+            <line x1="157.5" y1="214" x2="157.5" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <line x1="255" y1="214" x2="255" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <text x="157.5" y="228" font-size="14" fill="#5b7288" text-anchor="middle">20</text>
+            <text x="255" y="228" font-size="14" fill="#5b7288" text-anchor="middle">40</text>
+            <line x1="52" y1="120" x2="60" y2="120" stroke="#5b7288" stroke-width="2"/>
+            <line x1="52" y1="30" x2="60" y2="30" stroke="#5b7288" stroke-width="2"/>
+            <text x="48" y="124" font-size="14" fill="#5b7288" text-anchor="end">100</text>
+            <text x="48" y="34" font-size="14" fill="#5b7288" text-anchor="end">200</text>
+            <line x1="60" y1="30" x2="157.5" y2="210" stroke="#1CADE4" stroke-width="4"/>
+            <g class="tb-a" style="opacity:0">
+              <circle cx="108.75" cy="120" r="10" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+              <text x="108.75" y="124" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">A</text>
+              <text x="108.75" y="140" font-size="16" fill="#8a6116" text-anchor="middle">autarky</text>
+            </g>
+            <g class="tb-s" style="opacity:0">
+              <circle cx="60" cy="30" r="10" fill="#1CADE4" stroke="#fff" stroke-width="2"/>
+              <text x="60" y="34" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">S</text>
+              <text x="75" y="20" font-size="16" fill="#0e7fae">specialise</text>
+            </g>
+            <g class="tb-c" style="opacity:0">
+              <line id="engTrade" x1="60" y1="30" x2="157.5" y2="120" stroke="#d9534f" stroke-width="2.5" stroke-dasharray="6 4"/>
+              <line id="engDh" x1="60" y1="120" x2="157.5" y2="120" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <line id="engDv" x1="157.5" y1="120" x2="157.5" y2="210" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <circle id="engC" cx="157.5" cy="120" r="10" fill="#d9534f" stroke="#fff" stroke-width="2"/>
+              <text x="157.5" y="124" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">C</text>
+              <text id="engCText" x="157.5" y="92" font-size="16" fill="#a33" text-anchor="end">beyond</text>
+            </g>
+          </svg>
+          <svg viewBox="0 0 300 250" style="width:46%;">
+            <line x1="60" y1="30" x2="60" y2="210" stroke="#343a40" stroke-width="3"/>
+            <line x1="60" y1="210" x2="255" y2="210" stroke="#343a40" stroke-width="3"/>
+            <text x="18" y="45" font-size="19" font-weight="bold" fill="#343a40">Cloth</text>
+            <text x="230" y="234" font-size="19" font-weight="bold" fill="#343a40">Wine</text>
+            <text x="70" y="72" font-size="18" font-weight="bold" fill="#1f7a4d">Portugal</text>
+            <line x1="157.5" y1="214" x2="157.5" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <line x1="255" y1="214" x2="255" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <text x="157.5" y="228" font-size="14" fill="#5b7288" text-anchor="middle">20</text>
+            <text x="255" y="228" font-size="14" fill="#5b7288" text-anchor="middle">40</text>
+            <line x1="52" y1="120" x2="60" y2="120" stroke="#5b7288" stroke-width="2"/>
+            <line x1="52" y1="30" x2="60" y2="30" stroke="#5b7288" stroke-width="2"/>
+            <text x="48" y="124" font-size="14" fill="#5b7288" text-anchor="end">100</text>
+            <text x="48" y="34" font-size="14" fill="#5b7288" text-anchor="end">200</text>
+            <line x1="60" y1="165" x2="157.5" y2="210" stroke="#2e9e6b" stroke-width="4"/>
+            <g class="tb-a" style="opacity:0">
+              <circle cx="108.75" cy="187.5" r="10" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+              <text x="108.75" y="191.5" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">A</text>
+              <text x="108.75" y="160" font-size="16" fill="#8a6116" text-anchor="middle">autarky</text>
+            </g>
+            <g class="tb-s" style="opacity:0">
+              <circle cx="157.5" cy="210" r="10" fill="#2e9e6b" stroke="#fff" stroke-width="2"/>
+              <text x="157.5" y="214" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">S</text>
+              <text x="165" y="202" font-size="16" fill="#1f7a4d">specialise</text>
+            </g>
+            <g class="tb-c" style="opacity:0">
+              <line id="porTrade" x1="157.5" y1="210" x2="108.75" y2="165" stroke="#d9534f" stroke-width="2.5" stroke-dasharray="6 4"/>
+              <line id="porDh" x1="60" y1="165" x2="108.75" y2="165" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <line id="porDv" x1="108.75" y1="165" x2="108.75" y2="210" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <circle id="porC" cx="108.75" cy="165" r="10" fill="#d9534f" stroke="#fff" stroke-width="2"/>
+              <text x="108.75" y="169" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">C</text>
+              <text id="porCText" x="108.75" y="137" font-size="16" fill="#a33" text-anchor="end">beyond</text>
+            </g>
+          </svg>
+        </div>
+        <div class="tctrl" style="margin-top:1vh;">
+          <label>Terms of trade: 1 wine = <span class="tval" id="trbTot">5.0</span> cloth</label>
+          <input type="range" id="trbTotSlider" min="2.5" max="10" step="0.1" value="5">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P3 绝对优势 ═══════════ -->
+<section class="slide" id="t2">
+  <div class="tag">Concept ① </div>
+  <h2>Absolute advantage</h2>
+  <div class="stage">
+    <div class="hl" style="margin-bottom:1.2vh;">Absolute advantage = producing <b>MORE output</b> with the <b>SAME resources</b>. </div>
+    <p class="qtext">Output per hour — England vs. Portugal:</p>
+    <table>
+      <tr><th></th><th>Wine 🍷 (bottles)</th><th>Cloth 🧵 (yards)</th></tr>
+      <tr><td class="l"><b>England</b></td><td>2</td><td class="ca">20 ✓</td></tr>
+      <tr><td class="l"><b>Portugal</b></td><td class="ca">4 ✓</td><td>10</td></tr>
+    </table>
+    <div class="btnrow side">
+      <button class="btn" id="aaBtn" onclick="nextAa()">So England trades cloth for wine?</button>
+      <button class="btn ghost" onclick="resetAa()">Reset</button>
+    </div>
+    <div id="aaBox" style="margin-top:1vh;display:flex;flex-direction:column;gap:1vh;"></div>
+  </div>
+</section>
+
+<!-- ═══════════ P4 比较优势 ═══════════ -->
+<section class="slide" id="t3">
+  <div class="tag">Concept ② </div>
+  <h2>Comparative advantage</h2>
+  <div class="stage">
+    <div class="hl" style="margin-bottom:1.2vh;">Comparative advantage = producing at a <b>LOWER opportunity cost</b> — on the PPC, that is the <b>flatter slope</b>. </div>
+    <div class="btnrow side" style="margin-top:0;">
+      <button class="btn" id="caBtn" onclick="nextCa()">Reveal key points</button>
+      <button class="btn ghost" onclick="resetCa()">Reset</button>
+    </div>
+    <div id="caBox" style="margin-top:1vh;display:flex;flex-direction:column;gap:1vh;"></div>
+  </div>
+</section>
+
+<!-- ═══════════ P5 交互实验室：CA 计算器 ═══════════ -->
+<section class="slide" id="t4">
+  <div class="tag">Live model </div>
+  <h2>Compute the opportunity costs — yourself</h2>
+  <div class="clab">
+    <div class="clab-head">
+      <div class="clab-title">Comparative Advantage Calculator</div>
+      <div class="ctabs">
+        <button class="ctab on" id="tabOut" onclick="caMode('output')">Output method </button>
+        <button class="ctab" id="tabIn" onclick="caMode('input')">Input method </button>
+      </div>
+    </div>
+    <div class="clab-desc" id="caDesc"></div>
+    <div id="caTableBox"></div>
+    <p class="cformula" id="caFormula" style="margin:.8vh 0 0;"></p>
+    <div class="btnrow side">
+      <button class="btn green" onclick="caCompute()">Compute OC<br>→ find CA</button>
+      <button class="btn ghost" onclick="caReset()">Reset<br>numbers</button>
+    </div>
+    <div class="clab-out" id="caOut"></div>
+    <div class="clab-hint" style="font-size:clamp(20px,2vh,24px);color:var(--sub);margin-top:.6vh;">
+      Numbers are editable — type your own and recompute. Green = lower OC = comparative advantage.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P6 贸易条件 ═══════════ -->
+<section class="slide" id="t5">
+  <div class="tag">Terms of trade </div>
+  <h2>Where must the price of trade fall?</h2>
+  <div class="clab">
+    <div class="clab-head"><div class="clab-title">Terms-of-Trade Explorer</div></div>
+    <div class="clab-desc">
+      Country A's OC of 1 wine = <b>2 cloth</b> · Country B's OC of 1 wine = <b>5 cloth</b>.<br>
+      Drag the red dot: at what exchange ratio will <b>both</b> countries agree to trade?
+      
+    </div>
+    <div class="tverdict good" id="totVerdict"></div>
+    <div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:1vh .6vw;">
+      <svg id="totSvg" viewBox="0 0 860 185" style="width:100%;display:block;touch-action:none;"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P7 超越PPC ═══════════ -->
+<section class="slide" id="t6">
+  <div class="tag">Gains from trade </div>
+  <h2>Consumption beyond the PPC</h2>
+  <div class="stage">
+    <div class="svgwrap">
+      <div class="svgbox">
+        <svg width="460" height="330" viewBox="0 0 460 330">
+          <line x1="60" y1="30" x2="60" y2="280" stroke="#343a40" stroke-width="3"/>
+          <line x1="60" y1="280" x2="430" y2="280" stroke="#343a40" stroke-width="3"/>
+          <text x="18" y="45" font-size="19" font-weight="bold" fill="#343a40">Cloth</text>
+          <text x="360" y="308" font-size="19" font-weight="bold" fill="#343a40">Wine</text>
+          <path d="M 70 55 Q 205 48.5 420 268" fill="none" stroke="#1CADE4" stroke-width="5"/>
+          <circle id="g1" class="rj" cx="130" cy="62" r="9" fill="#e6a23c"/>
+          <text id="g1t" class="rj" x="143" y="55" font-size="18" font-weight="bold" fill="#e6a23c">A: no trade</text>
+          <circle id="g2" class="rj" cx="265" cy="95" r="9" fill="#2e9e6b"/>
+          <text id="g2t" class="rj" x="278" y="88" font-size="18" font-weight="bold" fill="#2e9e6b">A: with trade</text>
+          <line id="g3" class="rj" x1="265" y1="95" x2="60" y2="95" stroke="#2e9e6b" stroke-width="2" stroke-dasharray="5 4"/>
+          <line id="g4" class="rj" x1="265" y1="95" x2="265" y2="280" stroke="#2e9e6b" stroke-width="2" stroke-dasharray="5 4"/>
+        </svg>
+        <div class="cap">Country A specializes in cloth, trades for wine</div>
+      </div>
+      <div style="flex:1;min-width:280px;">
+        <div class="btnrow side" style="margin-top:0;">
+          <button class="btn" id="gtBtn" onclick="nextGt()">Reveal the steps</button>
+          <button class="btn ghost" onclick="resetGt()">Reset</button>
+        </div>
+        <div id="gtBox" style="margin-top:1vh;display:flex;flex-direction:column;gap:1vh;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P8 常见错误 ═══════════ -->
+<section class="slide" id="t7">
+  <div class="tag">Exam traps </div>
+  <h2>Four ways students lose points</h2>
+  <div class="stage">
+    <div class="cards">
+      <div class="card lose">
+        <h3>① AA ≠ CA</h3>
+        <p>Confusing absolute &amp; comparative advantage — always compare <b>opportunity costs</b>, not just output.</p>
+        
+      </div>
+      <div class="card lose">
+        <h3>② OC upside-down</h3>
+        <p>Output table: OC = <b>other ÷ this</b>. Input table: OC = <b>this ÷ other</b>.</p>
+        
+      </div>
+      <div class="card lose">
+        <h3>③ Same-good CA for both</h3>
+        <p>Impossible — if A has lower OC in X, B <b>must</b> have lower OC in Y.</p>
+        
+      </div>
+      <div class="card lose">
+        <h3>④ Terms outside range</h3>
+        <p>If the ratio isn't <b>between</b> both OCs, one side simply won't trade.</p>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P9 练习 ═══════════ -->
+<section class="slide" id="t8">
+  <div class="tag">Practice </div>
+  <h2>Phones &amp; cars</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.6vw;align-items:stretch;height:100%;">
+      <div style="flex:1.1;display:flex;flex-direction:column;justify-content:center;gap:1vh;">
+        <p>Two countries, same resources — fill in the four questions:</p>
+        <ol style="margin-left:1.4em;">
+          <li>Which country has <b>absolute advantage</b> in phones? In cars?</li>
+          <li>Calculate the <b>opportunity cost of 1 phone</b> for each country.</li>
+          <li>Which country has <b>comparative advantage</b> in phones? In cars?</li>
+          <li>What <b>terms of trade</b> for 1 car benefit both?</li>
+        </ol>
+        <div class="btnrow">
+          <button class="btn" id="pqBtn" onclick="nextPq()">Reveal next answer</button>
+          <button class="btn ghost" onclick="resetPq()">Reset</button>
+        </div>
+        <div id="pqBox" style="display:flex;flex-direction:column;gap:.6vh;"></div>
+      </div>
+      <div style="flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;">
+        <table style="font-size:clamp(22px,2.3vh,27px);">
+          <tr><th></th><th>Phones 📱</th><th>Cars 🚗</th></tr>
+          <tr><td class="l"><b>Country X</b></td><td>60</td><td>20</td></tr>
+          <tr><td class="l"><b>Country Y</b></td><td>30</td><td>10</td></tr>
+        </table>
+        <div class="cap" style="margin-top:1vh;">Output per day, same resources</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="slide" id="s10">
+  <div class="tag">Summary </div>
+  <h2>Key takeaways</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:1vh;justify-content:center;">
+    <div style="display:flex;gap:1.4vw;align-items:stretch;flex:1;min-height:0;">
+      <div style="flex:1.1;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
+        <p style="margin:0;">① Scarcity = unlimited wants vs. limited <span class="fill" data-a="resources">resources</span>.</p>
+        <p style="margin:0;">② Opportunity cost = the <span class="fill" data-a="next-best">next-best</span> alternative foregone.</p>
+        <p style="margin:0;">③ PPC: on = efficient · inside = inefficient · outside = <span class="fill" data-a="unattainable">unattainable</span>.</p>
+        <p style="margin:0;">④ Bowed-out PPC = <span class="fill" data-a="increasing">increasing</span> OC · straight = constant OC.</p>
+        <p style="margin:0;">⑤ <span class="fill" data-a="Comparative advantage">Comparative advantage</span> = lower OC → trade between OCs → consume <span class="fill" data-a="beyond">beyond</span> PPC.</p>
+      </div>
+      <div style="flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:1vh .8vw;max-width:300px;">
+        <svg width="240" height="180" viewBox="0 0 320 240">
+          <line x1="60" y1="25" x2="60" y2="205" stroke="#343a40" stroke-width="3"/>
+          <line x1="60" y1="205" x2="290" y2="205" stroke="#343a40" stroke-width="3"/>
+          <path d="M 60 50 Q 160 28 280 205" fill="none" stroke="#1CADE4" stroke-width="5"/>
+          <text x="18" y="36" font-size="24" font-weight="bold" fill="#343a40">Capital goods</text>
+          <text x="128" y="234" font-size="24" font-weight="bold" fill="#343a40">Consumer goods</text>
+        </svg>
+        <p style="margin:.6vh 0 0 0;font-size:clamp(20px,2.1vh,24px);line-height:1.4;text-align:center;">In macro, the PPC is drawn with <b>consumer goods</b> vs <b>capital goods</b> — <b>bowed outward</b>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot">
+    <div class="btnrow side">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P12 结束页 ═══════════ -->
+<section class="slide cover" id="s11">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">From <span class="accent">scarcity</span> to <span class="accent">comparative advantage</span> — one complete toolkit.</div>
+  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+</section>
+
+</main>
+
+<!-- ═══════════ 底部导航 ═══════════ -->
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 12</div>
+  <div class="copy">© 2026 Dr. Xiangyu Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+  if(i === 7){ labResize(); labRender(); }
+}
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+let tx0=null;
+document.addEventListener("touchstart",e=>tx0=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{
+  if(tx0===null) return;
+  const dx = e.changedTouches[0].clientX - tx0;
+  if(Math.abs(dx)>60){ dx<0 ? gotoSlide(cur+1) : gotoSlide(cur-1); }
+  tx0=null;
+},{passive:true});
+/* hashInit 初始化移到 labLoad(0) 之后（labCanvases/labScenarios 声明 813/840 行之后），避免 TDZ */
+
+/* ═══════════ Reveal 工具 ═══════════ */
+function revealAnswer(id){ document.getElementById(id).classList.add("show"); }
+function resetReveal(id){ document.getElementById(id).classList.remove("show"); }
+
+/* ═══════════ P3 稀缺性 分步 ═══════════ */
+const SC = [
+  `<div class="hl">Scarcity = <b>unlimited wants</b> vs. <b>limited resources</b>. </div>`,
+  `<div class="hl">Wants are unlimited — people always want <b>more</b> than resources can provide. </div>`,
+  `<div class="hl">Resources are limited — land, labor, capital, entrepreneurship are <b>finite</b>. </div>`,
+  `<div class="hl green">Choices are unavoidable — scarcity forces individuals, firms, AND governments to choose. </div>`
+];
+let scI = -1;
+function nextSc(){
+  scI++;
+  if(scI >= SC.length){ document.getElementById("scBtn").disabled = true; document.getElementById("scBtn").textContent = "All shown ✓"; return; }
+  const box = document.createElement("div");
+  box.innerHTML = SC[scI];
+  document.getElementById("scBox").appendChild(box);
+  if(scI === SC.length-1){ document.getElementById("scBtn").disabled = true; document.getElementById("scBtn").textContent = "All shown ✓"; }
+}
+function resetSc(){
+  scI = -1;
+  document.getElementById("scBox").innerHTML = "";
+  document.getElementById("scBtn").disabled = false;
+  document.getElementById("scBtn").textContent = "Reveal next";
+}
+
+/* ═══════════ P5 机会成本 分步 ═══════════ */
+const OCP = [
+  `<div class="hl">NOT everything you give up — only the <b>next-best</b> option. </div>`,
+  `<div class="hl">The word <b>"foregone"</b> is essential in exam definitions. </div>`,
+  `<div class="hl green">"There is no such thing as a free lunch" — even "free" goods cost your <b>time</b>. </div>`
+];
+let ocPI = -1;
+function nextOc(){
+  ocPI++;
+  if(ocPI >= OCP.length){ document.getElementById("ocBtn").disabled = true; document.getElementById("ocBtn").textContent = "All shown ✓"; return; }
+  const box = document.createElement("div");
+  box.innerHTML = OCP[ocPI];
+  document.getElementById("ocBox").appendChild(box);
+  if(ocPI === OCP.length-1){ document.getElementById("ocBtn").disabled = true; document.getElementById("ocBtn").textContent = "All shown ✓"; }
+}
+function resetOc(){
+  ocPI = -1;
+  document.getElementById("ocBox").innerHTML = "";
+  document.getElementById("ocBtn").disabled = false;
+  document.getElementById("ocBtn").textContent = "Reveal key points";
+}
+
+/* ═══════════ P7 形状 分步 ═══════════ */
+const SH = [
+  `<div class="hl">Straight line → <b>constant</b> OC: resources are <b>perfectly substitutable</b> — each unit of A costs the same B. </div>`,
+  `<div class="hl">Bowed out → <b>increasing</b> OC: resources are NOT perfectly substitutable — as you produce more A, each unit costs <b>more</b> B. </div>`,
+  `<div class="hl green">Bowed-out is the <b>realistic</b> shape — the law of increasing opportunity cost. </div>`
+];
+let shI = -1;
+function nextSh(){
+  shI++;
+  if(shI >= SH.length){ document.getElementById("shBtn").disabled = true; document.getElementById("shBtn").textContent = "All shown ✓"; return; }
+  const box = document.createElement("div");
+  box.innerHTML = SH[shI];
+  document.getElementById("shBox").appendChild(box);
+  if(shI === SH.length-1){ document.getElementById("shBtn").disabled = true; document.getElementById("shBtn").textContent = "All shown ✓"; }
+}
+function resetSh(){
+  shI = -1;
+  document.getElementById("shBox").innerHTML = "";
+  document.getElementById("shBtn").disabled = false;
+  document.getElementById("shBtn").textContent = "Why the difference?";
+}
+
+/* ═══════════ P9 移动 vs 位移 分步 ═══════════ */
+const MV = [
+  `<div class="hl">Movement ALONG the curve — changing the <b>mix of output</b>: more A, less B. Resources <b>reallocated</b>, not increased. A choice, <b>not growth</b>. </div>`,
+  `<div class="hl">SHIFT of the curve — changing <b>productive capacity</b>: more/fewer resources, better/worse technology. This IS growth or contraction. </div>`,
+  `<div class="hl amber">Outward shift → <b>economic growth</b> (more resources, better quality, technology). Inward → contraction (disaster, war, pandemic). </div>`
+];
+let mvI = -1;
+function nextMv(){
+  mvI++;
+  if(mvI >= MV.length){ document.getElementById("mvBtn").disabled = true; document.getElementById("mvBtn").textContent = "All shown ✓"; return; }
+  const box = document.createElement("div");
+  box.innerHTML = MV[mvI];
+  document.getElementById("mvBox").appendChild(box);
+  if(mvI === MV.length-1){ document.getElementById("mvBtn").disabled = true; document.getElementById("mvBtn").textContent = "All shown ✓"; }
+}
+function resetMv(){
+  mvI = -1;
+  document.getElementById("mvBox").innerHTML = "";
+  document.getElementById("mvBtn").disabled = false;
+  document.getElementById("mvBtn").textContent = "Reveal the rules";
+}
+
+/* ═══════════ P11 Summary 填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+
+/* ═══════════════════════════════════════════════
+   P8 PPC 交互小程序（源自 economics_mini_lab，
+   适配为课件内嵌：双 canvas + 滑块 + 场景切换）
+   ═══════════════════════════════════════════════ */
+const labScenarios = [
+  {
+    name: "1 · Constant OC",
+    desc: "8 hours a day. The hunter catches <b>10 rabbits</b> or <b>10 fish</b> per hour, at any time. The trade-off never changes.",
+    rFunc: h => 10 * h,
+    fFunc: h => 10 * (8 - h),
+    ocFunc: h => 1.0,
+    rLim: [0, 90], fLim: [0, 90], ocLim: [0, 5]
+  },
+  {
+    name: "2 · Increasing OC",
+    desc: "Law of diminishing returns. Each hour hunting yields <b>1 less</b> than the hour before (10, 9, 8…). Same for fish. Switching gets costlier and costlier.",
+    rFunc: h => 10.5 * h - 0.5 * h * h,
+    fFunc: h => 10.5 * (8 - h) - 0.5 * (8 - h) * (8 - h),
+    ocFunc: h => (2.5 + h) / (10.5 - h),
+    rLim: [0, 60], fLim: [0, 60], ocLim: [0, 5]
+  },
+  {
+    name: "3 · Decreasing OC",
+    desc: "Specialization &amp; economies of scale. Hour 1 yields 2 items, hour 2 yields 4, hour 3 yields 6… Marginal returns increase.",
+    rFunc: h => h * h + h,
+    fFunc: h => (8 - h) * (8 - h) + (8 - h),
+    ocFunc: h => (17 - 2 * h) / (2 * h + 1),
+    rLim: [0, 80], fLim: [0, 80], ocLim: [0, 18]
+  }
+];
+let labIdx = 0, labHours = 0;
+const labCanvases = { ppc: null, oc: null };
+
+function labResize(){
+  if(!labCanvases.ppc){
+    labCanvases.ppc = document.getElementById("ppcCanvas");
+    labCanvases.oc = document.getElementById("ocCanvas");
+  }
+  for(let k in labCanvases){
+    if(labCanvases[k].offsetWidth > 0){
+      labCanvases[k].width = labCanvases[k].offsetWidth;
+      labCanvases[k].height = labCanvases[k].offsetHeight;
+    }
+  }
+}
+function labLoad(idx){
+  labIdx = idx;
+  const s = labScenarios[idx];
+  document.getElementById("scenarioTitle").innerHTML = s.name;
+  document.getElementById("promptBox").innerHTML = s.desc;
+  document.getElementById("labPrev").disabled = idx === 0;
+  document.getElementById("labNext").disabled = idx === labScenarios.length - 1;
+  document.getElementById("hourSlider").value = 0;
+  labHours = 0;
+  document.getElementById("hoursVal").innerText = "0.0";
+  labRender();
+}
+function labRender(){
+  const sc = labScenarios[labIdx];
+  if(!sc) return;
+  drawPPC(sc);
+  drawOC(sc);
+}
+function drawPPC(sc){
+  const canvas = labCanvases.ppc;
+  if(!canvas || canvas.width === 0) return;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height, pad = 55;
+  ctx.clearRect(0, 0, W, H);
+  const [xMin, xMax] = sc.rLim, [yMin, yMax] = sc.fLim;
+  const mX = r => pad + (r / xMax) * (W - 2 * pad);
+  const mY = f => H - pad - (f / yMax) * (H - 2 * pad);
+  ctx.strokeStyle = "#343a40"; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(pad, mY(0)); ctx.lineTo(W - pad, mY(0));
+  ctx.moveTo(mX(0), pad); ctx.lineTo(mX(0), H - pad);
+  ctx.stroke();
+  ctx.fillStyle = "#343a40";
+  ctx.font = "bold 15px Arial";
+  ctx.fillText("Fish", pad, pad - 22);
+  ctx.fillText("Rabbits", W - pad - 55, mY(0) + 32);
+  ctx.font = "13px Arial";
+  ctx.fillText(yMax, mX(0) + 10, pad + 5);
+  ctx.fillText(xMax, W - pad - 12, mY(0) - 10);
+  ctx.fillText("0", mX(0) - 14, mY(0) + 15);
+
+  const currentR = sc.rFunc(labHours);
+  const currentF = sc.fFunc(labHours);
+  const cx = mX(currentR), cy = mY(currentF);
+
+  ctx.strokeStyle = "#1CADE4"; ctx.lineWidth = 4; ctx.lineJoin = "round";
+  ctx.beginPath();
+  for(let h = 0; h <= labHours; h += 0.05){
+    if(h === 0) ctx.moveTo(mX(sc.rFunc(h)), mY(sc.fFunc(h)));
+    else ctx.lineTo(mX(sc.rFunc(h)), mY(sc.fFunc(h)));
+  }
+  if(labHours > 0) ctx.lineTo(cx, cy);
+  ctx.stroke();
+
+  const OC = sc.ocFunc(labHours);
+  const deltaR = xMax * 0.15;
+  const rStart = currentR - deltaR, rEnd = currentR + deltaR;
+  const fStart = currentF - OC * (rStart - currentR);
+  const fEnd = currentF - OC * (rEnd - currentR);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(pad, pad, W - 2*pad, H - 2*pad);
+  ctx.clip();
+  ctx.strokeStyle = "#e63946"; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.moveTo(mX(rStart), mY(fStart));
+  ctx.lineTo(mX(rEnd), mY(fEnd));
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.strokeStyle = "rgba(0,0,0,0.15)";
+  ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy); ctx.lineTo(mX(0), cy);
+  ctx.moveTo(cx, cy); ctx.lineTo(cx, mY(0));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = "#e63946";
+  ctx.beginPath(); ctx.arc(cx, cy, 7, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+}
+function drawOC(sc){
+  const canvas = labCanvases.oc;
+  if(!canvas || canvas.width === 0) return;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height, pad = 55;
+  ctx.clearRect(0, 0, W, H);
+  const [xMin, xMax] = sc.rLim, [yMin, yMax] = sc.ocLim;
+  const mX = r => pad + (r / xMax) * (W - 2 * pad);
+  const mY = oc => H - pad - (oc / yMax) * (H - 2 * pad);
+  ctx.strokeStyle = "#343a40"; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(pad, mY(0)); ctx.lineTo(W - pad, mY(0));
+  ctx.moveTo(mX(0), pad); ctx.lineTo(mX(0), H - pad);
+  ctx.stroke();
+  ctx.fillStyle = "#343a40";
+  ctx.font = "bold 15px Arial";
+  ctx.fillText("OC of rabbit (in fish)", pad, pad - 22);
+  ctx.fillText("Rabbits", W - pad - 55, mY(0) + 32);
+  ctx.font = "13px Arial";
+  ctx.fillText(Math.round(yMax), mX(0) + 10, pad + 5);
+  ctx.fillText(xMax, W - pad - 12, mY(0) - 10);
+  ctx.fillText("0", mX(0) - 14, mY(0) + 15);
+
+  const currentR = sc.rFunc(labHours);
+  const currentOC = sc.ocFunc(labHours);
+  const cx = mX(currentR), cy = mY(currentOC);
+
+  ctx.strokeStyle = "#e6a23c"; ctx.lineWidth = 4; ctx.lineJoin = "round";
+  ctx.beginPath();
+  for(let h = 0; h <= labHours; h += 0.05){
+    const rCoord = sc.rFunc(h), ocCoord = sc.ocFunc(h);
+    if(h === 0) ctx.moveTo(mX(rCoord), mY(ocCoord));
+    else ctx.lineTo(mX(rCoord), mY(ocCoord));
+  }
+  if(labHours > 0) ctx.lineTo(cx, cy);
+  ctx.stroke();
+
+  ctx.strokeStyle = "rgba(0,0,0,0.15)";
+  ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy); ctx.lineTo(mX(0), cy);
+  ctx.moveTo(cx, cy); ctx.lineTo(cx, mY(0));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = "#e63946";
+  ctx.beginPath(); ctx.arc(cx, cy, 7, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+
+  ctx.fillStyle = "#0e7fae"; ctx.font = "bold 15px Arial";
+  ctx.fillText("OC = " + currentOC.toFixed(2) + " fish", cx + 12, cy - 10);
+}
+document.getElementById("labPrev").onclick = ()=>{ if(labIdx > 0) labLoad(labIdx - 1); };
+document.getElementById("labNext").onclick = ()=>{ if(labIdx < labScenarios.length - 1) labLoad(labIdx + 1); };
+labLoad(0); /* 初始化第一个场景：填充标题与描述（此前缺失，导致一直显示 Loading…） */
+const hashInit = parseInt(location.hash.slice(1)||"0",10);
+if(!isNaN(hashInit)&&hashInit<TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+document.getElementById("hourSlider").oninput = function(){
+  labHours = parseFloat(this.value);
+  document.getElementById("hoursVal").innerText = labHours.toFixed(1);
+  labRender();
+};
+window.addEventListener("resize", ()=>{ labResize(); labRender(); });
+
+/* ── side controls: pad content away from right-edge buttons ── */
+document.querySelectorAll(".slide").forEach(sl=>{
+  if(sl.querySelector(".btnrow.side")){
+    const st = sl.querySelector(".stage");
+    if(st) st.style.paddingRight = "14vw";
+  }
+});
+/* ═══════════ 通用分步工具 ═══════════ */
+function makeStepper(btnId, boxId, items, doneText){
+  let idx = -1;
+  const btn = document.getElementById(btnId), box = document.getElementById(boxId);
+  function next(){
+    idx++;
+    if(idx >= items.length){ btn.disabled = true; btn.textContent = "All shown ✓"; return; }
+    const d = document.createElement("div");
+    d.innerHTML = items[idx];
+    box.appendChild(d);
+    if(idx === items.length-1){ btn.disabled = true; btn.textContent = doneText || "All shown ✓"; }
+  }
+  function reset(){
+    idx = -1; box.innerHTML = "";
+    btn.disabled = false; btn.textContent = btn.dataset.label || "Reveal next";
+  }
+  btn.dataset.label = btn.textContent;
+  return { next, reset };
+}
+
+const ca0Step = makeStepper("ca0Btn","ca0Box",[
+  `<div class="hl">England: 1 wine = <b>10 cloth</b> · Portugal: 1 wine = <b>2.5 cloth</b> — different OCs.</div>`,
+  `<div class="hl amber">Portugal's slope is <b>flatter</b> → lower OC of wine → CA in <b>wine</b>.</div>`,
+  `<div class="hl green">England's cloth-PPC is flatter → lower OC of cloth → CA in <b>cloth</b>.</div>`,
+  `<div class="hl green">On the PPC: <b>flatter slope = lower OC = comparative advantage</b>.</div>`
+]);
+function nextCa0(){ ca0Step.next(); } function resetCa0(){ ca0Step.reset(); }
+
+/* ═══════════ 从自给到贸易：消费点超出 PPC ═══════════ */
+const TRB = [
+  `<div class="hl"><b>Autarky</b>: each makes &amp; consumes the <b>midpoint</b>.</div>`,
+  `<div class="hl amber"><b>Specialise</b>: England → 200 cloth; Portugal → 20 wine. Production at the <b>endpoint</b>.</div>`,
+  `<div class="hl green"><b>Trade</b> at the TOT — both consume <b>beyond their PPC</b>.</div>`
+];
+let trbI = 0;
+function trbUpdateTot(){
+  const tot = parseFloat(document.getElementById("trbTotSlider").value);
+  document.getElementById("trbTot").textContent = tot.toFixed(1);
+  /* England: 100 cloth + 100/tot wine */
+  const cxEng = 60 + ((100 / tot) / 40) * 195, cyEng = 120;
+  document.getElementById("engC").setAttribute("cx", cxEng);
+  document.getElementById("engC").setAttribute("cy", cyEng);
+  document.getElementById("engCText").setAttribute("x", cxEng);
+  document.getElementById("engCText").setAttribute("y", cyEng - 28);
+  document.getElementById("engTrade").setAttribute("x2", cxEng);
+  document.getElementById("engTrade").setAttribute("y2", cyEng);
+  document.getElementById("engDh").setAttribute("x2", cxEng);
+  document.getElementById("engDv").setAttribute("x1", cxEng);
+  document.getElementById("engDv").setAttribute("x2", cxEng);
+  /* Portugal: 10 wine + 10*tot cloth */
+  const cxPor = 60 + (10 / 40) * 195, cyPor = 210 - ((10 * tot) / 200) * 180;
+  document.getElementById("porC").setAttribute("cx", cxPor);
+  document.getElementById("porC").setAttribute("cy", cyPor);
+  document.getElementById("porCText").setAttribute("x", cxPor);
+  document.getElementById("porCText").setAttribute("y", cyPor - 28);
+  document.getElementById("porTrade").setAttribute("x2", cxPor);
+  document.getElementById("porTrade").setAttribute("y2", cyPor);
+  document.getElementById("porDh").setAttribute("y1", cyPor);
+  document.getElementById("porDh").setAttribute("y2", cyPor);
+  document.getElementById("porDv").setAttribute("y1", cyPor);
+}
+function nextTrb(){
+  if(trbI >= TRB.length) return;
+  document.getElementById("trbBox").innerHTML += TRB[trbI];
+  trbI++;
+  document.querySelectorAll(".tb-a").forEach(el=>el.style.opacity = trbI >= 1 ? 1 : 0);
+  document.querySelectorAll(".tb-s").forEach(el=>el.style.opacity = trbI >= 2 ? 1 : 0);
+  document.querySelectorAll(".tb-c").forEach(el=>el.style.opacity = trbI >= 3 ? 1 : 0);
+  if(trbI >= TRB.length){ const b = document.getElementById("trbBtn"); b.disabled = true; b.textContent = "All shown ✓"; }
+}
+function resetTrb(){
+  trbI = 0;
+  document.getElementById("trbBox").innerHTML = "";
+  document.querySelectorAll(".tb-a,.tb-s,.tb-c").forEach(el=>el.style.opacity = 0);
+  const b = document.getElementById("trbBtn"); b.disabled = false; b.textContent = "Next step";
+  document.getElementById("trbTotSlider").value = 5;
+  trbUpdateTot();
+}
+document.getElementById("trbTotSlider").oninput = trbUpdateTot;
+trbUpdateTot();
+
+const aaStep = makeStepper("aaBtn","aaBox",[
+  `<div class="hl">Portugal has absolute advantage in <b>wine</b> (4 &gt; 2); England in <b>cloth</b> (20 &gt; 10). </div>`,
+  `<div class="hl amber">But absolute advantage doesn't tell the whole story — even if one country were better at <b>EVERYTHING</b>, trade could still benefit both. </div>`,
+  `<div class="hl green">What matters is <b>opportunity cost</b> — the next slide computes it live. </div>`
+]);
+function nextAa(){ aaStep.next(); } function resetAa(){ aaStep.reset(); }
+
+const caStep = makeStepper("caBtn","caBox",[
+  `<div class="hl">Even if one country is better at making <b>EVERYTHING</b>, both can still gain from trade. </div>`,
+  `<div class="hl">Each country should specialize in the good where <b>its own OC is lower</b>. </div>`,
+  `<div class="hl green">Comparative advantage — NOT absolute advantage — determines the pattern of trade. </div>`
+]);
+function nextCa(){ caStep.next(); } function resetCa(){ caStep.reset(); }
+
+const gtStep = makeStepper("gtBtn","gtBox",[
+  `<div class="hl">Without trade: a country can only consume what it produces — <b>on or inside</b> its PPC. </div>`,
+  `<div class="hl">With specialization + trade: produce only the comparative-advantage good, then trade for the other. </div>`,
+  `<div class="hl green">Result: consumption <b>OUTSIDE</b> the individual PPC — gains for BOTH sides. </div>`
+], "All shown ✓");
+function nextGt(){ gtStep.next(); showGtMarks(); }
+function resetGt(){ gtStep.reset(); hideGtMarks(); }
+function showGtMarks(){ document.querySelectorAll(".rj").forEach(el=>el.style.opacity = 1); }
+function hideGtMarks(){ document.querySelectorAll(".rj").forEach(el=>el.style.opacity = 0); }
+hideGtMarks();
+
+const PQ = [
+  `<div class="hl"><b>Q1 — Absolute advantage:</b> Country X in <b>both</b> (60 &gt; 30 phones, 20 &gt; 10 cars). </div>`,
+  `<div class="hl"><b>Q2 — OC of 1 phone:</b> X: 20/60 = <b>1/3 car</b> · Y: 10/30 = <b>1/3 car</b>. Identical! </div>`,
+  `<div class="hl amber"><b>Q3 — Trick!</b> OC of 1 car is also equal (X: 3 phones, Y: 3 phones) → <b>nobody</b> has comparative advantage in anything. </div>`,
+  `<div class="hl red"><b>Q4:</b> No mutually beneficial terms of trade exist — a ratio must lie <b>between</b> the two OCs, but both are 3 phones per car. <b>Identical OCs → no gains from trade.</b> </div>`
+];
+const pqStep = makeStepper("pqBtn","pqBox",PQ);
+function nextPq(){ pqStep.next(); } function resetPq(){ pqStep.reset(); }
+
+
+/* ═══════════════════════════════════════════════
+   P5 比较优势计算器（可编辑数字，实时计算 OC）
+   ═══════════════════════════════════════════════ */
+const CA_MODES = {
+  output: {
+    desc: "Table shows <b>OUTPUT</b> per unit of resource (units per hour). Edit any number, then compute. ",
+    formula: "OC of 1 X = output of Y ÷ output of X",
+    goods: ["Wine 🍷", "Cloth 🧵"],
+    countries: ["England", "Portugal"],
+    defaults: [[2, 20], [4, 10]],
+    unit: ["cloth", "wine"],
+    oc: v => [[v[0][1] / v[0][0], v[0][0] / v[0][1]],
+              [v[1][1] / v[1][0], v[1][0] / v[1][1]]]
+  },
+  input: {
+    desc: "Table shows <b>INPUT</b> required per unit of output (hours per unit). Edit any number, then compute. ",
+    formula: "OC of 1 X = input for X ÷ input for Y",
+    goods: ["1 Bike 🚲", "1 Computer 💻"],
+    countries: ["Country A", "Country B"],
+    defaults: [[4, 6], [2, 8]],
+    unit: ["computers", "bikes"],
+    oc: v => [[v[0][0] / v[0][1], v[0][1] / v[0][0]],
+              [v[1][0] / v[1][1], v[1][1] / v[1][0]]]
+  }
+};
+let caCur = "output";
+function caMode(mode){
+  caCur = mode;
+  document.getElementById("tabOut").classList.toggle("on", mode === "output");
+  document.getElementById("tabIn").classList.toggle("on", mode === "input");
+  const m = CA_MODES[mode];
+  document.getElementById("caDesc").innerHTML = m.desc;
+  document.getElementById("caFormula").textContent = m.formula;
+  let html = `<table><tr><th></th><th>${m.goods[0]}</th><th>${m.goods[1]}</th><th>OC of 1 ${m.goods[0].replace(/^1 /,"").replace(/[^A-Za-z ]/gu,"").trim()}</th><th>OC of 1 ${m.goods[1].replace(/^1 /,"").replace(/[^A-Za-z ]/gu,"").trim()}</th></tr>`;
+  m.countries.forEach((c, i)=>{
+    html += `<tr><td class="l"><b>${c}</b></td>`;
+    m.defaults[i].forEach((val, j)=>{
+      html += `<td><input type="number" class="cnumcell" id="ca_${i}_${j}" value="${val}" min="0.1" step="0.5"></td>`;
+    });
+    html += `<td class="empty" id="ocr_${i}_0">?</td><td class="empty" id="ocr_${i}_1">?</td></tr>`;
+  });
+  html += `</table>`;
+  document.getElementById("caTableBox").innerHTML = html;
+  document.getElementById("caOut").innerHTML = "";
+}
+function fmt(x){ return Math.abs(x - Math.round(x)) < 0.005 ? String(Math.round(x)) : x.toFixed(2); }
+function caCompute(){
+  const m = CA_MODES[caCur];
+  const v = [[0,0],[0,0]];
+  for(let i=0;i<2;i++) for(let j=0;j<2;j++){
+    const el = document.getElementById(`ca_${i}_${j}`);
+    v[i][j] = parseFloat(el.value);
+    if(isNaN(v[i][j]) || v[i][j] <= 0){ el.style.borderColor = "var(--red)"; return; }
+    el.style.borderColor = "var(--line)";
+  }
+  const oc = m.oc(v);
+  for(let i=0;i<2;i++) for(let j=0;j<2;j++){
+    const cell = document.getElementById(`ocr_${i}_${j}`);
+    cell.textContent = fmt(oc[i][j]) + " " + m.unit[j];
+    cell.className = "empty";
+  }
+  const out = [];
+  for(let j=0;j<2;j++){
+    const a = oc[0][j], b = oc[1][j];
+    const other = 1 - j;
+    if(Math.abs(a - b) < 1e-9){
+      out.push(`<div class="hl amber"><b>${m.goods[j].replace(/^1 /,"").replace(/[^A-Za-z ]/gu,"").trim()}:</b> OC identical (${fmt(a)} vs ${fmt(b)}) — <b>no comparative advantage, no gains from trade</b>. </div>`);
+    } else {
+      const winner = a < b ? 0 : 1, loser = 1 - winner;
+      document.getElementById(`ocr_${winner}_${j}`).className = "ca";
+      out.push(`<div class="hl green"><b>${m.goods[j].replace(/^1 /,"").replace(/[^A-Za-z ]/gu,"").trim()}:</b> ${m.countries[winner]} has CA (${fmt(oc[winner][j])} &lt; ${fmt(oc[loser][j])} ${m.unit[j]}). </div>`);
+    }
+  }
+  document.getElementById("caOut").innerHTML = out.join("");
+}
+function caReset(){ caMode(caCur); }
+caMode("output");
+
+/* ═══════════════════════════════════════════════
+   P6 贸易条件探索器（SVG 数轴 · 直接拖红点）
+   ═══════════════════════════════════════════════ */
+const TOT = { A: 2, B: 5, min: 0.5, max: 6.5 };
+const totSvg = document.getElementById("totSvg");
+function totX(val){ return 70 + (val - TOT.min) / (TOT.max - TOT.min) * 720; }
+let totPrice = 3;
+function totUpdate(){
+  const x = totPrice;
+  const v = document.getElementById("totVerdict");
+  let inner;
+  if(x > TOT.A && x < TOT.B){
+    v.className = "tverdict good";
+    inner = `✓ <b>Both gain!</b> A sells wine for ${x.toFixed(1)} cloth (&gt; OC 2) — gains <b>${(x - TOT.A).toFixed(1)}</b> per wine. B buys for ${x.toFixed(1)} (&lt; OC 5) — saves <b>${(TOT.B - x).toFixed(1)}</b>. `;
+  } else if(x <= TOT.A){
+    v.className = "tverdict bad";
+    inner = `✗ <b>No trade.</b> A refuses — its OC is only 2 cloth per wine. `;
+  } else {
+    v.className = "tverdict bad";
+    inner = `✗ <b>No trade.</b> B refuses — at 5 cloth per wine it would rather produce wine itself. `;
+  }
+  v.innerHTML = inner;
+  drawTot(x);
+}
+function drawTot(x){
+  const y = 100;
+  let s = `<rect x="${totX(TOT.A)}" y="${y-26}" width="${totX(TOT.B)-totX(TOT.A)}" height="52" fill="#2e9e6b" opacity="0.15" rx="6"/>`;
+  s += `<line x1="${totX(TOT.A)}" y1="${y-26}" x2="${totX(TOT.A)}" y2="${y+26}" stroke="#2e9e6b" stroke-width="3" stroke-dasharray="6 4"/>`;
+  s += `<line x1="${totX(TOT.B)}" y1="${y-26}" x2="${totX(TOT.B)}" y2="${y+26}" stroke="#2e9e6b" stroke-width="3" stroke-dasharray="6 4"/>`;
+  for(let t = 1; t <= 6; t++){
+    s += `<line x1="${totX(t)}" y1="${y-8}" x2="${totX(t)}" y2="${y+8}" stroke="#5b7288" stroke-width="2"/>`;
+    s += `<text x="${totX(t)}" y="${y+34}" font-size="17" fill="#5b7288" text-anchor="middle" font-family="Arial">${t}</text>`;
+  }
+  s += `<line x1="${totX(TOT.min)}" y1="${y}" x2="${totX(TOT.max)}" y2="${y}" stroke="#343a40" stroke-width="3"/>`;
+  s += `<text x="${totX(TOT.A)}" y="${y-38}" font-size="18" font-weight="bold" fill="#0e7fae" text-anchor="middle" font-family="Arial">A's OC = 2</text>`;
+  s += `<text x="${totX(TOT.B)}" y="${y-38}" font-size="18" font-weight="bold" fill="#0e7fae" text-anchor="middle" font-family="Arial">B's OC = 5</text>`;
+  s += `<text x="${(totX(TOT.A)+totX(TOT.B))/2}" y="${y-62}" font-size="19" font-weight="bold" fill="#2e9e6b" text-anchor="middle" font-family="Arial">MUTUALLY BENEFICIAL ZONE</text>`;
+  s += `<text x="${totX(TOT.min)+4}" y="${y-14}" font-size="16" fill="#5b7288" font-family="Arial">cloth per wine →</text>`;
+  s += `<circle cx="${totX(x)}" cy="${y}" r="13" fill="#d9534f" stroke="#fff" stroke-width="3" style="cursor:grab"/>`;
+  s += `<text x="${totX(x)}" y="168" font-size="20" font-weight="bold" fill="#d9534f" text-anchor="middle" font-family="Arial">1 wine = ${x.toFixed(1)} cloth</text>`;
+  totSvg.innerHTML = s;
+}
+totUpdate();
+
+/* 直接拖动红点（与 AP Micro 2.1 一致） */
+let totDrag = false;
+function totValFromEvent(e){
+  const r = totSvg.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  return TOT.min + ratio * (TOT.max - TOT.min);
+}
+function totSetFromEvent(e){
+  totPrice = totValFromEvent(e);
+  totUpdate();
+}
+totSvg.addEventListener("mousedown", e => { totDrag = true; e.preventDefault(); totSetFromEvent(e); });
+document.addEventListener("mousemove", e => { if(totDrag) totSetFromEvent(e); });
+document.addEventListener("mouseup", () => { totDrag = false; });
+totSvg.addEventListener("touchstart", e => { totDrag = true; totSetFromEvent(e.touches[0]); }, {passive:true});
+totSvg.addEventListener("touchmove", e => { if(totDrag){ e.preventDefault(); totSetFromEvent(e.touches[0]); } }, {passive:false});
+totSvg.addEventListener("touchend", () => { totDrag = false; });
+</script>
+</body>
+</html>
