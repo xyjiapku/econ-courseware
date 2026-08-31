@@ -170,7 +170,7 @@
   <h1>Micro Foundations:<br>Markets &amp; the Macro Toolbox</h1>
   <div class="q">Supply &amp; demand — then the micro tools that power Units 2–5</div>
   <p>Part 1: Markets (D, S, equilibrium) · Part 2: The macro toolbox</p>
-  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+  <div class="meta">Dr. Jia · © 2026</div>
 </section>
 <section class="slide" id="s1">
   <div class="tag">Today's plan · Two parts</div>
@@ -637,67 +637,19 @@
     </div>
   </div>
 </section>
-<section class="slide" id="s16">
-  <div class="tag">Bridge</div>
-  <h2>Micro tool → Macro use</h2>
-  <div class="stage">
-    <div class="btnrow" style="margin-bottom:1vh;">
-      <button class="btn" id="brBtn" onclick="nextBr()">Reveal next card</button>
-      <button class="btn ghost" onclick="resetBr()">Reset</button>
-    </div>
-    <div id="brBox" style="display:flex;flex-direction:column;gap:1vh;"></div>
-    <div class="s-foot">
-      <div class="hl">Macro is not a new science — it's micro, <b>zoomed out</b>. </div>
-    </div>
-  </div>
-</section>
-<section class="slide" id="s17">
-  <div class="tag">Toolkit</div>
-  <h2>Not directly tested — still your toolkit</h2>
-  <div class="stage">
-    <div class="cards">
-      <div class="card"><h3>Elasticity</h3><p>PED, PES, XED, YED — how much Q responds</p></div>
-      <div class="card"><h3>Market failure</h3><p>Externalities, public goods, common resources</p></div>
-      <div class="card"><h3>Government intervention</h3><p>Price ceilings/floors, taxes, subsidies</p></div>
-      <div class="card"><h3>Production &amp; costs</h3><p>Fixed/variable, marginal cost, economies of scale</p></div>
-      <div class="card"><h3>Market structures</h3><p>Perfect competition, monopoly, oligopoly</p></div>
-    </div>
-    <div class="s-foot">
-      <div class="hl">They won't appear on the AP Macro exam — but they shape how you <b>think</b> about policy. </div>
-    </div>
-  </div>
-</section>
-<section class="slide" id="s18">
-  <div class="tag">Summary</div>
-  <h2>Key takeaways</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:1.5vh;justify-content:center;">
-    <p style="margin:0;">① P ▲ → Qd <span class="fill" data-a="▼">▼</span> · P ▲ → Qs <span class="fill" data-a="▲">▲</span>.</p>
-    <p style="margin:0;">② Own price → movement <span class="fill" data-a="along">along</span>; non-price factors → <span class="fill" data-a="shift">shift</span>.</p>
-    <p style="margin:0;">③ P above P* → <span class="fill" data-a="surplus">surplus</span> → price falls; P below P* → <span class="fill" data-a="shortage">shortage</span> → price rises.</p>
-    <p style="margin:0;">④ Double shift: one variable certain, the other <span class="fill" data-a="indeterminate">indeterminate</span>.</p>
-    <p style="margin:0;">⑤ D slopes down from substitution; <span class="fill" data-a="AD">AD</span> slopes down from wealth / interest-rate / foreign-purchase.</p>
-    <p style="margin:0;">⑥ Marginal = the change (Δ) → <span class="fill" data-a="MPC">MPC</span> = ΔC/ΔY, <span class="fill" data-a="MPS">MPS</span> = ΔS/ΔY, sum = <span class="fill" data-a="1">1</span>.</p>
-  </div>
-  <div class="s-foot">
-    <div class="btnrow side">
-      <button class="btn" onclick="fillNext()">Reveal next answer</button>
-      <button class="btn ghost" onclick="fillReset()">Hide all</button>
-    </div>
-  </div>
-</section>
-<section class="slide cover" id="s19">
+<section class="slide cover" id="s16">
   <div class="tag">Wrap-up</div>
   <h1>Thank you!</h1>
-  <div class="q">From markets to macro — the toolbox is complete.</div>
-  <p>Next: The Method of Economics — how economists think.</p>
-  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+  <div class="q">Part 1 complete — markets rebuilt, toolbox sharpened.</div>
+  <p>Next lesson: Bridge to Macro — how each tool scales up, plus our vocabulary quiz.</p>
+  <div class="meta">Dr. Jia · © 2026</div>
 </section>
 </main>
 <nav>
   <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
   <div class="dots" id="dots"></div>
-  <div class="pageinfo" id="pageinfo">1 / 20</div>
-  <div class="copy">© 2026 Dr. Xiangyu Jia</div>
+  <div class="pageinfo" id="pageinfo">1 / 17</div>
+  <div class="copy">© 2026 Dr. Jia</div>
   <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
 </nav>
 <script>
@@ -1168,15 +1120,6 @@ function gmRestart(){
 }
 gmShow();
 
-/* ═══════════ s16 桥 5 卡逐个显示 ═══════════ */
-const brStep = makeStepper("brBtn","brBox",[
-  `<div class="card win"><h3>S&amp;D → AD–AS</h3><p>Supply &amp; demand scales up to <b>aggregate</b> supply &amp; demand (Unit 3) — but AD slopes down for <b>different reasons</b>.</p></div>`,
-  `<div class="card win"><h3>Marginal thinking → MPC / MPS</h3><p>Each extra dollar → fraction consumed (MPC) + fraction saved (MPS). <b>MPC + MPS = 1</b> — sets up the <b>spending multiplier</b> in Unit 3.</p></div>`,
-  `<div class="card win"><h3>Positive / Normative → Policy debates</h3><p>Positive = "what is" (testable). Normative = "what should be" (values). Every macro policy argument mixes both — <b>name them</b>.</p></div>`,
-  `<div class="card win"><h3>Factors → Growth</h3><p>More/better resources shift the PPC <b>and</b> LRAS (Units 4–5)</p></div>`,
-  `<div class="card win"><h3>Market failure → Policy</h3><p>Fiscal &amp; monetary policy respond to <b>economy-wide</b> failures (Unit 4)</p></div>`
-]);
-function nextBr(){ brStep.next(); } function resetBr(){ brStep.reset(); }
 
 /* ═══════════ s15 MPC vs MPS 分步 ═══════════ */
 const MP = [

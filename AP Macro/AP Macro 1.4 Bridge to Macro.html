@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 1.4 — Bridge to Macro</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1;min-height:0;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  .cn{font-size:clamp(20px,2vh,24px);color:var(--sub);}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(28px,3.1vh,38px);color:var(--ink);line-height:1.3;margin-bottom:1vh;}
+  p{font-size:clamp(23px,2.4vh,28px);line-height:1.55;margin-bottom:1vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:1vh;}
+  li{font-size:clamp(23px,2.4vh,28px);line-height:1.5;margin-bottom:.6vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.6vh 1.4vw;flex:1 1 0;min-width:18%;}
+  .card h3{font-size:clamp(24px,2.5vh,30px);color:var(--accent-dark);margin-bottom:.8vh;}
+  .card p{font-size:clamp(22px,2.3vh,27px);}
+  .card .big{font-size:clamp(26px,2.8vh,33px);font-weight:700;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:1vh .9vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn.sm{font-size:clamp(20px,2.1vh,24px);padding:.8vh 1vw;}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.2vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.4vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.2vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,28px);font-weight:700;color:var(--ink);
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6.4vh,84px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover .q{font-size:clamp(32px,4vh,50px);color:#fff;font-weight:700;max-width:88%;}
+  .cover p{font-size:clamp(26px,3vh,36px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.8vh 1.4vw;margin:1vh 0;flex:1;min-height:0;overflow-y:auto;}
+  .qtext{font-size:clamp(24px,2.6vh,30px);font-weight:700;color:var(--accent-dark);margin-bottom:1vh;}
+  /* ── 实验室通用 ── */
+  .lab{
+    background:var(--card);border:3px solid var(--accent);border-radius:14px;
+    padding:1.6vh 1.4vw;flex:1;min-height:0;display:flex;flex-direction:column;
+  }
+  .lab-head{display:flex;justify-content:space-between;align-items:center;gap:1vw;flex-wrap:wrap;margin-bottom:1vh;}
+  .lab-title{font-size:clamp(24px,2.6vh,30px);font-weight:800;color:var(--accent-dark);}
+  .lab-desc{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 8px 8px 0;
+    padding:1vh 1vw;font-size:clamp(21px,2.2vh,25px);margin-bottom:1vh;line-height:1.5;}
+  .tabs{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .tab{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(21px,2.2vh,25px);font-weight:700;padding:.8vh 1.2vw;cursor:pointer;}
+  .tab.on{background:var(--accent);color:#fff;}
+  .lab-grid{display:flex;gap:1.2vw;flex:1;min-height:0;}
+  .lab-graph{flex:2;background:#fff;border:1px solid var(--line);border-radius:10px;position:relative;min-height:34vh;}
+  .lab-graph canvas{width:100%;height:100%;display:block;}
+  .lab-side{flex:1;display:flex;flex-direction:column;gap:1vh;min-width:230px;}
+  .stat{background:var(--accent-light);border-radius:10px;padding:1vh 1vw;text-align:center;}
+  .stat .lab-num{font-size:clamp(30px,3.4vh,42px);font-weight:800;color:var(--accent-dark);}
+  .stat .lab-lab{font-size:clamp(20px,2.1vh,24px);color:var(--sub);font-weight:700;}
+  .stat.bad{background:var(--red-light);} .stat.bad .lab-num{color:var(--red);}
+  .stat.good{background:var(--green-light);} .stat.good .lab-num{color:var(--green);}
+  .stat.warn{background:var(--amber-light);} .stat.warn .lab-num{color:var(--amber);}
+  .lab-ctrl{display:flex;align-items:center;gap:1.2vw;margin-top:1.2vh;flex-wrap:wrap;}
+  .lab-ctrl label{font-size:clamp(21px,2.2vh,25px);font-weight:700;color:var(--ink);white-space:nowrap;}
+  .lab-ctrl input[type=range]{flex:1;min-width:200px;cursor:pointer;height:8px;max-width:300px;}
+  .lab-val{font-weight:800;color:var(--accent-dark);font-size:clamp(21px,2.2vh,25px);}
+  .lab-hint{font-size:clamp(20px,2vh,24px);color:var(--sub);margin-top:.6vh;}
+  .verdict{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1.2vw;border-radius:10px;}
+  .verdict.good{background:var(--green-light);color:var(--green);}
+  .verdict.bad{background:var(--red-light);color:var(--red);}
+  .verdict.warn{background:var(--amber-light);color:var(--amber);}
+  /* ── 双移动交互 ── */
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(21px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  /* ── 分类游戏 ── */
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:700;text-align:center;line-height:1.4;font-family:inherit;cursor:pointer;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(21px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:1vh;gap:1vw;}
+  .game-fb{margin-top:1.2vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:3vh;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .chip{display:inline-block;background:var(--accent-light);color:var(--accent-dark);border-radius:999px;
+    padding:.3vh 1vw;font-size:clamp(19px,2vh,23px);font-weight:700;margin:.2vh .3vw;cursor:pointer;}
+  .chip.on{background:var(--accent);color:#fff;}
+  .flow-btns{display:flex;gap:.6vw;flex-wrap:wrap;}
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  /* ── 导航 ── */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.2vh 2vw;background:#fff;border-top:2px solid var(--line);
+  }
+  .navbtn{
+    background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;
+  }
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.5vw;align-items:center;}
+  .dot{width:14px;height:14px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .lab-grid{flex-direction:column;}
+    .lab-side{flex-direction:row;flex-wrap:wrap;}
+    .stat{flex:1;min-width:120px;}
+  }
+
+  /* ── right-side floating controls & diagram layout (v2) ── */
+  .btnrow.side{position:absolute;right:1.4vw;top:50%;transform:translateY(-50%);flex-direction:column;align-items:stretch;margin:0;z-index:30;}
+  .btnrow.side .btn{white-space:normal;max-width:11vw;text-align:center;box-shadow:0 4px 14px rgba(14,127,174,.25);}
+  .svgwrap{flex:1;min-height:0;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:1.2vw;}
+  .svgbox{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4vh;}
+  .svgbox svg{flex:1;min-height:0;width:100%;}
+  @media (max-width:900px){.svgwrap{flex-wrap:wrap;}}
+</style></head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+<section class="slide cover active" id="s0">
+  <div class="tag">AP Macroeconomics · Unit 1 · Lesson 4</div>
+  <h1>Micro Foundations:<br>Bridge to Macro</h1>
+  <div class="q">Same tools, zoomed out — prove you own them</div>
+  <p>Bridge cards · Toolkit · Key takeaways · Vocabulary quiz</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+<section class="slide" id="s16">
+  <div class="tag">Bridge</div>
+  <h2>Micro tool → Macro use</h2>
+  <div class="stage">
+    <div class="btnrow" style="margin-bottom:1vh;">
+      <button class="btn" id="brBtn" onclick="nextBr()">Reveal next card</button>
+      <button class="btn ghost" onclick="resetBr()">Reset</button>
+    </div>
+    <div id="brBox" style="display:flex;flex-direction:column;gap:1vh;"></div>
+    <div class="s-foot">
+      <div class="hl">Macro is not a new science — it's micro, <b>zoomed out</b>. </div>
+    </div>
+  </div>
+</section>
+<section class="slide" id="s17">
+  <div class="tag">Toolkit</div>
+  <h2>Not directly tested — still your toolkit</h2>
+  <div class="stage">
+    <div class="cards">
+      <div class="card"><h3>Elasticity</h3><p>PED, PES, XED, YED — how much Q responds</p></div>
+      <div class="card"><h3>Market failure</h3><p>Externalities, public goods, common resources</p></div>
+      <div class="card"><h3>Government intervention</h3><p>Price ceilings/floors, taxes, subsidies</p></div>
+      <div class="card"><h3>Production &amp; costs</h3><p>Fixed/variable, marginal cost, economies of scale</p></div>
+      <div class="card"><h3>Market structures</h3><p>Perfect competition, monopoly, oligopoly</p></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">They won't appear on the AP Macro exam — but they shape how you <b>think</b> about policy. </div>
+    </div>
+  </div>
+</section>
+<section class="slide" id="s18">
+  <div class="tag">Summary</div>
+  <h2>Key takeaways</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:1.5vh;justify-content:center;">
+    <p style="margin:0;">① P ▲ → Qd <span class="fill" data-a="▼">▼</span> · P ▲ → Qs <span class="fill" data-a="▲">▲</span>.</p>
+    <p style="margin:0;">② Own price → movement <span class="fill" data-a="along">along</span>; non-price factors → <span class="fill" data-a="shift">shift</span>.</p>
+    <p style="margin:0;">③ P above P* → <span class="fill" data-a="surplus">surplus</span> → price falls; P below P* → <span class="fill" data-a="shortage">shortage</span> → price rises.</p>
+    <p style="margin:0;">④ Double shift: one variable certain, the other <span class="fill" data-a="indeterminate">indeterminate</span>.</p>
+    <p style="margin:0;">⑤ D slopes down from substitution; <span class="fill" data-a="AD">AD</span> slopes down from wealth / interest-rate / foreign-purchase.</p>
+    <p style="margin:0;">⑥ Marginal = the change (Δ) → <span class="fill" data-a="MPC">MPC</span> = ΔC/ΔY, <span class="fill" data-a="MPS">MPS</span> = ΔS/ΔY, sum = <span class="fill" data-a="1">1</span>.</p>
+  </div>
+  <div class="s-foot">
+    <div class="btnrow side">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+  </div>
+</section>
+<section class="slide cover" id="s19">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">From markets to macro — the toolbox is complete.</div>
+  <p>Next: The Method of Economics — how economists think.</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+<!-- ═══════════ 结尾 · AP 词汇测试（课内收尾） ═══════════ -->
+<section class="slide cover" id="s20">
+  <div class="tag">Wrap-up · Vocabulary quiz</div>
+  <h2 style="color:#fff;font-size:clamp(30px,3.4vh,42px);">Scan to Take the AP Vocabulary Quiz</h2>
+  <div class="q">课堂结尾 · 扫码完成 AP 词汇自测（微观 + 宏观高频术语）</div>
+  <img src="qrcode_ap_vocab.png" alt="AP Vocabulary Quiz QR code" style="width:min(42vh,320px);height:auto;border-radius:14px;box-shadow:0 8px 26px rgba(0,0,0,.18);background:#fff;padding:12px;margin:1.5vh 0;">
+  <p style="font-size:clamp(20px,2.2vh,25px);color:rgba(255,255,255,.92);line-height:1.6;">AP Vocabulary Test · 英汉词汇测试<br>xyjiapku.github.io/economics_mini_lab</p>
+</section>
+</main>
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 6</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+<script>
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+let tx0=null;
+document.addEventListener("touchstart",e=>tx0=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{
+  if(tx0===null) return;
+  const dx = e.changedTouches[0].clientX - tx0;
+  if(Math.abs(dx)>60){ dx<0 ? gotoSlide(cur+1) : gotoSlide(cur-1); }
+  tx0=null;
+},{passive:true});
+
+/* ═══════════ 通用分步工具 ═══════════ *//* ═══════════ 通用分步工具 ═══════════ */
+function makeStepper(btnId, boxId, items){
+  let idx = -1;
+  const btn = document.getElementById(btnId), box = document.getElementById(boxId);
+  function next(){
+    idx++;
+    if(idx >= items.length){ btn.disabled = true; btn.textContent = "All shown ✓"; return; }
+    const d = document.createElement("div");
+    d.innerHTML = items[idx];
+    box.appendChild(d);
+    if(idx === items.length-1){ btn.disabled = true; btn.textContent = "All shown ✓"; }
+  }
+  function reset(){
+    idx = -1; box.innerHTML = "";
+    btn.disabled = false; btn.textContent = btn.dataset.label;
+  }
+  btn.dataset.label = btn.textContent;
+  return { next, reset };
+}
+
+/* ═══════════ 桥 5 卡逐个显示 ═══════════ */
+const brStep = makeStepper("brBtn","brBox",[
+  `<div class="card win"><h3>S&amp;D → AD–AS</h3><p>Supply &amp; demand scales up to <b>aggregate</b> supply &amp; demand (Unit 3) — but AD slopes down for <b>different reasons</b>.</p></div>`,
+  `<div class="card win"><h3>Marginal thinking → MPC / MPS</h3><p>Each extra dollar → fraction consumed (MPC) + fraction saved (MPS). <b>MPC + MPS = 1</b> — sets up the <b>spending multiplier</b> in Unit 3.</p></div>`,
+  `<div class="card win"><h3>Positive / Normative → Policy debates</h3><p>Positive = "what is" (testable). Normative = "what should be" (values). Every macro policy argument mixes both — <b>name them</b>.</p></div>`,
+  `<div class="card win"><h3>Factors → Growth</h3><p>More/better resources shift the PPC <b>and</b> LRAS (Units 4–5)</p></div>`,
+  `<div class="card win"><h3>Market failure → Policy</h3><p>Fiscal &amp; monetary policy respond to <b>economy-wide</b> failures (Unit 4)</p></div>`
+]);
+function nextBr(){ brStep.next(); } function resetBr(){ brStep.reset(); }
+/* ═══════════ Summary 填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+/* ── side controls: pad content away from right-edge buttons ── */
+document.querySelectorAll(".slide").forEach(sl=>{
+  if(sl.querySelector(".btnrow.side")){
+    const st = sl.querySelector(".stage") || sl.querySelector(".lab");
+    if(st) st.style.paddingRight = "14vw";
+  }
+});
+/* ═══════════ 初始化 ═══════════ */
+const hashInit = parseInt(location.hash.slice(1)||"0",10);
+if(!isNaN(hashInit)&&hashInit<TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+</script>
+</body>
+</html>

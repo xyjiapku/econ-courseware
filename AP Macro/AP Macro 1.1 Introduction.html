@@ -152,7 +152,7 @@
   <h1>What is<br>Macroeconomics?</h1>
   <div class="q">From the <span class="accent">trees</span> to the <span class="accent">forest</span></div>
   <p>One economy · millions of markets · a whole new view</p>
-  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+  <div class="meta">Dr. Jia · © 2026</div>
 </section>
 
 <!-- ═══════════ P2 回顾引入 ═══════════ -->
@@ -209,49 +209,8 @@
   </div>
 </section>
 
-<!-- ═══════════ P4 三大指标 ═══════════ -->
+<!-- ═══════════ P4 六单元地图 ═══════════ -->
 <section class="slide" id="s3">
-  <div class="tag">The three macro indicators</div>
-  <h2>How do we measure the forest?</h2>
-  <div class="stage" style="padding-right:14vw;">
-    <div class="cards">
-      <div class="card">
-        <div class="big">GDP</div>
-        <p><b>Total output</b> of the economy — its size &amp; growth</p>
-      </div>
-      <div class="card">
-        <div class="big">Unemployment</div>
-        <p>Share of labor force <b>wanting work</b> but can't find it</p>
-      </div>
-      <div class="card">
-        <div class="big">Inflation</div>
-        <p>The rate at which <b>prices rise</b> over time</p>
-      </div>
-    </div>
-    <div class="reveal" id="s3ans">
-      <div class="hl green" style="margin-top:1.2vh;">Government spending &amp; taxes (<b>fiscal policy</b>) · interest rates &amp; money supply (<b>monetary policy</b>)</div>
-    </div>
-  </div>
-  <div class="btnrow side">
-    <button class="btn" onclick="revealAnswer('s3ans')">And the policies<br>that move them…</button>
-  </div>
-</section>
-
-<!-- ═══════════ P5 三大差异 ═══════════ -->
-<section class="slide" id="s4">
-  <div class="tag">Macro vs. Micro — 3 key differences</div>
-  <h2>What will feel different this year?</h2>
-  <div class="stage" style="padding-right:14vw;">
-    <div id="diffBox" style="margin-top:0;display:flex;flex-direction:column;gap:1.2vh;justify-content:center;flex:1;"></div>
-  </div>
-  <div class="btnrow side">
-    <button class="btn" id="dfBtn" onclick="nextDiff()">Reveal<br>difference ①</button>
-    <button class="btn ghost" onclick="resetDiff()">Reset</button>
-  </div>
-</section>
-
-<!-- ═══════════ P6 六单元地图 ═══════════ -->
-<section class="slide" id="s5">
   <div class="tag">Course map</div>
   <h2>Six units, one story</h2>
   <div class="stage">
@@ -264,15 +223,43 @@
     </div>
     <p class="sub-para" style="text-align:center;">Click any unit to see what it covers:</p>
     <div class="unit-grid" id="unitGrid"></div>
-    <div class="unit-detail" id="unitDetail" style="display:none;">
+    <div class="unit-detail" id="unitDetail" style="display:none;min-height:10vh;">
       <h3 id="udTitle"></h3>
       <p id="udText"></p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ P7 考试 ═══════════ -->
-<section class="slide" id="s6">
+<!-- ═══════════ P5 课程设计 · 与微观同构 ═══════════ -->
+<section class="slide" id="s4">
+  <div class="tag">Course map · The design behind it</div>
+  <h2>This map mirrors your micro year</h2>
+  <div class="stage">
+    <div class="grid-3x2" style="grid-template-columns:repeat(3,1fr);flex:1;align-content:center;">
+      <div class="card">
+        <h3>Stage 1 · U1–U3<br>Ideal theory</h3>
+        <p>Build the clean core first: S&amp;D foundations → three indicators → AD-AS.</p>
+        <p>Same as micro U1–U3: the <b>ideal case</b> before reality enters.</p>
+      </div>
+      <div class="card warn">
+        <h3>Stage 2 · U4<br>A special sector</h3>
+        <p>Zoom into one special market — the <b>financial sector</b>: money, banks, interest rates.</p>
+        <p>Macro U4 ≈ micro U5 (factor markets): one sector, studied closely.</p>
+      </div>
+      <div class="card win">
+        <h3>Stage 3 · U5–U6<br>Let reality in</h3>
+        <p>Add <b>government intervention</b> and the <b>international market</b> — more players, more movement.</p>
+        <p>Macro U5 &amp; U6 ≈ micro U4 &amp; U6.</p>
+      </div>
+    </div>
+    <div class="s-foot" style="padding-top:.8vh;">
+      <div class="hl">Same rhythm as micro: <b>ideal theory first — then let complications in</b>, one layer at a time.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P6 考试 ═══════════ -->
+<section class="slide" id="s5">
   <div class="tag">Assessment · The AP Macro exam</div>
   <h2>What the test looks like</h2>
   <div class="stage" style="padding-right:14vw;">
@@ -291,6 +278,19 @@
   </div>
 </section>
 
+<!-- ═══════════ P7 三大差异 ═══════════ -->
+<section class="slide" id="s6">
+  <div class="tag">Macro vs. Micro — 3 key differences</div>
+  <h2>What will feel different this year?</h2>
+  <div class="stage" style="padding-right:14vw;">
+    <div id="diffBox" style="margin-top:0;display:flex;flex-direction:column;gap:1.2vh;justify-content:center;flex:1;"></div>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" id="dfBtn" onclick="nextDiff()">Reveal<br>difference ①</button>
+    <button class="btn ghost" onclick="resetDiff()">Reset</button>
+  </div>
+</section>
+
 <!-- ═══════════ P8 学习建议 ═══════════ -->
 <section class="slide" id="s7">
   <div class="tag">How to succeed</div>
@@ -304,8 +304,22 @@
   </div>
 </section>
 
-<!-- ═══════════ P9 词汇热身 Quiz ═══════════ -->
+<!-- ═══════════ P9 课堂规则与作业政策 ═══════════ -->
 <section class="slide" id="s8">
+  <div class="tag">Class rules · Homework policy</div>
+  <h2>The ground rules for this year</h2>
+  <div class="stage" style="padding-right:14vw;">
+    <p class="sub-para" style="margin-bottom:1vh;">You heard these last year — we start the new year by restating them.</p>
+    <div id="ruleBox" style="display:flex;flex-direction:column;gap:1.1vh;justify-content:center;flex:1;"></div>
+  </div>
+  <div class="btnrow side">
+    <button class="btn" id="ruleBtn" onclick="nextRule()">Next<br>rule</button>
+    <button class="btn ghost" onclick="resetRule()">Reset</button>
+  </div>
+</section>
+
+<!-- ═══════════ P10 词汇热身 Quiz ═══════════ -->
+<section class="slide" id="s9">
   <div class="tag">Vocabulary warm-up</div>
   <h2>Meet the new terms</h2>
   <div class="stage" style="padding-right:14vw;" id="quizCol"></div>
@@ -314,8 +328,8 @@
   </div>
 </section>
 
-<!-- ═══════════ P10 Summary 填空 ═══════════ -->
-<section class="slide" id="s9">
+<!-- ═══════════ P11 Summary 填空 ═══════════ -->
+<section class="slide" id="s10">
   <div class="tag">Summary</div>
   <h2>Today in five blanks</h2>
   <div class="stage" style="display:flex;flex-direction:column;gap:1.6vh;justify-content:center;padding-right:14vw;">
@@ -331,19 +345,19 @@
   </div>
 </section>
 
-<!-- ═══════════ P11 结束页 ═══════════ -->
-<section class="slide cover" id="s10">
+<!-- ═══════════ P12 结束页 ═══════════ -->
+<section class="slide cover" id="s11">
   <div class="tag">Wrap-up</div>
   <h1>Thank you!</h1>
   <div class="q">Next week: a review of <span class="accent">micro foundations</span> — that is <span class="accent">Unit 1</span> of macro.</div>
-  <div class="meta">Dr. Xiangyu Jia · © 2026</div>
+  <div class="meta">Dr. Jia · © 2026</div>
 </section>
 
-<!-- ═══════════ P12 课后 · AP 词汇测试 ═══════════ -->
-<section class="slide cover" id="s11">
-  <div class="tag">After class · Practice</div>
+<!-- ═══════════ P13 结尾 · AP 词汇测试（课内收尾） ═══════════ -->
+<section class="slide cover" id="s12">
+  <div class="tag">Wrap-up · Vocabulary quiz</div>
   <h2>Scan to Take the AP Vocabulary Quiz</h2>
-  <div class="q">课后扫码 · 完成 AP 词汇自测(微观 + 宏观高频术语)</div>
+  <div class="q">课堂结尾 · 扫码完成 AP 词汇自测（微观 + 宏观高频非术语词汇）</div>
   <img src="qrcode_ap_vocab.png" alt="AP Vocabulary Quiz QR code" style="width:min(42vh,320px);height:auto;border-radius:14px;box-shadow:0 8px 26px rgba(0,0,0,.18);background:#fff;padding:12px;margin:1.5vh 0;">
   <p style="font-size:clamp(20px,2.2vh,25px);color:var(--sub);line-height:1.6;">AP Vocabulary Test · 英汉词汇测试<br>xyjiapku.github.io/economics_mini_lab</p>
 </section>
@@ -354,8 +368,8 @@
 <nav>
   <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
   <div class="dots" id="dots"></div>
-  <div class="pageinfo" id="pageinfo">1 / 11</div>
-  <div class="copy">© 2026 Dr. Xiangyu Jia</div>
+  <div class="pageinfo" id="pageinfo">1 / 13</div>
+  <div class="copy">© 2026 Dr. Jia</div>
   <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
 </nav>
 
@@ -429,12 +443,12 @@ function resetDiff(){
 
 /* ═══════════ P6 单元地图 ═══════════ */
 const UNITS = [
-  {no:"U1", nm:"Basic Economic Concepts", txt:"Scarcity, PPC, comparative advantage, supply & demand."},
-  {no:"U2", nm:"Economic Indicators & Business Cycle", txt:"GDP, unemployment, inflation, business cycles."},
-  {no:"U3", nm:"National Income & Price Determination", txt:"The AD-AS model — the core framework of macro."},
-  {no:"U4", nm:"Financial Sector", txt:"Money, banks, interest rates & monetary policy."},
-  {no:"U5", nm:"Long-Run Consequences of Stabilization Policies", txt:"Fiscal & monetary policy in the long run."},
-  {no:"U6", nm:"Open Economy", txt:"International trade & finance."}
+  {no:"U1", nm:"Basic Economic Concepts", txt:"Scarcity, PPC, comparative advantage, supply & demand. Carried over from micro — the coverage here is already enough; we review and sharpen it."},
+  {no:"U2", nm:"Economic Indicators & Business Cycle", txt:"GDP — total output of the economy. Unemployment — the share of the labor force wanting work but unable to find it. Inflation — the rate at which prices rise. The economy moves through different states, and we tell those states apart by these three indicators and how they change. Their changes follow patterns — that is why we call it a cycle. Later units ask what moves them: fiscal policy and monetary policy."},
+  {no:"U3", nm:"National Income & Price Determination", txt:"The AD-AS model contains PL and Y — two of the three indicators. Employment, by tradition, moves together with Y. So one model explains why all three indicators change."},
+  {no:"U4", nm:"Financial Sector", txt:"The financial sector is macro's special department. In micro, money is just money. In macro, inflation matters: your profit doubled? Congratulations — unless you were paid in Zimbabwean dollars."},
+  {no:"U5", nm:"Long-Run Consequences of Stabilization Policies", txt:"The macroeconomy runs by its own laws — while policy keeps intervening on top of it. Very messy. But we can still work out some first regularities from it."},
+  {no:"U6", nm:"Open Economy", txt:"Add imports, exports and exchange rates — the story goes global."}
 ];
 const grid = document.getElementById("unitGrid");
 UNITS.forEach((u,i)=>{
@@ -476,7 +490,30 @@ function resetTip(){
   document.getElementById("tipBtn").textContent = "Next habit";
 }
 
-/* ═══════════ P9 词汇 Quiz ═══════════ */
+/* ═══════════ P9 课堂规则 分步 ═══════════ */
+const RULES = [
+  `<div class="hl">① <b>Notes are thinking, not copying.</b> Taking notes is how you process information and pull out the key points — an active study method, not a formality. Notes count as part of your regular homework this year.</div>`,
+  `<div class="hl amber">② <b>Homework: honest effort is what counts.</b> Done seriously → <b>80% or above</b>. Copying or just going through the motions → <b>0</b>.</div>`,
+  `<div class="hl">③ <b>Correct it, keep it, organize it.</b> Fix your mistakes and file your work — regular homework checks include corrections and organization.</div>`,
+  `<div class="hl green">④ <b>Electronics: on task, every time.</b> Follow the device rules in class — this year we will use devices <b>more often</b> for learning and in-class quizzes.</div>`
+];
+let ruleI = -1;
+function nextRule(){
+  ruleI++;
+  if(ruleI >= RULES.length){ document.getElementById("ruleBtn").disabled = true; document.getElementById("ruleBtn").textContent = "All shown ✓"; return; }
+  const box = document.createElement("div");
+  box.innerHTML = RULES[ruleI];
+  document.getElementById("ruleBox").appendChild(box);
+  if(ruleI === RULES.length-1){ document.getElementById("ruleBtn").disabled = true; document.getElementById("ruleBtn").textContent = "All shown ✓"; }
+}
+function resetRule(){
+  ruleI = -1;
+  document.getElementById("ruleBox").innerHTML = "";
+  document.getElementById("ruleBtn").disabled = false;
+  document.getElementById("ruleBtn").textContent = "Next rule";
+}
+
+/* ═══════════ P10 词汇 Quiz ═══════════ */
 const QUIZ = [
   {q:"GDP stands for…",
    opts:["Gross Domestic Product","General Domestic Price","Gross Demand Parity","Global Development Plan"], ans:0,
