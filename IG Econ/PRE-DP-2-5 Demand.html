@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 2-5 - Demand</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,3vh,48px) clamp(60px,7vw,110px) 80px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;}
+.slide.active{opacity:1;pointer-events:auto;}
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;height:56px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+.nav .page{color:#fff;font-size:16px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.65);font-size:13px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:clamp(22px,2.4vw,30px);font-weight:700;padding:6px 18px;border-radius:8px;cursor:pointer;transition:.12s;min-width:60px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:40%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.3);}
+.dots span.g1{background:rgba(255,193,7,.6);}
+.dots span.g1.on{background:#FFC107;transform:scale(1.3);}
+.dots span.g2{background:rgba(76,175,80,.6);}
+.dots span.g2.on{background:#4CAF50;transform:scale(1.3);}
+/* cover: center both ways */
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff;}
+.cover .course-tag{font-size:clamp(20px,2.5vw,32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px);}
+.cover h1{font-size:clamp(48px,7vw,84px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px);}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px);}
+.cover .author{font-size:clamp(18px,2.2vw,28px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:56px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
+/* reveal button: fixed right middle */
+.rbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(15px,1.3vw,18px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn:hover{background:var(--blue);color:#fff;}
+.rbtn:disabled{opacity:.35;cursor:default;}
+.rbtn-icon{font-size:12px;color:var(--blue);transition:.15s;}
+/* summary reveal button: same position */
+.sbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(15px,1.3vw,18px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn:hover{background:var(--blue);color:#fff;}
+.sbtn:disabled{opacity:.35;cursor:default;}
+/* content */
+.content{width:100%;max-width:clamp(600px,85vw,1100px);display:flex;flex-direction:column;flex:1;}
+h1{font-size:clamp(28px,3.5vw,44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+.sub{font-size:clamp(20px,2.2vw,28px);color:#5b6b7b;margin-bottom:8px;width:100%;}
+.course-tag{font-size:clamp(16px,1.8vw,24px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(20px,2.2vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.6vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}
+.db{color:var(--darkblue);}
+.dr{color:var(--red);}
+.green{color:var(--green);}
+.gray{color:#5b6b7b;}
+/* image float */
+.img-wrap{max-width:clamp(320px,38vw,540px);margin:2px 0 10px clamp(18px,2.8vw,36px);border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1);float:right;clear:right;}
+.img-wrap.zoomable img{cursor:zoom-in;}
+.img-wrap img{width:100%;display:block;}
+/* reveal groups */
+.rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
+.rgrp.show{opacity:1;max-height:800px;}
+/* lightbox */
+.lbox{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.88);z-index:2000;display:none;justify-content:center;align-items:center;cursor:pointer;}
+.lbox.show{display:flex;}
+.lbox img{max-width:92vw;max-height:92vh;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+/* comparison table */
+.ctab{width:100%;border-collapse:collapse;font-size:clamp(17px,1.8vw,24px);margin-top:4px;}
+.ctab th{background:var(--blue);color:#fff;padding:clamp(5px,.5vh,9px) clamp(8px,.8vw,12px);text-align:center;font-weight:700;font-size:clamp(18px,1.8vw,24px);}
+.ctab td{padding:clamp(5px,.5vh,9px) clamp(10px,1vw,16px);border:1px solid #d5e3f2;vertical-align:top;line-height:1.35;}
+.ctab tr:nth-child(even) td{background:#F7FBFD;}
+.ctab .sname{font-weight:700;text-align:center;color:var(--darkblue);}
+/* cards */
+.card-row{display:flex;gap:clamp(10px,1.5vw,22px);flex-wrap:wrap;margin:clamp(4px,.4vh,8px) 0;width:100%;}
+.card{border-radius:14px;padding:clamp(10px,1.2vh,18px) clamp(14px,1.8vw,24px);border:2px solid #dde8f4;flex:1;min-width:150px;}
+.card h3{font-size:clamp(22px,2.5vw,30px);margin-bottom:3px;}
+.card p{font-size:clamp(18px,2vw,26px);color:#445;}
+/* Game 1 */
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(12px,1.5vh,22px) clamp(16px,2vw,28px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(20px,2.2vw,28px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px,1vw,14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(20px,2.2vw,28px);padding:clamp(8px,1vh,14px) clamp(16px,2vw,28px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(20px,2.2vw,28px);font-weight:700;min-height:28px;margin-top:2px;}
+/* Game 2 */
+.g2-box{background:#F8FBFF;border-radius:16px;padding:clamp(14px,1.8vh,24px);border:2px solid #dde8f4;margin-top:4px;min-height:clamp(200px,30vh,340px);display:flex;flex-direction:column;justify-content:center;width:100%;}
+.g2-box .feature{font-size:clamp(22px,2.5vw,32px);font-weight:700;color:var(--darkblue);margin-bottom:clamp(10px,1.2vh,16px);line-height:1.4;}
+.g2-box .sbtns{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(10px,1.2vw,16px);margin-bottom:6px;}
+.g2-box .sbtns button{font-size:clamp(20px,2.2vw,28px);padding:clamp(10px,1.2vh,16px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g2-box .sbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g2-box .sbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g2-box .sbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g2-box .sbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g2-fb{font-size:clamp(20px,2.2vw,28px);font-weight:700;min-height:28px;margin-top:4px;}
+.g2-score{font-size:clamp(18px,1.8vw,24px);color:var(--darkblue);font-weight:700;text-align:right;margin-bottom:2px;}
+/* vocab table */
+.vtab{width:100%;border-collapse:collapse;font-size:clamp(18px,1.8vw,24px);margin-top:4px;}
+.vtab th{background:var(--blue);color:#fff;padding:clamp(8px,.8vh,12px) clamp(10px,1vw,16px);text-align:left;font-weight:700;font-size:clamp(18px,1.8vw,24px);}
+.vtab td{padding:clamp(6px,.6vh,10px) clamp(10px,1vw,16px);border-bottom:1px solid #e0e8f0;font-size:clamp(18px,1.8vw,24px);}
+.vtab tr:nth-child(even) td{background:#F7FBFD;}
+.vtab .ec{font-weight:700;text-align:center;}
+.vtab .zh{text-align:center;}
+/* summary steps */
+.ssteps{font-size:clamp(20px,2.2vw,28px);line-height:1.7;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(12px,1.5vh,22px);}
+.sstep.show{opacity:1;}
+.sstep .blank{display:inline-block;min-width:clamp(50px,5vw,90px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
+.sstep .blank.filled{color:var(--blue);}
+.sstep .blank.empty{color:transparent;}
+/* closing */
+.closing{justify-content:center;text-align:center;align-items:center;}
+.result-box{display:none;text-align:center;padding:20px;}
+.result-box h3{font-size:clamp(28px,3.5vw,38px);color:var(--darkblue);}
+.result-box .big{font-size:clamp(40px,5.5vw,56px);font-weight:800;color:var(--blue);margin:8px 0;}
+.result-box .btn{font-size:clamp(20px,2.2vw,28px);padding:clamp(8px,1vh,14px) clamp(24px,3vw,40px);border:none;border-radius:10px;background:var(--blue);color:#fff;cursor:pointer;font-weight:700;}
+@media(max-width:900px){
+  .slide{padding:16px 12px 72px;}
+  h1{font-size:22px;}
+  .txt{font-size:clamp(20px,2.1vw,28px);}
+  .img-wrap{float:none;max-width:100%;margin:10px 0;}
+  .g2-box .sbtns{grid-template-columns:1fr;}
+  .rbtn-wrap{right:4px;}
+  .rbtn{font-size:12px;padding:10px 4px;}
+}
+
+    /* ── price mechanism animation ── */
+    @keyframes dashmove { to { stroke-dashoffset: -42; } }
+    .flowline { stroke-dasharray: 13 9; animation: dashmove .7s linear infinite; }
+    .glow-blue { filter: drop-shadow(0 0 12px rgba(30,136,229,.65)); }
+    .glow-red { filter: drop-shadow(0 0 12px rgba(198,40,40,.6)); }
+    .glow-green { filter: drop-shadow(0 0 12px rgba(46,125,50,.6)); }
+    @keyframes pricering { 0%{transform:scale(1)} 40%{transform:scale(1.14)} 100%{transform:scale(1)} }
+    .pulse { animation: pricering .7s ease-out 2; transform-box: fill-box; transform-origin: center; }
+
+    /* ── demand 交互页统一样式 ── */
+    .big-btn { padding:12px 26px; border:none; background:var(--blue); color:#fff; border-radius:12px; font-size:clamp(20px,2.2vw,28px); font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(26,58,92,.3); transition:.15s; }
+    .big-btn:hover { filter:brightness(1.12); transform:translateY(-1px); }
+    .big-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .big-btn.ghost { background:#fff; color:#1a3a5c; border:2.5px solid rgba(42,90,140,.35); box-shadow:none; }
+    .big-btn.ghost:hover { background:#eaf2fb; }
+    .factor-btn { padding:10px 18px; border-radius:12px; border:2.5px solid rgba(42,90,140,.35); background:#fff; color:#1a3a5c; font-size:clamp(18px,1.9vw,25px); font-weight:700; cursor:pointer; transition:.15s; }
+    .factor-btn:hover { border-color:var(--blue); background:#eaf2fb; }
+    .data-table { border-collapse:collapse; width:100%; }
+    .data-table th, .data-table td { border:2px solid #d5e3f2; padding:10px 14px; font-size:clamp(20px,2.2vw,27px); text-align:center; }
+    .data-table th { background:#E3F0FC; color:#1a3a5c; font-weight:800; }
+</style>
+</head>
+<body>
+<div class="view" id="app">
+
+<!-- lightbox -->
+<div class="lbox" id="lbox"><img id="lboxImg" src=""></div>
+
+<!-- global reveal button: fixed right middle -->
+<div class="rbtn-wrap" id="rbtnWrap">
+  <button class="rbtn" id="rbtn">Reveal more</button>
+  <span class="rbtn-icon">▶</span>
+</div>
+
+<!-- summary reveal button: same position -->
+<div class="sbtn-wrap" id="sbtnWrap">
+  <button class="sbtn" id="sbtn">Reveal answers</button>
+</div>
+
+<!-- S1: Cover -->
+<div class="slide cover active" data-i="0">
+  <div class="course-tag">IGCSE ECONOMICS 0455 · UNIT 2</div>
+  <h1>Demand</h1>
+  <div class="sep"></div>
+  <div style="font-size:clamp(20px,2.4vw,30px);color:#5b6b7b;font-weight:600;">From a physics law to the law of demand · 需求定律与需求曲线</div>
+  <div class="author">DR. JIA</div>
+  <div class="botbar"></div>
+</div>
+
+
+
+<div class="slide" data-i="1">
+  <div class="content">
+  <div class="course-tag">WARM-UP · TODAY'S ROUTE</div>
+  <h1>Today's plan</h1><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <p class="b db">Last time:</p>
+      <p>The market answers the three questions through <b>prices</b>. But who sets the price? <b>Buyers and sellers</b>.</p>
+    </div>
+    <div class="rgrp">
+      <p class="b db" style="margin-top:6px;">Today we look at the buying side — <b class="blue">DEMAND</b>:</p>
+      <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
+        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">1 · A physics law 🔬</div>
+        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">2 · The law of demand 📈</div>
+        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">3 · Drawing the curve ✏️</div>
+        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">4 · Along the curve ↔</div>
+        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">5 · Individual → market 👥</div>
+        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">6 · Shifts of the curve ↔↔</div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">HOW A LAW IS BORN · A PHYSICS EXAMPLE</div>
+  <h1>Hooke's Law — from data to a law</h1>
+  <div class="sub">1660s, Robert Hooke hangs weights on a spring: "Ut tensio, sic vis" — stretch ∝ force. How did he work it out?</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <table class="data-table" style="width:100%;">
+        <tr><th>F (N)</th><th>x (cm)</th></tr>
+        <tr id="hk-r1" style="opacity:.25"><td>2</td><td>1</td></tr>
+        <tr id="hk-r2" style="opacity:.25"><td>4</td><td>2</td></tr>
+        <tr id="hk-r3" style="opacity:.25"><td>6</td><td>3</td></tr>
+        <tr id="hk-r4" style="opacity:.25"><td>8</td><td>4</td></tr>
+      </table>
+      <div id="hk-obs" class="rgrp show" style="background:#F8FBFF;border-left:5px solid var(--blue);padding:10px 14px;border-radius:0 10px 10px 0;">
+        <p style="margin:0;">He <b>controls</b> the spring (same one), <b>changes</b> the force, <b>records</b> the stretch — step by step.</p>
+      </div>
+      <div id="hk-law" style="display:none;background:#E8F5E9;border-left:5px solid var(--green);padding:12px 16px;border-radius:0 10px 10px 0;">
+        <p style="margin:0;font-size:clamp(26px,3vw,40px);font-weight:800;color:#1b5e20;">F = kx</p>
+        <p style="margin:4px 0 0;">Force rises <b>linearly</b> with stretch. Same shape <b>every time</b> → that is a <b class="blue">LAW</b>.</p>
+      </div>
+    </div>
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="620" y="485" font-size="22" font-weight="700" fill="#5b6b7b">x (cm) →</text>
+        <text x="40" y="60" font-size="22" font-weight="700" fill="#5b6b7b">F (N)</text>
+        <g font-size="20" fill="#94a3b8">
+          <text x="182" y="484">1</text><text x="286" y="484">2</text><text x="390" y="484">3</text><text x="494" y="484">4</text>
+          <text x="62" y="384">2</text><text x="62" y="302">4</text><text x="62" y="220">6</text><text x="62" y="138">8</text>
+        </g>
+        <g id="hk-pts" opacity="0">
+          <circle cx="194" cy="378" r="9" fill="#1E88E5"/><circle cx="298" cy="296" r="9" fill="#1E88E5"/>
+          <circle cx="402" cy="214" r="9" fill="#1E88E5"/><circle cx="506" cy="132" r="9" fill="#1E88E5"/>
+        </g>
+        <line id="hk-line" x1="90" y1="460" x2="610" y2="50" stroke="#2E7D32" stroke-width="4" opacity="0"/>
+        <text id="hk-eq" x="470" y="120" font-size="34" font-weight="800" fill="#1b5e20" opacity="0">F = kx</text>
+      </svg>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:8px;">
+    <button class="big-btn" id="hkNext" onclick="hkNext()">Next step ▶</button>
+    <button class="big-btn ghost" onclick="hkReset()">↺ Reset</button>
+  </div>
+  </div>
+</div>
+<script>
+(function(){
+  let hi = 0;
+  const pts = document.getElementById('hk-pts');
+  window.hkNext = function(){
+    hi++;
+    if(hi===1){ document.getElementById('hk-r1').style.opacity=1; pts.setAttribute('opacity',1); }
+    else if(hi===2){ document.getElementById('hk-r2').style.opacity=1; document.getElementById('hk-r3').style.opacity=1; document.getElementById('hk-r4').style.opacity=1; }
+    else if(hi===3){ document.getElementById('hk-line').setAttribute('opacity',1); }
+    else if(hi===4){ document.getElementById('hk-eq').setAttribute('opacity',1); document.getElementById('hk-law').style.display='block'; document.getElementById('hkNext').textContent='All shown ✓'; document.getElementById('hkNext').disabled=true; }
+  };
+  window.hkReset = function(){
+    hi=0;
+    [1,2,3,4].forEach(k=>{ document.getElementById('hk-r'+k).style.opacity=.25; });
+    pts.setAttribute('opacity',0); document.getElementById('hk-line').setAttribute('opacity',0);
+    document.getElementById('hk-eq').setAttribute('opacity',0); document.getElementById('hk-law').style.display='none';
+    const b=document.getElementById('hkNext'); b.textContent='Next step ▶'; b.disabled=false;
+  };
+})();
+</script>
+
+
+
+<div class="slide" data-i="3">
+  <div class="content">
+  <div class="course-tag">HOW A LAW IS BORN · THE ECONOMICS TWIN</div>
+  <h1>The Law of Demand — same recipe, different variables</h1>
+  <div class="sub">Now run the <b>same steps</b> on the canteen's milk tea. Watch a second law emerge.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div id="dm-schlab" style="display:none;background:#1a5276;color:#fff;border-radius:10px;padding:8px 14px;font-weight:800;font-size:clamp(20px,2.2vw,28px);text-align:center;">This TABLE = <b>DEMAND SCHEDULE</b> 需求表</div>
+      <table class="data-table" style="width:100%;">
+        <tr><th>P (¥)</th><th>Qd (cups)</th></tr>
+        <tr id="dm-r1" style="opacity:.25"><td>10</td><td>9</td></tr>
+        <tr id="dm-r2" style="opacity:.25"><td>20</td><td>7</td></tr>
+        <tr id="dm-r3" style="opacity:.25"><td>30</td><td>5</td></tr>
+        <tr id="dm-r4" style="opacity:.25"><td>40</td><td>3</td></tr>
+      </table>
+      <div id="dm-obs" class="rgrp show" style="background:#F8FBFF;border-left:5px solid var(--blue);padding:10px 14px;border-radius:0 10px 10px 0;">
+        <p style="margin:0;"><b>Control</b> everything else (income, tastes…), <b>change</b> only the price, <b>record</b> how many cups students buy per week.</p>
+      </div>
+      <div id="dm-law" style="display:none;background:#E8F5E9;border-left:5px solid var(--green);padding:12px 16px;border-radius:0 10px 10px 0;">
+        <p style="margin:0;font-size:clamp(22px,2.6vw,34px);font-weight:800;color:#1b5e20;">Qd = 11 − 0.2P</p>
+        <p style="margin:4px 0 0;">As <b>P rises, Qd falls</b> — a <b>negative</b> relationship, same shape every time → the <b class="blue">LAW OF DEMAND</b>.</p>
+      </div>
+    </div>
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="600" y="485" font-size="22" font-weight="700" fill="#5b6b7b">Qd (cups) →</text>
+        <text x="34" y="60" font-size="22" font-weight="700" fill="#5b6b7b">P (¥)</text>
+        <g font-size="20" fill="#94a3b8">
+          <text x="175" y="484">3</text><text x="240" y="484">5</text><text x="305" y="484">7</text><text x="372" y="484">9</text>
+          <text x="62" y="384">10</text><text x="62" y="302">20</text><text x="62" y="220">30</text><text x="62" y="138">40</text>
+        </g>
+        <g id="dm-pts" opacity="0">
+          <circle cx="382" cy="378" r="9" fill="#1E88E5"/><circle cx="317" cy="296" r="9" fill="#1E88E5"/>
+          <circle cx="252" cy="214" r="9" fill="#1E88E5"/><circle cx="187" cy="132" r="9" fill="#1E88E5"/>
+        </g>
+        <line id="dm-line" x1="122" y1="50" x2="447" y2="460" stroke="#2E7D32" stroke-width="4" opacity="0"/>
+        <text id="dm-eq" x="430" y="140" font-size="30" font-weight="800" fill="#1b5e20" opacity="0">Qd = 11 − 0.2P</text>
+      </svg>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:8px;">
+    <button class="big-btn" id="dmNext" onclick="dmNext()">Next step ▶</button>
+    <button class="big-btn ghost" onclick="dmReset()">↺ Reset</button>
+  </div>
+  </div>
+</div>
+<script>
+(function(){
+  let di = 0;
+  const pts = document.getElementById('dm-pts');
+  window.dmNext = function(){
+    di++;
+    if(di===1){ document.getElementById('dm-r1').style.opacity=1; pts.setAttribute('opacity',1); }
+    else if(di===2){ ['dm-r2','dm-r3','dm-r4'].forEach(k=>document.getElementById(k).style.opacity=1); }
+    else if(di===3){ document.getElementById('dm-line').setAttribute('opacity',1); }
+    else if(di===4){ document.getElementById('dm-eq').setAttribute('opacity',1); document.getElementById('dm-law').style.display='block'; document.getElementById('dm-schlab').style.display='block'; document.getElementById('dm-curlab').setAttribute('opacity',1); document.getElementById('dmNext').textContent='All shown ✓'; document.getElementById('dmNext').disabled=true; }
+  };
+  window.dmReset = function(){
+    di=0;
+    ['dm-r1','dm-r2','dm-r3','dm-r4'].forEach(k=>document.getElementById(k).style.opacity=.25);
+    pts.setAttribute('opacity',0); document.getElementById('dm-line').setAttribute('opacity',0);
+    document.getElementById('dm-eq').setAttribute('opacity',0); document.getElementById('dm-law').style.display='none'; document.getElementById('dm-schlab').style.display='none'; document.getElementById('dm-curlab').setAttribute('opacity',0);
+    const b=document.getElementById('dmNext'); b.textContent='Next step ▶'; b.disabled=false;
+  };
+})();
+</script>
+
+
+
+<div class="slide" data-i="4">
+  <div class="content">
+  <div class="course-tag">HOW A LAW IS BORN · TWO LAWS, ONE LOGIC</div>
+  <h1>Side by side — physics and economics</h1>
+  <div class="sub">Two different sciences. One <b>identical recipe</b>. That's why the lines and the predictions look the same.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:16px;">
+        <div style="flex:1;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+          <p class="b blue" style="font-size:clamp(24px,2.6vw,34px);">🔬 Hooke's Law</p>
+          <p style="margin-top:8px;">① Control: <b>same spring</b></p>
+          <p>② Change: <b>force F</b></p>
+          <p>③ Record: <b>stretch x</b></p>
+          <p>④ Fit: <b>F = kx</b> · slope = k (stiffness)</p>
+          <p style="color:#5b6b7b;margin-top:8px;">Same shape, every time you stretch a spring.</p>
+        </div>
+        <div style="flex:1;background:#fff;border:3px solid var(--green);border-radius:14px;padding:14px 18px;">
+          <p class="b" style="font-size:clamp(24px,2.6vw,34px);color:var(--green);">📈 Law of Demand</p>
+          <p style="margin-top:8px;">① Control: <b>ceteris paribus</b> — other things equal</p>
+          <p>② Change: <b>price P</b></p>
+          <p>③ Record: <b>quantity demanded Qd</b></p>
+          <p>④ Fit: <b>Qd falls as P rises</b> · negative slope</p>
+          <p style="color:#5b6b7b;margin-top:8px;">Same shape, every time the canteen raises a price.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <p style="margin-top:10px;" class="b blue">Notice ① — economists even borrow the word <b>control</b> from physics: <b>ceteris paribus</b>. Remember it — it decides whether the curve moves along or shifts.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="5">
+  <div class="content">
+  <div class="course-tag">DEMAND CURVE · 绘制</div>
+  <h1>Drawing the demand curve</h1>
+  <div class="sub">Step 1: plot the points. Step 2: join them. Step 3: slide the price and watch the dot ride the curve.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="600" y="485" font-size="22" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="30" y="40" font-size="22" font-weight="700" fill="#5b6b7b">P (¥)</text>
+        <text x="96" y="44" font-size="20" fill="#94a3b8">Demand curve · 需求曲线</text>
+        <g id="dc-grid" opacity="0">
+          <circle cx="382" cy="378" r="9" fill="#1E88E5"/><circle cx="317" cy="296" r="9" fill="#1E88E5"/>
+          <circle cx="252" cy="214" r="9" fill="#1E88E5"/><circle cx="187" cy="132" r="9" fill="#1E88E5"/>
+        </g>
+        <line id="dc-line" x1="122" y1="50" x2="447" y2="460" stroke="#1a5276" stroke-width="4" opacity="0"/>
+        <text id="dc-label" x="470" y="120" font-size="30" font-weight="800" fill="#1a5276" opacity="0">D</text>
+        <line id="dc-q0" x1="285" y1="90" x2="285" y2="460" stroke="#2E7D32" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <text id="dc-q0t" x="285" y="82" text-anchor="middle" font-size="20" font-weight="800" fill="#2E7D32" opacity="0">Q0</text>
+        <line id="dc-gv" x1="285" y1="255" x2="285" y2="460" stroke="#F0B429" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <line id="dc-gh" x1="285" y1="255" x2="90" y2="255" stroke="#F0B429" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <text id="dc-pv" x="80" y="260" text-anchor="end" font-size="20" font-weight="800" fill="#E74C3C" opacity="0">25</text>
+        <text id="dc-qv" x="285" y="482" text-anchor="middle" font-size="20" font-weight="800" fill="#E74C3C" opacity="0">6</text>
+        <circle id="dc-dot" cx="285" cy="255" r="12" fill="#E74C3C" stroke="#fff" stroke-width="3" opacity="0"/>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
+        <p class="b db" style="margin-bottom:6px;">Price slider · 拖动价格</p>
+        <input type="range" id="dcP" min="10" max="40" step="1" value="25" style="width:100%;accent-color:var(--blue);">
+        <p style="margin:6px 0 0;font-family:Consolas,monospace;font-size:clamp(22px,2.4vw,30px);" id="dcRead">P = ¥25 → Qd = 6 cups</p>
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
+        <p class="b db" style="margin-bottom:6px;">What the curve tells us:</p>
+        <p style="margin:0;">Every point = <b>one price</b> and the <b>quantity demanded</b> at that price.</p>
+        <p style="margin:8px 0 0;">Price ↓ → slide <b>down</b>: <b style="color:#1e8449;">EXTENSION</b> 需求量扩张<br>Price ↑ → slide <b>up</b>: <b style="color:#b03a2e;">CONTRACTION</b> 需求量收缩</p>
+        <p style="margin:8px 0 0;color:#5b6b7b;">The curve itself <b>never moves</b> — only our position on it. 曲线不动，动的只是位置（什么变了？只有价格）。</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="big-btn" id="dcPlot" onclick="dcPlotPts()">1 · Plot the points</button>
+        <button class="big-btn ghost" id="dcJoin" onclick="dcJoinPts()">2 · Join them</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+<script>
+(function(){
+  let plotted = false, joined = false;
+  window.dcPlotPts = function(){
+    document.getElementById('dc-grid').setAttribute('opacity',1);
+    plotted = true;
+    document.getElementById('dcPlot').disabled = true;
+  };
+  window.dcJoinPts = function(){
+    if(!plotted) return;
+    document.getElementById('dc-line').setAttribute('opacity',1);
+    document.getElementById('dc-label').setAttribute('opacity',1);
+    document.getElementById('dc-dot').setAttribute('opacity',1);
+    document.getElementById('dc-q0').setAttribute('opacity',1);
+    document.getElementById('dc-q0t').setAttribute('opacity',1);
+    joined = true;
+    document.getElementById('dcJoin').disabled = true;
+  };
+  document.getElementById('dcP').addEventListener('input', function(){
+    const p = +this.value, q = 11 - 0.2*p;
+    const x = 90 + q/16*520, y = 460 - 8.2*p;
+    const dot = document.getElementById('dc-dot');
+    dot.setAttribute('cx', x); dot.setAttribute('cy', y);
+    const gv = document.getElementById('dc-gv'), gh = document.getElementById('dc-gh');
+    if(joined){
+      gv.setAttribute('opacity',1); gh.setAttribute('opacity',1);
+      gv.setAttribute('x1',x); gv.setAttribute('x2',x); gv.setAttribute('y1',y);
+      gh.setAttribute('y1',y); gh.setAttribute('y2',y); gh.setAttribute('x2',x);
+      const pv = document.getElementById('dc-pv'), qv = document.getElementById('dc-qv');
+      pv.setAttribute('opacity',1); qv.setAttribute('opacity',1);
+      pv.setAttribute('y', y+7); pv.textContent = p;
+      qv.setAttribute('x', x); qv.textContent = Math.round(q*10)/10;
+    }
+    document.getElementById('dcRead').textContent = 'P = ¥' + p + ' → Qd = ' + (Math.round(q*10)/10) + ' cups';
+  });
+})();
+</script>
+
+
+
+<div class="slide" data-i="6">
+  <div class="content">
+  <div class="course-tag">FROM INDIVIDUAL TO MARKET · 加总</div>
+  <h1>Individual demand → market demand</h1>
+  <div class="sub">The <b>market demand curve</b> is the horizontal sum of every buyer's curve. 加总 = aggregate。</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <table class="data-table" style="width:100%;">
+        <tr><th>P (¥)</th><th>A (cups)</th><th>B (cups)</th><th>Market</th></tr>
+        <tr><td>10</td><td>6</td><td>3</td><td id="mk1" style="opacity:.2;font-weight:800;">9</td></tr>
+        <tr><td>20</td><td>4</td><td>3</td><td id="mk2" style="opacity:.2;font-weight:800;">7</td></tr>
+        <tr><td>30</td><td>2</td><td>3</td><td id="mk3" style="opacity:.2;font-weight:800;">5</td></tr>
+        <tr><td>40</td><td>0</td><td>3</td><td id="mk4" style="opacity:.2;font-weight:800;">2</td></tr>
+      </table>
+      <div class="rgrp show">
+        <p style="margin:0;">Two buyers in the milk-tea market: <b>A</b> is price-sensitive, <b>B</b> buys 3 cups whatever the price (brand loyal).</p>
+      </div>
+      <div class="rgrp">
+        <p style="margin:0;">Market demand at each price = <b>A + B</b> — add the quantities <b>horizontally</b> (左<strong>横</strong>着加，不是竖着加).</p>
+      </div>
+    </div>
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="596" y="485" font-size="21" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="34" y="60" font-size="22" font-weight="700" fill="#5b6b7b">P (¥)</text>
+        <line x1="285" y1="378" x2="90" y2="132" stroke="#1E88E5" stroke-width="3" stroke-dasharray="8 6"/>
+        <text x="238" y="360" font-size="23" font-weight="800" fill="#1E88E5">D (A)</text>
+        <line x1="187" y1="50" x2="187" y2="460" stroke="#F0B429" stroke-width="3" stroke-dasharray="8 6"/>
+        <text x="176" y="42" font-size="23" font-weight="800" fill="#a57d12">D (B) — vertical</text>
+        <line id="mk-line" x1="122" y1="50" x2="447" y2="460" stroke="#1b5e20" stroke-width="5" opacity="0"/>
+        <text id="mk-lab" x="470" y="120" font-size="30" font-weight="800" fill="#1b5e20" opacity="0">D (market)</text>
+      </svg>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:8px;">
+    
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="big-btn" id="mkBtn" onclick="mkShow()">Add them up ▶</button>
+    <button class="big-btn ghost" onclick="mkHide()">↺ Hide</button>
+  </div>
+  </div>
+  </div>
+</div>
+<script>
+(function(){
+  window.mkShow = function(){
+    ['mk1','mk2','mk3','mk4'].forEach(k=>document.getElementById(k).style.opacity=1);
+    document.getElementById('mk-line').setAttribute('opacity',1);
+    document.getElementById('mk-lab').setAttribute('opacity',1);
+  };
+  window.mkHide = function(){
+    ['mk1','mk2','mk3','mk4'].forEach(k=>document.getElementById(k).style.opacity=.2);
+    document.getElementById('mk-line').setAttribute('opacity',0);
+    document.getElementById('mk-lab').setAttribute('opacity',0);
+  };
+
+})();
+</script>
+
+
+
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">YOUR TURN · 练习</div>
+  <h1>Now aggregate THREE buyers</h1>
+  <div class="sub">横着加：at each price, add X + Y. 先自己算，再 Reveal。</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <table class="data-table" style="width:100%;">
+        <tr><th>P (¥)</th><th>X</th><th>Y</th><th>Market</th></tr>
+        <tr><td>10</td><td>8</td><td>5</td><td id="pk1" class="blank empty" data-a="13">___</td></tr>
+        <tr><td>20</td><td>5</td><td>4</td><td id="pk2" class="blank empty" data-a="9">___</td></tr>
+        <tr><td>30</td><td>2</td><td>3</td><td id="pk3" class="blank empty" data-a="5">___</td></tr>
+      </table>
+      <div style="display:flex;gap:10px;">
+        <button class="big-btn" onclick="pkReveal()">Reveal answers</button>
+        <button class="big-btn ghost" onclick="pkHide()">↺ Hide</button>
+      </div>
+      <p style="margin:4px 0 0;color:#5b6b7b;">Check: the market curve is <b>flatter</b> than either individual curve — more buyers, more responsive quantity. 加的人越多，市场曲线越平缓。</p>
+    </div>
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="600" y="485" font-size="20" font-weight="700" fill="#5b6b7b">Q →</text>
+        <text x="30" y="60" font-size="20" font-weight="700" fill="#5b6b7b">P (¥)</text>
+        <line x1="415" y1="460" x2="90" y2="50" stroke="#1E88E5" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="430" y="120" font-size="21" font-weight="800" fill="#1E88E5">X</text>
+        <line x1="285" y1="460" x2="90" y2="130" stroke="#F0B429" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="296" y="140" font-size="21" font-weight="800" fill="#a57d12">Y</text>
+        <g id="pk-mkt" opacity="0">
+          <line x1="512" y1="460" x2="187" y2="50" stroke="#1b5e20" stroke-width="5"/>
+          <text x="528" y="120" font-size="23" font-weight="800" fill="#1b5e20">MARKET</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+<script>
+(function(){
+  window.pkReveal = function(){
+    ['pk1','pk2','pk3'].forEach(k=>{
+      const el = document.getElementById(k);
+      el.textContent = el.getAttribute('data-a');
+      el.classList.remove('empty'); el.classList.add('filled');
+    });
+    document.getElementById('pk-mkt').setAttribute('opacity',1);
+  };
+  window.pkHide = function(){
+    ['pk1','pk2','pk3'].forEach(k=>{
+      const el = document.getElementById(k);
+      el.textContent = '___'; el.classList.add('empty'); el.classList.remove('filled');
+    });
+    document.getElementById('pk-mkt').setAttribute('opacity',0);
+  };
+})();
+</script>
+
+<div class="slide" data-i="8">
+  <div class="content">
+  <div class="course-tag">FACTORS ① INCOME · 收入变化</div>
+  <h1>Income changes — normal vs inferior goods</h1>
+  <div class="sub">The most important shift factor. But the direction depends on the TYPE of good · 方向取决于商品类型。</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:16px;">
+        <div style="flex:1;background:#fff;border:3px solid var(--green);border-radius:14px;padding:14px 18px;">
+          <p class="b" style="color:var(--green);font-size:clamp(23px,2.4vw,32px);">Normal goods · 正常物品</p>
+          <p style="margin-top:6px;">Income ↑ → demand <b>rises</b> (shift RIGHT) · 收入↑需求↑</p>
+          <p style="color:#5b6b7b;margin-top:4px;">e.g. milk tea, new phones, eating out · 奶茶、新手机、外出就餐</p>
+        </div>
+        <div style="flex:1;background:#fff;border:3px solid var(--red);border-radius:14px;padding:14px 18px;">
+          <p class="b" style="color:var(--red);font-size:clamp(23px,2.4vw,32px);">Inferior goods · 劣等商品</p>
+          <p style="margin-top:6px;">Income ↑ → demand <b>falls</b> (shift LEFT) · 收入↑需求反而↓</p>
+          <p style="color:#5b6b7b;margin-top:4px;">e.g. instant noodles, bus rides, second-hand clothes · 方便面、公交、二手衣</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <p style="margin-top:8px;">"Inferior" is not an insult — it just means students <b>switch away</b> from it when they get richer. 劣等 ≠ 差，只是有钱后就不买了。</p>
+    </div>
+    <div class="rgrp">
+      <p style="margin-top:8px;" class="b blue">记住这对方向 · memorise: Normal → income ↑ = shift <b>right</b>；Inferior → income ↑ = shift <b>left</b>. 方向随商品类型反转。</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="9">
+  <div class="content">
+  <div class="course-tag">FACTORS ② RELATED GOODS · 相关产品价格</div>
+  <h1>Substitutes &amp; complements</h1>
+  <div class="sub">替代品与互补品 — the price of a RELATED good shifts your curve too.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:16px;">
+        <div style="flex:1;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+          <p class="b blue" style="font-size:clamp(23px,2.4vw,32px);">Substitutes · 替代品</p>
+          <p style="margin-top:6px;">Goods that <b>replace</b> each other: Coke &amp; Pepsi, tea &amp; coffee, bus &amp; metro.</p>
+          <p style="margin-top:6px;" class="b">Substitute's price ↑ → our demand ↑ (shift RIGHT)</p>
+          <p style="color:#5b6b7b;">百事涨价 → 大家改喝可口可乐</p>
+        </div>
+        <div style="flex:1;background:#fff;border:3px solid var(--red);border-radius:14px;padding:14px 18px;">
+          <p class="b" style="color:var(--red);font-size:clamp(23px,2.4vw,32px);">Complements · 互补品</p>
+          <p style="margin-top:6px;">Goods <b>used together</b>: game console &amp; games, printer &amp; ink, phones &amp; apps.</p>
+          <p style="margin-top:6px;" class="b">Complement's price ↑ → our demand ↓ (shift LEFT)</p>
+          <p style="color:#5b6b7b;">游戏机涨价 → 游戏的需求也减少</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <p style="margin-top:8px;" class="b blue">记住这对方向 · memorise: Substitute price ↑ = shift <b>right</b>；Complement price ↑ = shift <b>left</b>. 方向相反，考试爱考。</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="10">
+  <div class="content">
+  <div class="course-tag">FACTORS ③ THE REST · 其余因素</div>
+  <h1>Advertising, population, tastes — and more</h1>
+  <div class="sub">零碎但常考 · each one shifts the WHOLE curve.</div><hr>
+  <div class="txt">
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">📢 Advertising · 广告</p>
+        <p style="margin-top:4px;">A successful campaign makes the brand popular → demand <b>shifts right</b>.</p>
+      </div>
+      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">👥 Population · 人口</p>
+        <p style="margin-top:4px;">More people (or more students in school) → demand <b>shifts right</b>.</p>
+      </div>
+      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">👗 Tastes &amp; fashion · 品味时尚</p>
+        <p style="margin-top:4px;">Trendy → <b>right</b>; out of fashion → <b>left</b>.</p>
+      </div>
+      <div style="flex:1 1 100%;background:#fff;border:3px solid var(--green);border-radius:14px;padding:12px 18px;">
+        <p class="b" style="font-size:clamp(22px,2.3vw,30px);color:var(--green);">…and more · 其它因素</p>
+        <p style="margin-top:4px;">Weather 天气（hot summer → ice cream）· Expectations 预期（expect prices to rise → buy today）· Special days 特殊日子（Valentine's → roses）— all shift demand <b>right</b> here.</p>
+      </div>
+    </div>
+    <div class="rgrp" style="margin-top:10px;">
+      <p class="b blue">All of these move the WHOLE curve — never a movement along it. 这些因素移动整条需求曲线。</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="11">
+  <div class="content">
+  <div class="course-tag">CETERIS PARIBUS · 控制变量</div>
+  <h1>Four sliders — which one moves the curve?</h1>
+  <div class="sub">四根滑杆：只有 <b>Price</b> 沿线滑动，其它三根移动整条曲线。控制变量是关键。</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="600" y="485" font-size="20" font-weight="700" fill="#5b6b7b">Q →</text>
+        <text x="30" y="40" font-size="20" font-weight="700" fill="#5b6b7b">P (¥)</text>
+        <line x1="122" y1="50" x2="447" y2="460" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7"/>
+        <text x="452" y="120" font-size="20" font-weight="800" fill="#94a3b8">D1</text>
+        <g id="cvD" style="transition:transform .5s ease;">
+          <line x1="122" y1="50" x2="447" y2="460" stroke="#1a5276" stroke-width="4"/>
+          <text x="452" y="80" font-size="20" font-weight="800" fill="#1a5276">D (now)</text>
+        </g>
+        <circle id="cv-dot" cx="305" cy="298" r="11" fill="#E74C3C" stroke="#fff" stroke-width="3"/>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:2px;">① Price · 价格（沿线 ALONG）</p>
+        <input type="range" id="cvP" min="10" max="40" step="1" value="20" style="width:100%;accent-color:#E74C3C;">
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:2px;">② Income · 收入（平移 SHIFT）</p>
+        <div style="display:flex;gap:8px;margin-bottom:4px;">
+          <button class="factor-btn" id="cvN" onclick="cvMode('normal')" style="border-color:var(--green);color:#1b5e20;">Normal</button>
+          <button class="factor-btn" id="cvI" onclick="cvMode('inferior')">Inferior</button>
+        </div>
+        <input type="range" id="cvIv" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#2E7D32;">
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:2px;">③ Complement price · 互补品价格</p>
+        <input type="range" id="cvC" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#C62828;">
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:2px;">④ Substitute price · 替代品价格</p>
+        <input type="range" id="cvS" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#1E88E5;">
+      </div>
+      <div id="cvCap" style="font-size:clamp(19px,2vw,27px);font-weight:800;min-height:56px;background:#FFF8E1;border-left:6px solid #F0B429;padding:8px 14px;border-radius:0 10px 10px 0;">Slide any slider — one of them does NOT move the curve. 试试每根滑杆。</div>
+    </div>
+  </div>
+  </div>
+</div>
+<script>
+(function(){
+  const cvD = document.getElementById('cvD');
+  const dot = document.getElementById('cv-dot');
+  const cap = document.getElementById('cvCap');
+  let mode = 'normal';
+  function setCap(txt, color){
+    cap.innerHTML = txt;
+    cap.style.borderLeftColor = color || '#F0B429';
+    cap.style.background = color === '#1e8449' ? '#f2faf5' : (color === '#b03a2e' ? '#fdedec' : '#FFF8E1');
+  }
+  window.cvMode = function(m){
+    mode = m;
+    document.getElementById('cvN').style.background = m==='normal' ? '#E8F5E9' : '#fff';
+    document.getElementById('cvI').style.background = m==='inferior' ? '#FDECEA' : '#fff';
+    document.getElementById('cvIv').dispatchEvent(new Event('input'));
+  };
+  function shiftD(px){
+    cvD.style.transform = 'translateX(' + px + 'px)';
+    dot.style.opacity = 0.25;
+  }
+  function homeD(){
+    cvD.style.transform = 'translateX(0)';
+    dot.style.opacity = 1;
+  }
+  document.getElementById('cvP').addEventListener('input', function(){
+    const p = +this.value, q = 11 - 0.2*p;
+    homeD();
+    dot.setAttribute('cx', 90 + q/16*520);
+    dot.setAttribute('cy', 460 - 8.2*p);
+    if(p < 19) setCap('Price ↓ → EXTENSION along D1 需求量扩张（沿线）', '#1e8449');
+    else if(p > 21) setCap('Price ↑ → CONTRACTION along D1 需求量收缩（沿线）', '#b03a2e');
+    else setCap('Price back near the start — D never moved. D 从未移动。', '#b03a2e');
+  });
+  document.getElementById('cvIv').addEventListener('input', function(){
+    const v = +this.value, d = (v-5)/5;
+    shiftD(d * 90 * (mode==='normal' ? 1 : -1));
+    const word = v > 5 ? 'Income RISES 收入↑' : (v < 5 ? 'Income FALLS 收入↓' : 'Income unchanged');
+    if(v === 5){ setCap('Income unchanged — D stays at D1. 控制变量不动，D 不动。', '#F0B429'); return; }
+    if(mode === 'normal') setCap(word + ' → normal good → shift ' + (d>0?'RIGHT':'LEFT') + ' 正常物品', d>0?'#1e8449':'#b03a2e');
+    else setCap(word + ' → inferior good → shift ' + (d>0?'LEFT':'RIGHT') + ' 劣等商品', d>0?'#b03a2e':'#1e8449');
+  });
+  document.getElementById('cvC').addEventListener('input', function(){
+    const v = +this.value, d = (v-5)/5;
+    shiftD(-d * 90);
+    if(v === 5){ setCap('Complement price unchanged. 互补品价格不变。', '#F0B429'); return; }
+    setCap('Complement price ' + (v>5?'↑':'↓') + ' → our demand shifts ' + (v>5?'LEFT':'RIGHT') + ' 互补品价格→反向移动', v>5?'#b03a2e':'#1e8449');
+  });
+  document.getElementById('cvS').addEventListener('input', function(){
+    const v = +this.value, d = (v-5)/5;
+    shiftD(d * 90);
+    if(v === 5){ setCap('Substitute price unchanged. 替代品价格不变。', '#F0B429'); return; }
+    setCap('Substitute price ' + (v>5?'↑':'↓') + ' → our demand shifts ' + (v>5?'RIGHT':'LEFT') + ' 替代品价格→同向移动', v>5?'#1e8449':'#b03a2e');
+  });
+})();
+</script><div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">CHECK YOUR UNDERSTANDING</div>
+  <h1>Along the curve, or a shift?</h1>
+  <div class="sub">Read each situation — is it an extension, a contraction, or a shift of the demand curve?</div><hr>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;width:100%;">
+    <span style="font-size:clamp(20px,2.2vw,28px);font-weight:700;color:var(--darkblue);">Score: <span id="g1score">0</span></span>
+    <span style="font-size:clamp(18px,1.8vw,24px);color:#5b6b7b;">Q <span id="g1q">1</span> / 6</span>
+  </div>
+  <div class="g1-box" id="g1box">
+    <div class="scenario" id="g1scenario">…</div>
+    <div class="qbtns" id="g1btns"></div>
+    <div class="g1-fb" id="g1fb"></div>
+    <button class="btn" id="g1next" style="font-size:clamp(18px,1.8vw,24px);padding:8px 26px;border:none;border-radius:8px;background:var(--blue);color:#fff;cursor:pointer;font-weight:700;display:none;margin-top:4px;">Next ➜</button>
+  </div>
+  <div class="result-box" id="g1result">
+    <h3>Game Complete</h3>
+    <div class="big" id="g1final"></div>
+    <button class="btn" onclick="g1restart()">Play Again</button>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">SUMMARY · 总结</div>
+  <h1>Summary</h1>
+  <div class="sub">Click <b>Reveal answers</b> to fill in each blank.</div><hr>
+  <div class="ssteps" id="ssteps">
+    <div class="sstep" id="ss0">
+      Demand = the willingness and <span class="blank empty" data-a="ability">___</span> to buy at a given <span class="blank empty" data-a="price">___</span> over a period of time.
+    </div>
+    <div class="sstep" id="ss1">
+      Law of demand: price ↑ → quantity demanded <span class="blank empty" data-a="falls">___</span> — the curve slopes <span class="blank empty" data-a="downward">___</span>.
+    </div>
+    <div class="sstep" id="ss2">
+      Price changes → movement <span class="blank empty" data-a="along">___</span> the curve: price ↓ = <span class="blank empty" data-a="extension">___</span>, price ↑ = <span class="blank empty" data-a="contraction">___</span>.
+    </div>
+    <div class="sstep" id="ss3">
+      Market demand = horizontal <span class="blank empty" data-a="sum">___</span> of individual demands → the <span class="blank empty" data-a="aggregate">___</span> market curve.
+    </div>
+    <div class="sstep" id="ss4">
+      Income: a <span class="blank empty" data-a="normal">___</span> good shifts right when income rises; an <span class="blank empty" data-a="inferior">___</span> good shifts left.
+    </div>
+    <div class="sstep" id="ss5">
+      Related goods: <span class="blank empty" data-a="substitute">___</span>'s price ↑ → shift right; <span class="blank empty" data-a="complement">___</span>'s price ↑ → shift left. Advertising, population, fashion, weather… also shift the curve.
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide cover" data-i="14">
+  <div class="course-tag">THANK YOU · 谢谢</div>
+  <h1 style="font-size:clamp(40px,5.5vw,60px);">Demand — done ✓</h1>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">You can now draw it, slide it, shift it.</div>
+  <div style="font-size:clamp(20px,2.2vw,28px);color:#5b6b7b;">Next: the selling side — <b>Supply</b> · 供给</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  <div class="botbar"></div>
+</div>
+
+</div><!-- /view -->
+
+<!-- NAV -->
+<div class="nav">
+  <button id="prevBtn">◀</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="copy">© 2026 Dr. Jia</span>
+    <span class="page" id="pageNum">1 / 17</span>
+    <button id="nextBtn">▶</button>
+  </div>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+/* Global reveal button (right side, middle height) */
+const globalR = {
+  grps: null,
+  show(){ document.getElementById('rbtnWrap').style.display = 'flex'; },
+  hide(){ document.getElementById('rbtnWrap').style.display = 'none'; },
+  setup(grps){
+    this.grps = grps;
+    const btn = document.getElementById('rbtn');
+    btn.textContent = 'Reveal more';
+    btn.disabled = false;
+    this.show();
+    btn.onclick = () => {
+      let curIdx = 0;
+      grps.forEach((g,i) => { if(g.classList.contains('show')) curIdx = i; });
+      const next = curIdx + 1;
+      if(next < grps.length){
+        grps[next].classList.add('show');
+        if(next >= grps.length - 1){ btn.textContent = 'All shown'; }
+      }
+    };
+  }
+};
+globalR.hide();
+
+function showSlide(i){
+  slides.forEach(s=>s.classList.remove('active'));
+  slides[i].classList.add('active');
+  cur = i;
+  document.getElementById('prevBtn').disabled = i===0;
+  document.getElementById('nextBtn').disabled = i===total-1;
+  document.getElementById('pageNum').textContent = (i+1)+' / '+total;
+  document.querySelectorAll('.dots span').forEach((s,j)=>s.classList.toggle('on',j===i));
+  // reset reveal groups on this slide + show/hide global rbtn
+  const grps = slides[i].querySelectorAll('.rgrp');
+  if(grps.length){
+    grps.forEach((g,idx) => g.classList.toggle('show', idx===0));
+    globalR.setup(grps);
+  } else {
+    globalR.hide();
+  }
+  // summary page: show summary button instead of global rbtn
+  const hasSum = slides[i].querySelector('#ssteps');
+  if(hasSum){
+    globalR.hide();
+    document.getElementById('sbtnWrap').style.display = 'flex';
+  } else {
+    document.getElementById('sbtnWrap').style.display = 'none';
+  }
+}
+document.getElementById('prevBtn').onclick = ()=>{ if(cur>0) showSlide(cur-1); };
+document.getElementById('nextBtn').onclick = ()=>{ if(cur<total-1) showSlide(cur+1); };
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){ e.preventDefault(); if(cur<total-1) showSlide(cur+1); }
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); if(cur>0) showSlide(cur-1); }
+});
+const dotBox = document.getElementById('dots');
+for(let i=0;i<total;i++){
+  const s = document.createElement('span');
+  if(i===2) s.className='g1';
+  s.onclick = (()=>showSlide(i));
+  dotBox.appendChild(s);
+}
+showSlide(0);
+
+/* Lightbox */
+document.querySelectorAll('.img-wrap.zoomable img').forEach(img => {
+  img.onclick = function(){
+    document.getElementById('lboxImg').src = this.src;
+    document.getElementById('lbox').classList.add('show');
+  };
+});
+document.getElementById('lbox').onclick = function(){ this.classList.remove('show'); };
+
+/* Game 1 */
+const G1Q = [
+  {s:"The price of bubble tea falls — quantity demanded rises.", a:"Extension"},
+  {s:"The price of bubble tea rises — quantity demanded falls.", a:"Contraction"},
+  {s:"Incomes rise, and milk tea is a NORMAL good.", a:"Shift right"},
+  {s:"Incomes rise, but instant noodles are an INFERIOR good.", a:"Shift left"},
+  {s:"The price of a SUBSTITUTE (soft drinks) rises.", a:"Shift right"},
+  {s:"The price of a COMPLEMENT (pearl toppings) rises.", a:"Shift left"},
+  {s:"A celebrity endorses the brand — everyone wants to try it.", a:"Shift right"},
+  {s:"Cold weather arrives — demand for ice cream at every price…", a:"Shift left"},
+];
+let g1i=0, g1s=0, g1a=false;
+function g1render(){
+  const q = G1Q[g1i];
+  document.getElementById('g1q').textContent = g1i+1;
+  document.getElementById('g1scenario').textContent = q.s;
+  g1a = false;
+  const box = document.getElementById('g1btns');
+  box.innerHTML = '';
+  ['Extension','Contraction','Shift right','Shift left'].forEach(c=>{
+    const b = document.createElement('button');
+    b.textContent = c;
+    b.onclick = ()=>g1pick(c,b);
+    box.appendChild(b);
+  });
+  document.getElementById('g1fb').textContent = '';
+  document.getElementById('g1next').style.display = 'none';
+  document.getElementById('g1box').style.display = 'block';
+  document.getElementById('g1result').style.display = 'none';
+}
+function g1pick(sel,btn){
+  if(g1a) return; g1a = true;
+  const q = G1Q[g1i];
+  const btns = document.querySelectorAll('#g1btns button');
+  btns.forEach(b=>{ b.disabled = true; if(b.textContent===q.a) b.classList.add('correct'); else b.classList.add('wrong'); });
+  const fb = document.getElementById('g1fb');
+  if(sel===q.a){ g1s++; fb.textContent = 'Correct!'; fb.style.color = 'var(--green)'; }
+  else { fb.textContent = 'Answer: ' + q.a + '.'; fb.style.color = 'var(--red)'; }
+  document.getElementById('g1score').textContent = g1s;
+  const n = document.getElementById('g1next');
+  n.style.display = 'inline-block';
+  n.textContent = g1i+1 < G1Q.length ? 'Next ➜' : 'Finish ✔';
+}
+document.getElementById('g1next').onclick = ()=>{
+  if(g1i+1 < G1Q.length){ g1i++; g1render(); }
+  else { document.getElementById('g1box').style.display = 'none'; document.getElementById('g1result').style.display = 'block'; document.getElementById('g1final').textContent = g1s + ' / '+G1Q.length; }
+};
+function g1restart(){ g1i=0; g1s=0; document.getElementById('g1score').textContent=0; g1render(); }
+g1render();
+
+/* Summary fill-in-the-blank: show blanks FIRST, then fill on click */
+let ssi = 0;
+document.getElementById('ss0').classList.add('show'); // show step 1 with blanks visible, not filled
+document.getElementById('sbtn').onclick = function(){
+  const el = document.getElementById('ss'+ssi);
+  if(!el) return;
+  // fill blanks in this step
+  el.querySelectorAll('.blank.empty').forEach(b => {
+    b.textContent = b.getAttribute('data-a');
+    b.classList.remove('empty');
+    b.classList.add('filled');
+  });
+  ssi++;
+  const next = document.getElementById('ss'+ssi);
+  if(next){
+    next.classList.add('show'); // show next step with blanks
+    this.textContent = 'Reveal answers';
+  } else {
+    this.textContent = 'All done ✓';
+    this.disabled = true;
+  }
+};
+
+
+</script>
+</body>
+</html>
