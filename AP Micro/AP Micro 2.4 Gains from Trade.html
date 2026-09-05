@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Micro 2.4 — Gains from Trade &amp; Comparative Advantage</title>
+<style>
+  /* ═══════════ 铁律：最小字号 ≥ 22px，正文 ≥ 24px，标题 ≥ 28px ═══════════ */
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  /* ── 顶部进度条 ── */
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  /* ── 主区域 ── */
+  main{flex:1;min-height:0;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  .cn{font-size:clamp(20px,2vh,24px);color:var(--sub);}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(28px,3.1vh,38px);color:var(--ink);line-height:1.3;margin-bottom:1vh;}
+  p{font-size:clamp(23px,2.4vh,28px);line-height:1.55;margin-bottom:1vh;}
+  .sub-para{font-size:clamp(22px,2.3vh,27px);color:var(--sub);}
+  ul,ol{margin-left:1.6em;margin-bottom:1vh;}
+  li{font-size:clamp(23px,2.4vh,28px);line-height:1.5;margin-bottom:.6vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  /* ── 卡片 ── */
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.6vh 1.4vw;flex:1 1 0;min-width:26%;}
+  .card h3{font-size:clamp(24px,2.5vh,30px);color:var(--accent-dark);margin-bottom:.8vh;}
+  .card p{font-size:clamp(22px,2.3vh,27px);}
+  .card .big{font-size:clamp(26px,2.8vh,33px);font-weight:700;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  /* ── 表格 ── */
+  .scroll{overflow-y:auto;max-height:46vh;border-radius:10px;}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:1vh .9vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  tr.hl td{background:var(--amber-light);font-weight:700;}
+  tr.ok td{background:var(--green-light);}
+  td.empty{color:var(--sub);}
+  td.no{color:var(--red);font-weight:700;}
+  td.maybe{color:var(--amber);font-weight:700;}
+  td.yes{color:var(--green);font-weight:700;}
+  /* ── 按钮 ── */
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.2vh;flex-wrap:wrap;}
+  /* ── 揭示 ── */
+  .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;pointer-events:none;}
+  .reveal.show{opacity:1;transform:none;pointer-events:auto;}
+  /* ── 结论条 ── */
+  .s-foot{margin-top:auto;padding-top:1.4vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.2vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,28px);font-weight:700;color:var(--ink);
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  /* ── 封面 ── */
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;}
+  .cover h1{font-size:clamp(52px,7vh,92px);line-height:1.18;}
+  .cover .q{font-size:clamp(34px,4.4vh,54px);color:var(--accent-dark);font-weight:700;max-width:88%;}
+  .cover p{font-size:clamp(26px,3vh,36px);}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:var(--sub);}
+  /* ── 互动区 ── */
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.8vh 1.4vw;margin:1vh 0;flex:1;min-height:0;overflow-y:auto;}
+  .qtext{font-size:clamp(24px,2.6vh,30px);font-weight:700;color:var(--accent-dark);margin-bottom:1vh;}
+  .deal-band{display:flex;align-items:center;gap:.8vw;margin:1vh 0;flex-wrap:wrap;}
+  .deal-range{font-size:clamp(24px,2.6vh,31px);font-weight:800;color:var(--green);}
+  /* ── Quiz ── */
+  .quiz-box{margin-bottom:2vh;}
+  .quiz-q{font-size:clamp(23px,2.4vh,28px);font-weight:700;margin-bottom:.8vh;}
+  .quiz-opts{display:flex;flex-direction:column;gap:.6vh;margin-bottom:1vh;}
+  .quiz-opt{
+    background:var(--card);border:2px solid var(--line);border-radius:10px;
+    font-size:clamp(22px,2.3vh,26px);padding:.9vh 1vw;cursor:pointer;transition:background .2s,border .2s;
+  }
+  .quiz-opt:hover{border-color:var(--accent);}
+  .quiz-opt.correct{background:var(--green-light);border-color:var(--green);font-weight:700;}
+  .quiz-opt.wrong{background:var(--red-light);border-color:var(--red);}
+  .quiz-fb{font-size:clamp(22px,2.3vh,26px);min-height:2.4em;color:var(--sub);}
+  /* ── 导航 ── */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.2vh 2vw;background:#fff;border-top:2px solid var(--line);
+  }
+  .navbtn{
+    background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;
+  }
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.5vw;align-items:center;}
+  .dot{width:14px;height:14px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── Output vs Input 计算器 ── */
+  .lab{background:var(--card);border:3px solid var(--accent);border-radius:14px;padding:1.6vh 1.4vw;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
+  .lab-head{display:flex;justify-content:space-between;align-items:center;gap:1vw;flex-wrap:wrap;margin-bottom:1vh;}
+  .lab-title{font-size:clamp(24px,2.6vh,30px);font-weight:800;color:var(--accent-dark);}
+  .lab-desc{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 8px 8px 0;padding:1vh 1vw;font-size:clamp(22px,2.3vh,26px);margin-bottom:1vh;line-height:1.5;}
+  .tabs{display:flex;gap:.8vw;margin-bottom:1vh;flex-wrap:wrap;}
+  .tab{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.8vh 1.2vw;cursor:pointer;}
+  .tab.on{background:var(--accent);color:#fff;}
+  .numcell{width:5.2em;font-size:clamp(22px,2.3vh,26px);text-align:center;border:2px solid var(--line);border-radius:7px;padding:.3vh .2vw;color:var(--ink);background:#fff;}
+  .numcell:focus{outline:none;border-color:var(--accent);}
+  .formula{font-family:Georgia,serif;font-style:italic;font-weight:700;color:var(--accent-dark);font-size:clamp(22px,2.4vh,27px);}
+  .lab-out{margin-top:1vh;display:flex;flex-direction:column;gap:1vh;overflow-y:auto;min-height:0;flex:1;}
+  .lab-hint{font-size:clamp(20px,2vh,24px);color:var(--sub);margin-top:.6vh;}
+  td.ca{background:var(--green-light);color:var(--green);font-weight:800;}
+  /* ── Terms-of-trade 数轴探索器 ── */
+  .tot-ctrl{display:flex;align-items:center;gap:1.4vw;margin-top:1vh;flex-wrap:wrap;}
+  .tot-ctrl label{font-size:clamp(22px,2.3vh,26px);font-weight:700;white-space:nowrap;}
+  .tot-ctrl input[type=range]{flex:1;min-width:200px;cursor:pointer;height:8px;}
+  .tot-val{font-weight:800;color:var(--accent-dark);font-size:clamp(23px,2.4vh,27px);}
+  .verdict{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1vw;border-radius:10px;}
+  .verdict.good{background:var(--green-light);color:var(--green);}
+  .verdict.bad{background:var(--red-light);color:var(--red);}
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.4em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+  }
+
+  /* ── 英葡贸易演示（from AP Macro 1.2）── */
+  .svgbox{background:#fff;border:2px solid var(--line);border-radius:12px;padding:1vh;}
+  .cap{text-align:center;font-size:clamp(22px,2.2vh,26px);font-weight:700;color:var(--accent-dark);margin-top:.4vh;}
+  .tctrl{display:flex;align-items:center;gap:1.4vw;margin-top:1.2vh;flex-wrap:wrap;}
+  .tctrl label{font-size:clamp(22px,2.3vh,26px);font-weight:700;white-space:nowrap;}
+  .tctrl input[type=range]{flex:1;min-width:220px;cursor:pointer;height:8px;}
+  .tval{font-weight:800;color:var(--accent-dark);font-size:clamp(23px,2.4vh,27px);}
+
+  /* ── TOT verdict ── */
+  .tverdict{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1vw;border-radius:10px;line-height:1.45;}
+  .tverdict.good{background:var(--green-light);color:var(--green);}
+  .tverdict.bad{background:var(--red-light);color:var(--red);}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<!-- ═══════════ P1 封面 ═══════════ -->
+<section class="slide cover active" id="s0">
+  <div class="tag">AP Microeconomics · Unit 2 · Lesson 1</div>
+  <h1>Gains from Trade &amp;<br>Comparative Advantage</h1>
+  <div class="q">Can two people <span class="accent">BOTH</span> gain from trade?</div>
+  <p>Principle #5: <b>Trade can make everyone better off.</b><br>
+  </p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+<!-- ═══════════ P2 设定 ═══════════ -->
+<section class="slide" id="s1">
+  <div class="tag">Step 1 · Set the scene</div>
+  <h2>Two producers, one day</h2>
+  <div class="stage">
+    <p>A and B each have one day (8 hours). They can <b>hunt rabbits</b> or <b>pick fruit</b>.
+    Their productivity is different:</p>
+    <div class="scroll">
+      <table>
+        <tr><th>Person</th><th>Rabbits per day</th><th>Fruits per day</th></tr>
+        <tr><td><b>A</b></td><td>4</td><td>8</td></tr>
+        <tr><td><b>B</b></td><td>2</td><td>12</td></tr>
+      </table>
+    </div>
+    <p class="qtext" style="margin-top:1.4vh;">Q1 · If each spends HALF a day hunting and HALF a day picking,
+    what does each get?</p>
+    
+    <div class="btnrow">
+      <button class="btn" onclick="revealAnswer('s1ans')">Show the answer</button>
+      <button class="btn ghost" onclick="resetReveal('s1ans')">Hide</button>
+    </div>
+    <div class="reveal" id="s1ans" style="margin-top:1.2vh;">
+      <div class="scroll">
+        <table>
+          <tr><th>Person</th><th>Rabbits (½ day)</th><th>Fruits (½ day)</th></tr>
+          <tr class="ok"><td><b>A</b></td><td>2</td><td>4</td></tr>
+          <tr class="ok"><td><b>B</b></td><td>1</td><td>6</td></tr>
+        </table>
+      </div>
+      <div class="hl" style="margin-top:1vh;">No trade yet — this is the <b>baseline</b>. Can they do better? </div>
+    </div>
+  </div>
+  <div class="s-foot"><div class="hl">Remember: ½ day hunting + ½ day picking &rarr; half of each maximum. </div></div>
+</section>
+
+<!-- ═══════════ P3 机会成本 ═══════════ -->
+<section class="slide" id="s2">
+  <div class="tag">Step 2 · Opportunity cost</div>
+  <h2>What does each rabbit really cost?</h2>
+  <div class="stage">
+    <p class="qtext">Q2 · For each person, what is the opportunity cost of <b>1 rabbit</b>? Of <b>1 fruit</b>?</p>
+    
+    <div class="scroll">
+      <table>
+        <tr><th>Person</th><th>Rabbits per day</th><th>Fruits per day</th></tr>
+        <tr><td><b>A</b></td><td>4</td><td>8</td></tr>
+        <tr><td><b>B</b></td><td>2</td><td>12</td></tr>
+      </table>
+    </div>
+    <div class="btnrow">
+      <button class="btn" onclick="revealAnswer('s2ans')">Show the answer</button>
+      <button class="btn ghost" onclick="resetReveal('s2ans')">Hide</button>
+    </div>
+    <div class="reveal" id="s2ans" style="margin-top:1.2vh;">
+      <div class="scroll">
+        <table>
+          <tr><th>Person</th><th>OC of 1 rabbit</th><th>OC of 1 fruit</th></tr>
+          <tr><td><b>A</b></td><td class="maybe">2 fruits</td><td class="maybe">½ rabbit</td></tr>
+          <tr><td><b>B</b></td><td class="maybe">6 fruits</td><td class="maybe">1/6 rabbit</td></tr>
+        </table>
+      </div>
+      <div class="hl" style="margin-top:1vh;">A gives up 2 fruits per rabbit; B gives up 6. Their costs are <b>DIFFERENT</b>. </div>
+    </div>
+  </div>
+  <div class="s-foot"><div class="hl amber">Think: A is better at hunting, B is better at picking — who should do what? </div></div>
+</section>
+
+<!-- ═══════════ P4 定价① 水果换兔 ═══════════ -->
+<section class="slide" id="s3">
+  <div class="tag">Step 3 · The merchant's question (1)</div>
+  <h2>Buying rabbits with fruits — who will sell?</h2>
+  <div class="stage">
+    <p>A merchant wants to <b>BUY rabbits, paying in fruits</b>.<br>
+    We already know their opportunity costs: <b>A gives up 2 fruits</b> per rabbit · <b>B gives up 6 fruits</b> per rabbit.</p>
+    
+    <div class="scroll">
+      <table id="t3">
+        <tr><th>Price of a rabbit<br>(in fruits)</th><th>Will A sell?</th><th>Will B sell?</th></tr>
+        <tr><td>0</td><td id="t3a0" class="empty">·</td><td id="t3b0" class="empty">·</td></tr>
+        <tr><td>1</td><td id="t3a1" class="empty">·</td><td id="t3b1" class="empty">·</td></tr>
+        <tr><td>2</td><td id="t3a2" class="empty">·</td><td id="t3b2" class="empty">·</td></tr>
+        <tr><td>4</td><td id="t3a4" class="empty">·</td><td id="t3b4" class="empty">·</td></tr>
+        <tr><td>6</td><td id="t3a6" class="empty">·</td><td id="t3b6" class="empty">·</td></tr>
+        <tr><td>8</td><td id="t3a8" class="empty">·</td><td id="t3b8" class="empty">·</td></tr>
+      </table>
+    </div>
+    <div class="btnrow">
+      <button class="btn" id="t3btn" onclick="revealRow3()">Reveal next row</button>
+      <button class="btn ghost" onclick="resetTable3()">Reset</button>
+    </div>
+    <div class="reveal" id="s3ans">
+      <div class="hl" style="margin-top:1vh;">A will sell whenever price &ge; 2; B only when price &ge; 6. </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P5 定价② 兔换水果 ═══════════ -->
+<section class="slide" id="s4">
+  <div class="tag">Step 4 · The merchant's question (2)</div>
+  <h2>Buying fruits with rabbits — who will sell?</h2>
+  <div class="stage">
+    <p>Now the merchant <b>BUYS fruits, paying in rabbits</b>.<br>
+    We already know their opportunity costs: <b>A gives up ½ rabbit</b> per fruit · <b>B gives up 1/6 rabbit</b> per fruit.</p>
+    
+    <div class="scroll">
+      <table id="t4">
+        <tr><th>Price of a fruit<br>(in rabbits)</th><th>Will A sell?</th><th>Will B sell?</th></tr>
+        <tr><td>1/8</td><td id="t4a18" class="empty">·</td><td id="t4b18" class="empty">·</td></tr>
+        <tr><td>1/6</td><td id="t4a16" class="empty">·</td><td id="t4b16" class="empty">·</td></tr>
+        <tr><td>1/4</td><td id="t4a14" class="empty">·</td><td id="t4b14" class="empty">·</td></tr>
+        <tr><td>1/2</td><td id="t4a12" class="empty">·</td><td id="t4b12" class="empty">·</td></tr>
+        <tr><td>1</td><td id="t4a1" class="empty">·</td><td id="t4b1" class="empty">·</td></tr>
+      </table>
+    </div>
+    <div class="btnrow">
+      <button class="btn" id="t4btn" onclick="revealRow4()">Reveal next row</button>
+      <button class="btn ghost" onclick="resetTable4()">Reset</button>
+    </div>
+    <div class="reveal" id="s4ans">
+      <div class="hl" style="margin-top:1vh;">A needs &ge; ½ rabbit per fruit; B only needs &ge; 1/6. </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P6 成交区间 ═══════════ -->
+<section class="slide" id="s5">
+  <div class="tag">Step 5 · Where do they agree?</div>
+  <h2>Find the deal zone</h2>
+  <div class="stage">
+    <p>Put the two questions together. By comparative advantage, <b>A hunts, B picks</b> — now A has rabbits to sell, and B wants to buy. At what price does the deal happen?</p>
+    <div class="scroll">
+      <table>
+        <tr><th>Price of rabbit<br>(in fruits)</th><th>Will A sell?</th><th>Will B buy?</th><th>Deal?</th></tr>
+        <tr><td>0</td><td class="no">No</td><td class="yes">Yes</td><td class="empty">✗</td></tr>
+        <tr><td>1</td><td class="no">No</td><td class="yes">Yes</td><td class="empty">✗</td></tr>
+        <tr id="row2"><td>2</td><td class="maybe">Maybe</td><td class="yes">Yes</td><td class="empty">—</td></tr>
+        <tr id="row3"><td>3</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">✓</td></tr>
+        <tr id="row4"><td>4</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">✓</td></tr>
+        <tr id="row5"><td>5</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">✓</td></tr>
+        <tr id="row6"><td>6</td><td class="yes">Yes</td><td class="maybe">Maybe</td><td class="empty">—</td></tr>
+        <tr><td>8</td><td class="yes">Yes</td><td class="no">No</td><td class="empty">✗</td></tr>
+      </table>
+    </div>
+    
+    <div class="btnrow">
+      <button class="btn" onclick="showDealZone()">Show the deal zone</button>
+      <button class="btn ghost" onclick="hideDealZone()">Hide</button>
+    </div>
+    <div class="reveal" id="s5ans">
+      <div class="deal-band" style="margin-top:1.2vh;">
+        <span class="deal-range">2 &lt; Price of rabbit &lt; 6 fruits</span>
+        
+      </div>
+      <div class="hl green">Perfect match at 3, 4, 5: <b>A sells</b> (price &ge; his OC 2) and <b>B buys</b> (price &le; his OC 6).<br>
+      </div>
+      <div class="hl" style="margin-top:.8vh;">The terms of trade must lie <b>between the two opportunity costs</b>.<br>
+      </div>
+      <div class="hl amber" style="margin-top:.8vh;">Next page — the same deal zone on a <b>number line</b>. </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P7 数轴：terms of trade 探索器 ═══════════ -->
+<section class="slide" id="totpage">
+  <div class="tag">Step 5b · Terms of trade on a number line</div>
+  <h2>Drag the price — watch both sides decide</h2>
+  <div class="stage">
+    <div class="lab">
+      <div class="lab-head"><div class="lab-title">Terms-of-Trade Explorer</div></div>
+      <div class="lab-desc">
+        A's OC of 1 rabbit = <b>2 fruits</b> · B's OC of 1 rabbit = <b>6 fruits</b>.<br>
+        Drag the red dot: at what price will <b>both</b> agree to trade?
+        
+      </div>
+      <div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:1vh .6vw;">
+        <svg id="totSvg" viewBox="0 0 860 185" style="width:100%;display:block;touch-action:none;"></svg>
+      </div>
+      <div class="tot-ctrl">
+        <label>Drag the red dot — price: 1 rabbit = <span class="tot-val" id="totVal">4.0</span> fruits</label>
+      </div>
+      <div class="verdict good" id="totVerdict"></div>
+      <div class="lab-hint">The green zone (2–6) is the ONLY range where both sides gain. </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P7 专业化与交换 ═══════════ -->
+<section class="slide" id="s6">
+  <div class="tag">Step 6 · Specialise &amp; exchange</div>
+  <h2>Price = 4 fruits per rabbit. Play it out.</h2>
+  <div class="stage">
+    <div id="spSteps">
+      <div class="stepblock">
+        <p><b>Before trade</b> (half and half):</p>
+        <div class="scroll">
+          <table>
+            <tr><th>Person</th><th>Rabbits</th><th>Fruits</th></tr>
+            <tr><td><b>A</b></td><td>2</td><td>4</td></tr>
+            <tr><td><b>B</b></td><td>1</td><td>6</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="btnrow">
+      <button class="btn" id="spBtn" onclick="nextStep6()">Next step</button>
+      <button class="btn ghost" onclick="resetStep6()">Reset</button>
+    </div>
+    <div class="reveal" id="s6ans">
+      <div class="hl green" style="margin-top:1.2vh;">A ended with <b>3 rabbits + 4 fruits</b> (was 2+4) · B ended with <b>1 rabbit + 8 fruits</b> (was 1+6)<br>
+      </div>
+      <div class="hl" style="margin-top:1vh;">Specialise where your OC is low &rarr; trade at a price between the two OCs &rarr; both gain.<br>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P8 强者情境 ═══════════ -->
+<section class="slide" id="s7">
+  <div class="tag">Step 7 · Does the strong need the weak?</div>
+  <h2>A is better at EVERYTHING — trade still?</h2>
+  <div class="stage">
+    <p>New data — A is now faster at <b>both</b>:</p>
+    <div class="scroll">
+      <table>
+        <tr><th>Person</th><th>Rabbits per day</th><th>Fruits per day</th></tr>
+        <tr><td><b>A</b></td><td>4</td><td>20</td></tr>
+        <tr><td><b>B</b></td><td>2</td><td>12</td></tr>
+      </table>
+    </div>
+    <p class="qtext">Q3 · A beats B at hunting AND picking. Does A still gain from trading with B?</p>
+    
+    <div class="btnrow">
+      <button class="btn" id="sp7Btn" onclick="nextStep7()">Next step</button>
+      <button class="btn ghost" onclick="resetStep7()">Reset</button>
+    </div>
+    <div id="sp7Steps"></div>
+    <div class="reveal" id="s7ans">
+      <div class="hl green" style="margin-top:1.2vh;"><b>Absolute advantage</b> (produce more) ≠ <b>Comparative advantage</b> (lower OC).<br>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P9 一般化公式 ═══════════ -->
+<section class="slide" id="s8">
+  <div class="tag">Step 8 · The general rule (Ricardo)</div>
+  <h2>Turn the numbers into letters</h2>
+  <div class="stage">
+    <p>Two people, two goods. Let the numbers be letters:</p>
+    <div class="scroll">
+      <table>
+        <tr><th>Person</th><th>Product A</th><th>Product B</th></tr>
+        <tr><td><b>X</b></td><td>A</td><td>C</td></tr>
+        <tr><td><b>Y</b></td><td>B</td><td>D</td></tr>
+      </table>
+    </div>
+    
+    <div class="btnrow">
+      <button class="btn" onclick="revealAnswer('s8ans')">Show the OC table</button>
+      <button class="btn ghost" onclick="resetReveal('s8ans')">Hide</button>
+    </div>
+    <div class="reveal" id="s8ans" style="margin-top:1.2vh;">
+      <div class="scroll">
+        <table>
+          <tr><th>Person</th><th>OC of Product A</th><th>OC of Product B</th></tr>
+          <tr><td><b>X</b></td><td class="maybe">C / A</td><td class="maybe">A / C</td></tr>
+          <tr><td><b>Y</b></td><td class="maybe">D / B</td><td class="maybe">B / D</td></tr>
+        </table>
+      </div>
+      <div class="hl" style="margin-top:1vh;">Compare C/A with D/B: the one with the <b>smaller</b> ratio has the comparative advantage in Product A.</div>
+      <div class="hl green" style="margin-top:.8vh;"><b>No one can have the lowest opportunity cost in EVERY good.</b><br>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="ca0">
+  <div class="tag">PPC reveals comparative advantage</div>
+  <h2>Two PPCs, two slopes</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;align-items:stretch;height:100%;">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:1vh;">
+        <p>Same resources, two slopes. England can make <b>more</b> of everything — but trade follows the <b>slopes</b>:</p>
+        <div class="btnrow">
+          <button class="btn" id="ca0Btn" onclick="nextCa0()">Reveal the insight</button>
+          <button class="btn ghost" onclick="resetCa0()">Reset</button>
+        </div>
+        <div id="ca0Box" style="display:flex;flex-direction:column;gap:.6vh;"></div>
+      </div>
+      <div class="svgbox" style="flex:1.15;max-width:560px;display:flex;flex-direction:column;justify-content:center;">
+        <svg viewBox="0 0 460 330">
+          <line x1="60" y1="30" x2="60" y2="280" stroke="#343a40" stroke-width="3"/>
+          <line x1="60" y1="280" x2="430" y2="280" stroke="#343a40" stroke-width="3"/>
+          <text x="18" y="45" font-size="19" font-weight="bold" fill="#343a40">Cloth</text>
+          <text x="380" y="308" font-size="19" font-weight="bold" fill="#343a40">Wine</text>
+          <line x1="60" y1="30" x2="245" y2="280" stroke="#1CADE4" stroke-width="5"/>
+          <line x1="60" y1="155" x2="430" y2="280" stroke="#2e9e6b" stroke-width="5"/>
+          <text x="135" y="130" font-size="18" font-weight="bold" fill="#0e7fae" transform="rotate(-40 135 130)">England · steep</text>
+          <text x="240" y="230" font-size="18" font-weight="bold" fill="#1f7a4d" transform="rotate(-18 240 230)">Portugal · flat</text>
+          <circle cx="152" cy="155" r="6" fill="#1CADE4"/>
+          <text x="180" y="265" font-size="17" fill="#5b7288">1 wine = 10 cloth</text>
+          <circle cx="245" cy="217" r="6" fill="#2e9e6b"/>
+          <text x="320" y="265" font-size="17" fill="#5b7288">1 wine = 2.5 cloth</text>
+        </svg>
+        <div class="cap">Straight PPCs — the slope IS the opportunity cost</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section class="slide" id="trb">
+  <div class="tag">From autarky to trade</div>
+  <h2>Specialise, then trade — beyond the PPC</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;align-items:stretch;height:100%;">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:1vh;">
+        <p>Autarky → specialise → trade:</p>
+        <div class="btnrow">
+          <button class="btn" id="trbBtn" onclick="nextTrb()">Next step</button>
+          <button class="btn ghost" onclick="resetTrb()">Reset</button>
+        </div>
+        <div id="trbBox" style="display:flex;flex-direction:column;gap:.6vh;"></div>
+      </div>
+      <div class="svgbox" style="flex:1.15;display:flex;flex-direction:column;justify-content:center;">
+        <div style="display:flex;gap:1vw;justify-content:center;">
+          <svg viewBox="0 0 300 250" style="width:46%;">
+            <line x1="60" y1="30" x2="60" y2="210" stroke="#343a40" stroke-width="3"/>
+            <line x1="60" y1="210" x2="255" y2="210" stroke="#343a40" stroke-width="3"/>
+            <text x="18" y="45" font-size="19" font-weight="bold" fill="#343a40">Cloth</text>
+            <text x="230" y="234" font-size="19" font-weight="bold" fill="#343a40">Wine</text>
+            <text x="70" y="72" font-size="18" font-weight="bold" fill="#1CADE4">England</text>
+            <line x1="157.5" y1="214" x2="157.5" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <line x1="255" y1="214" x2="255" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <text x="157.5" y="228" font-size="14" fill="#5b7288" text-anchor="middle">20</text>
+            <text x="255" y="228" font-size="14" fill="#5b7288" text-anchor="middle">40</text>
+            <line x1="52" y1="120" x2="60" y2="120" stroke="#5b7288" stroke-width="2"/>
+            <line x1="52" y1="30" x2="60" y2="30" stroke="#5b7288" stroke-width="2"/>
+            <text x="48" y="124" font-size="14" fill="#5b7288" text-anchor="end">100</text>
+            <text x="48" y="34" font-size="14" fill="#5b7288" text-anchor="end">200</text>
+            <line x1="60" y1="30" x2="157.5" y2="210" stroke="#1CADE4" stroke-width="4"/>
+            <g class="tb-a" style="opacity:0">
+              <circle cx="108.75" cy="120" r="10" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+              <text x="108.75" y="124" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">A</text>
+              <text x="108.75" y="140" font-size="16" fill="#8a6116" text-anchor="middle">autarky</text>
+            </g>
+            <g class="tb-s" style="opacity:0">
+              <circle cx="60" cy="30" r="10" fill="#1CADE4" stroke="#fff" stroke-width="2"/>
+              <text x="60" y="34" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">S</text>
+              <text x="75" y="20" font-size="16" fill="#0e7fae">specialise</text>
+            </g>
+            <g class="tb-c" style="opacity:0">
+              <line id="engTrade" x1="60" y1="30" x2="157.5" y2="120" stroke="#d9534f" stroke-width="2.5" stroke-dasharray="6 4"/>
+              <line id="engDh" x1="60" y1="120" x2="157.5" y2="120" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <line id="engDv" x1="157.5" y1="120" x2="157.5" y2="210" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <circle id="engC" cx="157.5" cy="120" r="10" fill="#d9534f" stroke="#fff" stroke-width="2"/>
+              <text x="157.5" y="124" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">C</text>
+              <text id="engCText" x="157.5" y="92" font-size="16" fill="#a33" text-anchor="end">beyond</text>
+            </g>
+          </svg>
+          <svg viewBox="0 0 300 250" style="width:46%;">
+            <line x1="60" y1="30" x2="60" y2="210" stroke="#343a40" stroke-width="3"/>
+            <line x1="60" y1="210" x2="255" y2="210" stroke="#343a40" stroke-width="3"/>
+            <text x="18" y="45" font-size="19" font-weight="bold" fill="#343a40">Cloth</text>
+            <text x="230" y="234" font-size="19" font-weight="bold" fill="#343a40">Wine</text>
+            <text x="70" y="72" font-size="18" font-weight="bold" fill="#1f7a4d">Portugal</text>
+            <line x1="157.5" y1="214" x2="157.5" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <line x1="255" y1="214" x2="255" y2="206" stroke="#5b7288" stroke-width="2"/>
+            <text x="157.5" y="228" font-size="14" fill="#5b7288" text-anchor="middle">20</text>
+            <text x="255" y="228" font-size="14" fill="#5b7288" text-anchor="middle">40</text>
+            <line x1="52" y1="120" x2="60" y2="120" stroke="#5b7288" stroke-width="2"/>
+            <line x1="52" y1="30" x2="60" y2="30" stroke="#5b7288" stroke-width="2"/>
+            <text x="48" y="124" font-size="14" fill="#5b7288" text-anchor="end">100</text>
+            <text x="48" y="34" font-size="14" fill="#5b7288" text-anchor="end">200</text>
+            <line x1="60" y1="165" x2="157.5" y2="210" stroke="#2e9e6b" stroke-width="4"/>
+            <g class="tb-a" style="opacity:0">
+              <circle cx="108.75" cy="187.5" r="10" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+              <text x="108.75" y="191.5" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">A</text>
+              <text x="108.75" y="160" font-size="16" fill="#8a6116" text-anchor="middle">autarky</text>
+            </g>
+            <g class="tb-s" style="opacity:0">
+              <circle cx="157.5" cy="210" r="10" fill="#2e9e6b" stroke="#fff" stroke-width="2"/>
+              <text x="157.5" y="214" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">S</text>
+              <text x="165" y="202" font-size="16" fill="#1f7a4d">specialise</text>
+            </g>
+            <g class="tb-c" style="opacity:0">
+              <line id="porTrade" x1="157.5" y1="210" x2="108.75" y2="165" stroke="#d9534f" stroke-width="2.5" stroke-dasharray="6 4"/>
+              <line id="porDh" x1="60" y1="165" x2="108.75" y2="165" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <line id="porDv" x1="108.75" y1="165" x2="108.75" y2="210" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+              <circle id="porC" cx="108.75" cy="165" r="10" fill="#d9534f" stroke="#fff" stroke-width="2"/>
+              <text x="108.75" y="169" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">C</text>
+              <text id="porCText" x="108.75" y="137" font-size="16" fill="#a33" text-anchor="end">beyond</text>
+            </g>
+          </svg>
+        </div>
+        <div class="tctrl" style="margin-top:1vh;">
+          <label>Terms of trade: 1 wine = <span class="tval" id="trbTot">5.0</span> cloth</label>
+          <input type="range" id="trbTotSlider" min="1.5" max="12" step="0.1" value="5">
+        </div>
+        <div class="tverdict good" id="trbVerdict"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- ═══════════ P10 Exam Skill: Output vs Input 表 ═══════════ -->
+<section class="slide" id="s9">
+  <div class="tag">Exam Skill</div>
+  <h2>Output tables vs Input tables</h2>
+  <div class="lab">
+    <div class="lab-head">
+      <div class="lab-title">Comparative Advantage Calculator</div>
+      <div class="tabs">
+        <button class="tab on" id="tabOut" onclick="caMode('output')">Output method </button>
+        <button class="tab" id="tabIn" onclick="caMode('input')">Input method </button>
+      </div>
+    </div>
+    <div class="lab-desc" id="caDesc"></div>
+    <div id="caTableBox"></div>
+    <div class="btnrow">
+      <button class="btn green" onclick="caCompute()">Compute OC &rarr; find CA</button>
+      <button class="btn ghost" onclick="caReset()">Reset numbers</button>
+      <span class="formula" id="caFormula"></span>
+    </div>
+    <div class="lab-out" id="caOut"></div>
+    <div class="lab-hint">Numbers are editable — type your own and recompute. <b>Always carry the units</b> — the unit tells you WHOSE opportunity cost you found. <b style="color:var(--accent-dark)">计算带单位，防混淆</b></div>
+  </div>
+</section>
+
+<!-- ═══════════ P11 Special case: OC 完全相同 ═══════════ -->
+<section class="slide" id="specialcase">
+  <div class="tag">Special case</div>
+  <h2>What if their OCs are identical?</h2>
+  <div class="stage">
+    <p>Two producers, but one is just a scaled copy of the other:</p>
+    <div class="scroll">
+      <table>
+        <tr><th>Person</th><th>Rabbits per day</th><th>Fruits per day</th></tr>
+        <tr><td><b>X</b></td><td>60</td><td>20</td></tr>
+        <tr><td><b>Y</b></td><td>30</td><td>10</td></tr>
+      </table>
+    </div>
+    <p class="qtext">Q · Compute the OCs. Does anyone have a comparative advantage?</p>
+    
+    <div class="btnrow">
+      <button class="btn" onclick="revealAnswer('scans')">Show the answer</button>
+      <button class="btn ghost" onclick="resetReveal('scans')">Hide</button>
+    </div>
+    <div class="reveal" id="scans" style="margin-top:1.2vh;">
+      <div class="scroll">
+        <table>
+          <tr><th>Person</th><th>OC of 1 rabbit</th><th>OC of 1 fruit</th></tr>
+          <tr><td><b>X</b></td><td class="maybe">1/3 fruit</td><td class="maybe">3 rabbits</td></tr>
+          <tr><td><b>Y</b></td><td class="maybe">1/3 fruit</td><td class="maybe">3 rabbits</td></tr>
+        </table>
+      </div>
+      <div class="hl amber" style="margin-top:1vh;">Identical OCs &rarr; <b>nobody has a comparative advantage</b> &rarr; no gains from trade.<br>
+      </div>
+      <div class="hl" style="margin-top:.8vh;">Trading with an identical partner is like <b>trading with yourself</b> — swapping 1 rabbit for 1/3 fruit changes nothing.<br>
+      </div>
+      <div class="hl green" style="margin-top:.8vh;">Key idea: gains from trade exist <b>only when the opportunity costs differ</b>.<br>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P12 Quiz ═══════════ -->
+<section class="slide" id="s10">
+  <div class="tag">Check your understanding</div>
+  <h2>Quick quiz</h2>
+  <div class="stage" id="quizCol"></div>
+  <div class="s-foot">
+    <div class="btnrow">
+      <button class="btn green" onclick="resetQuiz()">Try again</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P13 Summary 填空 ═══════════ -->
+<section class="slide" id="s12">
+  <div class="tag">Summary</div>
+  <h2>Today in six blanks</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:1.5vh;justify-content:center;">
+    <p style="margin:0;">① Trade makes both parties better off — this is <span class="fill" data-a="mutual benefit">mutual benefit</span>.</p>
+    <p style="margin:0;">② Specialise where your <span class="fill" data-a="opportunity cost">opportunity cost</span> is lowest — that is <span class="fill" data-a="comparative advantage">comparative advantage</span>.</p>
+    <p style="margin:0;">③ A deal price must lie <span class="fill" data-a="between">between</span> the two opportunity costs.</p>
+    <p style="margin:0;">④ Absolute advantage = <span class="fill" data-a="more output">more output</span>; comparative advantage = <span class="fill" data-a="lower OC">lower OC</span>.</p>
+    <p style="margin:0;">⑤ Identical OCs &rarr; <span class="fill" data-a="no gains">no gains</span> from trade — don't trade with your clone.</p>
+    <p style="margin:0;">⑥ England &amp; Portugal: specialise by <span class="fill" data-a="comparative advantage">comparative advantage</span>, trade at a price between the two OCs — both consume <span class="fill" data-a="beyond their PPC">beyond their PPC</span>.</p>
+  </div>
+  <div class="s-foot">
+    <div class="btnrow">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+      <span style="flex:1;"></span>
+      <span class="hl" style="font-size:clamp(20px,2vh,24px);">That's today's story — wrap-up on the next page.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ P15 结束页 ═══════════ -->
+<section class="slide cover" id="endpage">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">Can two people <span class="accent">BOTH</span> gain from trade?<br>Yes — <span class="accent">when their opportunity costs differ</span>.</div>
+  <p>Today: mutual benefit · comparative advantage · terms of trade</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+</main>
+
+<!-- ═══════════ 底部导航 ═══════════ -->
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 17</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+let tx0=null;
+document.addEventListener("touchstart",e=>tx0=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{
+  if(tx0===null) return;
+  const dx = e.changedTouches[0].clientX - tx0;
+  if(Math.abs(dx)>60){ dx<0 ? gotoSlide(cur+1) : gotoSlide(cur-1); }
+  tx0=null;
+},{passive:true});
+const hashInit = parseInt(location.hash.slice(1)||"0",10);
+if(!isNaN(hashInit)&&hashInit<TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+
+/* ═══════════ Reveal 工具 ═══════════ */
+function revealAnswer(id){ document.getElementById(id).classList.add("show"); }
+function resetReveal(id){ document.getElementById(id).classList.remove("show"); }
+
+/* ═══════════ P4 定价表① 逐行揭示 ═══════════ */
+const T3 = [
+  [0,"no","no"], [1,"no","no"], [2,"maybe","no"],
+  [4,"yes","no"], [6,"yes","maybe"], [8,"yes","yes"]
+];
+let t3i = 0;
+function revealRow3(){
+  if(t3i >= T3.length){ return; }
+  const [p, a, b] = T3[t3i];
+  const ac = document.getElementById("t3a"+p), bc = document.getElementById("t3b"+p);
+  ac.textContent = a; ac.className = a;
+  bc.textContent = b; bc.className = b;
+  t3i++;
+  if(t3i >= T3.length){
+    document.getElementById("t3btn").disabled = true;
+    document.getElementById("t3btn").textContent = "Table complete ✓";
+    revealAnswer("s3ans");
+  }
+}
+function resetTable3(){
+  t3i = 0;
+  ["0","1","2","4","6","8"].forEach(p=>{
+    document.getElementById("t3a"+p).textContent = "·"; document.getElementById("t3a"+p).className = "empty";
+    document.getElementById("t3b"+p).textContent = "·"; document.getElementById("t3b"+p).className = "empty";
+  });
+  document.getElementById("t3btn").disabled = false;
+  document.getElementById("t3btn").textContent = "Reveal next row";
+  resetReveal("s3ans");
+}
+
+/* ═══════════ P5 定价表② 逐行揭示 ═══════════ */
+const T4 = [
+  ["1/8","no","no"], ["1/6","no","maybe"], ["1/4","no","yes"],
+  ["1/2","maybe","yes"], ["1","yes","yes"]
+];
+let t4i = 0;
+function revealRow4(){
+  if(t4i >= T4.length) return;
+  const [p, a, b] = T4[t4i];
+  const key = p.replace("/","");
+  const ac = document.getElementById("t4a"+key), bc = document.getElementById("t4b"+key);
+  ac.textContent = a; ac.className = a;
+  bc.textContent = b; bc.className = b;
+  t4i++;
+  if(t4i >= T4.length){
+    document.getElementById("t4btn").disabled = true;
+    document.getElementById("t4btn").textContent = "Table complete ✓";
+    revealAnswer("s4ans");
+  }
+}
+function resetTable4(){
+  t4i = 0;
+  ["18","16","14","12","1"].forEach(k=>{
+    document.getElementById("t4a"+k).textContent = "·"; document.getElementById("t4a"+k).className = "empty";
+    document.getElementById("t4b"+k).textContent = "·"; document.getElementById("t4b"+k).className = "empty";
+  });
+  document.getElementById("t4btn").disabled = false;
+  document.getElementById("t4btn").textContent = "Reveal next row";
+  resetReveal("s4ans");
+}
+
+/* ═══════════ P6 成交区间 ═══════════ */
+function showDealZone(){
+  ["row3","row4","row5"].forEach(id=>document.getElementById(id).classList.add("hl"));
+  revealAnswer("s5ans");
+}
+function hideDealZone(){
+  ["row3","row4","row5"].forEach(id=>document.getElementById(id).classList.remove("hl"));
+  resetReveal("s5ans");
+}
+
+/* ═══════════ P7 专业化分步 ═══════════ */
+const SP_STEPS = [
+  `<div class="hl amber" style="margin-top:1vh;">Step 1 — Specialise: A hunts only, B picks only.</div>
+  <div class="scroll" style="margin-top:.8vh;max-height:24vh;">
+    <table>
+      <tr><th>Person</th><th>Rabbits</th><th>Fruits</th></tr>
+      <tr><td><b>A</b></td><td>4</td><td>0</td></tr>
+      <tr><td><b>B</b></td><td>0</td><td>12</td></tr>
+    </table>
+  </div>`,
+  `<div class="hl" style="margin-top:.8vh;">Step 2 — Exchange at 1 rabbit = 4 fruits: A sells <b>1 rabbit</b> to B, receives <b>4 fruits</b>.</div>`,
+  `<div class="hl green" style="margin-top:.8vh;">Step 3 — Compare: everyone ends with MORE than before trade.</div>
+  <div class="scroll" style="margin-top:.8vh;max-height:26vh;">
+    <table>
+      <tr><th>Person</th><th>Before trade<br>(half &amp; half)</th><th>After trade<br>(specialise + exchange)</th><th>Gain</th></tr>
+      <tr><td><b>A</b></td><td>2 rabbits + 4 fruits</td><td>3 rabbits + 4 fruits</td><td class="yes">+ 1 rabbit</td></tr>
+      <tr><td><b>B</b></td><td>1 rabbit + 6 fruits</td><td>1 rabbit + 8 fruits</td><td class="yes">+ 2 fruits</td></tr>
+    </table>
+  </div>
+  <div class="hl green" style="margin-top:.8vh;"></div>`
+];
+let spI = -1;
+function nextStep6(){
+  spI++;
+  if(spI >= SP_STEPS.length){ document.getElementById("spBtn").disabled = true; document.getElementById("spBtn").textContent = "All steps shown ✓"; revealAnswer("s6ans"); return; }
+  const box = document.createElement("div");
+  box.innerHTML = SP_STEPS[spI];
+  document.getElementById("spSteps").appendChild(box);
+  if(spI === SP_STEPS.length-1){ document.getElementById("spBtn").disabled = true; document.getElementById("spBtn").textContent = "All steps shown ✓"; revealAnswer("s6ans"); }
+}
+function resetStep6(){
+  spI = -1;
+  document.getElementById("spSteps").innerHTML = `<div class="stepblock">
+    <p><b>Before trade</b> (half and half):</p>
+    <div class="scroll">
+      <table>
+        <tr><th>Person</th><th>Rabbits</th><th>Fruits</th></tr>
+        <tr><td><b>A</b></td><td>2</td><td>4</td></tr>
+        <tr><td><b>B</b></td><td>1</td><td>6</td></tr>
+      </table>
+    </div>
+  </div>`;
+  document.getElementById("spBtn").disabled = false;
+  document.getElementById("spBtn").textContent = "Next step";
+  resetReveal("s6ans");
+}
+
+/* ═══════════ P8 强者情境分步 ═══════════ */
+const SP7_STEPS = [
+  `<div class="hl" style="margin-top:1vh;">Step 1 — Find the opportunity costs:</div>
+  <div class="scroll" style="margin-top:.8vh;max-height:22vh;">
+    <table>
+      <tr><th>Person</th><th>OC of 1 rabbit</th><th>OC of 1 fruit</th></tr>
+      <tr><td><b>A</b></td><td class="maybe">5 fruits</td><td class="maybe">1/5 rabbit</td></tr>
+      <tr><td><b>B</b></td><td class="maybe">6 fruits</td><td class="maybe">1/6 rabbit</td></tr>
+    </table>
+  </div>`,
+  `<div class="hl" style="margin-top:.8vh;">Step 2 — Who specialises?<br>
+  A has the <b>lower OC of rabbits</b> (5 &lt; 6); B has the <b>lower OC of fruits</b> (1/6 &lt; 1/5).<br>
+  &rarr; A hunts, B picks. The deal price must lie <b>between 5 and 6</b> fruits per rabbit.</div>`,
+  `<div class="hl amber" style="margin-top:.8vh;">Step 3 — At price <b>5.5 fruits per rabbit</b>:<br>
+  · A sells 1 rabbit, gets 5.5 fruits — better than picking his own (5) &rarr; <b>gains 0.5</b><br>
+  · B buys 1 rabbit for 5.5 fruits — cheaper than hunting his own (6) &rarr; <b>saves 0.5</b><br>
+  </div>`
+];
+let sp7I = -1;
+function nextStep7(){
+  sp7I++;
+  if(sp7I >= SP7_STEPS.length){
+    document.getElementById("sp7Btn").disabled = true;
+    document.getElementById("sp7Btn").textContent = "All steps shown ✓";
+    revealAnswer("s7ans");
+    return;
+  }
+  const box = document.createElement("div");
+  box.innerHTML = SP7_STEPS[sp7I];
+  document.getElementById("sp7Steps").appendChild(box);
+  if(sp7I === SP7_STEPS.length-1){
+    document.getElementById("sp7Btn").disabled = true;
+    document.getElementById("sp7Btn").textContent = "All steps shown ✓";
+    revealAnswer("s7ans");
+  }
+}
+function resetStep7(){
+  sp7I = -1;
+  document.getElementById("sp7Steps").innerHTML = "";
+  document.getElementById("sp7Btn").disabled = false;
+  document.getElementById("sp7Btn").textContent = "Next step";
+  resetReveal("s7ans");
+}
+
+/* ═══════════ P10 Quiz ═══════════ */
+const QUIZ = [
+  {q:"A produces 4 rabbits or 8 fruits per day. What is A's opportunity cost of 1 rabbit?",
+   opts:["4 fruits","2 fruits","6 fruits","½ fruit"], ans:1,
+   fb:"2 fruits — A gives up 2 fruits for every rabbit (8 ÷ 4)."},
+  {q:"If the price of a rabbit is 3 fruits, who will sell their rabbits? (A's OC = 2, B's OC = 6)",
+   opts:["A only","B only","Both A and B","Neither"], ans:0,
+   fb:"A only — price 3 ≥ A's cost 2, but 3 < B's cost 6, so B refuses."},
+  {q:"A has a COMPARATIVE advantage in rabbits when…",
+   opts:["A produces the most rabbits","A gives up the least fruit per rabbit","A works the fastest","A charges the lowest price"], ans:1,
+   fb:"Comparative advantage = producing at the LOWER OPPORTUNITY COST."},
+  {q:"A is better at BOTH goods. What can still happen?",
+   opts:["Trade is impossible","A must lose from trade","Both can still gain from trade","Only B gains"], ans:2,
+   fb:"Both gain — comparative advantage, not absolute advantage, drives trade."},
+  {q:"INPUT table (hours per unit): X: 4 h per phone, 2 h per car; Y: 6 h per phone, 2 h per car. What is X's OC of 1 phone?",
+   opts:["3 cars","2 cars","½ car","4 cars"], ans:1,
+   fb:"Input method: OC of 1 phone = hours for phone ÷ hours for car = 4 ÷ 2 = 2 cars. Carry the units and you won't flip it."},
+];
+function buildQuiz(){
+  const col = document.getElementById("quizCol");
+  col.innerHTML = "";
+  QUIZ.forEach((q, qi)=>{
+    const box = document.createElement("div");
+    box.className = "quiz-box";
+    box.innerHTML = `<div class="quiz-q">Q${qi+1}. ${q.q}</div>
+      <div class="quiz-opts" id="qopts${qi}"></div>
+      <div class="quiz-fb" id="qfb${qi}"></div>`;
+    col.appendChild(box);
+    const optsBox = document.getElementById("qopts"+qi);
+    q.opts.forEach((t, oi)=>{
+      const opt = document.createElement("div");
+      opt.className = "quiz-opt";
+      opt.textContent = String.fromCharCode(65+oi) + ". " + t;
+      opt.onclick = ()=>{
+        const fb = document.getElementById("qfb"+qi);
+        if(oi === q.ans){
+          opt.classList.add("correct");
+          fb.textContent = "✓ Correct! " + q.fb;
+        }else{
+          opt.classList.add("wrong");
+          document.getElementById("qopts"+qi).children[q.ans].classList.add("correct");
+          fb.textContent = "✗ The answer is " + String.fromCharCode(65+q.ans) + ". " + q.fb;
+        }
+        optsBox.querySelectorAll(".quiz-opt").forEach(o=>o.style.pointerEvents="none");
+      };
+      optsBox.appendChild(opt);
+    });
+  });
+}
+function resetQuiz(){ buildQuiz(); }
+buildQuiz();
+
+/* ═══════════ P10 Output vs Input 计算器 ═══════════ */
+const CA_MODES = {
+  output: {
+    desc: "Table shows <b>OUTPUT</b> per unit of resource (units per day). Edit any number, then compute. ",
+    formula: "OC of 1 X = output of Y ÷ output of X",
+    goods: ["Rabbits", "Fruits"],
+    people: ["A", "B"],
+    defaults: [[4, 8], [2, 12]],
+    unit: ["fruits", "rabbits"],
+    oc: v => [[v[0][1] / v[0][0], v[0][0] / v[0][1]],
+              [v[1][1] / v[1][0], v[1][0] / v[1][1]]]
+  },
+  input: {
+    desc: "Table shows <b>INPUT</b> required per unit of output (hours per unit). Edit any number, then compute. ",
+    formula: "OC of 1 X = input for X ÷ input for Y",
+    goods: ["1 Phone", "1 Car"],
+    people: ["Country X", "Country Y"],
+    defaults: [[4, 2], [6, 2]],
+    unit: ["cars", "phones"],
+    oc: v => [[v[0][0] / v[0][1], v[0][1] / v[0][0]],
+              [v[1][0] / v[1][1], v[1][1] / v[1][0]]]
+  }
+};
+let caCur = "output";
+function cleanName(g){ return g.replace(/^1 /,"").replace(/[^A-Za-z ]/gu,"").trim(); }
+function caMode(mode){
+  caCur = mode;
+  document.getElementById("tabOut").classList.toggle("on", mode === "output");
+  document.getElementById("tabIn").classList.toggle("on", mode === "input");
+  const m = CA_MODES[mode];
+  document.getElementById("caDesc").innerHTML = m.desc;
+  document.getElementById("caFormula").textContent = m.formula;
+  let html = `<table><tr><th></th><th>${m.goods[0]}</th><th>${m.goods[1]}</th><th>OC of 1 ${cleanName(m.goods[0])}</th><th>OC of 1 ${cleanName(m.goods[1])}</th></tr>`;
+  m.people.forEach((c, i)=>{
+    html += `<tr><td class="l"><b>${c}</b></td>`;
+    m.defaults[i].forEach((val, j)=>{
+      html += `<td><input type="number" class="numcell" id="ca_${i}_${j}" value="${val}" min="0.1" step="0.5"></td>`;
+    });
+    html += `<td class="empty" id="ocr_${i}_0">?</td><td class="empty" id="ocr_${i}_1">?</td></tr>`;
+  });
+  html += `</table>`;
+  document.getElementById("caTableBox").innerHTML = html;
+  document.getElementById("caOut").innerHTML = "";
+}
+function fmt(x){ return Math.abs(x - Math.round(x)) < 0.005 ? String(Math.round(x)) : x.toFixed(2); }
+function caCompute(){
+  const m = CA_MODES[caCur];
+  const v = [[0,0],[0,0]];
+  for(let i=0;i<2;i++) for(let j=0;j<2;j++){
+    const el = document.getElementById(`ca_${i}_${j}`);
+    v[i][j] = parseFloat(el.value);
+    if(isNaN(v[i][j]) || v[i][j] <= 0){ el.style.borderColor = "var(--red)"; return; }
+    el.style.borderColor = "var(--line)";
+  }
+  const oc = m.oc(v);
+  for(let i=0;i<2;i++) for(let j=0;j<2;j++){
+    const cell = document.getElementById(`ocr_${i}_${j}`);
+    cell.textContent = fmt(oc[i][j]) + " " + m.unit[j];
+    cell.className = "empty";
+  }
+  const out = [];
+  for(let j=0;j<2;j++){
+    const a = oc[0][j], b = oc[1][j];
+    const name = cleanName(m.goods[j]);
+    if(Math.abs(a - b) < 1e-9){
+      out.push(`<div class="hl amber"><b>${name}:</b> OC identical (${fmt(a)} vs ${fmt(b)} ${m.unit[j]}) — <b>no comparative advantage, no gains from trade</b>. </div>`);
+    } else {
+      const winner = a < b ? 0 : 1, loser = 1 - winner;
+      document.getElementById(`ocr_${winner}_${j}`).className = "ca";
+      out.push(`<div class="hl green"><b>${name}:</b> ${m.people[winner]} has CA (${fmt(oc[winner][j])} &lt; ${fmt(oc[loser][j])} ${m.unit[j]}). </div>`);
+    }
+  }
+  document.getElementById("caOut").innerHTML = out.join("");
+}
+function caReset(){ caMode(caCur); }
+caMode("output");
+
+/* ═══════════ P6 terms-of-trade 数轴探索器 ═══════════ */
+const TOT = { A: 2, B: 6, min: 0.5, max: 8 };
+const totSvg = document.getElementById("totSvg");
+function totX(val){ return 70 + (val - TOT.min) / (TOT.max - TOT.min) * 720; }
+let totPrice = 4;
+function totUpdate(){
+  const x = totPrice;
+  document.getElementById("totVal").textContent = x.toFixed(1);
+  const v = document.getElementById("totVerdict");
+  let inner;
+  if(x > TOT.A && x < TOT.B){
+    v.className = "verdict good";
+    inner = `✓ <b>Both gain!</b> A sells a rabbit and receives ${x.toFixed(1)} fruits (&gt; its OC of 2) — gains ${(x - TOT.A).toFixed(1)} per rabbit. B buys the rabbit for ${x.toFixed(1)} fruits (&lt; its OC of 6) — saves ${(TOT.B - x).toFixed(1)} per rabbit. `;
+  } else if(x <= TOT.A){
+    v.className = "verdict bad";
+    inner = `✗ <b>No trade.</b> A refuses to sell this cheaply — it would rather pick its own fruits (OC of only 2 per rabbit). `;
+  } else {
+    v.className = "verdict bad";
+    inner = `✗ <b>No trade.</b> B refuses to pay this much — at 6 fruits per rabbit it would rather hunt rabbits itself. `;
+  }
+  v.innerHTML = inner;
+  drawTot(x);
+}
+function drawTot(x){
+  const y = 100;
+  let s = `<rect x="${totX(TOT.A)}" y="${y-26}" width="${totX(TOT.B)-totX(TOT.A)}" height="52" fill="#2e9e6b" opacity="0.15" rx="6"/>`;
+  s += `<line x1="${totX(TOT.A)}" y1="${y-26}" x2="${totX(TOT.A)}" y2="${y+26}" stroke="#2e9e6b" stroke-width="3" stroke-dasharray="6 4"/>`;
+  s += `<line x1="${totX(TOT.B)}" y1="${y-26}" x2="${totX(TOT.B)}" y2="${y+26}" stroke="#2e9e6b" stroke-width="3" stroke-dasharray="6 4"/>`;
+  for(let t = 1; t <= 8; t++){
+    s += `<line x1="${totX(t)}" y1="${y-8}" x2="${totX(t)}" y2="${y+8}" stroke="#5b7288" stroke-width="2"/>`;
+    s += `<text x="${totX(t)}" y="${y+34}" font-size="17" fill="#5b7288" text-anchor="middle" font-family="Arial">${t}</text>`;
+  }
+  s += `<line x1="${totX(TOT.min)}" y1="${y}" x2="${totX(TOT.max)}" y2="${y}" stroke="#343a40" stroke-width="3"/>`;
+  s += `<text x="${totX(TOT.A)}" y="${y-40}" font-size="18" font-weight="bold" fill="#0e7fae" text-anchor="middle" font-family="Arial">A's OC = 2</text>`;
+  s += `<text x="${totX(TOT.B)}" y="${y-40}" font-size="18" font-weight="bold" fill="#0e7fae" text-anchor="middle" font-family="Arial">B's OC = 6</text>`;
+  s += `<text x="${(totX(TOT.A)+totX(TOT.B))/2}" y="${y-62}" font-size="19" font-weight="bold" fill="#2e9e6b" text-anchor="middle" font-family="Arial">MUTUALLY BENEFICIAL ZONE</text>`;
+  s += `<text x="${totX(TOT.min)+4}" y="${y-14}" font-size="16" fill="#5b7288" font-family="Arial">fruits per rabbit →</text>`;
+  s += `<circle cx="${totX(x)}" cy="${y}" r="14" fill="#d9534f" stroke="#fff" stroke-width="3" style="cursor:grab"/>`;
+  s += `<text x="${totX(x)}" y="168" font-size="19" font-weight="bold" fill="#d9534f" text-anchor="middle" font-family="Arial">1 rabbit = ${x.toFixed(1)} fruits</text>`;
+  totSvg.innerHTML = s;
+}
+totUpdate();
+
+/* 直接拖动红点（同时同步滑块） */
+let totDrag = false;
+function totValFromEvent(e){
+  const r = totSvg.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  return TOT.min + ratio * (TOT.max - TOT.min);
+}
+function totSetFromEvent(e){
+  totPrice = totValFromEvent(e);
+  totUpdate();
+}
+totSvg.addEventListener("mousedown", e => { totDrag = true; e.preventDefault(); totSetFromEvent(e); });
+document.addEventListener("mousemove", e => { if(totDrag) totSetFromEvent(e); });
+document.addEventListener("mouseup", () => { totDrag = false; });
+totSvg.addEventListener("touchstart", e => { totDrag = true; totSetFromEvent(e.touches[0]); }, {passive:true});
+totSvg.addEventListener("touchmove", e => { if(totDrag){ e.preventDefault(); totSetFromEvent(e.touches[0]); } }, {passive:false});
+totSvg.addEventListener("touchend", () => { totDrag = false; });
+
+/* ═══════════ P12 Summary 填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+
+/* ═══════════ England vs Portugal（from AP Macro 1.2）═══════════ */
+function makeStepper(btnId, boxId, items, doneText){
+  let idx = -1;
+  const btn = document.getElementById(btnId), box = document.getElementById(boxId);
+  function next(){
+    idx++;
+    if(idx >= items.length){ btn.disabled = true; btn.textContent = "All shown ✓"; return; }
+    const d = document.createElement("div");
+    d.innerHTML = items[idx];
+    box.appendChild(d);
+    if(idx === items.length-1){ btn.disabled = true; btn.textContent = doneText || "All shown ✓"; }
+  }
+  function reset(){
+    idx = -1; box.innerHTML = "";
+    btn.disabled = false; btn.textContent = btn.dataset.label || "Reveal next";
+  }
+  btn.dataset.label = btn.textContent;
+  return { next, reset };
+}
+
+const ca0Step = makeStepper("ca0Btn","ca0Box",[
+  `<div class="hl">England: 1 wine = <b>10 cloth</b> · Portugal: 1 wine = <b>2.5 cloth</b> — different OCs.</div>`,
+  `<div class="hl amber">Portugal's slope is <b>flatter</b> → lower OC of wine → CA in <b>wine</b>.</div>`,
+  `<div class="hl green">England's cloth-PPC is flatter → lower OC of cloth → CA in <b>cloth</b>.</div>`,
+  `<div class="hl green">On the PPC: <b>flatter slope = lower OC = comparative advantage</b>.</div>`
+]);
+function nextCa0(){ ca0Step.next(); } function resetCa0(){ ca0Step.reset(); }
+
+const TRB = [
+  `<div class="hl"><b>Autarky</b>: each makes &amp; consumes the <b>midpoint</b>.</div>`,
+  `<div class="hl amber"><b>Specialise</b>: England → 200 cloth; Portugal → 20 wine. Production at the <b>endpoint</b>.</div>`,
+  `<div class="hl green"><b>Trade</b> at the TOT — both consume <b>beyond their PPC</b>.</div>`
+];
+let trbI = 0;
+function trbUpdateTot(){
+  const tot = parseFloat(document.getElementById("trbTotSlider").value);
+  document.getElementById("trbTot").textContent = tot.toFixed(1);
+  resetLineAnim();
+  /* England: 100 cloth + 100/tot wine — clamp so the point stays on the chart */
+  const rawEng = ((100 / tot) / 40) * 195;
+  const cxEng = 60 + Math.min(rawEng, 232), cyEng = 120;
+  document.getElementById("engC").setAttribute("cx", cxEng);
+  document.getElementById("engC").setAttribute("cy", cyEng);
+  document.getElementById("engCText").setAttribute("x", cxEng);
+  document.getElementById("engCText").setAttribute("y", cyEng - 28);
+  document.getElementById("engTrade").setAttribute("x2", cxEng);
+  document.getElementById("engTrade").setAttribute("y2", cyEng);
+  document.getElementById("engDh").setAttribute("x2", cxEng);
+  document.getElementById("engDv").setAttribute("x1", cxEng);
+  document.getElementById("engDv").setAttribute("x2", cxEng);
+  /* Portugal: 10 wine + 10*tot cloth */
+  const cxPor = 60 + (10 / 40) * 195, cyPor = 210 - ((10 * tot) / 200) * 180;
+  document.getElementById("porC").setAttribute("cx", cxPor);
+  document.getElementById("porC").setAttribute("cy", cyPor);
+  document.getElementById("porCText").setAttribute("x", cxPor);
+  document.getElementById("porCText").setAttribute("y", cyPor - 28);
+  const v = document.getElementById("trbVerdict");
+  if (tot < 2.5) {
+    v.className = "tverdict bad";
+    v.textContent = "Too cheap — Portugal sells wine below its own OC: Portugal's C falls INSIDE its PPC (worse than autarky).";
+  } else if (tot > 10) {
+    v.className = "tverdict bad";
+    v.textContent = "Too expensive — England pays above its own OC: England's C falls INSIDE its PPC (worse than autarky).";
+  } else {
+    v.className = "tverdict good";
+    v.textContent = "Fair deal (between the two OCs) — both consume BEYOND their PPC.";
+  }
+  document.getElementById("porTrade").setAttribute("x2", cxPor);
+  document.getElementById("porTrade").setAttribute("y2", cyPor);
+  document.getElementById("porDh").setAttribute("y1", cyPor);
+  document.getElementById("porDh").setAttribute("y2", cyPor);
+  document.getElementById("porDv").setAttribute("y1", cyPor);
+}
+function nextTrb(){
+  if(trbI >= TRB.length) return;
+  document.getElementById("trbBox").innerHTML += TRB[trbI];
+  trbI++;
+  document.querySelectorAll(".tb-a").forEach(el=>el.style.opacity = trbI >= 1 ? 1 : 0);
+  document.querySelectorAll(".tb-s").forEach(el=>el.style.opacity = trbI >= 2 ? 1 : 0);
+  if(trbI >= 3){
+    document.querySelectorAll(".tb-c").forEach(el=>el.style.opacity = 1);
+    animateTradeLines();
+  }
+  if(trbI >= TRB.length){ const b = document.getElementById("trbBtn"); b.disabled = true; b.textContent = "All shown ✓"; }
+}
+/* S→C 虚线从 S 缓慢画到 C，随后辅助虚线与 C 点淡入 */
+function animateTradeLines(){
+  [["engTrade","engDh","engDv","engC","engCText"],
+   ["porTrade","porDh","porDv","porC","porCText"]].forEach(grp=>{
+    const line = document.getElementById(grp[0]);
+    const x1 = +line.getAttribute("x1"), y1 = +line.getAttribute("y1");
+    const x2 = +line.getAttribute("x2"), y2 = +line.getAttribute("y2");
+    const len = Math.hypot(x2-x1, y2-y1);
+    grp.slice(1).forEach(id=>{
+      const el = document.getElementById(id);
+      el.dataset.o = el.style.opacity || "0.7";
+      el.style.opacity = 0;
+    });
+    line.style.transition = "none";
+    line.setAttribute("stroke-dasharray", len);
+    line.setAttribute("stroke-dashoffset", len);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      line.style.transition = "stroke-dashoffset 1.3s ease-in-out";
+      line.setAttribute("stroke-dashoffset", "0");
+      setTimeout(()=>{
+        line.style.transition = "none";
+        line.setAttribute("stroke-dasharray", "6 4");
+        line.removeAttribute("stroke-dashoffset");
+        grp.slice(1).forEach(id=>{
+          const el = document.getElementById(id);
+          el.style.transition = "opacity .4s";
+          el.style.opacity = el.dataset.o;
+        });
+      }, 1350);
+    }));
+  });
+}
+/* 拖动滑杆 / 重置时恢复静态虚线 */
+function resetLineAnim(){
+  ["engTrade","porTrade"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.style.transition = "none";
+    el.setAttribute("stroke-dasharray", "6 4");
+    el.removeAttribute("stroke-dashoffset");
+  });
+}
+function resetTrb(){
+  trbI = 0;
+  resetLineAnim();
+  document.getElementById("trbBox").innerHTML = "";
+  document.querySelectorAll(".tb-a,.tb-s,.tb-c").forEach(el=>el.style.opacity = 0);
+  const b = document.getElementById("trbBtn"); b.disabled = false; b.textContent = "Next step";
+  document.getElementById("trbTotSlider").value = 5;
+  trbUpdateTot();
+}
+document.getElementById("trbTotSlider").oninput = trbUpdateTot;
+trbUpdateTot();
+
+</script>
+</body>
+</html>
