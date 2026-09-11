@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en" data-page-node-id="0b5Kmyo7InediED2AeJK31">
+<head data-page-node-id="9zgKUxukDHsMsMKqOsT218">
+<meta charset="UTF-8" data-page-node-id="MvsuwV7Gl4ddauz1Sxqoiu">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="vDGEmVE5WMcjaiYcPsBk07">
 <title>AP Micro 2.2 — Production Possibility Curves</title>
 <!--
   ═══════════════════════════════════════════════════════════════
@@ -11,13 +11,19 @@
   1. Colors: all in :root CSS variables below.
   2. Text: each page is a <section class="slide">; edit directly.
   3. MINIMUM FONT SIZE: never below 22px (whiteboard rule).
-  4. Y-axis (coconuts): TOP tick = max (80/96), BOTTOM tick = 0.
+  4. Y-axis (coconuts): TOP tick = max (80/104), BOTTOM tick = 0.
      Axes must be THICK (gaxis stroke-width >= 4.5) for the board.
   5. Buttons drive content; bottom nav only flips pages.
+     PAGING = bottom ‹ Prev / Next › + dots + keyboard/presenter
+     (arrows / space / PageUp / PageDown). Touch SWIPE paging is
+     intentionally REMOVED — dragging the hour slider used to flip
+     the page on the classroom touch screen. Do not re-add it.
   6. Quiz answers: data-correct="1" on the right option button.
   7. Data: straight PPC uses 0-80 (10 fish or 10 coconuts per hour,
-     8 hours); bowed PPC uses decreasing marginal output 20,18,...6
-     (total 0-96), so both ends of the curve touch the axes.
+     8 hours); bowed PPC uses decreasing marginal output 20,18,...6,
+     whose running totals are 20,38,54,68,80,90,98,104 — so both
+     ends of the curve touch the axes at 104 (the OC steps are
+     6,8,10,12,14,16,18,20 coconuts per extra hour of fishing).
   8. Add/remove pages: copy a <section class="slide">, change its id.
   ═══════════════════════════════════════════════════════════════
 -->
@@ -97,6 +103,10 @@
 
   .s-foot { margin-top:1.4vh; display:flex; gap:1vw; align-items:center; justify-content:flex-end; }
   .s-foot .note { margin-right:auto; font-size:clamp(22px,2.4vh,28px); color:var(--text-sub); }
+  /* 填空题：空位先留空，揭晓时填入答案 */
+  .blank { display:inline-block; min-width:8ch; border-bottom:3px dashed var(--primary);
+           transition:color .25s ease, border-color .25s ease; }
+  .blank.filled { border-bottom-color:transparent; color:var(--primary-deep); font-weight:800; }
 
   .quiz-opt { display:block; width:100%; text-align:left; margin:.6vh 0; padding:1.1vh 1.4vw;
               border:2.5px solid var(--line); border-radius:10px; background:#fff;
@@ -161,410 +171,410 @@
   }
 </style>
 </head>
-<body>
-<div class="deck" id="deck">
+<body data-page-node-id="KF7tHul28WObT1mHjJWCnY">
+<div class="deck" id="deck" data-page-node-id="c4cC09nY3izKZOeah0QNXe">
 
   <!-- ════ <!-- ════ P1 COVER ════ -->
-  <section class="slide cover" data-title="Cover">
-    <div>
-      <div class="big">Production Possibility Curves</div>
-      <div class="q">What does it cost to produce more of one good?</div>
+  <section class="slide cover" data-title="Cover" data-page-node-id="yfEoQqCaEgc0ySZUTE1eVt">
+    <div data-page-node-id="RXHBYjTIafkhHVK2xeoxcZ">
+      <div class="big" data-page-node-id="lfCTfssEUD9bahSIXE6eAx">Production Possibility Curves</div>
+      <div class="q" data-page-node-id="yNSmAJODZdJ3lh93R8mOKg">What does it cost to produce more of one good?</div>
     </div>
-    <div class="meta">
-      AP Microeconomics · Unit 1: Basic Economic Concepts<br>
-      AP Micro 1.5 · Interactive courseware · 40 min<br>
+    <div class="meta" data-page-node-id="H0FhnyNruzKrulq1HpMaUh">
+      AP Microeconomics · Unit 1: Basic Economic Concepts<br data-page-node-id="f1H92Plx4CDDbTs8VDRh7s">
+      AP Micro 1.5 · Interactive courseware · 40 min<br data-page-node-id="BaA59S0jgqUvWu7e7i2uO0">
       CBS · International Economics
     </div>
-    <div class="go">👉 Press ← / → to flip pages</div>
+    <div class="go" data-page-node-id="FILc8ytpc99RKsQJehKR7E">👉 Press ← / → to flip pages</div>
   </section>
 
-  P2 STEP1: SCENE + SCHEDULE (fill row by row) ════ -->
-  <section class="slide" data-title="Step 1 · Table">
-    <div class="s-head">
-      <span class="tag">Step 1</span><h2>Set the Scene</h2><span class="en">设定情境 · 逐行填写生产表</span>
+  <!-- ════ P2 STEP1: SCENE + SCHEDULE (fill row by row) ════ -->
+  <section class="slide" data-title="Step 1 · Table" data-page-node-id="XsgBZwRqEm4EeoGiKHMHBc">
+    <div class="s-head" data-page-node-id="0QnFrGlrSmgDuDeO7zwfQy">
+      <span class="tag" data-page-node-id="WGpHhr5SCdG0ThbuvYrI13">Step 1</span><h2 data-page-node-id="oYkactxv9AIWzwNKm3W7se">Set the Scene</h2><span class="en" data-page-node-id="bTImtVryuzlcQgyWaCYX3w">设定情境 · 逐行填写生产表</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" style="flex:1.1;">
-          <div class="card">
-            <h3>Robinson's island</h3>
-            <p><b>Robinson Crusoe</b> is alone on a deserted island. He can work up to
-            <b>8 hours a day</b>. Every hour he can either:</p>
-            <p>🐟 catch <b>10 fish</b>, &nbsp;or&nbsp; 🥥 pick <b>10 coconuts</b>.</p>
-            <div class="hl">👉 Press <b>[Fill next row]</b> — the table is already
-            complete, we fill in the <b>numbers</b> one row at a time.</div>
+    <div class="s-body" data-page-node-id="wAJutIGQw03wngwHjCtCtN">
+      <div class="row" data-page-node-id="O34bIzjrXlvvqPONJFhjGI">
+        <div class="col" style="flex:1.1;" data-page-node-id="HzGslpQC7CfFkSSdIeFABp">
+          <div class="card" data-page-node-id="TVMfcsgofwJhI9gNp1TGRB">
+            <h3 data-page-node-id="Dc5Ap0GQwobVxkEmbtXDP5">Robinson's island</h3>
+            <p data-page-node-id="oVukNShEmS5Ipi3NGBgIVK"><b data-page-node-id="8W4PyRS5e8BH79JA37K1rW">Robinson Crusoe</b> is alone on a deserted island. He can work up to
+            <b data-page-node-id="XVLzVsRVNUtHFpVNWSJ7Yb">8 hours a day</b>. Every hour he can either:</p>
+            <p data-page-node-id="JL4aPyWhfoNrEIjMAxAGQX">🐟 catch <b data-page-node-id="QHeZcSupx3Axwt4mbHfTJ1">10 fish</b>, &nbsp;or&nbsp; 🥥 pick <b data-page-node-id="rCqEN6Kj1HZubW6lpPSVo1">10 coconuts</b>.</p>
+            <div class="hl" data-page-node-id="2xu28CWO1OzhZCrSL4EP0F">👉 Press <b data-page-node-id="RSFTYkwm4h9drUxXWyMHfF">[Fill next row]</b> — the table is already
+            complete, we fill in the <b data-page-node-id="KxnIpdOAcwdHqPde8jA8m2">numbers</b> one row at a time.</div>
           </div>
         </div>
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>Production Schedule</h3>
-            <div class="scroll" style="max-height:58vh;">
-              <table id="robTable">
-                <tr><th>Hours<br>fishing</th><th>Fish</th><th>Coconuts</th></tr>
-                <tr id="rt-0"><td>0 h</td><td id="rv-0" class="empty">·</td><td id="rc-0" class="empty">·</td></tr>
-                <tr id="rt-1"><td>1 h</td><td id="rv-1" class="empty">·</td><td id="rc-1" class="empty">·</td></tr>
-                <tr id="rt-2"><td>2 h</td><td id="rv-2" class="empty">·</td><td id="rc-2" class="empty">·</td></tr>
-                <tr id="rt-3"><td>3 h</td><td id="rv-3" class="empty">·</td><td id="rc-3" class="empty">·</td></tr>
-                <tr id="rt-4"><td>4 h</td><td id="rv-4" class="empty">·</td><td id="rc-4" class="empty">·</td></tr>
-                <tr id="rt-5"><td>5 h</td><td id="rv-5" class="empty">·</td><td id="rc-5" class="empty">·</td></tr>
-                <tr id="rt-6"><td>6 h</td><td id="rv-6" class="empty">·</td><td id="rc-6" class="empty">·</td></tr>
-                <tr id="rt-7"><td>7 h</td><td id="rv-7" class="empty">·</td><td id="rc-7" class="empty">·</td></tr>
-                <tr id="rt-8"><td>8 h</td><td id="rv-8" class="empty">·</td><td id="rc-8" class="empty">·</td></tr>
+        <div class="col" style="flex:1;" data-page-node-id="vVKwgjLZcHoxUoXLKEREjs">
+          <div class="card" data-page-node-id="KoK5HD05wWuElbN094S92C">
+            <h3 data-page-node-id="M92E4RtKY9cboUu8PLq1Fy">Production Schedule</h3>
+            <div class="scroll" style="max-height:58vh;" data-page-node-id="YPnEfpi7Agqa3DLbE1xXQd">
+              <table id="robTable" data-page-node-id="sqPf0xcNpwtwqF24xjRCLr">
+                <tr data-page-node-id="MF8Bsb1l80tBvUd1k9ITVa"><th data-page-node-id="gLyD8YrAYYZ8S2ksX6QMkY">Hours<br data-page-node-id="q34lmk7H5Gr1FCaIqYvAsJ">fishing</th><th data-page-node-id="U8GSks0CXLUDxYz2xTKJfM">Fish</th><th data-page-node-id="i99UrNNsIpY6MFL9YnKNel">Coconuts</th></tr>
+                <tr id="rt-0" data-page-node-id="0CyC7QujA3Z5naPXvNpb5u"><td data-page-node-id="hFxNLjch7ZOHsV7YvSXkvl">0 h</td><td id="rv-0" class="empty" data-page-node-id="Ben1D0k1b5TD4ADtT59EZL">·</td><td id="rc-0" class="empty" data-page-node-id="3FNc0i5dHSPCdnHqKqILEJ">·</td></tr>
+                <tr id="rt-1" data-page-node-id="JcNJABZLnZBQqHkInGwJYD"><td data-page-node-id="5eAuUQ6PbW1Tx6lGCbKzY0">1 h</td><td id="rv-1" class="empty" data-page-node-id="fT6i90Qi67e8qJh3IdE5mX">·</td><td id="rc-1" class="empty" data-page-node-id="8tM9OgXlM9OaHupiAHJ6JB">·</td></tr>
+                <tr id="rt-2" data-page-node-id="JZFRTyQrLM4x5ThhPXzUc4"><td data-page-node-id="uRkyfG0chwnEvYUm6rkdBd">2 h</td><td id="rv-2" class="empty" data-page-node-id="ptKH0fK0Y1peKsRi6fVD2P">·</td><td id="rc-2" class="empty" data-page-node-id="yHrxjuEa709rTdsjaroza9">·</td></tr>
+                <tr id="rt-3" data-page-node-id="SXRMQB3es1BBNjTcDKKBPV"><td data-page-node-id="cRHDxHINpIAeqCYy2VyCrc">3 h</td><td id="rv-3" class="empty" data-page-node-id="mOyczJ57xZ6tSFSg50ohzt">·</td><td id="rc-3" class="empty" data-page-node-id="JEC453i6LaHE8GGhjZz26d">·</td></tr>
+                <tr id="rt-4" data-page-node-id="PoIz50XKvwCO8QzQlmBXQQ"><td data-page-node-id="az9wrA9rEKgzW3qTkLEbFI">4 h</td><td id="rv-4" class="empty" data-page-node-id="70HzbTNMTTTwYV4hIijsZb">·</td><td id="rc-4" class="empty" data-page-node-id="pwaOTDeepeaXKTsshmWb9y">·</td></tr>
+                <tr id="rt-5" data-page-node-id="AQ2E4cpw1A1LiD7zj3XFpr"><td data-page-node-id="OZBb2tiWbktf4yIGgSo108">5 h</td><td id="rv-5" class="empty" data-page-node-id="QHGWsZfHr6xalAmrMDzPKl">·</td><td id="rc-5" class="empty" data-page-node-id="XpCCkEfu2gAEnzPYjGsr6k">·</td></tr>
+                <tr id="rt-6" data-page-node-id="9n8vdK3OrzT8yJlzItZhnm"><td data-page-node-id="S0wB8R16OmLtSNLnEq1GaJ">6 h</td><td id="rv-6" class="empty" data-page-node-id="E40nZUG6RemBwRUS3QzM1h">·</td><td id="rc-6" class="empty" data-page-node-id="eVZMKQbvqbIBXAmS2SDoNj">·</td></tr>
+                <tr id="rt-7" data-page-node-id="DY8r3aM9bVhfJobJrEwety"><td data-page-node-id="QWq4Lo25IOYB5RXRmi0mVK">7 h</td><td id="rv-7" class="empty" data-page-node-id="9Fbd4DkVLexifzxzNZtrja">·</td><td id="rc-7" class="empty" data-page-node-id="paGnnTNIUyWHgsNFEnYyZa">·</td></tr>
+                <tr id="rt-8" data-page-node-id="EmhrAVmlFnhF1HAx0z1CtA"><td data-page-node-id="qAJAcF6AR7XO2irJ9BFyUK">8 h</td><td id="rv-8" class="empty" data-page-node-id="F09g0aHlRzuujCUyELzUtX">·</td><td id="rc-8" class="empty" data-page-node-id="aHrRQNMNiNjewe5vG16Snz">·</td></tr>
               </table>
             </div>
           </div>
         </div>
       </div>
-      <div class="s-foot">
-        <span class="note" id="tableNote">0 h fishing → fish 0 · coconuts 80</span>
-        <button class="btn" id="fillBtn" onclick="fillRow()">Fill next row</button>
+      <div class="s-foot" data-page-node-id="dKCljQzXe76abK030jgwaz">
+        <span class="note" id="tableNote" data-page-node-id="JrgLMkxuDbUTLaO1ZGXcyZ">0 h fishing → fish 0 · coconuts 80</span>
+        <button class="btn" id="fillBtn" onclick="fillRow()" data-page-node-id="svsGS9tSGiCa5ntyTspTxk">Fill next row</button>
       </div>
     </div>
   </section>
 
   <!-- ════ P3 STEP1: DRAW STRAIGHT PPC ════ -->
-  <section class="slide" data-title="Step 1 · Draw">
-    <div class="s-head">
-      <span class="tag">Step 1</span><h2>Draw the PPC — Point by Point</h2><span class="en">根据表格，一个点一个点画图</span>
+  <section class="slide" data-title="Step 1 · Draw" data-page-node-id="jbUxZunHzPWbHjTEwKA1HI">
+    <div class="s-head" data-page-node-id="xnaTFmAQvpiKMElXD21I7o">
+      <span class="tag" data-page-node-id="6dgIwtydyyVzpi5hp7Kznc">Step 1</span><h2 data-page-node-id="q26oyGrYvHXJv6FeownaUD">Draw the PPC — Point by Point</h2><span class="en" data-page-node-id="0K5ygf46MCCc17Si8SVvY5">根据表格，一个点一个点画图</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>From table to graph</h3>
-            <p>Each row is one <b>point</b>: (fish, coconuts).</p>
-            <p>Press <b>[Add next point]</b>, then <b>[Connect the line]</b>.</p>
-            <div class="hl">The line is the <b>PPC</b> — a straight line,
-            so opportunity cost is <b>constant</b>.</div>
+    <div class="s-body" data-page-node-id="e6mavyr0Yg0ntwEo5xy3vV">
+      <div class="row" data-page-node-id="5CDwhIXqjgZcgqOGebmAUr">
+        <div class="col" style="flex:1;" data-page-node-id="lwSnLtZtSvdOQ7xf4QHFWI">
+          <div class="card" data-page-node-id="V99dwOXkoGJYf5JoCLShAI">
+            <h3 data-page-node-id="sOM52QXPiGsFYNw7yd2CeJ">From table to graph</h3>
+            <p data-page-node-id="opDAhIgHiODo4pV8TlnQRD">Each row is one <b data-page-node-id="EORRumjHDjWgQQ9rzRxjKS">point</b>: (fish, coconuts).</p>
+            <p data-page-node-id="tbV19weyDNf8pK497MPc5A">Press <b data-page-node-id="q4Uy6nPCpG7deTnSfS0Cj6">[Add next point]</b>, then <b data-page-node-id="YBYhBZgH6si4nyUulWAOxv">[Connect the line]</b>.</p>
+            <div class="hl" data-page-node-id="TtMAuOIpsixh5jCmV1qSGo">The line is the <b data-page-node-id="057rvqYFQJ4pIG2GIlOkl9">PPC</b> — a straight line,
+            so opportunity cost is <b data-page-node-id="5JXC4pbXImGSCYIxH814aU">constant</b>.</div>
           </div>
         </div>
-        <div class="col" style="flex:1;">
-          <div class="graph">
-            <svg viewBox="0 0 720 470" style="height:46vh;">
-              <g class="ggrid">
-                <line x1="110" y1="410" x2="650" y2="410"/><line x1="110" y1="60" x2="110" y2="410"/>
-                <line x1="177.5" y1="60" x2="177.5" y2="410"/><line x1="245" y1="60" x2="245" y2="410"/>
-                <line x1="312.5" y1="60" x2="312.5" y2="410"/><line x1="380" y1="60" x2="380" y2="410"/>
-                <line x1="447.5" y1="60" x2="447.5" y2="410"/><line x1="515" y1="60" x2="515" y2="410"/>
-                <line x1="582.5" y1="60" x2="582.5" y2="410"/><line x1="650" y1="60" x2="650" y2="410"/>
-                <line x1="110" y1="363.75" x2="650" y2="363.75"/><line x1="110" y1="317.5" x2="650" y2="317.5"/>
-                <line x1="110" y1="271.25" x2="650" y2="271.25"/><line x1="110" y1="225" x2="650" y2="225"/>
-                <line x1="110" y1="178.75" x2="650" y2="178.75"/><line x1="110" y1="132.5" x2="650" y2="132.5"/>
-                <line x1="110" y1="86.25" x2="650" y2="86.25"/>
+        <div class="col" style="flex:1;" data-page-node-id="yOq7JWeA5wPLGsRlXZwemc">
+          <div class="graph" data-page-node-id="n3Bv1BPegE5hQpPgckgs6K">
+            <svg viewBox="0 0 720 470" style="height:46vh;" data-page-node-id="J23Q5Y9M3qBahw0TRN1RJO">
+              <g class="ggrid" data-page-node-id="OF3D1leFk0SfbmBrG1GEOB">
+                <line x1="110" y1="410" x2="650" y2="410" data-page-node-id="TPKfmyR9hZoBxP5tAGCH54"/><line x1="110" y1="60" x2="110" y2="410" data-page-node-id="AdapotT3RedNhHrCd7GR0y"/>
+                <line x1="177.5" y1="60" x2="177.5" y2="410" data-page-node-id="HErtZLMSrtUfbuy9XmQBQN"/><line x1="245" y1="60" x2="245" y2="410" data-page-node-id="rCObvURJwwwi3UvuIum2c7"/>
+                <line x1="312.5" y1="60" x2="312.5" y2="410" data-page-node-id="zUdkXrkRNgTqqypiFdaBrL"/><line x1="380" y1="60" x2="380" y2="410" data-page-node-id="66eGW5LrugOtSJa8SUHEug"/>
+                <line x1="447.5" y1="60" x2="447.5" y2="410" data-page-node-id="Iy9txmiPJdIEIDs3hPWqlZ"/><line x1="515" y1="60" x2="515" y2="410" data-page-node-id="z2eWcZ6TMbib5AOugzlEPk"/>
+                <line x1="582.5" y1="60" x2="582.5" y2="410" data-page-node-id="OkSvvwD8Os8m2qauAHA0l7"/><line x1="650" y1="60" x2="650" y2="410" data-page-node-id="OEz6sAGXGweWMAAu98fH9q"/>
+                <line x1="110" y1="363.75" x2="650" y2="363.75" data-page-node-id="LrkNQHJTCBUvPiKtCG27wz"/><line x1="110" y1="317.5" x2="650" y2="317.5" data-page-node-id="83X3kmlDQrm4wnS4vZgVlq"/>
+                <line x1="110" y1="271.25" x2="650" y2="271.25" data-page-node-id="SXj9ozHA3Cg3ACp2rGW8LT"/><line x1="110" y1="225" x2="650" y2="225" data-page-node-id="skeCiDGODszQ2aJeNalx6Y"/>
+                <line x1="110" y1="178.75" x2="650" y2="178.75" data-page-node-id="G6eH9G1HQfdEMTt0fErGel"/><line x1="110" y1="132.5" x2="650" y2="132.5" data-page-node-id="hjQ47gvT3k5WPWEbF9P8Cp"/>
+                <line x1="110" y1="86.25" x2="650" y2="86.25" data-page-node-id="g5DXU51mCVLv9wMuxfQS4e"/>
               </g>
-              <line class="gaxis" x1="110" y1="410" x2="650" y2="410"/>
-              <line class="gaxis" x1="110" y1="410" x2="110" y2="60"/>
-              <text class="gtick" x="110" y="436">0</text>
-              <text class="gtick" x="380" y="436">40</text>
-              <text class="gtick" x="650" y="436">80</text>
-              <text class="gtick" x="82" y="64">80</text>
-              <text class="gtick" x="82" y="235">40</text>
-              <text class="gtick" x="82" y="416">0</text>
-              <text class="glabel" x="380" y="462" text-anchor="middle">Fish 鱼 →</text>
-              <text class="glabel" x="26" y="245" transform="rotate(-90 26 245)" text-anchor="middle">Coconuts 椰 →</text>
-              <line id="straightLine" class="gline reveal-line" x1="110" y1="60" x2="650" y2="410"/>
-              <g id="straightPts">
-                <circle class="gpoint reveal" cx="110" cy="60" r="9"/><text class="glabel reveal" x="118" y="50">(0, 80)</text>
-                <circle class="gpoint reveal" cx="177.5" cy="102.5" r="9"/><text class="glabel reveal" x="185" y="92">(10, 70)</text>
-                <circle class="gpoint reveal" cx="245" cy="145" r="9"/><text class="glabel reveal" x="253" y="135">(20, 60)</text>
-                <circle class="gpoint reveal" cx="312.5" cy="187.5" r="9"/><text class="glabel reveal" x="320" y="177">(30, 50)</text>
-                <circle class="gpoint reveal" cx="380" cy="230" r="9"/><text class="glabel reveal" x="388" y="220">(40, 40)</text>
-                <circle class="gpoint reveal" cx="447.5" cy="272.5" r="9"/><text class="glabel reveal" x="455" y="262">(50, 30)</text>
-                <circle class="gpoint reveal" cx="515" cy="315" r="9"/><text class="glabel reveal" x="523" y="305">(60, 20)</text>
-                <circle class="gpoint reveal" cx="582.5" cy="357.5" r="9"/><text class="glabel reveal" x="590" y="347">(70, 10)</text>
-                <circle class="gpoint reveal" cx="650" cy="410" r="9"/><text class="glabel reveal" x="545" y="430">(80, 0)</text>
+              <line class="gaxis" x1="110" y1="410" x2="650" y2="410" data-page-node-id="3yrpAzDD57vqe6n1pltyNM"/>
+              <line class="gaxis" x1="110" y1="410" x2="110" y2="60" data-page-node-id="pSg13BmzmXhAgIiMQj1FDx"/>
+              <text class="gtick" x="110" y="436" data-page-node-id="x5m7Xdz5ZWDEl4DVTV6qb0">0</text>
+              <text class="gtick" x="380" y="436" data-page-node-id="E8QMokAxHGFuXFdXGuFiLS">40</text>
+              <text class="gtick" x="650" y="436" data-page-node-id="SedGH1hnjcI6rV1kqPeeFa">80</text>
+              <text class="gtick" x="82" y="64" data-page-node-id="4eqjkLhAkkXSFJZOmbx8oJ">80</text>
+              <text class="gtick" x="82" y="235" data-page-node-id="YLlvROKX76eVHnNuSbAOHp">40</text>
+              <text class="gtick" x="82" y="416" data-page-node-id="7D10Xs9Ifs7EACnGgBzJ8I">0</text>
+              <text class="glabel" x="380" y="462" text-anchor="middle" data-page-node-id="rL1w6eN860Fr9z4MxMAWY5">Fish 鱼 →</text>
+              <text class="glabel" x="26" y="245" transform="rotate(-90 26 245)" text-anchor="middle" data-page-node-id="i9PuuHohj3HZiRWrSBrSFW">Coconuts 椰 →</text>
+              <line id="straightLine" class="gline reveal-line" x1="110" y1="60" x2="650" y2="410" data-page-node-id="u4zStCtdp4AjKKSBwVGuO5"/>
+              <g id="straightPts" data-page-node-id="lTFMuFaKTUWoitTL4S3ICg">
+                <circle class="gpoint reveal" cx="110" cy="60" r="9" data-page-node-id="s2Ks5Egc9AiRFW7BYY4ylq"/><text class="glabel reveal" x="118" y="50" data-page-node-id="hw2X78hggg66QLSecf4ZSi">(0, 80)</text>
+                <circle class="gpoint reveal" cx="177.5" cy="102.5" r="9" data-page-node-id="qbAuEQD5BDCRzDAwlU6zGu"/><text class="glabel reveal" x="185" y="92" data-page-node-id="fHnJ0VLDYKDFW94NurZudI">(10, 70)</text>
+                <circle class="gpoint reveal" cx="245" cy="145" r="9" data-page-node-id="EVTexkXq7aqd8KbChTx5BG"/><text class="glabel reveal" x="253" y="135" data-page-node-id="3tQFxHdCij7tM40D6wqFha">(20, 60)</text>
+                <circle class="gpoint reveal" cx="312.5" cy="187.5" r="9" data-page-node-id="tmaA2aFwNDqm5SRd2RjRJj"/><text class="glabel reveal" x="320" y="177" data-page-node-id="rFn1FkNwlB3wa41WZ6o9Sl">(30, 50)</text>
+                <circle class="gpoint reveal" cx="380" cy="230" r="9" data-page-node-id="ZSekpeWBwf7NEsOxan4uj9"/><text class="glabel reveal" x="388" y="220" data-page-node-id="MsmeswDEQ9WY9WH3smjiT7">(40, 40)</text>
+                <circle class="gpoint reveal" cx="447.5" cy="272.5" r="9" data-page-node-id="TEuDZiuXBDe6QlTq3X6zFt"/><text class="glabel reveal" x="455" y="262" data-page-node-id="fZaLXKDpyb1PhqxIxDDLqC">(50, 30)</text>
+                <circle class="gpoint reveal" cx="515" cy="315" r="9" data-page-node-id="rHnRLR22q92WefPaQAyleu"/><text class="glabel reveal" x="523" y="305" data-page-node-id="hS8ioXoNPEk2aZtng7xsS2">(60, 20)</text>
+                <circle class="gpoint reveal" cx="582.5" cy="357.5" r="9" data-page-node-id="W8kjSZv64ZB7EW5K73BZfo"/><text class="glabel reveal" x="590" y="347" data-page-node-id="GrFvhOaYgiGfWRcV3dL8ZZ">(70, 10)</text>
+                <circle class="gpoint reveal" cx="650" cy="410" r="9" data-page-node-id="OiGtODvjdvqW8XMfR8IPWS"/><text class="glabel reveal" x="545" y="430" data-page-node-id="xczlyjp1rFwztGwTqqpb0v">(80, 0)</text>
               </g>
             </svg>
           </div>
         </div>
       </div>
-      <div class="s-foot">
-        <span class="note" id="drawNote">Click to plot the points</span>
-        <button class="btn" id="addPtBtn" onclick="addPoint()">Add next point</button>
-        <button class="btn ghost" id="connBtn" onclick="connectLine()" disabled>Connect the line</button>
+      <div class="s-foot" data-page-node-id="JAPJqU44nxRV2WM1Dru00w">
+        <span class="note" id="drawNote" data-page-node-id="Dcwl1hIWUpy3LDoG7JqoEs">Click to plot the points</span>
+        <button class="btn" id="addPtBtn" onclick="addPoint()" data-page-node-id="Is0LRFDpex8ONvsHBsSioA">Add next point</button>
+        <button class="btn ghost" id="connBtn" onclick="connectLine()" disabled data-page-node-id="JCQxGjVwn6iPrCyVajFAZ1">Connect the line</button>
       </div>
     </div>
   </section>
 
   <!-- ════ P4 STEP2: ON·INSIDE·OUTSIDE (3-step reveal) ════ -->
-  <section class="slide" data-title="Step 2 · On/In/Out">
-    <div class="s-head">
-      <span class="tag">Step 2</span><h2>On · Inside · Outside</h2><span class="en">先看坐标思考 → 显示点 → 再解释</span>
+  <section class="slide" data-title="Step 2 · On/In/Out" data-page-node-id="HGh1gUPMPAPn6tjHTLZIJ7">
+    <div class="s-head" data-page-node-id="UNKLkb3kcH2o1AKcmf8gDS">
+      <span class="tag" data-page-node-id="io9HrD1n85ukEtNSOWqTqL">Step 2</span><h2 data-page-node-id="IpUmLIWIPD7gKqSRJntoTO">On · Inside · Outside</h2><span class="en" data-page-node-id="pLLpJ1EfzTNMrdzYWEJpiA">先看坐标思考 → 显示点 → 再解释</span>
     </div>
-    <div class="s-body" style="overflow:hidden;">
-      <div class="s-banner">Each hour yields <b>10 fish</b> or <b>10 coconuts</b> — at most
-        <b>8 hours</b>. &nbsp; <b>A (40, 40)</b> · <b>B (20, 20)</b> · <b>C (60, 40)</b> —
+    <div class="s-body" style="overflow:hidden;" data-page-node-id="H6zMpWIkTDTj02BRSy2CDa">
+      <div class="s-banner" data-page-node-id="VbjXEquOEPGtmTACNLMD2U">Each hour yields <b data-page-node-id="eM5lwIaXszOyNe2Kv8vdEF">10 fish</b> or <b data-page-node-id="LXCeEZlD8n3SNMJx5DjE4O">10 coconuts</b> — at most
+        <b data-page-node-id="GHN7KlUBt7PzvcaqNQQPLg">8 hours</b>. &nbsp; <b data-page-node-id="Gl4rHmFd14ckRtOSHAlikY">A (40, 40)</b> · <b data-page-node-id="J7sX7dG3NjTAwRfx08BPvv">B (20, 20)</b> · <b data-page-node-id="qi4YYOkSF6LRJM8OqYFTl4">C (60, 40)</b> —
         how many hours did he work at each point, and where does each point sit?</div>
-      <div class="row" style="min-height:0;">
-        <div class="col" style="flex:1;min-height:0;">
-          <div class="graph">
-            <svg viewBox="0 0 720 470" style="height:50vh;">
-              <line class="gline" x1="110" y1="60" x2="650" y2="410"/>
-              <polygon class="garea reveal pt" points="110,60 650,410 650,410 110,410"/>
-              <line class="gaxis" x1="110" y1="410" x2="650" y2="410"/>
-              <line class="gaxis" x1="110" y1="410" x2="110" y2="60"/>
-              <text class="gtick" x="110" y="436">0</text><text class="gtick" x="650" y="436">80</text>
-              <text class="gtick" x="82" y="64">80</text><text class="gtick" x="82" y="416">0</text>
-              <text class="glabel" x="380" y="462" text-anchor="middle">Fish 鱼 →</text>
-              <text class="glabel" x="26" y="245" transform="rotate(-90 26 245)" text-anchor="middle">Coconuts 椰 →</text>
-              <circle class="gpoint green reveal pt" cx="380" cy="230" r="11"/>
-              <text class="glabel reveal pt" x="392" y="222" fill="#2e7d5b">A (40,40)</text>
-              <circle class="gpoint orange reveal pt" cx="245" cy="315" r="11"/>
-              <text class="glabel reveal pt" x="120" y="305" fill="#a06a12">B (20,20)</text>
-              <circle class="gpoint red reveal pt" cx="515" cy="230" r="11"/>
-              <text class="glabel reveal pt" x="527" y="222" fill="#b03a3a">C (60,40)</text>
+      <div class="row" style="min-height:0;" data-page-node-id="32athiI7BiQBVMgs5UPjTI">
+        <div class="col" style="flex:1;min-height:0;" data-page-node-id="jbwuyLRTyTchsnmU6aSDGG">
+          <div class="graph" data-page-node-id="9FjWWutzahl85aSGuOu8O9">
+            <svg viewBox="0 0 720 470" style="height:50vh;" data-page-node-id="nvvfHp4tax5ha9KitrVlWs">
+              <line class="gline" x1="110" y1="60" x2="650" y2="410" data-page-node-id="s7Z4hiuk1qp50CA0v3oSbp"/>
+              <polygon class="garea reveal pt" points="110,60 650,410 650,410 110,410" data-page-node-id="9j7tOjGa4MM1nMcjpgPTWI"/>
+              <line class="gaxis" x1="110" y1="410" x2="650" y2="410" data-page-node-id="dyzY4wzIClDDfIwpoKaK91"/>
+              <line class="gaxis" x1="110" y1="410" x2="110" y2="60" data-page-node-id="sr7yu2xNCVrahjayweJOZI"/>
+              <text class="gtick" x="110" y="436" data-page-node-id="YSB8D5X50gkCqgfGv8RbpQ">0</text><text class="gtick" x="650" y="436" data-page-node-id="9GVXlOFQI2WmkXuJYcYEpk">80</text>
+              <text class="gtick" x="82" y="64" data-page-node-id="z0H1KuNrDK0QXcK21udKn2">80</text><text class="gtick" x="82" y="416" data-page-node-id="Q4rFO6TCaP8xZnHjPfIZ3A">0</text>
+              <text class="glabel" x="380" y="462" text-anchor="middle" data-page-node-id="TFjKX27IussrNVsAng0eSb">Fish 鱼 →</text>
+              <text class="glabel" x="26" y="245" transform="rotate(-90 26 245)" text-anchor="middle" data-page-node-id="ULoPgGmOuZbhlWDfQC5AGd">Coconuts 椰 →</text>
+              <circle class="gpoint green reveal pt" cx="380" cy="230" r="11" data-page-node-id="I8KvXaYP6Eel7uSDbtB76u"/>
+              <text class="glabel reveal pt" x="392" y="222" fill="#2e7d5b" data-page-node-id="d9xDFNqSRcluEVy6LfzqxW">A (40,40)</text>
+              <circle class="gpoint orange reveal pt" cx="245" cy="315" r="11" data-page-node-id="ZF47L0ZlWyZw36ayiWRBMw"/>
+              <text class="glabel reveal pt" x="120" y="305" fill="#a06a12" data-page-node-id="OnY5YJkcS4bG7Gi5GSr69A">B (20,20)</text>
+              <circle class="gpoint red reveal pt" cx="515" cy="230" r="11" data-page-node-id="4EnniLoHPT5EGa9EPNQhGr"/>
+              <text class="glabel reveal pt" x="527" y="222" fill="#b03a3a" data-page-node-id="bqhPSQP23AyxtZjHPvLXoK">C (60,40)</text>
             </svg>
           </div>
         </div>
-        <div class="col" style="flex:1;min-height:0;overflow:hidden;">
-          <div class="card reveal ex" style="padding:1vh 1.2vw;margin-bottom:.7vh;">
-            <h3 style="color:var(--accent-green);font-size:clamp(22px,2.2vh,26px);">A (40, 40) · On the curve</h3>
-            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;">4 h + 4 h = <b>8 hours</b> ✓ all time used —
-            <b>efficient</b> (full employment)</p></div>
-          <div class="card reveal ex" style="padding:1vh 1.2vw;margin-bottom:.7vh;">
-            <h3 style="color:#a06a12;font-size:clamp(22px,2.2vh,26px);">B (20, 20) · Inside</h3>
-            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;">2 h + 2 h = <b>4 hours</b> — time not fully used —
-            <b>inefficient</b> (waste)</p></div>
-          <div class="card reveal ex" style="padding:1vh 1.2vw;margin-bottom:.7vh;">
-            <h3 style="color:var(--accent-red);font-size:clamp(22px,2.2vh,26px);">C (60, 40) · Outside</h3>
-            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;">6 h + 4 h = <b>10 hours</b> — <b>unattainable</b>
+        <div class="col" style="flex:1;min-height:0;overflow-y:auto;padding-right:.5vw;" data-page-node-id="V9CWBBb4ysBS5L1icHAEVR">
+          <div class="card reveal ex" style="padding:1vh 1.2vw;margin-bottom:.7vh;" data-page-node-id="SwdkcwO46JP9A088fa4DYT">
+            <h3 style="color:var(--accent-green);font-size:clamp(22px,2.2vh,26px);" data-page-node-id="F9PrXb4LRBK4BNWomabohx">A (40, 40) · On the curve</h3>
+            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;" data-page-node-id="ryhfLD0uwo7FwcAj3dMf1x">4 h + 4 h = <b data-page-node-id="n5BVb6HpqdcMmozAD3mvaA">8 hours</b> ✓ all time used —
+            <b data-page-node-id="3n5eFXziCvSGrjHqkIXI1W">efficient</b> (full employment)</p></div>
+          <div class="card reveal ex" style="padding:1vh 1.2vw;margin-bottom:.7vh;" data-page-node-id="wsrQyG1e9aMXauojBAPoCm">
+            <h3 style="color:#a06a12;font-size:clamp(22px,2.2vh,26px);" data-page-node-id="3DQ9yII3ZZMHh1LOvzfW1b">B (20, 20) · Inside</h3>
+            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;" data-page-node-id="XAcVPX6VPamwHLMLBWbMph">2 h + 2 h = <b data-page-node-id="PAAKx02KQA3Q1PZdXYyLss">4 hours</b> — time not fully used —
+            <b data-page-node-id="t0ew3Zb8umLABsrr5BW4Np">inefficient</b> (waste)</p></div>
+          <div class="card reveal ex" style="padding:1vh 1.2vw;margin-bottom:.7vh;" data-page-node-id="3c2LVN1iVxN2DYWXumi1DD">
+            <h3 style="color:var(--accent-red);font-size:clamp(22px,2.2vh,26px);" data-page-node-id="VXnagYn0jxaNunIetzAAHX">C (60, 40) · Outside</h3>
+            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;" data-page-node-id="NsyqN3WWBrrXdgp3RMjcUG">6 h + 4 h = <b data-page-node-id="sp9PBTZettSybQw0Kfx6dw">10 hours</b> — <b data-page-node-id="EPOvFgeWoxPv2oDvuTQF2O">unattainable</b>
             (impossible) with 8 hours</p></div>
-          <div class="hl pulse reveal ex" style="padding:.8vh 1.1vw;margin-top:.2vh;font-size:clamp(22px,2.1vh,25px);">
-            <b>Key idea:</b> on = full use = <b>efficient</b> = <b>full employment</b> ·
-            inside = waste = <b>inefficient</b> · outside = impossible = <b>unattainable</b></div>
+          <div class="hl pulse reveal ex" style="padding:.8vh 1.1vw;margin-top:.2vh;font-size:clamp(22px,2.1vh,25px);" data-page-node-id="5VJu2HuvEHbMGCFry8BFqJ">
+            <b data-page-node-id="KY0n42x2oPxiAhgIgHfnaY">Key idea:</b> on = full use = <b data-page-node-id="jTyK59EUBFo29VBLjJsU8B">efficient</b> = <b data-page-node-id="Y2bXQqxb1HIHGMEO7kyjcJ">full employment</b> ·
+            inside = waste = <b data-page-node-id="NXLzDyXcRJ36jVCKDEMM3l">inefficient</b> · outside = impossible = <b data-page-node-id="OWYwmIUDH0TBdHBXqiIpio">unattainable</b></div>
         </div>
       </div>
-      <div class="s-foot" style="margin-top:.8vh;">
-        <span class="note" id="oiNote">Step ① — read the three coordinates above and think first.</span>
-        <button class="btn" id="oiBtn" onclick="oiNext()">① Show the points</button>
+      <div class="s-foot" style="margin-top:.8vh;" data-page-node-id="KenADGwJrBs1DyqXzqSuOM">
+        <span class="note" id="oiNote" data-page-node-id="zCVDmyCIpCKH936zzl5EDP">Step ① — read the three coordinates above and think first.</span>
+        <button class="btn" id="oiBtn" onclick="oiNext()" data-page-node-id="WyjAC7GDyGd20HzjwdfJD3">① Show the points</button>
       </div>
     </div>
   </section>
 
   <!-- ════ P6 STEP3: SLOPE = OC ════ -->
-  <section class="slide" data-title="Step 3 · Slope">
-    <div class="s-head">
-      <span class="tag">Step 3</span><h2>Slope = Opportunity Cost</h2><span class="en">沿 PPC 移动：斜率就是机会成本</span>
+  <section class="slide" data-title="Step 3 · Slope" data-page-node-id="UXs7Bxwz0z1ElqlvQfartN">
+    <div class="s-head" data-page-node-id="zvYPE0SxXLoShlS3MJF7M3">
+      <span class="tag" data-page-node-id="E898xIqzaAoECqowHUa6eZ">Step 3</span><h2 data-page-node-id="hlFUUesaqCM43qxoy98lU8">Slope = Opportunity Cost</h2><span class="en" data-page-node-id="5bh4YAmibbfS9NjyqIC9LH">沿 PPC 移动：斜率就是机会成本</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>Move along the line</h3>
-            <p>From <b>A (10, 70)</b> to <b>B (40, 40)</b>: + 30 fish → − 30 coconuts</p>
-            <div class="hl"><b>Opportunity cost of 30 fish = 30 coconuts</b><br>
+    <div class="s-body" data-page-node-id="h4tLhDPRZ2OLSCggzF0AbS">
+      <div class="row" data-page-node-id="pZ2RLKzhzcJtgHAcUCE3wA">
+        <div class="col" style="flex:1;" data-page-node-id="IAabMSEODwwgpenRSGs9ig">
+          <div class="card" data-page-node-id="Y2dLYRUVWZJEqGnxtAC8YZ">
+            <h3 data-page-node-id="7eKzqY0k9y0pUpxRKyQxWK">Move along the line</h3>
+            <p data-page-node-id="7fSP40X0KADmKRHE3VVihs">From <b data-page-node-id="st7lHWxAI7IzLtCHwzuIbq">A (10, 70)</b> to <b data-page-node-id="SdsQgfHIOwmK1ADKrIpdqB">B (40, 40)</b>: + 30 fish → − 30 coconuts</p>
+            <div class="hl" data-page-node-id="RVgeU8tgXKXOTNKVO9HojW"><b data-page-node-id="Hn4HkgdRmEmhPHTgJa9EfH">Opportunity cost of 30 fish = 30 coconuts</b><br data-page-node-id="cnvsmfVcGdzg3qxiS9RdTs">
             = 1 coconut per fish (constant)</div>
-            <div class="hl"><b>Slope = ΔCoconuts / ΔFish = 30 / 30 = 1</b><br>
-            👉 The slope of the PPC <b>is</b> the opportunity cost</div>
+            <div class="hl" data-page-node-id="OA0AG6WHP3P1GipD6NU3Li"><b data-page-node-id="iT3ac89KT2BcdRcQiFT9r7">Slope = ΔCoconuts / ΔFish = 30 / 30 = 1</b><br data-page-node-id="BeYnKBtXUb1JrbzpYAYaUj">
+            👉 The slope of the PPC <b data-page-node-id="afCRD56BQEozaJSgz3w1Za">is</b> the opportunity cost</div>
           </div>
         </div>
-        <div class="col" style="flex:1;">
-          <div class="graph">
-            <svg viewBox="0 0 720 470" style="height:46vh;">
-              <line class="gline" x1="110" y1="60" x2="650" y2="410"/>
-              <line class="gaxis" x1="110" y1="410" x2="650" y2="410"/>
-              <line class="gaxis" x1="110" y1="410" x2="110" y2="60"/>
-              <text class="gtick" x="110" y="436">0</text><text class="gtick" x="650" y="436">80</text>
-              <text class="gtick" x="82" y="64">80</text><text class="gtick" x="82" y="416">0</text>
-              <circle class="gpoint gray" cx="177.5" cy="102.5" r="10"/>
-              <text class="glabel" x="100" y="95">A (10, 70)</text>
-              <circle class="gpoint gray" cx="380" cy="230" r="10"/>
-              <text class="glabel" x="392" y="222">B (40, 40)</text>
-              <g class="reveal" id="mvArrow">
-                <line x1="177.5" y1="102.5" x2="380" y2="230" stroke="var(--accent-red)" stroke-width="4" stroke-dasharray="9 7"/>
-                <polygon points="380,230 363,219 372,239" fill="var(--accent-red)"/>
+        <div class="col" style="flex:1;" data-page-node-id="bxc3YR6DQoQ3Y5cX2iFDbN">
+          <div class="graph" data-page-node-id="AW2PkxLWQdSyTHEDPNrxvG">
+            <svg viewBox="0 0 720 470" style="height:46vh;" data-page-node-id="hQmrR5wvXO2QQHUZCdWGOd">
+              <line class="gline" x1="110" y1="60" x2="650" y2="410" data-page-node-id="rqYvsz8RiEvFZqawlZY0ca"/>
+              <line class="gaxis" x1="110" y1="410" x2="650" y2="410" data-page-node-id="iW4iarOXqA5rK3DRrqEkCY"/>
+              <line class="gaxis" x1="110" y1="410" x2="110" y2="60" data-page-node-id="rE1EgDz86eSmdADNsuSHV5"/>
+              <text class="gtick" x="110" y="436" data-page-node-id="BwsYdFPJSB7AhdBuhwP0YF">0</text><text class="gtick" x="650" y="436" data-page-node-id="poMIE6S4Psr4C6uPqCzORT">80</text>
+              <text class="gtick" x="82" y="64" data-page-node-id="elmaUC9v8lMArrRNZGazd5">80</text><text class="gtick" x="82" y="416" data-page-node-id="kkMMcdI7IUWCQecaOhC33k">0</text>
+              <circle class="gpoint gray" cx="177.5" cy="102.5" r="10" data-page-node-id="P9c7NYDaMryvxzrxk4akth"/>
+              <text class="glabel" x="100" y="95" data-page-node-id="Ix6ux0OI4Y1dUJLDfvd54d">A (10, 70)</text>
+              <circle class="gpoint gray" cx="380" cy="230" r="10" data-page-node-id="bAHoedFQX54jktRwWCytzh"/>
+              <text class="glabel" x="392" y="222" data-page-node-id="Qq1ZbaSQMcBPrI3abte216">B (40, 40)</text>
+              <g class="reveal" id="mvArrow" data-page-node-id="Cv2txv7MAWW22Byc1c7eJo">
+                <line x1="177.5" y1="102.5" x2="380" y2="230" stroke="var(--accent-red)" stroke-width="4" stroke-dasharray="9 7" data-page-node-id="q8jrfoiCQkKM3Fg87lekWE"/>
+                <polygon points="380,230 363,219 372,239" fill="var(--accent-red)" data-page-node-id="l0dWBvBCBsHfPfH96M227f"/>
               </g>
-              <g class="reveal" id="mvTri">
-                <rect x="177.5" y="102.5" width="202.5" height="127.5" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" stroke-dasharray="6 5"/>
-                <text class="glabel" x="255" y="272" fill="var(--accent-orange)">ΔX = +30</text>
-                <text class="glabel" x="392" y="180" fill="var(--accent-orange)">ΔY = −30</text>
+              <g class="reveal" id="mvTri" data-page-node-id="3yqq30eI7d4okAvMFOH5v4">
+                <rect x="177.5" y="102.5" width="202.5" height="127.5" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" stroke-dasharray="6 5" data-page-node-id="cExMDmSsocDVh4ZvDj3uok"/>
+                <text class="glabel" x="255" y="272" fill="var(--accent-orange)" data-page-node-id="BdGnwh5iF883GKTxDO5uCu">ΔX = +30</text>
+                <text class="glabel" x="392" y="180" fill="var(--accent-orange)" data-page-node-id="pvOu9QZfDs75XaHQ02YwEs">ΔY = −30</text>
               </g>
-              <text class="glabel reveal" x="450" y="380" fill="var(--accent-red)">Slope = 1 → constant OC</text>
-                          <text class="glabel" x="380" y="452" text-anchor="middle">Fish 鱼 →</text>
-              <text class="glabel" x="26" y="245" transform="rotate(-90 26 245)" text-anchor="middle">Coconuts 椰 →</text>
+              <text class="glabel reveal" x="450" y="380" fill="var(--accent-red)" data-page-node-id="Y59DOQ4NnCW6SJigea4tDS">Slope = 1 → constant OC</text>
+                          <text class="glabel" x="380" y="452" text-anchor="middle" data-page-node-id="i9mM0C3jy2iNsiVchS56rE">Fish 鱼 →</text>
+              <text class="glabel" x="26" y="245" transform="rotate(-90 26 245)" text-anchor="middle" data-page-node-id="KlRlx1pAUAF7Xy21mdfYIU">Coconuts 椰 →</text>
             </svg>
           </div>
         </div>
       </div>
-      <div class="s-foot"><button class="btn" onclick="demo('mv')">Show movement &amp; slope</button></div>
+      <div class="s-foot" data-page-node-id="wf9iTpijF35MVjdsxrFeQf"><button class="btn" onclick="demo('mv')" data-page-node-id="vYhkB7RmsUvAHS73Lxdg8K">Show movement &amp; slope</button></div>
     </div>
   </section>
 
   <!-- ════ P7 STEP4a: OUTPUT TABLES (decreasing marginal) ════ -->
-  <section class="slide" data-title="Step 4 · Outputs">
-    <div class="s-head">
-      <span class="tag">Step 4</span><h2>What if it gets harder?</h2><span class="en">边际产出递减 · 椰越稀疏、鱼越警觉</span>
+  <section class="slide" data-title="Step 4 · Outputs" data-page-node-id="nCbRDV4KioClESjlEtxMoC">
+    <div class="s-head" data-page-node-id="edtIfjNgSbscyF2HfPbvG9">
+      <span class="tag" data-page-node-id="cnrA0AExuiQ38L4rCcEjwN">Step 4</span><h2 data-page-node-id="YPdBZfs2t2GSzY5sM2wSeA">What if it gets harder?</h2><span class="en" data-page-node-id="ZoDrdJiOIPffKrnsFeqsQV">边际产出递减 · 椰越稀疏、鱼越警觉</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col">
-          <div class="card">
-            <h3>🥥 Picking coconuts</h3>
-            <p>First hour: coconuts are <b>right there</b> — easy!</p>
-            <p>Later hours: they are <b>higher up and farther away</b>.</p>
-            <div class="scroll" style="max-height:44vh;">
-              <table>
-                <tr><th>Hour</th><th>New coconuts</th><th>Total</th></tr>
-                <tr><td>1st</td><td>+20</td><td>20</td></tr>
-                <tr><td>2nd</td><td>+18</td><td>38</td></tr>
-                <tr><td>3rd</td><td>+16</td><td>52</td></tr>
-                <tr><td>4th</td><td>+14</td><td>66</td></tr>
-                <tr><td>5th</td><td>+12</td><td>76</td></tr>
-                <tr><td>6th</td><td>+10</td><td>86</td></tr>
-                <tr><td>7th</td><td>+8</td><td>92</td></tr>
-                <tr><td>8th</td><td>+6</td><td>96</td></tr>
+    <div class="s-body" data-page-node-id="P66jU3yHXaCQ5sluzuCxxS">
+      <div class="row" data-page-node-id="7LJ4R7kKHTQNkKXvv0ZQCS">
+        <div class="col" data-page-node-id="mNhjHgVoC4Q1NYQOevEwrR">
+          <div class="card" data-page-node-id="zX2xIw5bHL1vaFipVsfkw5">
+            <h3 data-page-node-id="VqLAcArSOLCHacof9kbhHH">🥥 Picking coconuts</h3>
+            <p data-page-node-id="BdEycPNLfnVL2jWtj2JTd6">First hour: coconuts are <b data-page-node-id="wtHA0SVuos4XzvLwiTY1SC">right there</b> — easy!</p>
+            <p data-page-node-id="U3vMviPL8imHCnS8WwrruT">Later hours: they are <b data-page-node-id="b5kw9wo3o1W4ll2KIaBsgo">higher up and farther away</b>.</p>
+            <div class="scroll" style="max-height:44vh;" data-page-node-id="1WNPzlRenw3J69jrpkGzl3">
+              <table data-page-node-id="lfMStEr8e8MHSFdC990a7S">
+                <tr data-page-node-id="qMArOtVqaJsuJvGo9zioZz"><th data-page-node-id="kTuee512ByjkybVrstzwSF">Hour</th><th data-page-node-id="FZfwCU2bJH47PQc9yjKYEH">New coconuts</th><th data-page-node-id="fDoaEPcOErmC13BdgEFVPs">Total</th></tr>
+                <tr data-page-node-id="ecj8fY0Lyj6U02s06tUQbW"><td data-page-node-id="0gArDNPlyJ9iJnh1likH6X">1st</td><td data-page-node-id="9n7GRYlxrdT1HrcPM66T3v">+20</td><td data-page-node-id="pHzh9KCdCXQ6zNchVywY77">20</td></tr>
+                <tr data-page-node-id="b2mpJZDlC783F5nBXt7N4Z"><td data-page-node-id="CuPZBoO0EBzdspCBgsNSuO">2nd</td><td data-page-node-id="D42EFRWtDw1AjjBfmq0diV">+18</td><td data-page-node-id="FxuHyXudwK5F0bTWyYx4Xq">38</td></tr>
+                <tr data-page-node-id="OzwutOXZ4nbuqduo8my4iw"><td data-page-node-id="xmr3enuJFl0Qj6Ur7VXjGB">3rd</td><td data-page-node-id="a4wfViXjjmQ258GpGI6vPN">+16</td><td data-page-node-id="OitoSVMn6AuoQbjzimfqnr">54</td></tr>
+                <tr data-page-node-id="hTGpbic5moZM7cqAJwKgr3"><td data-page-node-id="K33ElLrJkkzk2pEQIvd9Ef">4th</td><td data-page-node-id="0yX7y5dvsJa3lYFKeOknED">+14</td><td data-page-node-id="UAvz5AJBbDPpSaUSOS8JOE">68</td></tr>
+                <tr data-page-node-id="iN6hzKxES3WEMYQfs1WYh7"><td data-page-node-id="5Sn3draXBgsR2YAOkS2zsB">5th</td><td data-page-node-id="owM2sEDBl5QfU4a8T4Ajs3">+12</td><td data-page-node-id="rSYimGEyBqStYPi44yNHl4">80</td></tr>
+                <tr data-page-node-id="p8Zjv35QCsTv2qUWxGa4cK"><td data-page-node-id="ag0pBooZ7Za0Pzyoos17EG">6th</td><td data-page-node-id="jdqLeDh2WCSYGVvtnocaIC">+10</td><td data-page-node-id="lZ7MhSMCD6EYscqRWdEzWT">90</td></tr>
+                <tr data-page-node-id="GqxYS6d1axob4vaXjhSYlR"><td data-page-node-id="2I1soZkjWrP5SAn4MNgHQl">7th</td><td data-page-node-id="B5vDjim07NNA2VBFoivm4a">+8</td><td data-page-node-id="XTBcgB6iLUgl7DEfdDUgdC">98</td></tr>
+                <tr data-page-node-id="mGkdv1vlpbtvdAKqNXgmO6"><td data-page-node-id="srdVcdzPzNvDoItgCc9HH4">8th</td><td data-page-node-id="NEYrjtgEgACOs0Ih1ZVNJ0">+6</td><td data-page-node-id="08A5EQR7fuEFOc27roImkA">104</td></tr>
               </table>
             </div>
           </div>
         </div>
-        <div class="col">
-          <div class="card">
-            <h3>🐟 Catching fish</h3>
-            <p>First hour: fish are <b>easy</b> to catch.</p>
-            <p>Later hours: fish become <b>wary</b> — deeper and farther out.</p>
-            <div class="scroll" style="max-height:44vh;">
-              <table>
-                <tr><th>Hour</th><th>New fish</th><th>Total</th></tr>
-                <tr><td>1st</td><td>+20</td><td>20</td></tr>
-                <tr><td>2nd</td><td>+18</td><td>38</td></tr>
-                <tr><td>3rd</td><td>+16</td><td>52</td></tr>
-                <tr><td>4th</td><td>+14</td><td>66</td></tr>
-                <tr><td>5th</td><td>+12</td><td>76</td></tr>
-                <tr><td>6th</td><td>+10</td><td>86</td></tr>
-                <tr><td>7th</td><td>+8</td><td>92</td></tr>
-                <tr><td>8th</td><td>+6</td><td>96</td></tr>
+        <div class="col" data-page-node-id="bZ2jmnq8zGYkCK6h4XTrIG">
+          <div class="card" data-page-node-id="D0Vqkrksl1E8UDr1XThV8B">
+            <h3 data-page-node-id="fQ9uHeafuJz7FThsNPaCuq">🐟 Catching fish</h3>
+            <p data-page-node-id="VsmgY4qMndQKA5GorUPMZW">First hour: fish are <b data-page-node-id="1XeVwjwKBEpghoF6k3OyKJ">easy</b> to catch.</p>
+            <p data-page-node-id="g0a6mTUcw4yNFknuLvF9Bm">Later hours: fish become <b data-page-node-id="0TuKOFnVbxQvBkud3ET7Qj">wary</b> — deeper and farther out.</p>
+            <div class="scroll" style="max-height:44vh;" data-page-node-id="sKzb9YHpUiz70AfxPHHACt">
+              <table data-page-node-id="sJITqhk3FjCIWS8HUv2o2V">
+                <tr data-page-node-id="pyNQv5E2goc3KYp0POtYUa"><th data-page-node-id="ZPWo6gNF0WaGBHRF2Nskel">Hour</th><th data-page-node-id="FcFwdoZvu7AeVqD2FKIDT4">New fish</th><th data-page-node-id="BhT5ySvzQ0EW9or8clL2qE">Total</th></tr>
+                <tr data-page-node-id="r3VrnnVBQZIAroG5m7QmCY"><td data-page-node-id="yPDHjVoGG2wfe3KdrA8qnj">1st</td><td data-page-node-id="aYTfpxhyix5ZjAnQ5R45K7">+20</td><td data-page-node-id="Azsh4vOY4A4Qg1DmE94Yko">20</td></tr>
+                <tr data-page-node-id="GmlNeN1IqkWMxgtDiRfNxj"><td data-page-node-id="D2KaPQcki8EUZJjFPUgV53">2nd</td><td data-page-node-id="UeFvXN44Up6z6qDAGLLQZ1">+18</td><td data-page-node-id="owoCnIMmJiAvTK6YLq7bzm">38</td></tr>
+                <tr data-page-node-id="uM9nmsSRnFxOidyCnNKlYM"><td data-page-node-id="Dy91hUeDZelKL8C2LPOuqk">3rd</td><td data-page-node-id="CH1puXpGdVNCsK4DLsT2u1">+16</td><td data-page-node-id="AUnG1xJ9wl7QmDg7G2rPFO">54</td></tr>
+                <tr data-page-node-id="yT5B96PUqKxNHTda8nlu7N"><td data-page-node-id="VgXZJeTJBMXAClXlqMu3Mc">4th</td><td data-page-node-id="KKLP9QgFKELF1AhlgaGqB0">+14</td><td data-page-node-id="GTWIAuhyiR9fzH6FovJFET">68</td></tr>
+                <tr data-page-node-id="w3rsibg45ATA67ljAdKaRo"><td data-page-node-id="9Xg5X4gGfJGzdqH69R9ljD">5th</td><td data-page-node-id="eGE7KfhaO1Rl8mYshVzWQU">+12</td><td data-page-node-id="00viAGznJdvCvIo4YoFTNp">80</td></tr>
+                <tr data-page-node-id="DJ321j0AlAjHxOnKKugV0g"><td data-page-node-id="vvkkQWBNKgWsEqEgHQGUq2">6th</td><td data-page-node-id="ssHt0mwKodxOs2gMfPKCnu">+10</td><td data-page-node-id="jPtj3aqhgrwtbBoalM7GvY">90</td></tr>
+                <tr data-page-node-id="Za8V0AA3SvQB9hevom2fIw"><td data-page-node-id="JM1rBiDnaQB8PLmVFgaVRs">7th</td><td data-page-node-id="pwkOMq0IYQsWioqFTaA3Nx">+8</td><td data-page-node-id="ZDk9VkregFGd4vG8U40jve">98</td></tr>
+                <tr data-page-node-id="QhNErLigO0dJpoAaxwCGow"><td data-page-node-id="UMvjTcvffkeuB0K2DpQgsw">8th</td><td data-page-node-id="oXaSzhRXT3Q8DS31v4gBt4">+6</td><td data-page-node-id="LsWy6MIFuE0GV98AfWc3A0">104</td></tr>
               </table>
             </div>
           </div>
         </div>
       </div>
-      <div class="hl"><b>Marginal output falls:</b> 20 → 18 → 16 … → 6.
-      Every extra hour adds <b>less</b> than the hour before.</div>
+      <div class="hl" data-page-node-id="h37SY0G3jWGaZki5i6R5ZX"><b data-page-node-id="PwJh9VlmzVmN91s4joMlx4">Marginal output falls:</b> 20 → 18 → 16 … → 6.
+      Every extra hour adds <b data-page-node-id="vecBQ15eSbgWuSH9Rt3shW">less</b> than the hour before.</div>
     </div>
   </section>
 
   <!-- ════ P8 STEP4b: COMBINED TABLE ════ -->
-  <section class="slide" data-title="Step 4 · Combined">
-    <div class="s-head">
-      <span class="tag">Step 4</span><h2>The Combined Table</h2><span class="en">完整组合表 · 机会成本递增</span>
+  <section class="slide" data-title="Step 4 · Combined" data-page-node-id="MaphcF2m9NBsxAyC43tQqS">
+    <div class="s-head" data-page-node-id="arWOJxsKgukzRmJ91ITKC1">
+      <span class="tag" data-page-node-id="OZpCnjDx7NEcsY5HSLM0AL">Step 4</span><h2 data-page-node-id="yR7ShldAcB4qnerQzCPVG7">The Combined Table</h2><span class="en" data-page-node-id="Lz9cbVNaY4BiOOsZrRJhru">完整组合表 · 机会成本递增</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>All 8 hours combined</h3>
-            <p>If he fishes h hours and picks (8−h) hours:</p>
-            <p>Fish = total after h hours<br>Coconuts = total after (8−h) hours</p>
-            <div class="hl">Each extra hour of fishing gives <b>fewer fish</b> and
-            costs <b>more coconuts</b> — opportunity cost <b>increases</b>.</div>
+    <div class="s-body" data-page-node-id="VIld3EXLU5AJOA1X6tMNiE">
+      <div class="row" data-page-node-id="84FsamzCdVn5M12WfmxDj7">
+        <div class="col" style="flex:1;" data-page-node-id="mJHwBaWRU5ddjp38zlCHhh">
+          <div class="card" data-page-node-id="1fuqqte5I2CX2gmTBii1IS">
+            <h3 data-page-node-id="riyRy5Anr4sWBoHBxOkQGX">All 8 hours combined</h3>
+            <p data-page-node-id="uDENmRHKdP2sqeUsJDKQM9">If he fishes h hours and picks (8−h) hours:</p>
+            <p data-page-node-id="FPT3BqySbfv3ybvBwCH0D0">Fish = total after h hours<br data-page-node-id="kQ60sbvNTwZ1BbY31nc229">Coconuts = total after (8−h) hours</p>
+            <div class="hl" data-page-node-id="Mwqmn9ovXIZ0SdAecEL67d">Each extra hour of fishing gives <b data-page-node-id="ubeeuGuh70lAFfwgdiK1Mu">fewer fish</b> and
+            costs <b data-page-node-id="E6eW4TOFlio2VXrBRD3bee">more coconuts</b> — opportunity cost <b data-page-node-id="SE7GWRiTXt8LZoQ2VUv7Tx">increases</b>.</div>
           </div>
         </div>
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>Production Schedule</h3>
-            <div class="scroll" style="max-height:60vh;">
-              <table id="combTable">
-                <tr><th>Hours<br>fishing</th><th>Fish</th><th>Coconuts</th></tr>
-                <tr id="bt-0"><td>0 h</td><td id="bv-0" class="empty">·</td><td id="bc-0" class="empty">·</td></tr>
-                <tr id="bt-1"><td>1 h</td><td id="bv-1" class="empty">·</td><td id="bc-1" class="empty">·</td></tr>
-                <tr id="bt-2"><td>2 h</td><td id="bv-2" class="empty">·</td><td id="bc-2" class="empty">·</td></tr>
-                <tr id="bt-3"><td>3 h</td><td id="bv-3" class="empty">·</td><td id="bc-3" class="empty">·</td></tr>
-                <tr id="bt-4"><td>4 h</td><td id="bv-4" class="empty">·</td><td id="bc-4" class="empty">·</td></tr>
-                <tr id="bt-5"><td>5 h</td><td id="bv-5" class="empty">·</td><td id="bc-5" class="empty">·</td></tr>
-                <tr id="bt-6"><td>6 h</td><td id="bv-6" class="empty">·</td><td id="bc-6" class="empty">·</td></tr>
-                <tr id="bt-7"><td>7 h</td><td id="bv-7" class="empty">·</td><td id="bc-7" class="empty">·</td></tr>
-                <tr id="bt-8"><td>8 h</td><td id="bv-8" class="empty">·</td><td id="bc-8" class="empty">·</td></tr>
+        <div class="col" style="flex:1;" data-page-node-id="FA5kWA6AyPvEfLKjHUEZfb">
+          <div class="card" data-page-node-id="PUj2PxrOfwU6IMjYXVAm16">
+            <h3 data-page-node-id="oSWbDnVc9kmYZ4uqg5dCpQ">Production Schedule</h3>
+            <div class="scroll" style="max-height:60vh;" data-page-node-id="Si0txulHZAppaj4QaxFxzA">
+              <table id="combTable" data-page-node-id="D6Ub5hun0iLjJZ4WPnQiD9">
+                <tr data-page-node-id="4I25AeooKByD1P2f4LWz4E"><th data-page-node-id="ESPwCHDDfNEbopXdwM26Yo">Hours<br data-page-node-id="FBrKSWCsLuSX2gVZOeKFIZ">fishing</th><th data-page-node-id="b4qg8gOCLgemjrBuBnGXQZ">Fish</th><th data-page-node-id="SEW0Lr6nOOt7gtGFCWAOlw">Coconuts</th></tr>
+                <tr id="bt-0" data-page-node-id="W8J3H32nsuFwST5Fm7fmMn"><td data-page-node-id="YLwlgRQeEEN2UaLyRwBByf">0 h</td><td id="bv-0" class="empty" data-page-node-id="UOrgnNpSIc82AVJhrONYej">·</td><td id="bc-0" class="empty" data-page-node-id="pOmZBuk0BcWZXNXJEcDV6Q">·</td></tr>
+                <tr id="bt-1" data-page-node-id="31iuNHdHRcu9hQWpi7qCND"><td data-page-node-id="htKmi32U36l6rr1wdvlyEl">1 h</td><td id="bv-1" class="empty" data-page-node-id="g0EPaF2ePNsBq357HxEkU8">·</td><td id="bc-1" class="empty" data-page-node-id="gycV1nw9Jv2vgGdayUyqFJ">·</td></tr>
+                <tr id="bt-2" data-page-node-id="ajGavnD0mjfy7cZ5mYgjLG"><td data-page-node-id="RZMWj4QPMKo3T6Hb5qGoOL">2 h</td><td id="bv-2" class="empty" data-page-node-id="WCQWal57CxLwJae0h0jlpk">·</td><td id="bc-2" class="empty" data-page-node-id="QwuqXMpzPsQDCtIGBHLcEA">·</td></tr>
+                <tr id="bt-3" data-page-node-id="UCU3DRUoknDF0UM8oIopJC"><td data-page-node-id="ryHy972byMZIVxnQHfJYXJ">3 h</td><td id="bv-3" class="empty" data-page-node-id="nxHjv2XEuKKoN2ER0MME89">·</td><td id="bc-3" class="empty" data-page-node-id="IKft7dy9up2bBiNFHTu8Tx">·</td></tr>
+                <tr id="bt-4" data-page-node-id="ckntyydg7MwNzXqNIipSmC"><td data-page-node-id="JidhgROkfdR6QLBsmuFi8y">4 h</td><td id="bv-4" class="empty" data-page-node-id="UV8aZqCZxHlQSdwNmcIEjz">·</td><td id="bc-4" class="empty" data-page-node-id="3t0CuwgvSREeLuu9I2ZGNx">·</td></tr>
+                <tr id="bt-5" data-page-node-id="opMWAZdJKk3PYAHLECHgHu"><td data-page-node-id="ashZSuh2QZBCd7pGqC7S6K">5 h</td><td id="bv-5" class="empty" data-page-node-id="eEO6rmSjFrOQVEDGbBNvZl">·</td><td id="bc-5" class="empty" data-page-node-id="MLuISyItWO6fOH7EtSXWEC">·</td></tr>
+                <tr id="bt-6" data-page-node-id="TfPayMVQApMQHtUXgqFXcU"><td data-page-node-id="ktF1zdPnu3QMlASqhEbmfx">6 h</td><td id="bv-6" class="empty" data-page-node-id="y8rLI4Q2i4TpspsXS5guSE">·</td><td id="bc-6" class="empty" data-page-node-id="U2YdrO7xO8RdoLeGjxfcWo">·</td></tr>
+                <tr id="bt-7" data-page-node-id="qvRA5djsJeNimBG0HAbECn"><td data-page-node-id="fWeuIeL0g9a1eYCmHrkkoX">7 h</td><td id="bv-7" class="empty" data-page-node-id="64w9Tm5KPY49X5Y7b0UvRV">·</td><td id="bc-7" class="empty" data-page-node-id="rzq75QNa0SFtSJjZ1tYjUA">·</td></tr>
+                <tr id="bt-8" data-page-node-id="xSxh2YCjPnaa4J4FVerFv8"><td data-page-node-id="zsvVHsuSJte8KupqwCzpZJ">8 h</td><td id="bv-8" class="empty" data-page-node-id="unzVBytOqSveRYZnhsaILc">·</td><td id="bc-8" class="empty" data-page-node-id="piyrNIvQkurHO43gSXDDJC">·</td></tr>
               </table>
             </div>
           </div>
         </div>
       </div>
-      <div class="s-foot">
-        <span class="note" id="combNote">0 h fishing → fish 0 · coconuts 96</span>
-        <button class="btn" id="combBtn" onclick="fillComb()">Fill next row</button>
+      <div class="s-foot" data-page-node-id="YmYPffbP0YXhfbOT0QDYR3">
+        <span class="note" id="combNote" data-page-node-id="WbeWchu8WSWKX5PPU0PD74">0 h fishing → fish 0 · coconuts 104</span>
+        <button class="btn" id="combBtn" onclick="fillComb()" data-page-node-id="AkBV1WnhfdvIoSafteXxry">Fill next row</button>
       </div>
     </div>
   </section>
 
   <!-- ════ P9 STEP4c: DRAW BOWED PPC ════ -->
-  <section class="slide" data-title="Step 4 · Draw bowed">
-    <div class="s-head">
-      <span class="tag">Step 4</span><h2>Draw the Bowed PPC</h2><span class="en">弯曲 PPC · 一个点一个点画</span>
+  <section class="slide" data-title="Step 4 · Draw bowed" data-page-node-id="vBBWdJQ9gQ7qC6DHtX2EvA">
+    <div class="s-head" data-page-node-id="RrQVS5kGBE5Atdqs2tAe6D">
+      <span class="tag" data-page-node-id="vgPGYoQwh2PKmlqQD8JgFZ">Step 4</span><h2 data-page-node-id="IhhqZTE1AekN6Mx2UhQlDN">Draw the Bowed PPC</h2><span class="en" data-page-node-id="EOig43wRDBbNDfvsPuBh3E">弯曲 PPC · 一个点一个点画</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>Now the PPC bends</h3>
-            <p>Plot the 9 points from the combined table, then connect.</p>
-            <div class="hl">Both ends touch the <b>axes</b>: (0, 96) on the coconut
-            axis and (96, 0) on the fish axis.</div>
+    <div class="s-body" data-page-node-id="NhGkMrSCNKrEz2iuGk9MV9">
+      <div class="row" data-page-node-id="YMzAFONE6p798GK8eETeb3">
+        <div class="col" style="flex:1;" data-page-node-id="ziDA5fIchgrEWGFPAxeqh4">
+          <div class="card" data-page-node-id="NQYxv8kQergn1WICQoO0QV">
+            <h3 data-page-node-id="5dwOk7k980F6fvBaLnKKKk">Now the PPC bends</h3>
+            <p data-page-node-id="DZLasnsFFodxivrPWXgYPK">Plot the 9 points from the combined table, then connect.</p>
+            <div class="hl" data-page-node-id="O1l9jv17gBjyN8wIVKgEj5">Both ends touch the <b data-page-node-id="KTJMSf0Cu9l2vEXb8Fqkie">axes</b>: (0, 104) on the coconut
+            axis and (104, 0) on the fish axis.</div>
           </div>
         </div>
-        <div class="col" style="flex:1;">
-          <div class="graph">
-            <svg viewBox="0 0 720 470" style="height:46vh;">
-              <g class="ggrid">
-                <line x1="110" y1="400" x2="650" y2="400"/><line x1="110" y1="60" x2="110" y2="400"/>
-                <line x1="177.5" y1="60" x2="177.5" y2="400"/><line x1="245" y1="60" x2="245" y2="400"/>
-                <line x1="312.5" y1="60" x2="312.5" y2="400"/><line x1="380" y1="60" x2="380" y2="400"/>
-                <line x1="447.5" y1="60" x2="447.5" y2="400"/><line x1="515" y1="60" x2="515" y2="400"/>
-                <line x1="582.5" y1="60" x2="582.5" y2="400"/><line x1="650" y1="60" x2="650" y2="400"/>
-                <line x1="110" y1="357.5" x2="650" y2="357.5"/><line x1="110" y1="315" x2="650" y2="315"/>
-                <line x1="110" y1="272.5" x2="650" y2="272.5"/><line x1="110" y1="230" x2="650" y2="230"/>
-                <line x1="110" y1="187.5" x2="650" y2="187.5"/><line x1="110" y1="145" x2="650" y2="145"/>
-                <line x1="110" y1="102.5" x2="650" y2="102.5"/>
+        <div class="col" style="flex:1;" data-page-node-id="I4pEwuihrlCXirU1IDW1NJ">
+          <div class="graph" data-page-node-id="wi8G2dRbENrm0bhRSeTkWI">
+            <svg viewBox="0 0 720 470" style="height:46vh;" data-page-node-id="v7VSHECgrVGSeQ10hHm9Ei">
+              <g class="ggrid" data-page-node-id="XSybRzWZSuV8TYGRkxmo2U">
+                <line x1="110" y1="400" x2="650" y2="400" data-page-node-id="r5IoQwWrKoQBzJ3EwjLMa2"/><line x1="110" y1="60" x2="110" y2="400" data-page-node-id="FGPM8aNjLzpf9yQh4GKdEk"/>
+                <line x1="177.5" y1="60" x2="177.5" y2="400" data-page-node-id="01hJF36cdqAqCYKgMtWe3K"/><line x1="245" y1="60" x2="245" y2="400" data-page-node-id="M0yAyZ6FyEqF7j2zyNocY1"/>
+                <line x1="312.5" y1="60" x2="312.5" y2="400" data-page-node-id="TMfwfg4s0ybA5CcKfIbq3M"/><line x1="380" y1="60" x2="380" y2="400" data-page-node-id="ySGyeHarlgLqFnENxYr4sQ"/>
+                <line x1="447.5" y1="60" x2="447.5" y2="400" data-page-node-id="E5IYUB91hXDGoWTVMajgm0"/><line x1="515" y1="60" x2="515" y2="400" data-page-node-id="jzQw8Y66oJEhHUJB4B7DO2"/>
+                <line x1="582.5" y1="60" x2="582.5" y2="400" data-page-node-id="f4miy0BgwmnY0Clr3SRwuc"/><line x1="650" y1="60" x2="650" y2="400" data-page-node-id="ySCuWMZn9edHCOrEHNpeXH"/>
+                <line x1="110" y1="357.5" x2="650" y2="357.5" data-page-node-id="tgziYYj5J4oJU5oPNhlHEA"/><line x1="110" y1="315" x2="650" y2="315" data-page-node-id="Od1Ygcv44vB5V6ejib6N7v"/>
+                <line x1="110" y1="272.5" x2="650" y2="272.5" data-page-node-id="UJf8gdhz6mBBZPPCTPJISB"/><line x1="110" y1="230" x2="650" y2="230" data-page-node-id="jOhn6Sm7lOFzA6LFWYLS4u"/>
+                <line x1="110" y1="187.5" x2="650" y2="187.5" data-page-node-id="Rvb6bMbqZJ7wQY7hEcZ1Hi"/><line x1="110" y1="145" x2="650" y2="145" data-page-node-id="RWKkotSDWHZSFmr3UstcSe"/>
+                <line x1="110" y1="102.5" x2="650" y2="102.5" data-page-node-id="Bn49afdl62fkAyG3dcGPb5"/>
               </g>
-              <line class="gaxis" x1="110" y1="400" x2="650" y2="400"/>
-              <line class="gaxis" x1="110" y1="400" x2="110" y2="60"/>
-              <text class="gtick" x="110" y="426">0</text>
-              <text class="gtick" x="380" y="426">48</text>
-              <text class="gtick" x="650" y="426">96</text>
-              <text class="gtick" x="82" y="64">96</text>
-              <text class="gtick" x="82" y="230">48</text>
-              <text class="gtick" x="82" y="406">0</text>
-              <text class="glabel" x="380" y="452" text-anchor="middle">Fish 鱼 →</text>
-              <text class="glabel" x="26" y="240" transform="rotate(-90 26 240)" text-anchor="middle">Coconuts 椰 →</text>
-              <g id="bowLine">
-                <line class="gline reveal-line" x1="110" y1="60" x2="222.5" y2="74.2"/>
-                <line class="gline reveal-line" x1="222.5" y1="74.2" x2="323.75" y2="95.4"/>
-                <line class="gline reveal-line" x1="323.75" y1="95.4" x2="402.5" y2="130.8"/>
-                <line class="gline reveal-line" x1="402.5" y1="130.8" x2="481.25" y2="166.25"/>
-                <line class="gline reveal-line" x1="481.25" y1="166.25" x2="537.5" y2="215.8"/>
-                <line class="gline reveal-line" x1="537.5" y1="215.8" x2="593.75" y2="265.4"/>
-                <line class="gline reveal-line" x1="593.75" y1="265.4" x2="627.5" y2="329.2"/>
-                <line class="gline reveal-line" x1="627.5" y1="329.2" x2="650" y2="400"/>
+              <line class="gaxis" x1="110" y1="400" x2="650" y2="400" data-page-node-id="UbLyFHzRxxXRwpiuxH4fBt"/>
+              <line class="gaxis" x1="110" y1="400" x2="110" y2="60" data-page-node-id="xdO22O9x7UHWllPTVpfGaw"/>
+              <text class="gtick" x="110" y="426" data-page-node-id="CyHrrSHBuPRD4qbBHQgceg">0</text>
+              <text class="gtick" x="380" y="426" text-anchor="middle" data-page-node-id="AJgSYWk36MYdRXfDwNyXHF">52</text>
+              <text class="gtick" x="650" y="426" text-anchor="end" data-page-node-id="SGRemSjQqJP4VewSG8hRhe">104</text>
+              <text class="gtick" x="82" y="64" data-page-node-id="0cab5CD6wSsGL2B0RmwEAO">104</text>
+              <text class="gtick" x="82" y="230" data-page-node-id="h77LCyaXIFlbpCC2vz3owT">52</text>
+              <text class="gtick" x="82" y="406" data-page-node-id="II6KrK7BQGm3BkeVCV9LKR">0</text>
+              <text class="glabel" x="380" y="452" text-anchor="middle" data-page-node-id="qKtE3XCaFiuhxIa2Gt7Hzj">Fish 鱼 →</text>
+              <text class="glabel" x="26" y="240" transform="rotate(-90 26 240)" text-anchor="middle" data-page-node-id="2FtJ33Ab3sDiX1odpuSvPK">Coconuts 椰 →</text>
+              <g id="bowLine" data-page-node-id="NBuTMetkKJPT7OZDv4z8bJ">
+                <line class="gline reveal-line" x1="110" y1="60" x2="213.8" y2="79.6" data-page-node-id="4A5QB3RBOqEaek8k5IX5ne"/>
+                <line class="gline reveal-line" x1="213.8" y1="79.6" x2="307.3" y2="105.8" data-page-node-id="4VpQKlhHcvBtAjiDG1jhUN"/>
+                <line class="gline reveal-line" x1="307.3" y1="105.8" x2="390.4" y2="138.5" data-page-node-id="UMFd53oVVH4InEm2lj4mPG"/>
+                <line class="gline reveal-line" x1="390.4" y1="138.5" x2="463.1" y2="177.7" data-page-node-id="zGRB6JbPjtqB9KcsyQYFUZ"/>
+                <line class="gline reveal-line" x1="463.1" y1="177.7" x2="525.4" y2="223.5" data-page-node-id="EHZGK3vIgLytjCX0P7BV9s"/>
+                <line class="gline reveal-line" x1="525.4" y1="223.5" x2="577.3" y2="275.8" data-page-node-id="3wXsdiFwKCkuz4fdAdwnbn"/>
+                <line class="gline reveal-line" x1="577.3" y1="275.8" x2="618.8" y2="334.6" data-page-node-id="6NXwVm0NMwEwYmk6pFlqoo"/>
+                <line class="gline reveal-line" x1="618.8" y1="334.6" x2="650" y2="400" data-page-node-id="wGLSuRySw1MWRtKGOSRbi4"/>
               </g>
-              <g id="bowPts">
-                <circle class="gpoint reveal" cx="110" cy="60" r="8"/>
-                <circle class="gpoint reveal" cx="222.5" cy="74.2" r="8"/>
-                <circle class="gpoint reveal" cx="323.75" cy="95.4" r="8"/>
-                <circle class="gpoint reveal" cx="402.5" cy="130.8" r="8"/>
-                <circle class="gpoint reveal" cx="481.25" cy="166.25" r="8"/>
-                <circle class="gpoint reveal" cx="537.5" cy="215.8" r="8"/>
-                <circle class="gpoint reveal" cx="593.75" cy="265.4" r="8"/>
-                <circle class="gpoint reveal" cx="627.5" cy="329.2" r="8"/>
-                <circle class="gpoint reveal" cx="650" cy="400" r="8"/>
+              <g id="bowPts" data-page-node-id="38DV3Hx3Tq2ltH4PATuIFK">
+                <circle class="gpoint reveal" cx="110" cy="60" r="8" data-page-node-id="UoAT3U6JvF7B1vCn3HIYuY"/>
+                <circle class="gpoint reveal" cx="213.8" cy="79.6" r="8" data-page-node-id="1WYX3VOkBGZdWlQweYeoBV"/>
+                <circle class="gpoint reveal" cx="307.3" cy="105.8" r="8" data-page-node-id="4IC9iCDxE3yE40QgfkcHDU"/>
+                <circle class="gpoint reveal" cx="390.4" cy="138.5" r="8" data-page-node-id="e6eHsBA1KoG1CEw4XA368q"/>
+                <circle class="gpoint reveal" cx="463.1" cy="177.7" r="8" data-page-node-id="DaKj2Bls8QdzOUdDiKB2lG"/>
+                <circle class="gpoint reveal" cx="525.4" cy="223.5" r="8" data-page-node-id="OZE6hrOFDqmAgIlwmq68RP"/>
+                <circle class="gpoint reveal" cx="577.3" cy="275.8" r="8" data-page-node-id="zBxEBv4QerdcXkz6r41moW"/>
+                <circle class="gpoint reveal" cx="618.8" cy="334.6" r="8" data-page-node-id="Jju7504GIedTy8BKnrujnC"/>
+                <circle class="gpoint reveal" cx="650" cy="400" r="8" data-page-node-id="8hrLi9cTEpO4C8Uoo0S0LY"/>
               </g>
-              <g id="bowOc">
-                <text class="glabel reveal" x="150" y="48" fill="var(--accent-orange)">−4</text>
-                <text class="glabel reveal" x="258" y="62" fill="var(--accent-orange)">−6</text>
-                <text class="glabel reveal" x="350" y="86" fill="var(--accent-orange)">−10</text>
-                <text class="glabel reveal" x="428" y="122" fill="var(--accent-orange)">−10</text>
-                <text class="glabel reveal" x="498" y="164" fill="var(--accent-orange)">−14</text>
-                <text class="glabel reveal" x="554" y="214" fill="var(--accent-orange)">−14</text>
-                <text class="glabel reveal" x="600" y="272" fill="var(--accent-orange)">−18</text>
-                <text class="glabel reveal" x="628" y="352" fill="var(--accent-orange)">−20</text>
+              <g id="bowOc" data-page-node-id="elcTnxoUtIwiTVlcYC2y67">
+                <text class="glabel reveal" x="150" y="48" fill="var(--accent-orange)" data-page-node-id="rImmxVMxx8A0kOdTDEcKHT">−6</text>
+                <text class="glabel reveal" x="250" y="62" fill="var(--accent-orange)" data-page-node-id="rlbkEBF1kJJ2M1DHUHvacv">−8</text>
+                <text class="glabel reveal" x="340" y="90" fill="var(--accent-orange)" data-page-node-id="6QTqL1ZEwcgTxvRprD99as">−10</text>
+                <text class="glabel reveal" x="418" y="126" fill="var(--accent-orange)" data-page-node-id="JGRTIw4bGnX3Ep2aJgWqTx">−12</text>
+                <text class="glabel reveal" x="486" y="168" fill="var(--accent-orange)" data-page-node-id="VsQTNDJkAwXBDHGJ4LWSPQ">−14</text>
+                <text class="glabel reveal" x="543" y="218" fill="var(--accent-orange)" data-page-node-id="4zmUdZLGdvUUHrcgCmEEU8">−16</text>
+                <text class="glabel reveal" x="590" y="274" fill="var(--accent-orange)" data-page-node-id="FOt2q1ezGOG74gJ7F4pyA7">−18</text>
+                <text class="glabel reveal" x="622" y="336" fill="var(--accent-orange)" data-page-node-id="pb0j6lefYK49DM3isxxzx6">−20</text>
               </g>
-              <text class="glabel reveal" x="360" y="444" text-anchor="middle" fill="var(--primary-deep)">Bowed out = increasing opportunity cost</text>
+              <text class="glabel reveal" x="360" y="444" text-anchor="middle" fill="var(--primary-deep)" data-page-node-id="4mKfZS8VPXe4nWJLgrVvIp">Bowed out = increasing opportunity cost</text>
             </svg>
           </div>
         </div>
       </div>
-      <div class="s-foot">
-        <span class="note" id="bowNote">Plot the points of the bowed PPC</span>
-        <button class="btn" id="bowAddBtn" onclick="addBowPoint()">Add next point</button>
-        <button class="btn ghost" id="bowConnBtn" onclick="connectBow()" disabled>Connect the curve</button>
+      <div class="s-foot" data-page-node-id="Y2HpDNKQp9vvNy5yDLq3FG">
+        <span class="note" id="bowNote" data-page-node-id="WBiGfNVMDmXACLR1oLL2tQ">Plot the points of the bowed PPC</span>
+        <button class="btn" id="bowAddBtn" onclick="addBowPoint()" data-page-node-id="P8OkdYXWGL7h6qF0A3MiZz">Add next point</button>
+        <button class="btn ghost" id="bowConnBtn" onclick="connectBow()" disabled data-page-node-id="c9kSipGZ4PTevt7NXPoy4S">Connect the curve</button>
       </div>
     </div>
   </section>
@@ -572,308 +582,476 @@
   
   
   <!-- ════ P9a STEP5: OUTPUT TABLES (increasing marginal) ════ -->
-  <section class="slide" data-title="Step 5 · Outputs">
-    <div class="s-head">
-      <span class="tag">Step 5</span><h2>What if he gets better?</h2><span class="en">边际产出递增 · 专业化与熟能生巧</span>
+  <section class="slide" data-title="Step 5 · Outputs" data-page-node-id="IGWkXn5UCGQNtAVr6jQEXB">
+    <div class="s-head" data-page-node-id="LL6pz93Gk1B5AsWyZbnKKG">
+      <span class="tag" data-page-node-id="fTnfA5Bei8Uct4X2MB4WVG">Step 5</span><h2 data-page-node-id="9FxLiDXpdYTKQXaJhN06QC">What if he gets better?</h2><span class="en" data-page-node-id="hR6cYXX5N4FffxPClxQ89v">边际产出递增 · 专业化与熟能生巧</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col">
-          <div class="card">
-            <h3>🐟 Catching fish</h3>
-            <p>This time, <b>practice makes perfect</b>: the more he fishes,
-            the better he reads the water — each hour yields <b>more</b>.</p>
-            <div class="scroll" style="max-height:44vh;">
-              <table>
-                <tr><th>Hour</th><th>New fish</th><th>Total</th></tr>
-                <tr><td>1st</td><td>+2</td><td>2</td></tr>
-                <tr><td>2nd</td><td>+4</td><td>6</td></tr>
-                <tr><td>3rd</td><td>+6</td><td>12</td></tr>
-                <tr><td>4th</td><td>+8</td><td>20</td></tr>
-                <tr><td>5th</td><td>+10</td><td>30</td></tr>
-                <tr><td>6th</td><td>+12</td><td>42</td></tr>
-                <tr><td>7th</td><td>+14</td><td>56</td></tr>
-                <tr><td>8th</td><td>+16</td><td>72</td></tr>
+    <div class="s-body" data-page-node-id="kp6zdZoab1K6Q8ejovFFS3">
+      <div class="row" data-page-node-id="NMi1vbsIXClTHagb7Rc9G1">
+        <div class="col" data-page-node-id="hvhJ2Vd793K0pJHW7SrgXr">
+          <div class="card" data-page-node-id="66mLdkpW11LPu5PXU1dHGQ">
+            <h3 data-page-node-id="PmYXqWWph0zTgOwDewiIa3">🐟 Catching fish</h3>
+            <p data-page-node-id="bu5ri5w2GjaVxl5nZyBPj4">This time, <b data-page-node-id="gXyZc4abLQJNDPr0G6V71H">practice makes perfect</b>: the more he fishes,
+            the better he reads the water — each hour yields <b data-page-node-id="wGPHf6PwYRyIYszwmQ3Vrp">more</b>.</p>
+            <div class="scroll" style="max-height:44vh;" data-page-node-id="5zeaDAmokTJQDMFzGfAoiX">
+              <table data-page-node-id="UPZa6ti8EpQwSbNa4ziaB2">
+                <tr data-page-node-id="KMIEipOdnsS1DOCL4UzucH"><th data-page-node-id="CfBG23uAtRgkSeZDcopLCq">Hour</th><th data-page-node-id="tGFixLrAsT8z5y6D9xJErB">New fish</th><th data-page-node-id="rI2IeTEmykXDzdIF0Q2CEb">Total</th></tr>
+                <tr data-page-node-id="8YPVHkGONexsMqBEyZ3Cxi"><td data-page-node-id="ScQZh7i0U0vPqSQGvLTFZ6">1st</td><td data-page-node-id="OaaKHCh40o9HCIjHwQfvFg">+2</td><td data-page-node-id="PVZamumJvnwqBUnkB4n1E2">2</td></tr>
+                <tr data-page-node-id="Heb5AZBp4m0glDOSOkx6mx"><td data-page-node-id="73fr4n97xz8et0ftTKkf5v">2nd</td><td data-page-node-id="xzhdoL1oGzYfAxNl3QAKpb">+4</td><td data-page-node-id="nlSocrvS9NKAVJzDOgdPBm">6</td></tr>
+                <tr data-page-node-id="F0dpPeREGf3afi6g7v3wTC"><td data-page-node-id="YHNNkNgRBtobA1st2oFkuK">3rd</td><td data-page-node-id="g0Or60QHQfALNqy7iHtA2c">+6</td><td data-page-node-id="5sVT4VNr6VyWFnGTuf6aPl">12</td></tr>
+                <tr data-page-node-id="0BfVWzGE4hFjHR6qk4NGH9"><td data-page-node-id="5TL73UsEEhCtbzMmLBBFs3">4th</td><td data-page-node-id="ZMecCHkCvSPJEVwR1R03M4">+8</td><td data-page-node-id="CD5SaCRo2BxxMmFFAqH25K">20</td></tr>
+                <tr data-page-node-id="iiz9Eu6WULPexfjruRmJfq"><td data-page-node-id="zAbTRafgfH38DpNs6Kg5Ii">5th</td><td data-page-node-id="eyldLu6OEbQBB4hGDS3JW3">+10</td><td data-page-node-id="jBcCnvCwmfK49VaOvRFrWg">30</td></tr>
+                <tr data-page-node-id="vODikDJJ5OwcwrHxCEfj7Z"><td data-page-node-id="VDw9I7nN6UmskcNmc91Fbh">6th</td><td data-page-node-id="nWWgI7exP5YjeQTiq4xmE3">+12</td><td data-page-node-id="g6KDQEKGmefZoxMkVYacGu">42</td></tr>
+                <tr data-page-node-id="sRaRqDwl1ZLk9Sv6ZANU6w"><td data-page-node-id="E10sIMlaE55Wy6tGASHoba">7th</td><td data-page-node-id="lgzRVOSAifugoKuAEYEZe0">+14</td><td data-page-node-id="CySINVgCaQRFDJm81kqU9E">56</td></tr>
+                <tr data-page-node-id="pwllNYny3ZLrp7ov2XiET2"><td data-page-node-id="NYPT0I3QqI19RxYFy4x6od">8th</td><td data-page-node-id="B2MjVMIEcQI7yOE3XaHcDb">+16</td><td data-page-node-id="aM8UFLouXgVp9N6BKfuFdC">72</td></tr>
               </table>
             </div>
           </div>
         </div>
-        <div class="col">
-          <div class="card">
-            <h3>🥥 Picking coconuts</h3>
-            <p>Same story — the more he picks, the faster he spots the best palms.</p>
-            <div class="scroll" style="max-height:44vh;">
-              <table>
-                <tr><th>Hour</th><th>New coconuts</th><th>Total</th></tr>
-                <tr><td>1st</td><td>+2</td><td>2</td></tr>
-                <tr><td>2nd</td><td>+4</td><td>6</td></tr>
-                <tr><td>3rd</td><td>+6</td><td>12</td></tr>
-                <tr><td>4th</td><td>+8</td><td>20</td></tr>
-                <tr><td>5th</td><td>+10</td><td>30</td></tr>
-                <tr><td>6th</td><td>+12</td><td>42</td></tr>
-                <tr><td>7th</td><td>+14</td><td>56</td></tr>
-                <tr><td>8th</td><td>+16</td><td>72</td></tr>
+        <div class="col" data-page-node-id="jEhsxH02rNUL32QbjcA7bC">
+          <div class="card" data-page-node-id="t1N6mdLgrjvsXFnqtOYPg1">
+            <h3 data-page-node-id="oTQ7nXsdZ1mKzHQHSUaP2Z">🥥 Picking coconuts</h3>
+            <p data-page-node-id="hJTKRCSEcGqPEN33RdutBM">Same story — the more he picks, the faster he spots the best palms.</p>
+            <div class="scroll" style="max-height:44vh;" data-page-node-id="AxiFrCHs8YRkfmMOGiGWvQ">
+              <table data-page-node-id="Vl9bp0tF8vToLMs87rnCN7">
+                <tr data-page-node-id="A5FeTNWaBBaVnt2BaJzHXt"><th data-page-node-id="m9MISzx7StOP4M3L3aFCOa">Hour</th><th data-page-node-id="esmuDISgEx5fO0MoNkgrNJ">New coconuts</th><th data-page-node-id="Ckew4d7aS2WcPaCgJtQdUN">Total</th></tr>
+                <tr data-page-node-id="s7y8ERh8weYgs8CxKaqzIY"><td data-page-node-id="Z3umLZlgDKJCzBl30cBMiz">1st</td><td data-page-node-id="mbCETsmrA4QRi3tXvuLNF1">+2</td><td data-page-node-id="k47pspUdrO1owuw9IQVfv9">2</td></tr>
+                <tr data-page-node-id="9xx0eSYsWm1PhHFFFKEtzb"><td data-page-node-id="E6mVuwA4JBoU9JMX4YdfAl">2nd</td><td data-page-node-id="o2CXnwmpSTg0XLUId2JkSC">+4</td><td data-page-node-id="fUg2sDxbi3rqGnCzTaKCjb">6</td></tr>
+                <tr data-page-node-id="Fgl6h2BWVp35D7RW8flFDg"><td data-page-node-id="IXBemxtLNiDE4GqdV0HlFw">3rd</td><td data-page-node-id="aHI7H9uZLTLy9JVEo5zaEC">+6</td><td data-page-node-id="WltFcfCSI5UJfFFJ2dYwwM">12</td></tr>
+                <tr data-page-node-id="nDGpfEHAu4ggAI398H6Tig"><td data-page-node-id="VRyVQ1MJFIMjfy6Qlnup2I">4th</td><td data-page-node-id="6P5NwnRixx5NF72aTnpzif">+8</td><td data-page-node-id="FPa7AVB5qTeBikIGUEMXu5">20</td></tr>
+                <tr data-page-node-id="MgUcuQ6gAoXA9DCcSm9xpf"><td data-page-node-id="ier04Q44Fh72SGEk7kQAhL">5th</td><td data-page-node-id="A8IDEDLOoIhxw3nP9dZt7w">+10</td><td data-page-node-id="FJPjc0jg1TwdIuzagZIX1m">30</td></tr>
+                <tr data-page-node-id="nbtGTM2q37o2KVx2sQhMI4"><td data-page-node-id="dOK37vvdU3k7M19ddhuMXK">6th</td><td data-page-node-id="jwQxyAJV2eITlCwQB85eG6">+12</td><td data-page-node-id="cbhp7gjsFSSbMZO6gtZIc2">42</td></tr>
+                <tr data-page-node-id="ZSv57UvaRJKHbqubMVn0TE"><td data-page-node-id="ZEJqWlg2saTBjm4nML2VuC">7th</td><td data-page-node-id="rw19AFVO8qSVVZTosNWUXq">+14</td><td data-page-node-id="r5GLp7iBC3QXBPrR3BYvFy">56</td></tr>
+                <tr data-page-node-id="PbjPDxq3AfLndXsg6P2Nvb"><td data-page-node-id="4wS67gZ991GGGbtlBw4TrR">8th</td><td data-page-node-id="Uy2uCGfxHZn9Ll9QSyQrAU">+16</td><td data-page-node-id="B5qqKHTnq591ukALkR5NpC">72</td></tr>
               </table>
             </div>
           </div>
         </div>
       </div>
-      <div class="hl"><b>Marginal output RISES:</b> 2 → 4 → 6 … → 16
+      <div class="hl" data-page-node-id="ibQiyCkEDxUSaQKjcNL8Lp"><b data-page-node-id="Sb4pmNdSOuq89GyAvo0DCv">Marginal output RISES:</b> 2 → 4 → 6 … → 16
       (compare Step 4, which fell 20 → 18 → … → 6).
       Specialisation &amp; increasing marginal returns.</div>
     </div>
   </section>
 
   <!-- ════ P9b STEP5: CONVEX COMBINED TABLE ════ -->
-  <section class="slide" data-title="Step 5 · Combined">
-    <div class="s-head">
-      <span class="tag">Step 5</span><h2>The Convex Combined Table</h2><span class="en">完整组合表 · 机会成本递减</span>
+  <section class="slide" data-title="Step 5 · Combined" data-page-node-id="QnIzpxgtub41GH8Nzz8s20">
+    <div class="s-head" data-page-node-id="MAZj8i86UMvA1ivyIBgFzR">
+      <span class="tag" data-page-node-id="nShRpeK9GwsLhhxwwgvD5E">Step 5</span><h2 data-page-node-id="h3CdTT7RBjpCJvSd0Qz3aG">The Convex Combined Table</h2><span class="en" data-page-node-id="1MGif04NK1iM3diqoHpGYE">完整组合表 · 机会成本递减</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>All 8 hours combined</h3>
-            <p>If he fishes h hours and picks (8−h) hours:</p>
-            <p>Fish = total after h hours<br>Coconuts = total after (8−h) hours</p>
-            <div class="hl">Each extra hour of fishing gives <b>more fish</b> and
-            costs <b>fewer coconuts</b> — opportunity cost <b>decreases</b>.</div>
+    <div class="s-body" data-page-node-id="bKWPnI9mFWakGoTuTTRkdK">
+      <div class="row" data-page-node-id="ZoCgTgbxD892eOxNKhCrPp">
+        <div class="col" style="flex:1;" data-page-node-id="rFmySuEzltDKofCLsGRcbL">
+          <div class="card" data-page-node-id="SMqjYKlSLKkpAkg4aut5xt">
+            <h3 data-page-node-id="FMMW7XpCzCi0bv6GcwbuFs">All 8 hours combined</h3>
+            <p data-page-node-id="uDfGYR4s3R51Xwga6ESZnm">If he fishes h hours and picks (8−h) hours:</p>
+            <p data-page-node-id="CuH3pW21iP15RaEyvsyYYf">Fish = total after h hours<br data-page-node-id="JDSJuGifJ21bHuok6KiCKE">Coconuts = total after (8−h) hours</p>
+            <div class="hl" data-page-node-id="gMjB9OXoMxjjg7tCCaS70Y">Each extra hour of fishing gives <b data-page-node-id="oUzO2BFhsssbtBiCcBjxXv">more fish</b> and
+            costs <b data-page-node-id="JBX9XoyTPE5m527emNyVEg">fewer coconuts</b> — opportunity cost <b data-page-node-id="CwL2G9lqo68cfdg0XMPrEP">decreases</b>.</div>
           </div>
         </div>
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>Production Schedule</h3>
-            <div class="scroll" style="max-height:60vh;">
-              <table id="cvCombTable">
-                <tr><th>Hours<br>fishing</th><th>Fish</th><th>Coconuts</th></tr>
-                <tr id="ct-0"><td>0 h</td><td id="cvv-0" class="empty">·</td><td id="cvc-0" class="empty">·</td></tr>
-                <tr id="ct-1"><td>1 h</td><td id="cvv-1" class="empty">·</td><td id="cvc-1" class="empty">·</td></tr>
-                <tr id="ct-2"><td>2 h</td><td id="cvv-2" class="empty">·</td><td id="cvc-2" class="empty">·</td></tr>
-                <tr id="ct-3"><td>3 h</td><td id="cvv-3" class="empty">·</td><td id="cvc-3" class="empty">·</td></tr>
-                <tr id="ct-4"><td>4 h</td><td id="cvv-4" class="empty">·</td><td id="cvc-4" class="empty">·</td></tr>
-                <tr id="ct-5"><td>5 h</td><td id="cvv-5" class="empty">·</td><td id="cvc-5" class="empty">·</td></tr>
-                <tr id="ct-6"><td>6 h</td><td id="cvv-6" class="empty">·</td><td id="cvc-6" class="empty">·</td></tr>
-                <tr id="ct-7"><td>7 h</td><td id="cvv-7" class="empty">·</td><td id="cvc-7" class="empty">·</td></tr>
-                <tr id="ct-8"><td>8 h</td><td id="cvv-8" class="empty">·</td><td id="cvc-8" class="empty">·</td></tr>
+        <div class="col" style="flex:1;" data-page-node-id="UDfxmHwWWQzJhQRnHUMiGJ">
+          <div class="card" data-page-node-id="s4gZxHSV9sHfpVUJbI6oGy">
+            <h3 data-page-node-id="VcbSnSIY3jzzCyUsik90MX">Production Schedule</h3>
+            <div class="scroll" style="max-height:60vh;" data-page-node-id="uUcmJHW4MiT8ehacGNQMdx">
+              <table id="cvCombTable" data-page-node-id="qjWndO2IgalYDRryhBb4AV">
+                <tr data-page-node-id="OX6Zg6XGfINtBzDUOTd5Sg"><th data-page-node-id="t9DBUlpyPAB5Pqx96nzf5N">Hours<br data-page-node-id="0O7qGXXAtcYx4wMEkbVf9e">fishing</th><th data-page-node-id="MPuwYehVsMuPIiRCKxHcbz">Fish</th><th data-page-node-id="EaCBdHyoz2bD5dQVzsTyjm">Coconuts</th></tr>
+                <tr id="ct-0" data-page-node-id="CvnDSTlLFXkGjE8kljHzR7"><td data-page-node-id="3LGUJyAMdP5ZtpJkmLnq7u">0 h</td><td id="cvv-0" class="empty" data-page-node-id="xmfKdKbrCMteDxI0VFekKV">·</td><td id="cvc-0" class="empty" data-page-node-id="wptNTzkFJRyDqQUqAlMOYS">·</td></tr>
+                <tr id="ct-1" data-page-node-id="RFkuQolFU61pRHO963zcmB"><td data-page-node-id="PwL2JABjmb2DEYadMCm4lM">1 h</td><td id="cvv-1" class="empty" data-page-node-id="tuYje9bAbFlrmGpdvPhKKc">·</td><td id="cvc-1" class="empty" data-page-node-id="wEFNGYYk6gJPjORC6kSbzP">·</td></tr>
+                <tr id="ct-2" data-page-node-id="OvIl6M3CJVop4gZDpuUJ3o"><td data-page-node-id="1uZ93pn4X24YYAlJPUTuiq">2 h</td><td id="cvv-2" class="empty" data-page-node-id="8aY2FiZ9KpO10ltReWmwrc">·</td><td id="cvc-2" class="empty" data-page-node-id="282xhbMW1RBiD3DwfZGNlL">·</td></tr>
+                <tr id="ct-3" data-page-node-id="gRcb56eWiqUJdB3yb7gT8m"><td data-page-node-id="kkL0KQAdrTGrwAGCdrwQ7D">3 h</td><td id="cvv-3" class="empty" data-page-node-id="ZZuNAb2UXyAummgzx7b85q">·</td><td id="cvc-3" class="empty" data-page-node-id="iJ82vMqKmRp0Ic3P6TwlRe">·</td></tr>
+                <tr id="ct-4" data-page-node-id="51lBQLBJhvZhwUffGSBqiB"><td data-page-node-id="n8vm00vUGIo84eLY3oZQiQ">4 h</td><td id="cvv-4" class="empty" data-page-node-id="Yvbki2l4q48Y0oY3mwfmdy">·</td><td id="cvc-4" class="empty" data-page-node-id="EJXVE41lnrPEvSaRmJqwT2">·</td></tr>
+                <tr id="ct-5" data-page-node-id="Z4nu7t3boVnlEX7iRs5gjD"><td data-page-node-id="sK8cGk8xWuLlBj29PLBfG9">5 h</td><td id="cvv-5" class="empty" data-page-node-id="mYal6X4nzwgl90g2Mkt3DA">·</td><td id="cvc-5" class="empty" data-page-node-id="thv6CfiXbYR2fznPM0XAXj">·</td></tr>
+                <tr id="ct-6" data-page-node-id="fxcBzxXnmUfGHMTB2Ohknc"><td data-page-node-id="qfhRlcNMr6BKD7VTVrX775">6 h</td><td id="cvv-6" class="empty" data-page-node-id="aFAK1GEmgNNWbyhNNVy2l1">·</td><td id="cvc-6" class="empty" data-page-node-id="Sb6QvVEyAZe68CFLRuE9Ha">·</td></tr>
+                <tr id="ct-7" data-page-node-id="pV1ofbiGIm2UL1udbFXgrj"><td data-page-node-id="bDTxeINf4q89GCTk3g4q0c">7 h</td><td id="cvv-7" class="empty" data-page-node-id="GMPzd2XwZMtHIcJjqnuEf6">·</td><td id="cvc-7" class="empty" data-page-node-id="Yq3CwkwUfCBEg1Z78CjXNj">·</td></tr>
+                <tr id="ct-8" data-page-node-id="2oxSCgHTWz7NGMENQfFV5E"><td data-page-node-id="4ISfqAXD0W43fpuxeyoavI">8 h</td><td id="cvv-8" class="empty" data-page-node-id="U6RgTpBJ6fhBYYCtDJHSjT">·</td><td id="cvc-8" class="empty" data-page-node-id="d2Gb47y047lW7wHIbjQ6CK">·</td></tr>
               </table>
             </div>
           </div>
         </div>
       </div>
-      <div class="s-foot">
-        <span class="note" id="cvCombNote">0 h fishing → fish 0 · coconuts 72</span>
-        <button class="btn" id="cvCombBtn" onclick="fillCombCv()">Fill next row</button>
+      <div class="s-foot" data-page-node-id="qqHhdVqmdurMylpfVyuzSd">
+        <span class="note" id="cvCombNote" data-page-node-id="OqxvXLqiMoj7tMIs8aVHvf">0 h fishing → fish 0 · coconuts 72</span>
+        <button class="btn" id="cvCombBtn" onclick="fillCombCv()" data-page-node-id="BqzXlrPsHkJaEi00EUUAdu">Fill next row</button>
       </div>
     </div>
   </section>
 
   <!-- ════ P10 NEW: DRAW CONVEX PPC (decreasing OC) ════ -->
-  <section class="slide" data-title="Step 5 · Draw convex">
-    <div class="s-head">
-      <span class="tag">Step 5</span><h2>Draw the Convex PPC</h2><span class="en">递减机会成本 · 一个点一个点画</span>
+  <section class="slide" data-title="Step 5 · Draw convex" data-page-node-id="1kNlSEX5yy2omQiM0FXrh5">
+    <div class="s-head" data-page-node-id="3RgqGbIYfzK3ewPwNeNdly">
+      <span class="tag" data-page-node-id="x2mNrdVCCFnQINBLpz8SCj">Step 5</span><h2 data-page-node-id="AmFYQeHbY81F6FTL5ypanb">Draw the Convex PPC</h2><span class="en" data-page-node-id="K1Eytwofa4SgzQMFMqrowV">递减机会成本 · 一个点一个点画</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" style="flex:1;">
-          <div class="card">
-            <h3>From the convex table to the graph</h3>
-            <p>Each row of the combined table is one <b>point</b>: (fish, coconuts).
+    <div class="s-body" data-page-node-id="bwKKbVdt84DXBU2cUUiKYm">
+      <div class="row" data-page-node-id="D7nCf92clLbZR2A7spXqZt">
+        <div class="col" style="flex:1;" data-page-node-id="qWQF5A0i7wHTQVX1lqbDeG">
+          <div class="card" data-page-node-id="tKhX2yDAbJG07DjFLV1GLv">
+            <h3 data-page-node-id="9RIDIpTeLGeWNInz9op4Um">From the convex table to the graph</h3>
+            <p data-page-node-id="fMZ8SbhxUVkeCEg4xUtb9O">Each row of the combined table is one <b data-page-node-id="Qw5hPUe6FBC5aVQu6xzGI8">point</b>: (fish, coconuts).
             Plot the 9 points, then connect.</p>
-            <div class="hl">Both ends still touch the axes: <b>(0, 72)</b> and <b>(72, 0)</b>.
-            But this time the curve bends the <b>other way</b> — convex (bowed in).</div>
+            <div class="hl" data-page-node-id="K4URtYh3du8UgiYbJSZGSp">Both ends still touch the axes: <b data-page-node-id="8OY9XZL54gbTHmQ17JtKBO">(0, 72)</b> and <b data-page-node-id="gJ9UICZ7l5G9U8o0HrkDew">(72, 0)</b>.
+            But this time the curve bends the <b data-page-node-id="uPhjR27W4MmdR2MqXb3njB">other way</b> — convex (bowed in).</div>
           </div>
         </div>
-        <div class="col" style="flex:1;">
-          <div class="graph">
-            <svg viewBox="0 0 720 470" style="height:46vh;">
-              <g class="ggrid">
-                <line x1="110" y1="400" x2="650" y2="400"/><line x1="110" y1="60" x2="110" y2="400"/>
-                <line x1="177.5" y1="60" x2="177.5" y2="400"/><line x1="245" y1="60" x2="245" y2="400"/>
-                <line x1="312.5" y1="60" x2="312.5" y2="400"/><line x1="380" y1="60" x2="380" y2="400"/>
-                <line x1="447.5" y1="60" x2="447.5" y2="400"/><line x1="515" y1="60" x2="515" y2="400"/>
-                <line x1="582.5" y1="60" x2="582.5" y2="400"/><line x1="650" y1="60" x2="650" y2="400"/>
-                <line x1="110" y1="357.5" x2="650" y2="357.5"/><line x1="110" y1="315" x2="650" y2="315"/>
-                <line x1="110" y1="272.5" x2="650" y2="272.5"/><line x1="110" y1="230" x2="650" y2="230"/>
-                <line x1="110" y1="187.5" x2="650" y2="187.5"/><line x1="110" y1="145" x2="650" y2="145"/>
-                <line x1="110" y1="102.5" x2="650" y2="102.5"/>
+        <div class="col" style="flex:1;" data-page-node-id="S1ULQUR8pPtujGbfDCWzwT">
+          <div class="graph" data-page-node-id="fNwElCVqu5tnjLuLGvX1Xg">
+            <svg viewBox="0 0 720 470" style="height:46vh;" data-page-node-id="3LTv38F3CHbp8NPHNUfhge">
+              <g class="ggrid" data-page-node-id="CoRmMoGmxOFXh9n9wbRXQR">
+                <line x1="110" y1="400" x2="650" y2="400" data-page-node-id="kORml6rBU9nAgs6yjQS71B"/><line x1="110" y1="60" x2="110" y2="400" data-page-node-id="vOkBoVasWTB7x9GliaAHzU"/>
+                <line x1="177.5" y1="60" x2="177.5" y2="400" data-page-node-id="7fiQ1RRQ3EfSrxsMmseQ5z"/><line x1="245" y1="60" x2="245" y2="400" data-page-node-id="nTLcFvZDRQcauStPGfJAHJ"/>
+                <line x1="312.5" y1="60" x2="312.5" y2="400" data-page-node-id="dOgILM5PcVBHKqspSqwXc8"/><line x1="380" y1="60" x2="380" y2="400" data-page-node-id="LBZnIhrDsiYvA0JM2AfP8G"/>
+                <line x1="447.5" y1="60" x2="447.5" y2="400" data-page-node-id="B9PksOkaJc2yd3PNrTtJWh"/><line x1="515" y1="60" x2="515" y2="400" data-page-node-id="CvlnMAWnxoBwZ5QZ7LN0aU"/>
+                <line x1="582.5" y1="60" x2="582.5" y2="400" data-page-node-id="vucZ8fhKS9JDmFbEDxThl8"/><line x1="650" y1="60" x2="650" y2="400" data-page-node-id="YGb4XAaOFr8aT8HR7Gzg5H"/>
+                <line x1="110" y1="357.5" x2="650" y2="357.5" data-page-node-id="ohH4yIESjkfIuinhZNu5hH"/><line x1="110" y1="315" x2="650" y2="315" data-page-node-id="JC27XI1GlxJnQJNMPniZuN"/>
+                <line x1="110" y1="272.5" x2="650" y2="272.5" data-page-node-id="8WfeT3eXCwSzP1aBTkJxb4"/><line x1="110" y1="230" x2="650" y2="230" data-page-node-id="ow9FX39AxXpEDAiPTBnSyV"/>
+                <line x1="110" y1="187.5" x2="650" y2="187.5" data-page-node-id="BpIydju8GqhgA7vh34Df9e"/><line x1="110" y1="145" x2="650" y2="145" data-page-node-id="8jVla2905IwZqQDXdGqGbF"/>
+                <line x1="110" y1="102.5" x2="650" y2="102.5" data-page-node-id="RcysMO2qvFOrHCHdiZldCQ"/>
               </g>
-              <line class="gaxis" x1="110" y1="400" x2="650" y2="400"/>
-              <line class="gaxis" x1="110" y1="400" x2="110" y2="60"/>
-              <text class="gtick" x="110" y="426">0</text>
-              <text class="gtick" x="380" y="426">36</text>
-              <text class="gtick" x="650" y="426">72</text>
-              <text class="gtick" x="82" y="64">72</text>
-              <text class="gtick" x="82" y="230">36</text>
-              <text class="gtick" x="82" y="406">0</text>
-              <text class="glabel" x="380" y="452" text-anchor="middle">Fish 鱼 →</text>
-              <text class="glabel" x="26" y="240" transform="rotate(-90 26 240)" text-anchor="middle">Coconuts 椰 →</text>
-              <g id="cvLine">
-                <line class="gline reveal-line" x1="110" y1="60" x2="125" y2="135.6"/>
-                <line class="gline reveal-line" x1="125" y1="135.6" x2="155" y2="201.7"/>
-                <line class="gline reveal-line" x1="155" y1="201.7" x2="200" y2="258.3"/>
-                <line class="gline reveal-line" x1="200" y1="258.3" x2="260" y2="305.6"/>
-                <line class="gline reveal-line" x1="260" y1="305.6" x2="335" y2="343.3"/>
-                <line class="gline reveal-line" x1="335" y1="343.3" x2="425" y2="371.7"/>
-                <line class="gline reveal-line" x1="425" y1="371.7" x2="530" y2="390.6"/>
-                <line class="gline reveal-line" x1="530" y1="390.6" x2="650" y2="400"/>
+              <line class="gaxis" x1="110" y1="400" x2="650" y2="400" data-page-node-id="4Zwlkq1PhRL0cXHmTxKagH"/>
+              <line class="gaxis" x1="110" y1="400" x2="110" y2="60" data-page-node-id="jB18dt9MtyHQ7ZZQ0DCDLA"/>
+              <text class="gtick" x="110" y="426" data-page-node-id="MLjDYOi9z5XtHB8A5yRFxk">0</text>
+              <text class="gtick" x="380" y="426" data-page-node-id="z0L0Db0ZAR0HLaN9vAe3DV">36</text>
+              <text class="gtick" x="650" y="426" data-page-node-id="7UAnuu0CGH7a1noXbkUmV7">72</text>
+              <text class="gtick" x="82" y="64" data-page-node-id="poWt90f1wXylGhIGFFEhXu">72</text>
+              <text class="gtick" x="82" y="230" data-page-node-id="Z1KT3OPW3Vm0w3Hg9y5EQZ">36</text>
+              <text class="gtick" x="82" y="406" data-page-node-id="bUHUYvIeYmKAIJmZU3Rths">0</text>
+              <text class="glabel" x="380" y="452" text-anchor="middle" data-page-node-id="bLt7bK7qI6aSTvjGI0jDuK">Fish 鱼 →</text>
+              <text class="glabel" x="26" y="240" transform="rotate(-90 26 240)" text-anchor="middle" data-page-node-id="ukVbo2L79Cf3jMbapNG3JG">Coconuts 椰 →</text>
+              <g id="cvLine" data-page-node-id="aMSU1UUP3doy2XB1teeJpt">
+                <line class="gline reveal-line" x1="110" y1="60" x2="125" y2="135.6" data-page-node-id="cX5gdKUquRvGt4hgEOEXoC"/>
+                <line class="gline reveal-line" x1="125" y1="135.6" x2="155" y2="201.7" data-page-node-id="1z2G2k5tpxcAgrMy8WyXGj"/>
+                <line class="gline reveal-line" x1="155" y1="201.7" x2="200" y2="258.3" data-page-node-id="fYYBGAQ0SflpCpGDaU5W49"/>
+                <line class="gline reveal-line" x1="200" y1="258.3" x2="260" y2="305.6" data-page-node-id="S4MuXEJ1SA1B50PPtiFxcY"/>
+                <line class="gline reveal-line" x1="260" y1="305.6" x2="335" y2="343.3" data-page-node-id="AaoCXFDQAgjY8HxGfmo98k"/>
+                <line class="gline reveal-line" x1="335" y1="343.3" x2="425" y2="371.7" data-page-node-id="AjiFxfQLomDZ8C0nAqzisw"/>
+                <line class="gline reveal-line" x1="425" y1="371.7" x2="530" y2="390.6" data-page-node-id="Q2qbHnAL09Eais5jxJT6WV"/>
+                <line class="gline reveal-line" x1="530" y1="390.6" x2="650" y2="400" data-page-node-id="4Xc5jeThtaSesII5k1Xz6H"/>
               </g>
-              <g id="cvPts">
-                <circle class="gpoint reveal" cx="110" cy="60" r="8"/>
-                <text class="glabel reveal" x="122" y="66" font-weight="800">(0, 72)</text>
-                <circle class="gpoint reveal" cx="125" cy="135.6" r="8"/>
-                <circle class="gpoint reveal" cx="155" cy="201.7" r="8"/>
-                <circle class="gpoint reveal" cx="200" cy="258.3" r="8"/>
-                <circle class="gpoint reveal" cx="260" cy="305.6" r="8"/>
-                <circle class="gpoint reveal" cx="335" cy="343.3" r="8"/>
-                <circle class="gpoint reveal" cx="425" cy="371.7" r="8"/>
-                <circle class="gpoint reveal" cx="530" cy="390.6" r="8"/>
-                <circle class="gpoint reveal" cx="650" cy="400" r="8"/>
-                <text class="glabel reveal" x="560" y="392" font-weight="800">(72, 0)</text>
+              <g id="cvPts" data-page-node-id="AKpNJl3B8V2rcYfcuyc9mf">
+                <circle class="gpoint reveal" cx="110" cy="60" r="8" data-page-node-id="bZcKT3x1JfXdoCs2fx3LAo"/>
+                <text class="glabel reveal" x="122" y="66" font-weight="800" data-page-node-id="BCaSqhC3CSmYekDbmoPNjF">(0, 72)</text>
+                <circle class="gpoint reveal" cx="125" cy="135.6" r="8" data-page-node-id="KmzEjUW9VGzCkusGCZmJ4Q"/>
+                <circle class="gpoint reveal" cx="155" cy="201.7" r="8" data-page-node-id="EggtZ4gWKgut6F9QzfM6ic"/>
+                <circle class="gpoint reveal" cx="200" cy="258.3" r="8" data-page-node-id="mqDtshlW2rYDmZYUhQdXtq"/>
+                <circle class="gpoint reveal" cx="260" cy="305.6" r="8" data-page-node-id="B4IdF4TMfgV7xYBfYDcXTO"/>
+                <circle class="gpoint reveal" cx="335" cy="343.3" r="8" data-page-node-id="G6lgEtB54OkbqPdJzDxP9C"/>
+                <circle class="gpoint reveal" cx="425" cy="371.7" r="8" data-page-node-id="Sc1dcGEhKqgGYF5xCA3ELz"/>
+                <circle class="gpoint reveal" cx="530" cy="390.6" r="8" data-page-node-id="2Zar8fxR7NtwRF111Me83M"/>
+                <circle class="gpoint reveal" cx="650" cy="400" r="8" data-page-node-id="fEb1Q42BpA0CWxzkj0l7AK"/>
+                <text class="glabel reveal" x="560" y="392" font-weight="800" data-page-node-id="PLXpIwGhqC6GXUrh45BtNu">(72, 0)</text>
               </g>
-              <g id="cvOc">
-                <text class="glabel reveal" x="140" y="100" fill="var(--accent-green)">−16</text>
-                <text class="glabel reveal" x="158" y="172" fill="var(--accent-green)">−14</text>
-                <text class="glabel reveal" x="196" y="234" fill="var(--accent-green)">−12</text>
-                <text class="glabel reveal" x="248" y="286" fill="var(--accent-green)">−10</text>
-                <text class="glabel reveal" x="316" y="330" fill="var(--accent-green)">−8</text>
-                <text class="glabel reveal" x="398" y="362" fill="var(--accent-green)">−6</text>
-                <text class="glabel reveal" x="496" y="384" fill="var(--accent-green)">−4</text>
-                <text class="glabel reveal" x="600" y="398" fill="var(--accent-green)">−2</text>
+              <g id="cvOc" data-page-node-id="w24ZUaRK6mqPUxGq8HB9pZ">
+                <text class="glabel reveal" x="140" y="100" fill="var(--accent-green)" data-page-node-id="EC6FhSndyXwiU6im6Rtz7E">−16</text>
+                <text class="glabel reveal" x="158" y="172" fill="var(--accent-green)" data-page-node-id="g1aIpUEBmeGYihrApBTG2E">−14</text>
+                <text class="glabel reveal" x="196" y="234" fill="var(--accent-green)" data-page-node-id="hPHvGuqbFzyVyGtMKFYSud">−12</text>
+                <text class="glabel reveal" x="248" y="286" fill="var(--accent-green)" data-page-node-id="3Uw0SoUXgyFxRmuNYnxqj6">−10</text>
+                <text class="glabel reveal" x="316" y="330" fill="var(--accent-green)" data-page-node-id="ulgFgH5LlMxDTQv4TFZhLK">−8</text>
+                <text class="glabel reveal" x="398" y="362" fill="var(--accent-green)" data-page-node-id="LcwBMXib2dNyT86j7ApPQM">−6</text>
+                <text class="glabel reveal" x="496" y="384" fill="var(--accent-green)" data-page-node-id="l808bhuA0d9WPuFmsKceg2">−4</text>
+                <text class="glabel reveal" x="600" y="398" fill="var(--accent-green)" data-page-node-id="wX0dueUFodXK8kJAbldpkG">−2</text>
               </g>
-              <text class="glabel reveal" x="360" y="444" text-anchor="middle" fill="var(--accent-green)">Convex = decreasing opportunity cost</text>
+              <text class="glabel reveal" x="360" y="444" text-anchor="middle" fill="var(--accent-green)" data-page-node-id="iWOD6uguSG8khTEhKRZqV3">Convex = decreasing opportunity cost</text>
             </svg>
           </div>
         </div>
       </div>
-      <div class="s-foot">
-        <span class="note" id="cvNote">Plot the points of the convex PPC</span>
-        <button class="btn" id="cvAddBtn" onclick="addCvPoint()">Add next point</button>
-        <button class="btn ghost" id="cvConnBtn" onclick="connectCv()" disabled>Connect the curve</button>
+      <div class="s-foot" data-page-node-id="HStTD4oO1W7RWyCmNix1BM">
+        <span class="note" id="cvNote" data-page-node-id="gogmrBIpICDJbmGjmCu16X">Plot the points of the convex PPC</span>
+        <button class="btn" id="cvAddBtn" onclick="addCvPoint()" data-page-node-id="TF0HpjBmyQBMnpLdncEuuY">Add next point</button>
+        <button class="btn ghost" id="cvConnBtn" onclick="connectCv()" disabled data-page-node-id="1k6wPtn0jGDDEvX3MUugdn">Connect the curve</button>
       </div>
     </div>
   </section>
 
 
   <!-- ════ P11 NEW: SUMMARY — THREE SHAPES LIVE MODEL (from AP Macro 1.2 s7) ════ -->
-  <section class="slide" data-title="Summary · Live model">
-    <div class="s-head">
-      <span class="tag">Summary</span><h2>Three shapes of the PPC</h2><span class="en">三种形态 · 拖动滑杆对比机会成本</span>
+  <section class="slide" data-title="Summary · Live model" data-page-node-id="qoFmNMrKnLm9lwzEVEV8RS">
+    <div class="s-head" data-page-node-id="ArHqmBNwRsLhlFoH6FFmwR">
+      <span class="tag" data-page-node-id="Dj1FGO6hCPgxG8FTzESRJ2">Summary</span><h2 data-page-node-id="LQLQda9CT9X9PHZxwoj2SL">Three shapes of the PPC</h2><span class="en" data-page-node-id="BK47MQGQBgj2xVsExD5Wdi">三种形态 · 拖动滑杆对比机会成本</span>
     </div>
-    <div class="s-body">
-      <div class="lab" id="ppcLab">
-        <div class="lab-head">
-          <div class="lab-title" id="scenarioTitle">Loading…</div>
-          <div class="lab-nav">
-            <button class="lab-btn" id="labPrev" disabled>« Prev</button>
-            <button class="lab-btn" id="labNext">Next scenario »</button>
+    <div class="s-body" data-page-node-id="aQzp6DKNuIh5CgWcf6y1Jz">
+      <div class="lab" id="ppcLab" data-page-node-id="QLLP1vxbm3c5Uhv0rHwap3">
+        <div class="lab-head" data-page-node-id="EgVGTeDl7EHtyYHMAPxKE0">
+          <div class="lab-title" id="scenarioTitle" data-page-node-id="jv4sp6DwQvCmaChzVDcgf6">Loading…</div>
+          <div class="lab-nav" data-page-node-id="ww9IAx3E9xOHcN2Lh1Y2Kj">
+            <button class="lab-btn" id="labPrev" disabled data-page-node-id="2WI1O2fnk2gAiVCm5iDWuE">« Prev</button>
+            <button class="lab-btn" id="labNext" data-page-node-id="BuspvR1h88JCGrbg5BylES">Next scenario »</button>
           </div>
         </div>
-        <div class="lab-desc" id="promptBox">Loading…</div>
-        <div class="lab-grid">
-          <div class="lab-graph"><canvas id="ppcCanvas"></canvas></div>
-          <div class="lab-graph"><canvas id="ocCanvas"></canvas></div>
+        <div class="lab-desc" id="promptBox" data-page-node-id="T0cmvYCFHaAwCDMDWrxjLo">Loading…</div>
+        <div class="lab-grid" data-page-node-id="is2Le45OpgNacckungJKC2">
+          <div class="lab-graph" data-page-node-id="lbgNBtIQ1Sx7CWU9789DYH"><canvas id="ppcCanvas" data-page-node-id="849EGncOCOSMfjfuHtvtzl"></canvas></div>
+          <div class="lab-graph" data-page-node-id="FEUehLsz1gcc3BHkvhBMN2"><canvas id="ocCanvas" data-page-node-id="GkBUwIfeG6oxhXsPvqjiNl"></canvas></div>
         </div>
-        <div class="lab-ctrl">
-          <label>Hours on rabbits: <span class="lab-val" id="hoursVal">0.0</span> / 8</label>
-          <input type="range" id="hourSlider" min="0" max="8" step="0.02" value="0">
+        <div class="lab-ctrl" data-page-node-id="i0d1hsOVYbfBv5ilcZ8yot">
+          <label data-page-node-id="ujcciOrcRxatMo6IZE4BSN">Hours fishing: <span class="lab-val" id="hoursVal" data-page-node-id="KyCKHPeXA1R2mv8M9QAAYF">0.0</span> / 8</label>
+          <input type="range" id="hourSlider" min="0" max="8" step="0.02" value="0" data-page-node-id="PVlMuemtJ0wY6PABbHnB7T">
         </div>
-        <div class="lab-hint">Left: PPC with tangent line (slope = OC). Right: marginal OC of a rabbit in fish. Switch scenarios — same hunter, three different technologies.</div>
+        <div class="lab-hint" data-page-node-id="ZgE3iATxfL2M8NHMPASSZ4">Left: PPC with tangent line (slope = OC). Right: marginal OC of a fish in coconuts. Switch scenarios — same islander, three different technologies.</div>
       </div>
     </div>
   </section>
 
 <!-- ════ <!-- ════ P12 DRAWING TIPS (AP Micro) ════ -->
-  <section class="slide" data-title="Common mistakes">
-    <div class="s-head">
-      <span class="tag">Tips</span><h2>Drawing the PPC — Common Mistakes</h2><span class="en">画图常见错误 · AP 评分口径</span>
+  <section class="slide" data-title="Common mistakes" data-page-node-id="KjgdhPvItbj5OTZH9AmSqA">
+    <div class="s-head" data-page-node-id="2pP2UYfYXvLGci4YdGxgqX">
+      <span class="tag" data-page-node-id="aEGWj6o5eaXdTCEFyePOQ2">Tips</span><h2 data-page-node-id="ThaDH2Mw625i1OUxoOBcA3">Drawing the PPC — Common Mistakes</h2><span class="en" data-page-node-id="FvP6KUrc21XDIutg0cpA2O">画图常见错误 · AP 评分口径</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col">
-          <div class="card" style="border-left:6px solid var(--accent-green);">
-            <h3>✅ Do this</h3>
-            <p>① <b>Label both axes</b> — Fish and Coconuts.</p>
-            <p>② <b>Shape matches the question</b> — straight = constant OC ·
+    <div class="s-body" data-page-node-id="Q2E9Fjh1K4IAZJRctGDmfF">
+      <div class="row" data-page-node-id="PL7w7foYAtToJXfw5pxRJJ">
+        <div class="col" data-page-node-id="CkRG6gSFHGVjA9KOBux1C4">
+          <div class="card" style="border-left:6px solid var(--accent-green);" data-page-node-id="D39v93kHCbQwDzFCXbYbzw">
+            <h3 data-page-node-id="bFVEdoKHVG9DyJBgZ3UJHG">✅ Do this</h3>
+            <p data-page-node-id="BNYEi6ZsMCoqazfeEUSqRR">① <b data-page-node-id="X8rHV2dLHaMYfsWyUWU6T7">Label both axes</b> — Fish and Coconuts.</p>
+            <p data-page-node-id="qr9bh0S9K0kYebmxYvOj4L">② <b data-page-node-id="GUgy36WEcdmnhPLHFKagG0">Shape matches the question</b> — straight = constant OC ·
             bowed out = increasing OC · convex = decreasing OC.</p>
-            <p>③ <b>Mark the numbers at the two endpoints</b> — where the curve
+            <p data-page-node-id="FcNx1otoKU6LVUMyr7El3C">③ <b data-page-node-id="cAiPotvVaD29meYTTFQ73R">Mark the numbers at the two endpoints</b> — where the curve
             meets each axis, write the given maximum quantities.</p>
           </div>
         </div>
-        <div class="col">
-          <div class="card" style="border-left:6px solid var(--accent-red);">
-            <h3>❌ Avoid these</h3>
-            <p>① <b>Don't label every intermediate point</b> — endpoints + correct
+        <div class="col" data-page-node-id="7F68AdPY9F2B3EALOKQA2c">
+          <div class="card" style="border-left:6px solid var(--accent-red);" data-page-node-id="hNB5MZ5hChn5m9uMxzzhGd">
+            <h3 data-page-node-id="kFQL816tsuUlt0rQJlbzmL">❌ Avoid these</h3>
+            <p data-page-node-id="EuANDr1F3L18tMlZFxdVAh">① <b data-page-node-id="d4qIQfPID51d1ilpxjQmgr">Don't label every intermediate point</b> — endpoints + correct
             shape are what earn the marks; extra point labels waste time.</p>
-            <p>② Curve stops in mid-air — the ends <b>must touch the axes</b>.</p>
-            <p>③ Wrong bend — bowed <b>out</b> = increasing OC, bowed <b>in</b> (convex) = decreasing OC. Check which one the question describes.</p>
+            <p data-page-node-id="0QbWLyzA1ODdcUwjJYxcir">② Curve stops in mid-air — the ends <b data-page-node-id="JIn7e5xKd12eVfotf7Es4r">must touch the axes</b>.</p>
+            <p data-page-node-id="pfqBKrXANCSNIZhuPahCAk">③ Wrong bend — bowed <b data-page-node-id="gtt4hb5OXmit1r4sl9hnYx">out</b> = increasing OC, bowed <b data-page-node-id="1FirxQ2JCks0rE5NPi9g9G">in</b> (convex) = decreasing OC. Check which one the question describes.</p>
           </div>
         </div>
       </div>
-      <div class="s-foot">
-        <div class="hl"><b>AP Micro exam tip:</b> when the question gives numbers, mark the
-        <b>two axis intercepts</b> with those numbers and get the <b>shape</b> right —
+      <div class="s-foot" data-page-node-id="73exeT1ukKJYk2CBqMq82N">
+        <div class="hl" data-page-node-id="XJQORIgicECvDsAjN9TlEp"><b data-page-node-id="fPzMQLui8TalApAaMMklo2">AP Micro exam tip:</b> when the question gives numbers, mark the
+        <b data-page-node-id="LLPV9C2eHMnefeVtZ9bVth">two axis intercepts</b> with those numbers and get the <b data-page-node-id="EwMXpTf2Ae19xxLwEwzKeB">shape</b> right —
         you do NOT need to label every point on the curve.</div>
       </div>
     </div>
   </section>
 
-  P11 QUIZ ════ -->
-  <section class="slide" data-title="Quiz">
-    <div class="s-head">
-      <span class="tag">Quiz</span><h2>Check Your Understanding</h2><span class="en">选择题 · 点选判分</span>
+  <!-- ════ STEP6a: ROBINSON MEETS FRIDAY (more resources) ════ -->
+  <section class="slide" data-title="Step 6 · Friday" data-page-node-id="FeQ9vbSbgEc6NUaeQSGAOp">
+    <div class="s-head" data-page-node-id="AHtTSxntW8cJOMB4tMlSoB">
+      <span class="tag" data-page-node-id="9LDzV0tDDPQQyEzjziE41h">Step 6</span><h2 data-page-node-id="1nZUGSCaz6ZYCRq1Wz1G0x">Robinson Meets Friday</h2><span class="en" data-page-node-id="jX9Uz7nmzW0OCCg0wxqx6B">资源增加 · 两人合伙生产表</span>
     </div>
-    <div class="s-body">
-      <div class="row">
-        <div class="col" id="quizCol" style="overflow-y:auto; gap:1.2vh;"></div>
+    <div class="s-body" data-page-node-id="semcmf9uDg7sondgkuycg1">
+      <div class="row" data-page-node-id="eBEAiFjeDOtajrfF2EuC8L">
+        <div class="col" style="flex:1.05;" data-page-node-id="n5ICBADuOQVMqRBpQhZw08">
+          <div class="card" data-page-node-id="5KfUHeWP9wCiaZ2a6AuvbE">
+            <h3 data-page-node-id="1rGx8iPtVz8nNH0FI7VS1u">A second pair of hands</h3>
+            <p data-page-node-id="6jJlc9YEyDkkd7sZaGarlB">Robinson is no longer alone — <b data-page-node-id="b55bNQJIJ3DyFP9lyz4SEl">Friday</b> lands on the island and stays.</p>
+            <p data-page-node-id="lxCbVw24AXcQcCJ6dBXDjp">👉 Back to the <b data-page-node-id="YYTSKpHyvK57vI5aCyUUDC">simplest assumption</b> from Step 1: one hour of work
+            gives <b data-page-node-id="uMMtW9G92NdzuBGHn2PACr">10 fish</b> or <b data-page-node-id="FD3NoMScyVYCkZbD14KzSB">10 coconuts</b>, and Friday is <b data-page-node-id="CITFbE9GqvOuU4Pd1ja0ZP">exactly as
+            strong</b> as Robinson.</p>
+            <div class="hl" data-page-node-id="Jxowf2bzbGvqOVyEMfZsVT">Nothing changed except the <b data-page-node-id="1HVSzFTN29tA87xzywVEIB">amount of resources</b>: labour
+            is now <b data-page-node-id="VPL1QvO7Mb0dRbDFUAZvUz">16 hours a day</b> instead of 8. Same island, same trees, same skill.</div>
+          </div>
+        </div>
+        <div class="col" style="flex:1;" data-page-node-id="FgsSTwJU2czeoFsShRrAKF">
+          <div class="card" data-page-node-id="ukotxL8LYvcENPTk8zW0RI">
+            <h3 data-page-node-id="rcGV4RXaYoOTOnl1G5IAKr">Their joint Production Schedule</h3>
+            <p style="font-size:clamp(22px,2.2vh,26px);color:var(--text-sub);" data-page-node-id="XAspyjFSPODou9qG9ssWBQ">
+            Together they have <b data-page-node-id="hHq0ufAmfSh7YJtqE64q28">16 hours</b>. Each row moves <b data-page-node-id="i5QwEEn26MsEnYdrU5lPBl">one more hour</b>
+            from coconuts to fishing — press <b data-page-node-id="kdiqV8oMOKDdXrVEOfEaND">[Fill next row]</b>.</p>
+            <div class="scroll" style="max-height:50vh;" data-page-node-id="ax07kr9eji2K0fSH7zhKIY">
+              <table id="jointTable" data-page-node-id="vFPr56Ewi6LCeGWaWi3mqo">
+                <tr data-page-node-id="CPXmkWrl5pjDdI9DE9O7iZ"><th data-page-node-id="6Moajpzn9zBjVLYgphsBrg">Hours<br data-page-node-id="IH2IDpzOP7FJqXBw8WYkZA">fishing</th><th data-page-node-id="0AjW0Y9hvgFknO8OIDJHTw">Fish</th><th data-page-node-id="PixVFGB9yP11pqxNGVQZi1">Coconuts</th></tr>
+                <tr id="jt-0" data-page-node-id="GzOBsymOeqIiUHelZCHKow"><td data-page-node-id="nSwCcjJpiMoX6dQPHd9ymn">0 h</td><td id="jv-0" class="empty" data-page-node-id="dlK6lBOBi1nhfmhweal9Gl">·</td><td id="jc-0" class="empty" data-page-node-id="JnVfXoBfbqFA5B49DDvBzl">·</td></tr>
+                <tr id="jt-1" data-page-node-id="0x963vp2SMyJs3GqVMLgTX"><td data-page-node-id="z68DsHwHZy9BiAaXF4FGO0">1 h</td><td id="jv-1" class="empty" data-page-node-id="QF7Rq8Ephd4YFYqZFlScxl">·</td><td id="jc-1" class="empty" data-page-node-id="Cz2ePvp97uumwLS7nnAxXG">·</td></tr>
+                <tr id="jt-2" data-page-node-id="UTh4nIlHf3Fvkj4T5aer9b"><td data-page-node-id="LYKKwybUSUhfUM8hJwIm2F">2 h</td><td id="jv-2" class="empty" data-page-node-id="3GZ7XoeVsUdDaKG8JzVXh1">·</td><td id="jc-2" class="empty" data-page-node-id="wMAU44gfN5eaHDhaYlY2Wp">·</td></tr>
+                <tr id="jt-3" data-page-node-id="5M6DOLqggetZLirhAoll7C"><td data-page-node-id="0UqahpjDpTZGdEYSCML9QA">3 h</td><td id="jv-3" class="empty" data-page-node-id="dE27q9bQYDEBRgB3ZBEJwk">·</td><td id="jc-3" class="empty" data-page-node-id="EiHjwdtMwqA66GMKbE4tcT">·</td></tr>
+                <tr id="jt-4" data-page-node-id="XJoLiq6wFR2zMxJmQ7sQ04"><td data-page-node-id="1fdUWgjHAKNx5ceFe8cFDm">4 h</td><td id="jv-4" class="empty" data-page-node-id="WCiyvyHos42B7jqSAoEoV7">·</td><td id="jc-4" class="empty" data-page-node-id="nfHLgHJLe91H4KwWxdohBB">·</td></tr>
+                <tr id="jt-5" data-page-node-id="pnb6yPxAj4w8RhQnFVvuFb"><td data-page-node-id="pb4VtndtOHEFD80plE4iav">5 h</td><td id="jv-5" class="empty" data-page-node-id="YKil1aS9X1d1TFHBaX3Fns">·</td><td id="jc-5" class="empty" data-page-node-id="KZvOXR6Phe93Pe9agb8Eu2">·</td></tr>
+                <tr id="jt-6" data-page-node-id="C0ntWC6ycnmyUO9E080fUj"><td data-page-node-id="ypyT4WMvlRslx7YfyspbBL">6 h</td><td id="jv-6" class="empty" data-page-node-id="OkRRIQrIWgWrdHmmfGndWi">·</td><td id="jc-6" class="empty" data-page-node-id="ZFg6hsiBgkAyKvdrFR5CFH">·</td></tr>
+                <tr id="jt-7" data-page-node-id="kPDy5ZwRYSLJI1ArVPYxsP"><td data-page-node-id="HMT2Ew4UU18DhVh0a5qdnJ">7 h</td><td id="jv-7" class="empty" data-page-node-id="UMOwURalx6lpB0wZZDD9cX">·</td><td id="jc-7" class="empty" data-page-node-id="BiG1oZq3k7xxq3OqM78LzS">·</td></tr>
+                <tr id="jt-8" data-page-node-id="yvZCX0NNqzLfRasN1fYNgo"><td data-page-node-id="XFgFkDoVtaXgedQ8XeRLhU">8 h</td><td id="jv-8" class="empty" data-page-node-id="UCTCyxInZk32uwibGeEvT3">·</td><td id="jc-8" class="empty" data-page-node-id="71o206XxqQWNq5lmWEtsB2">·</td></tr>
+                <tr id="jt-9" data-page-node-id="veMGzxMGMdeQ9lTZltb8bA"><td data-page-node-id="5TQrXwHCsBeXOmlhhbsnDh">9 h</td><td id="jv-9" class="empty" data-page-node-id="K1LVZBL6MAWhv1vGLGwx8p">·</td><td id="jc-9" class="empty" data-page-node-id="XGucUZu5WvHBNxMr0iVXwS">·</td></tr>
+                <tr id="jt-10" data-page-node-id="bznScXlplVCFLnN5Ncaki2"><td data-page-node-id="hHW1RMNZN6HwNYsYtO9KJd">10 h</td><td id="jv-10" class="empty" data-page-node-id="NtiMqqmrNHdGGvM1PgSWWq">·</td><td id="jc-10" class="empty" data-page-node-id="5y274XPvuV3Gl3O2CET1m5">·</td></tr>
+                <tr id="jt-11" data-page-node-id="9udUXeC3vcbByCkLAakq44"><td data-page-node-id="cKyyGWNAUke3T90aWoalzC">11 h</td><td id="jv-11" class="empty" data-page-node-id="HBAovPGbVZcDnTBg9mbauy">·</td><td id="jc-11" class="empty" data-page-node-id="XoKdLI5pQJHdIZE0CZKmg9">·</td></tr>
+                <tr id="jt-12" data-page-node-id="Ohy1sjoZrcG3QFGsIoXXKw"><td data-page-node-id="OHBSsgGPFGUYwCBPP5hzdo">12 h</td><td id="jv-12" class="empty" data-page-node-id="Sr2q0pTcQDL5Ez0VdE7jqy">·</td><td id="jc-12" class="empty" data-page-node-id="ws2UxAgQ2BDeh56FF3N226">·</td></tr>
+                <tr id="jt-13" data-page-node-id="sAO7vovZhhrxtb3kIsqTSS"><td data-page-node-id="8w2sYszMyFe5rFNuNNqrAu">13 h</td><td id="jv-13" class="empty" data-page-node-id="IAkjCVvmJGB0GD6bT06Y94">·</td><td id="jc-13" class="empty" data-page-node-id="rMC1HKEYkdH3TQm484UVH6">·</td></tr>
+                <tr id="jt-14" data-page-node-id="Yu86fQE6a2NUMuUDwzmrhE"><td data-page-node-id="SuODgifIkww9maUsRutdbH">14 h</td><td id="jv-14" class="empty" data-page-node-id="wiJ9NPjyGlFgwG4CpywKHo">·</td><td id="jc-14" class="empty" data-page-node-id="IJaoF29QS2CzDXPZ9h0uaC">·</td></tr>
+                <tr id="jt-15" data-page-node-id="UVhNFplzp3Pw7f5idXDOdb"><td data-page-node-id="uVcxY1YYc98L3Uf3bUCCcx">15 h</td><td id="jv-15" class="empty" data-page-node-id="ECF6jpBEF2fCxWVAW0OYKu">·</td><td id="jc-15" class="empty" data-page-node-id="zy4Aa1p03WiYYZLDgxsqnY">·</td></tr>
+                <tr id="jt-16" data-page-node-id="GkCXv8WhDmXybbk8s4GKuA"><td data-page-node-id="Rd8wHDcm4unCgHHrHeE7N2">16 h</td><td id="jv-16" class="empty" data-page-node-id="FL4rc6uRM30QLtp2TU1I96">·</td><td id="jc-16" class="empty" data-page-node-id="vCWXyaPFONZaFFpemQ9XIj">·</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="s-foot">
-        <button class="btn ghost" onclick="resetQuiz()">↺ Try again</button>
+      <div class="s-foot" data-page-node-id="wflEuejZRKplEOe5KjW5dh">
+        <span class="note" id="jointNote" data-page-node-id="8hOxffoDTXK9bWxJsLAdIZ">0 h fishing → fish 0 · coconuts 160</span>
+        <button class="btn" id="jointBtn" onclick="fillJoint()" data-page-node-id="y2n3qatGlQrSuuEW9wdX7J">Fill next row</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ STEP6b: THE PPC SHIFTS OUTWARD ════ -->
+  <section class="slide" data-title="Step 6 · Shift out" data-page-node-id="L6tOpYda0Vs5oJ3ufH4nTU">
+    <div class="s-head" data-page-node-id="VQ36XHrJXPg7H2bjpQcRgV">
+      <span class="tag" data-page-node-id="K0squyXNlQy5m5oaFYhSmT">Step 6</span><h2 data-page-node-id="PDYKVgUdNA5WHEChDivTRg">The PPC Shifts Outward</h2><span class="en" data-page-node-id="MClNLYuzUGpSHfZyePMQCH">对比第 4 页 · C 点现在做得到</span>
+    </div>
+    <div class="s-body" style="overflow:hidden;" data-page-node-id="QjQrkS1QC8AvPms8mvA8n8">
+      <div class="s-banner" data-page-node-id="j0KG4tcqL7M6osffHZwElE">Robinson alone: <b data-page-node-id="7FnAxMUx39fOtpHrpvqITY">8 hours</b>, at most <b data-page-node-id="ZOtGXMorQjjbE62yD979K6">80</b> of either good.
+        With Friday: <b data-page-node-id="GdrLawWWsTyRE6no2wWWLD">16 hours</b>, at most <b data-page-node-id="KY7CgspbuphXdVMksopOT6">160</b>. Compare <b data-page-node-id="uoVJRWumM5Vpy2467PIFrj">PPC₁</b> and <b data-page-node-id="zGbN7n4Zsy8JS69zlAJ5yF">PPC₂</b> —
+        where do <b data-page-node-id="jlGgZpECxd0HqfrrSjKJBW">A (40, 40)</b>, <b data-page-node-id="egtWCFAh9tSgQ4M5zbsWT5">B (20, 20)</b> and <b data-page-node-id="LmABEes6bYWoSVArTZsOTH">C (60, 40)</b> sit now?</div>
+      <div class="row" style="min-height:0;" data-page-node-id="3v1NfTOICwS4z4htLkzVEC">
+        <div class="col" style="flex:1.15;min-height:0;" data-page-node-id="vr1DYJCLH57ySqcPpNqTaw">
+          <div class="graph" data-page-node-id="RGrcCVfGGlP7NRN7MyApyY">
+            <svg viewBox="0 0 720 470" style="height:52vh;" data-page-node-id="s4DuEmdeXI6gZf4ZQpNoDq">
+              <g class="ggrid" data-page-node-id="Ey9VzlvdaxzW1lOmld9i5a">
+                <line x1="110" y1="410" x2="650" y2="410" data-page-node-id="2bzwySKsZT7YcyLVijzeMj"/><line x1="110" y1="60" x2="110" y2="410" data-page-node-id="SMVNxSBXHt1O4pcGm6h029"/>
+                <line x1="245" y1="60" x2="245" y2="410" data-page-node-id="J7gbvc7OP1F6xGNpCrXLTk"/><line x1="380" y1="60" x2="380" y2="410" data-page-node-id="40qsgxhl8eSptBH7iOo7tJ"/>
+                <line x1="515" y1="60" x2="515" y2="410" data-page-node-id="k7WjfLNOUQuqhe0eboOTd7"/><line x1="650" y1="60" x2="650" y2="410" data-page-node-id="TXt8F3kuF4iZiG8ZUuHW8a"/>
+                <line x1="110" y1="322.5" x2="650" y2="322.5" data-page-node-id="TaIHadYJhumF6yNk2GCHnO"/><line x1="110" y1="235" x2="650" y2="235" data-page-node-id="ZPXMgRF2h2DtB3Ga2kkFTP"/>
+                <line x1="110" y1="147.5" x2="650" y2="147.5" data-page-node-id="5pKDKPNl4iJrROMYJROGgH"/><line x1="110" y1="60" x2="650" y2="60" data-page-node-id="fs4LdhrE4wEEnYrA0nrKMz"/>
+              </g>
+              <polygon class="garea" points="110,235 380,410 110,410" data-page-node-id="rzHqbjnRVD0H4x5r4jCJnh"/>
+              <line class="reveal s1" x1="110" y1="235" x2="380" y2="410"
+                    stroke="#9db2c8" stroke-width="5" stroke-linecap="round" data-page-node-id="qqRnKJafwgFuWtPzx9IlmG"/>
+              <line class="gaxis" x1="110" y1="410" x2="650" y2="410" data-page-node-id="DqpaQ1YU14We2lCu5GVpij"/>
+              <line class="gaxis" x1="110" y1="410" x2="110" y2="60" data-page-node-id="EMebpFvesL2h20kvE5ivH4"/>
+              <g class="reveal s2" data-page-node-id="PbyhrnuuQIhZRzvezb7cpy">
+                <line x1="110" y1="60" x2="650" y2="410"
+                      stroke="var(--primary)" stroke-width="5" stroke-linecap="round" data-page-node-id="jKuofPO0OaWo1Su8tPAYeX"/>
+                <line x1="110" y1="228" x2="110" y2="68"
+                      stroke="var(--accent-green)" stroke-width="4" stroke-dasharray="10 7" data-page-node-id="EZKAEzvxHA4VNeeDW550SF"/>
+                <polygon points="110,60 101,80 119,80" fill="var(--accent-green)" data-page-node-id="OE36CRJjV18holPcDc3P3j"/>
+                <line x1="388" y1="410" x2="642" y2="410"
+                      stroke="var(--accent-green)" stroke-width="4" stroke-dasharray="10 7" data-page-node-id="AHUL0cQTvCgYdFtSzsL8Vm"/>
+                <polygon points="650,410 630,401 630,419" fill="var(--accent-green)" data-page-node-id="HN7MXpKRj0LISCB30dZDyC"/>
+              </g>
+              <text class="gtick" x="110" y="436" data-page-node-id="PScCAEj2Uv5w3eM2OQ15NW">0</text>
+              <text class="gtick" x="380" y="436" text-anchor="middle" data-page-node-id="LXbIhK4irTCu2mu0mpvxGg">80</text>
+              <text class="gtick" x="650" y="436" text-anchor="end" data-page-node-id="5HyoTt0pkIHQch5ryX2ka6">160</text>
+              <text class="gtick" x="82" y="64" data-page-node-id="TdiI2aTgSms5cSX8GYGlES">160</text>
+              <text class="gtick" x="82" y="239" data-page-node-id="4H7W78Npdqxgz59nG6oT94">80</text>
+              <text class="gtick" x="82" y="416" data-page-node-id="EGu7fcjdgqWa3juAQNDkBG">0</text>
+              <text class="glabel" x="380" y="462" text-anchor="middle" data-page-node-id="LYhOnJAymbJwEDBrqEmAJL">Fish 鱼 →</text>
+              <text class="glabel" x="26" y="245" transform="rotate(-90 26 245)" text-anchor="middle" data-page-node-id="wBQY9o23IXtCMiNsW2LyLf">Coconuts 椰 →</text>
+              <g data-page-node-id="OMt8ZQgjHuJzom7FULcycn">
+                <rect x="452" y="72" width="188" height="96" rx="8" fill="#ffffff" stroke="#d8e8f5" stroke-width="2" data-page-node-id="A8LtD0r5LeEh3c3Dl0lwhl"/>
+                <line x1="468" y1="100" x2="512" y2="128" stroke="#9db2c8" stroke-width="5" stroke-linecap="round" data-page-node-id="jyYX3wtHr4F6syJaiB1tbY"/>
+                <text class="glabel sub" x="522" y="120" fill="#5b7288" data-page-node-id="SiE8vg1LryRqqg4u6jARem">PPC₁ 8 h</text>
+                <line x1="468" y1="134" x2="512" y2="162" stroke="var(--primary)" stroke-width="5" stroke-linecap="round" data-page-node-id="4Q1rM1BxKakqHU8F56sUUl"/>
+                <text class="glabel sub" x="522" y="154" fill="var(--primary-deep)" data-page-node-id="D0GBzj4uuTxy7XvsiYejyn">PPC₂ 16 h</text>
+              </g>
+              <g class="reveal s3" data-page-node-id="vXzBgLQWPwi9miLVRKhdmE">
+                <circle class="gpoint green" cx="245" cy="322.5" r="11" data-page-node-id="d3LKUndWehsHBGwXm4hhh3"/>
+                <text class="glabel" x="258" y="300" fill="#2e7d5b" data-page-node-id="4WVMHB40pcopx6H8Aote7w">A</text>
+                <circle class="gpoint orange" cx="177.5" cy="366.25" r="11" data-page-node-id="5Q5XCTEzKI8tCABrRcHu1O"/>
+                <text class="glabel" x="192" y="352" fill="#a06a12" data-page-node-id="b2Aql9Wv60AGnMRDK6BV8P">B</text>
+                <circle class="gpoint red" cx="312.5" cy="322.5" r="11" data-page-node-id="VV2H6etzpeM0KE1asdx1qA"/>
+                <text class="glabel" x="330" y="310" fill="#b03a3a" data-page-node-id="saszzjTlAHuWNVj9DXyQyU">C</text>
+                <text class="glabel sub" x="330" y="338" fill="#b03a3a" data-page-node-id="RE8op1fcFc3kFZtMPR9CID">now possible</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="col" style="flex:1;min-height:0;overflow-y:auto;padding-right:.5vw;" data-page-node-id="AMTcRJabY7pgvBUMxtPfYH">
+          <div class="card reveal s4" style="border-left:6px solid var(--accent-red);padding:1vh 1.2vw;margin-bottom:.7vh;" data-page-node-id="pwHrEgbVgBTELqI4UTWJc4">
+            <h3 style="color:var(--accent-red);font-size:clamp(22px,2.2vh,26px);" data-page-node-id="qSpHJZqXCrXavV73zFlgEV">C (60, 40) — now possible!</h3>
+            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;" data-page-node-id="pN0BFP9MYuCtLR0ktOG7Fx">6 h fishing + 4 h picking = <b data-page-node-id="bkUvtLgzUuaGVVYnHfAFjb">10 hours</b>,
+            and together they have 16. What was <b data-page-node-id="eXzhQ6aAwO9lIfP9blYLMN">unattainable</b> in Step 2 is now well
+            <b data-page-node-id="i0EE1clLfo4hSQ4VdHXHzx">inside</b> PPC₂ — reachable, though still a little wasteful.</p>
+          </div>
+          <div class="card reveal s4" style="border-left:6px solid var(--accent-orange);padding:1vh 1.2vw;margin-bottom:.7vh;" data-page-node-id="muQmJWyFoNRGGbUZDDgp2r">
+            <h3 style="color:#a06a12;font-size:clamp(22px,2.2vh,26px);" data-page-node-id="3LvvV0HNrydupJQjeOUY6s">A (40, 40) &amp; B (20, 20)</h3>
+            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;" data-page-node-id="ZTU33dbuFSLjNUHtzdZJ1D">A used to sit <b data-page-node-id="mLde30kB983vHD9BhLlJJ1">on</b> PPC₁
+            (all 8 hours used). It now sits inside PPC₂ — the same output no longer
+            needs everything they have.</p>
+          </div>
+          <div class="card reveal s4" style="border-left:6px solid var(--accent-green);padding:1vh 1.2vw;" data-page-node-id="yn7EA5LmSAreObHWxgLWot">
+            <h3 style="color:var(--accent-green);font-size:clamp(22px,2.2vh,26px);" data-page-node-id="JVKP99p3qLHC5ngNOs1FEq">Same technology, more resources</h3>
+            <p style="font-size:clamp(22px,2vh,24px);margin:.3vh 0 0;" data-page-node-id="xxh4dlBeZcwu3x0HykrEEj">Nobody got cleverer — the island simply gained
+            <b data-page-node-id="Hn6cu0NVbWJ5TofUK5oprw">labour</b> (8 h → 16 h). Both maximum <b data-page-node-id="nVa8wndsQR4qAvCJYWXwnV">doubled</b>: 80 → 160 fish,
+            80 → 160 coconuts.</p>
+          </div>
+        </div>
+      </div>
+      <div class="s-foot" style="margin-top:.8vh;" data-page-node-id="PH4BRtF2o1OX623oGcerSy">
+        <span class="note" id="shiftNote" data-page-node-id="aBnI3dY5BKbx5rjHvHhFpI">Step ① — recall Step 2: what was the most Robinson could produce alone?</span>
+        <button class="btn" id="shiftBtn" onclick="shiftNext()" data-page-node-id="5qdXan7YGsdrySQ7xvDqJc">① Robinson alone</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P11 QUIZ ════ -->
+  <section class="slide" data-title="Quiz" data-page-node-id="BNBQmeNxaS2dvOfBVhIazQ">
+    <div class="s-head" data-page-node-id="yEHcEcr6UlEGBabefnDwBb">
+      <span class="tag" data-page-node-id="UccXE8zZlZqfjZfBFGBtPR">Quiz</span><h2 data-page-node-id="QGMfdFgXQtUXyEGSkl7cZX">Check Your Understanding</h2><span class="en" data-page-node-id="Gjn7GUPTzyOIQBwfJ9eoAG">选择题 · 点选判分</span>
+    </div>
+    <div class="s-body" data-page-node-id="EktM6IHGfPszBKeEu1durm">
+      <div class="row" data-page-node-id="RPBnfJOnDA6PmyNavuss4F">
+        <div class="col" id="quizCol" style="overflow-y:auto; gap:1.2vh;" data-page-node-id="2VAncLzAMyCqW1j8HP5iKy"></div>
+      </div>
+      <div class="s-foot" data-page-node-id="RIoKh2DJjayWmr1mXNvcZU">
+        <button class="btn ghost" onclick="resetQuiz()" data-page-node-id="A0x0KbqARbugoxCgQUXm9P">↺ Try again</button>
       </div>
     </div>
   </section>
 
   <!-- ════ P12 SUMMARY ════ -->
-  <section class="slide" data-title="Summary">
-    <div class="s-head">
-      <span class="tag">Summary</span><h2>Key Ideas</h2><span class="en">本课要点</span>
+  <section class="slide" data-title="Summary" data-page-node-id="KSh5StFLM37qIwy1WwTdDi">
+    <div class="s-head" data-page-node-id="0ECTsCadVkxM2lArjDRiyD">
+      <span class="tag" data-page-node-id="Yzevdfumh9FSYgCwn9nWiH">Summary</span><h2 data-page-node-id="77hDwJUoPOk0y9rEB0A3LQ">Key Ideas</h2><span class="en" data-page-node-id="x8XKmljRIXDuMMlXUlYC9K">本课要点</span>
     </div>
-    <div class="s-body" style="flex-direction:column; gap:1.6vh;">
-      <div class="card">
-        <h3>What is a PPC?</h3>
-        <p>Maximum combinations of two goods an economy can produce with all
-        resources fully used — from Robinson's table to the graph.</p>
+    <div class="s-body" style="flex-direction:column; gap:1.6vh; overflow-y:auto; padding-right:.6vw;" data-page-node-id="9FNCbYZJO4AHLq5SjbBGzF">
+      <div class="card" data-page-node-id="vGOHljPS7gRWCzX715jXTY">
+        <h3 data-page-node-id="hMbpHzD1TvQuuk88Y7p9Gm">What is a PPC?</h3>
+        <p data-page-node-id="tkPTZW48zgQ1oJLeganTyP">Maximum combinations of two goods an economy can produce with all
+        resources fully used.</p>
       </div>
-      <div class="card">
-        <h3>Three key ideas</h3>
-        <p>① <b>Straight</b> → constant OC · <b>bowed out</b> → increasing OC · <b>convex</b> → decreasing OC<br>
-        ② <b>Slope = opportunity cost</b> — the gradient is what you give up<br>
-        ③ On = full use = <b>efficient</b> = <b>full employment</b><br>
-        &nbsp;&nbsp;&nbsp;Inside = waste = <b>inefficient</b><br>
-        &nbsp;&nbsp;&nbsp;Outside = impossible = <b>unattainable</b> (with current resources &amp; technology)</p>
+      <div class="card" data-page-node-id="egxzujqKoG66FouU6JCYbD">
+        <h3 data-page-node-id="oZn5LMhsedRA1BDHpoy9Pt">Key ideas — fill in the blanks</h3>
+        <p data-page-node-id="DeUitGxiRl3RwrtOtfOpLX">① Straight → <span class="blank" data-step="1" data-ans="constant" style="min-width:9ch"></span>
+        OC · <span class="blank" data-step="1" data-ans="bowed out" style="min-width:10ch"></span> → increasing OC ·
+        convex → decreasing OC<br data-page-node-id="7NKTmOI91j642CtkAxB1Sq">
+        ② Slope = opportunity cost — the gradient is what you give up<br data-page-node-id="m2Lk1NlTUcFBF44JLOae3O">
+        ③ <span class="blank" data-step="2" data-ans="On" style="min-width:4ch"></span> = full use = efficient =
+        <span class="blank" data-step="2" data-ans="full employment" style="min-width:16ch"></span><br data-page-node-id="b0qaCUY0F2v6b1READcdTC">
+        &nbsp;&nbsp;&nbsp;<span class="blank" data-step="2" data-ans="Inside" style="min-width:7ch"></span> = waste =
+        <span class="blank" data-step="2" data-ans="inefficient" style="min-width:12ch"></span><br data-page-node-id="F4PmVcNBMJ1beXNFmEMX2M">
+        &nbsp;&nbsp;&nbsp;<span class="blank" data-step="2" data-ans="Outside" style="min-width:8ch"></span> = impossible =
+        <span class="blank" data-step="2" data-ans="unattainable" style="min-width:13ch"></span>
+        (with current resources &amp; technology)</p>
       </div>
-      <div class="card">
-        <h3>Drawing checklist</h3>
-        <p>Label axes ✓ · Ends touch axes ✓ · Shape matches the story ✓ · Endpoints numbered ✓</p>
+      <div class="card" data-page-node-id="6mwv0l9TAipy2QQEDh1qtL">
+        <h3 data-page-node-id="yRogrX8q3915ffClzlJHVs">Movement along vs. shifts of the PPC</h3>
+        <p data-page-node-id="Sgyi51PPAORUVhhXK5dDU4">④ <span class="blank" data-step="3" data-ans="Moving along" style="min-width:13ch"></span>
+        the curve = reallocating the resources you already have<br data-page-node-id="4N4uPZNAutNua1EIV69Gk2">
+        ⑤ Shift <span class="blank" data-step="4" data-ans="outward" style="min-width:9ch"></span> (right) =
+        <span class="blank" data-step="4" data-ans="more resources" style="min-width:15ch"></span> available (Friday arrives,
+        more labour, more capital) or <span class="blank" data-step="4" data-ans="technological progress" style="min-width:23ch"></span><br data-page-node-id="tF1Ko103gMlHk8CWkSdzrN">
+        &nbsp;&nbsp;&nbsp;Shift <span class="blank" data-step="4" data-ans="inward" style="min-width:8ch"></span> (left) =
+        <span class="blank" data-step="4" data-ans="fewer resources" style="min-width:16ch"></span> (war, natural disaster,
+        emigration) or <span class="blank" data-step="4" data-ans="technological regression" style="min-width:25ch"></span></p>
       </div>
-      <div class="hl pulse"><b>Remember:</b> to produce more of one good, you give up another —
+      <div class="card" data-page-node-id="C0atDFzlXPj2t3uA0MA9IG">
+        <h3 data-page-node-id="oQeskaTglSzb5sGcwCSv0v">Drawing checklist</h3>
+        <p data-page-node-id="fXw78SZpzXARHHBv5oAXPs">Label axes ✓ · Ends touch axes ✓ · Shape matches the story ✓ · Endpoints numbered ✓</p>
+      </div>
+      <div class="hl pulse" data-page-node-id="mjnZfVCFWsAFEzPFjzMam4"><b data-page-node-id="eBQCfGA25tiVzjmLbrM0ai">Remember:</b> to produce more of one good, you give up another —
       that is opportunity cost, and the PPC shows it.</div>
+    </div>
+    <div class="s-foot" style="padding-top:1vh;">
+      <span class="note" id="sumNote">Try the blanks yourself first — then reveal them one line at a time.</span>
+      <button class="btn ghost" onclick="sumReset()">↺ Hide answers</button>
+      <button class="btn" id="sumBtn" onclick="sumNext()">Reveal ①</button>
     </div>
   </section>
 
 </div>
 
-<div class="nav">
-  <button id="navPrev" onclick="go(-1)">‹ Prev</button>
-  <div style="display:flex;align-items:center;gap:1vw;">
-    <div class="dots" id="dots"></div>
-    <div class="page" id="pageNum">1 / 17</div>
+<div class="nav" data-page-node-id="0Bkzi8osYAzJfOBG94H0t4">
+  <button id="navPrev" onclick="go(-1)" data-page-node-id="LAGmUHY5yEA4aRZWb6fbMo">‹ Prev</button>
+  <div style="display:flex;align-items:center;gap:1vw;" data-page-node-id="fwBtkkZTG3CtRVDqLxBA4j">
+    <div class="dots" id="dots" data-page-node-id="z7dvLANkwGTs7hLO6UMXbC"></div>
+    <div class="page" id="pageNum" data-page-node-id="X8dbGXcsGu0cZXRragwVFF">1 / 17</div>
   </div>
-  <div style="display:flex;align-items:center;gap:.9vw;margin-left:auto;">
-    <span class="copy">© 2026 Dr. Jia · CBS</span>
-    <button id="navNext" onclick="go(1)">Next ›</button>
+  <div style="display:flex;align-items:center;gap:.9vw;margin-left:auto;" data-page-node-id="RBG3kDy7To8T04RsWy5xmb">
+    <span class="copy" data-page-node-id="S6CfqM17h4bFADUsXK5QVb">© 2026 Dr. Jia · CBS</span>
+    <button id="navNext" onclick="go(1)" data-page-node-id="NxqK1PDSucPAoiq4BeAsuT">Next ›</button>
   </div>
 </div>
-<div id="progressBar"></div>
+<div id="progressBar" data-page-node-id="lY3Xmeo7uOQDqFDCbf0zBD"></div>
 
 
 <script>
@@ -910,14 +1088,10 @@ window.addEventListener("keydown", e => {
   if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { e.preventDefault(); go(1); }
   else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(-1); }
 });
-let tx0 = null;
-window.addEventListener("touchstart", e => { tx0 = e.touches[0].clientX; }, {passive:true});
-window.addEventListener("touchend", e => {
-  if (tx0 === null) return;
-  const dx = e.changedTouches[0].clientX - tx0;
-  if (Math.abs(dx) > 60) go(dx < 0 ? 1 : -1);
-  tx0 = null;
-}, {passive:true});
+/* 触摸滑动翻页：已按贾老师要求移除（2026-09-10）。
+   原因：电子屏上拖动 PPC 的小时滑杆时，横向位移 > 60px 会误触发翻页。
+   翻页现在只用三种方式：底部 ‹ Prev / Next › 按钮、底部圆点、键盘/翻页笔
+   （← → / 空格 / PageUp / PageDown）。请勿再加回 swipe 监听。 */
 
 /* ═══════════ P2: FILL TABLE ROW BY ROW (numbers hidden initially) ═══════════ */
 let filled = -1;
@@ -973,19 +1147,19 @@ function connectLine() {
   document.getElementById("drawNote").textContent = "Straight PPC → constant opportunity cost.";
 }
 
-/* ═══════════ P8: FILL COMBINED TABLE ROW BY ROW (0-96) ═══════════ */
+/* ═══════════ P8: FILL COMBINED TABLE ROW BY ROW (0-104) ═══════════ */
 let combFilled = -1;
-const COMB = [[0,96],[20,92],[38,86],[52,76],[66,66],[76,52],[86,38],[92,20],[96,0]];
+const COMB = [[0,104],[20,98],[38,90],[54,80],[68,68],[80,54],[90,38],[98,20],[104,0]];
 const COMBNOTES = [
-  "0 h fishing \u2192 fish 0 \u00b7 coconuts 96",
-  "1 h fishing \u2192 fish 20 \u00b7 7 h picking \u2192 coconuts 92",
-  "2 h fishing \u2192 fish 38 \u00b7 6 h picking \u2192 coconuts 86",
-  "3 h fishing \u2192 fish 52 \u00b7 5 h picking \u2192 coconuts 76",
-  "4 h fishing \u2192 fish 66 \u00b7 4 h picking \u2192 coconuts 66",
-  "5 h fishing \u2192 fish 76 \u00b7 3 h picking \u2192 coconuts 52",
-  "6 h fishing \u2192 fish 86 \u00b7 2 h picking \u2192 coconuts 38",
-  "7 h fishing \u2192 fish 92 \u00b7 1 h picking \u2192 coconuts 20",
-  "8 h fishing \u2192 fish 96 \u00b7 0 h picking \u2192 coconuts 0 — table complete!",
+  "0 h fishing \u2192 fish 0 \u00b7 coconuts 104",
+  "1 h fishing \u2192 fish 20 \u00b7 7 h picking \u2192 coconuts 98",
+  "2 h fishing \u2192 fish 38 \u00b7 6 h picking \u2192 coconuts 90",
+  "3 h fishing \u2192 fish 54 \u00b7 5 h picking \u2192 coconuts 80",
+  "4 h fishing \u2192 fish 68 \u00b7 4 h picking \u2192 coconuts 68",
+  "5 h fishing \u2192 fish 80 \u00b7 3 h picking \u2192 coconuts 54",
+  "6 h fishing \u2192 fish 90 \u00b7 2 h picking \u2192 coconuts 38",
+  "7 h fishing \u2192 fish 98 \u00b7 1 h picking \u2192 coconuts 20",
+  "8 h fishing \u2192 fish 104 \u00b7 0 h picking \u2192 coconuts 0 — table complete!",
 ];
 function fillComb() {
   if (combFilled >= 8) return;
@@ -1055,6 +1229,9 @@ const QUIZ = [
   { q: "Q3. When you draw a PPC, both ends of the curve should…",
     opts: ["stop in the middle", "touch the axes", "start from (0,0)", "be labelled 'P'"], correct: 1,
     fb: "The PPC ends on the axes — it forms a closed region with them." },
+  { q: "Q4. Friday lands on the island and works as well as Robinson. The PPC…",
+    opts: ["shifts outward", "shifts inward", "stays put — only the points move along it", "becomes a straight line"], correct: 0,
+    fb: "More labour = more resources. Both maximums double (80 → 160), so the whole curve shifts outward — not just a movement along it." },
 ];
 function buildQuiz() {
   const col = document.getElementById("quizCol");
@@ -1085,6 +1262,35 @@ function answer(qi, oi, btn) {
 function resetQuiz() {
   document.querySelectorAll(".quiz-opt").forEach(o => o.classList.remove("correct", "wrong"));
   QUIZ.forEach((_, qi) => { document.getElementById("fb" + qi).textContent = ""; });
+}
+
+/* ═══════════ SUMMARY: 填空题逐步揭晓 (P12) ═══════════ */
+const SUM_STEPS = [
+  { next: "Reveal ③", note: "① Straight → constant OC · bowed out → increasing OC · convex → decreasing OC" },
+  { next: "Reveal ④", note: "③ On = full use = efficient = full employment · Inside = waste = inefficient · Outside = impossible = unattainable" },
+  { next: "Reveal ⑤", note: "④ Moving ALONG the curve = reallocating the resources you already have" },
+  { next: "All shown ✓", note: "⑤ SHIFT outward = more resources or better technology · SHIFT inward = fewer resources (war, disaster) or worse technology" }
+];
+const SUM_HINT = "Try the blanks yourself first — then reveal them one line at a time.";
+let sumStep = 0, sumTimers = [];
+function sumNext() {
+  const slide = slides[cur];
+  sumStep++;
+  slide.querySelectorAll('.blank[data-step="' + sumStep + '"]').forEach((el, i) =>
+    sumTimers.push(setTimeout(() => { el.textContent = el.dataset.ans; el.classList.add("filled"); }, 180 * (i + 1))));
+  const s = SUM_STEPS[sumStep - 1];
+  document.getElementById("sumNote").textContent = s.note;
+  const b = document.getElementById("sumBtn");
+  b.textContent = s.next;
+  if (sumStep >= SUM_STEPS.length) b.disabled = true;
+}
+function sumReset() {
+  sumStep = 0;
+  sumTimers.forEach(t => clearTimeout(t)); sumTimers = [];   /* 防止排队中的揭晓在清空后又填上 */
+  slides[cur].querySelectorAll(".blank").forEach(el => { el.textContent = ""; el.classList.remove("filled"); });
+  document.getElementById("sumNote").textContent = SUM_HINT;
+  const b = document.getElementById("sumBtn");
+  b.disabled = false; b.textContent = "Reveal ①";
 }
 
 /* ═══════════ INIT ═══════════ */
@@ -1158,27 +1364,27 @@ function connectCv() {
 const labScenarios = [
   {
     name: "1 · Constant OC",
-    desc: "8 hours a day. The hunter catches <b>10 rabbits</b> or <b>10 fish</b> per hour, at any time. The trade-off never changes.",
-    rFunc: h => 10 * h,
-    fFunc: h => 10 * (8 - h),
+    desc: "8 hours a day. Every hour Robinson works yields <b>10 fish</b> or <b>10 coconuts</b>, whenever he works it. The trade-off never changes.",
+    fishFunc: h => 10 * h,
+    cocFunc: h => 10 * (8 - h),
     ocFunc: h => 1.0,
-    rLim: [0, 90], fLim: [0, 90], ocLim: [0, 5]
+    fLim: [0, 90], cLim: [0, 90], ocLim: [0, 5]
   },
   {
     name: "2 · Increasing OC",
-    desc: "Law of diminishing returns. Each hour hunting yields <b>1 less</b> than the hour before (10, 9, 8…). Same for fish. Switching gets costlier and costlier.",
-    rFunc: h => 10.5 * h - 0.5 * h * h,
-    fFunc: h => 10.5 * (8 - h) - 0.5 * (8 - h) * (8 - h),
+    desc: "Law of diminishing returns. Each hour spent fishing yields <b>1 less</b> than the hour before (10, 9, 8…). Same for coconuts. Switching gets costlier and costlier.",
+    fishFunc: h => 10.5 * h - 0.5 * h * h,
+    cocFunc: h => 10.5 * (8 - h) - 0.5 * (8 - h) * (8 - h),
     ocFunc: h => (2.5 + h) / (10.5 - h),
-    rLim: [0, 60], fLim: [0, 60], ocLim: [0, 5]
+    fLim: [0, 60], cLim: [0, 60], ocLim: [0, 5]
   },
   {
     name: "3 · Decreasing OC",
     desc: "Specialization &amp; economies of scale. Hour 1 yields 2 items, hour 2 yields 4, hour 3 yields 6… Marginal returns increase.",
-    rFunc: h => h * h + h,
-    fFunc: h => (8 - h) * (8 - h) + (8 - h),
+    fishFunc: h => h * h + h,
+    cocFunc: h => (8 - h) * (8 - h) + (8 - h),
     ocFunc: h => (17 - 2 * h) / (2 * h + 1),
-    rLim: [0, 80], fLim: [0, 80], ocLim: [0, 18]
+    fLim: [0, 80], cLim: [0, 80], ocLim: [0, 18]
   }
 ];
 let labIdx = 0, labHours = 0;
@@ -1217,52 +1423,56 @@ function labRender(){
 function drawPPC(sc){
   const canvas = labCanvases.ppc;
   if(!canvas || canvas.width === 0) return;
-  const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height, pad = 55;
+  const ctx = canvas.getContext && canvas.getContext("2d");
+  if(!ctx) return;      /* 电子屏拿不到 2d 上下文时，绝不能让 updateNav 崩掉 */
+  const W = canvas.width, H = canvas.height, pad = 66;
+  const FS = 24, TS = 22;          /* board rule: never below 22px */
+  const FONT = "'Segoe UI','Microsoft YaHei',Arial,sans-serif";
   ctx.clearRect(0, 0, W, H);
-  const [xMin, xMax] = sc.rLim, [yMin, yMax] = sc.fLim;
-  const mX = r => pad + (r / xMax) * (W - 2 * pad);
-  const mY = f => H - pad - (f / yMax) * (H - 2 * pad);
-  ctx.strokeStyle = "#343a40"; ctx.lineWidth = 3;
+  const xMax = sc.fLim[1], yMax = sc.cLim[1];
+  const mX = f => pad + (f / xMax) * (W - 2 * pad);
+  const mY = c => H - pad - (c / yMax) * (H - 2 * pad);
+  ctx.strokeStyle = "#5a7590"; ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.moveTo(pad, mY(0)); ctx.lineTo(W - pad, mY(0));
   ctx.moveTo(mX(0), pad); ctx.lineTo(mX(0), H - pad);
   ctx.stroke();
-  ctx.fillStyle = "#343a40";
-  ctx.font = "bold 15px Arial";
-  ctx.fillText("Fish", pad, pad - 22);
-  ctx.fillText("Rabbits", W - pad - 55, mY(0) + 32);
-  ctx.font = "13px Arial";
-  ctx.fillText(yMax, mX(0) + 10, pad + 5);
-  ctx.fillText(xMax, W - pad - 12, mY(0) - 10);
-  ctx.fillText("0", mX(0) - 14, mY(0) + 15);
+  ctx.fillStyle = "#25324b";
+  ctx.font = "bold " + FS + "px " + FONT;
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.fillText("Coconuts \u6930", pad, pad - 26);
+  ctx.fillText("Fish \u9c7c", W - pad - 72, mY(0) + 34);
+  ctx.font = TS + "px " + FONT;
+  ctx.fillText(String(yMax), mX(0) + 10, pad + 4);
+  ctx.fillText(String(xMax), W - pad - 18, mY(0) - 12);
+  ctx.fillText("0", mX(0) - 22, mY(0) + 24);
 
-  const currentR = sc.rFunc(labHours);
-  const currentF = sc.fFunc(labHours);
-  const cx = mX(currentR), cy = mY(currentF);
+  const currentF = sc.fishFunc(labHours);
+  const currentC = sc.cocFunc(labHours);
+  const cx = mX(currentF), cy = mY(currentC);
 
   ctx.strokeStyle = "#1CADE4"; ctx.lineWidth = 4; ctx.lineJoin = "round";
   ctx.beginPath();
   for(let h = 0; h <= labHours; h += 0.05){
-    if(h === 0) ctx.moveTo(mX(sc.rFunc(h)), mY(sc.fFunc(h)));
-    else ctx.lineTo(mX(sc.rFunc(h)), mY(sc.fFunc(h)));
+    if(h === 0) ctx.moveTo(mX(sc.fishFunc(h)), mY(sc.cocFunc(h)));
+    else ctx.lineTo(mX(sc.fishFunc(h)), mY(sc.cocFunc(h)));
   }
   if(labHours > 0) ctx.lineTo(cx, cy);
   ctx.stroke();
 
   const OC = sc.ocFunc(labHours);
-  const deltaR = xMax * 0.15;
-  const rStart = currentR - deltaR, rEnd = currentR + deltaR;
-  const fStart = currentF - OC * (rStart - currentR);
-  const fEnd = currentF - OC * (rEnd - currentR);
+  const deltaF = xMax * 0.15;
+  const fStart = currentF - deltaF, fEnd = currentF + deltaF;
+  const cStart = currentC - OC * (fStart - currentF);
+  const cEnd = currentC - OC * (fEnd - currentF);
   ctx.save();
   ctx.beginPath();
   ctx.rect(pad, pad, W - 2*pad, H - 2*pad);
   ctx.clip();
   ctx.strokeStyle = "#e63946"; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
   ctx.beginPath();
-  ctx.moveTo(mX(rStart), mY(fStart));
-  ctx.lineTo(mX(rEnd), mY(fEnd));
+  ctx.moveTo(mX(fStart), mY(cStart));
+  ctx.lineTo(mX(fEnd), mY(cEnd));
   ctx.stroke();
   ctx.restore();
 
@@ -1281,36 +1491,40 @@ function drawPPC(sc){
 function drawOC(sc){
   const canvas = labCanvases.oc;
   if(!canvas || canvas.width === 0) return;
-  const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height, pad = 55;
+  const ctx = canvas.getContext && canvas.getContext("2d");
+  if(!ctx) return;      /* 同上：拿不到上下文就静默跳过，不能影响翻页 */
+  const W = canvas.width, H = canvas.height, pad = 66;
+  const FS = 24, TS = 22;          /* board rule: never below 22px */
+  const FONT = "'Segoe UI','Microsoft YaHei',Arial,sans-serif";
   ctx.clearRect(0, 0, W, H);
-  const [xMin, xMax] = sc.rLim, [yMin, yMax] = sc.ocLim;
-  const mX = r => pad + (r / xMax) * (W - 2 * pad);
-  const mY = oc => H - pad - (oc / yMax) * (H - 2 * pad);
-  ctx.strokeStyle = "#343a40"; ctx.lineWidth = 3;
+  const xMax = sc.fLim[1], ocMax = sc.ocLim[1];
+  const mX = f => pad + (f / xMax) * (W - 2 * pad);
+  const mY = oc => H - pad - (oc / ocMax) * (H - 2 * pad);
+  ctx.strokeStyle = "#5a7590"; ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.moveTo(pad, mY(0)); ctx.lineTo(W - pad, mY(0));
   ctx.moveTo(mX(0), pad); ctx.lineTo(mX(0), H - pad);
   ctx.stroke();
-  ctx.fillStyle = "#343a40";
-  ctx.font = "bold 15px Arial";
-  ctx.fillText("OC of rabbit (in fish)", pad, pad - 22);
-  ctx.fillText("Rabbits", W - pad - 55, mY(0) + 32);
-  ctx.font = "13px Arial";
-  ctx.fillText(Math.round(yMax), mX(0) + 10, pad + 5);
-  ctx.fillText(xMax, W - pad - 12, mY(0) - 10);
-  ctx.fillText("0", mX(0) - 14, mY(0) + 15);
+  ctx.fillStyle = "#25324b";
+  ctx.font = "bold " + FS + "px " + FONT;
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.fillText("OC of fish (coconuts)", pad, pad - 26);
+  ctx.fillText("Fish \u9c7c", W - pad - 72, mY(0) + 34);
+  ctx.font = TS + "px " + FONT;
+  ctx.fillText(String(Math.round(ocMax)), mX(0) + 10, pad + 4);
+  ctx.fillText(String(xMax), W - pad - 18, mY(0) - 12);
+  ctx.fillText("0", mX(0) - 22, mY(0) + 24);
 
-  const currentR = sc.rFunc(labHours);
+  const currentF = sc.fishFunc(labHours);
   const currentOC = sc.ocFunc(labHours);
-  const cx = mX(currentR), cy = mY(currentOC);
+  const cx = mX(currentF), cy = mY(currentOC);
 
   ctx.strokeStyle = "#e6a23c"; ctx.lineWidth = 4; ctx.lineJoin = "round";
   ctx.beginPath();
   for(let h = 0; h <= labHours; h += 0.05){
-    const rCoord = sc.rFunc(h), ocCoord = sc.ocFunc(h);
-    if(h === 0) ctx.moveTo(mX(rCoord), mY(ocCoord));
-    else ctx.lineTo(mX(rCoord), mY(ocCoord));
+    const fCoord = sc.fishFunc(h), ocCoord = sc.ocFunc(h);
+    if(h === 0) ctx.moveTo(mX(fCoord), mY(ocCoord));
+    else ctx.lineTo(mX(fCoord), mY(ocCoord));
   }
   if(labHours > 0) ctx.lineTo(cx, cy);
   ctx.stroke();
@@ -1327,8 +1541,8 @@ function drawOC(sc){
   ctx.beginPath(); ctx.arc(cx, cy, 7, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
 
-  ctx.fillStyle = "#0e7fae"; ctx.font = "bold 15px Arial";
-  ctx.fillText("OC = " + currentOC.toFixed(2) + " fish", cx + 12, cy - 10);
+  ctx.fillStyle = "#0e7fae"; ctx.font = "bold " + FS + "px " + FONT;
+  ctx.fillText("OC = " + currentOC.toFixed(2) + " coconuts", cx + 12, cy - 12);
 }
 document.getElementById("labPrev").onclick = ()=>{ if(labIdx > 0) labLoad(labIdx - 1); };
 document.getElementById("labNext").onclick = ()=>{ if(labIdx < labScenarios.length - 1) labLoad(labIdx + 1); };
@@ -1341,6 +1555,60 @@ document.getElementById("hourSlider").oninput = function(){
   labRender();
 };
 /* 翻到 live model 页时重算 canvas 尺寸并渲染 */
+
+/* ═══════════ STEP 6a: Robinson + Friday — joint schedule (0-160) ═══════════ */
+const JOINT = [];
+for (let h = 0; h <= 16; h++) JOINT.push([10 * h, 10 * (16 - h)]);
+let jointFilled = -1;
+function fillJoint() {
+  if (jointFilled >= 16) return;
+  jointFilled++;
+  const [v, c] = JOINT[jointFilled];
+  const vEl = document.getElementById("jv-" + jointFilled);
+  const cEl = document.getElementById("jc-" + jointFilled);
+  vEl.textContent = v; cEl.textContent = c;
+  vEl.classList.remove("empty"); cEl.classList.remove("empty");
+  vEl.parentElement.classList.add("hl");
+  const h = jointFilled;
+  document.getElementById("jointNote").textContent =
+    h + " h fishing \u2192 fish " + v + " \u00b7 " + (16 - h) + " h picking \u2192 coconuts " + c +
+    (h === 16 ? " \u2014 table complete!" : "");
+  if (h === 16) {
+    const b = document.getElementById("jointBtn");
+    b.disabled = true; b.textContent = "Table complete \u2713";
+  }
+}
+
+/* ═══════════ STEP 6b: PPC shifts outward — 4 beats ═══════════ */
+let shiftStep = 0;
+function shiftNext() {
+  const slide = slides[cur];
+  const show = sel => slide.querySelectorAll(sel)
+    .forEach((el, i) => setTimeout(() => el.classList.add("show"), 200 * (i + 1)));
+  shiftStep++;
+  if (shiftStep === 1) {
+    show(".reveal.s1");
+    document.getElementById("shiftBtn").textContent = "\u2461 Friday arrives";
+    document.getElementById("shiftNote").textContent =
+      "PPC\u2081 \u2014 Robinson alone: 8 hours, at most 80 fish or 80 coconuts.";
+  } else if (shiftStep === 2) {
+    show(".reveal.s2");
+    document.getElementById("shiftBtn").textContent = "\u2462 Plot A, B, C again";
+    document.getElementById("shiftNote").textContent =
+      "PPC\u2082 \u2014 Robinson + Friday: 16 hours, at most 160 of either good. The whole curve moves out.";
+  } else if (shiftStep === 3) {
+    show(".reveal.s3");
+    document.getElementById("shiftBtn").textContent = "\u2463 Explain";
+    document.getElementById("shiftNote").textContent =
+      "Compare A, B, C with their position in Step 2 \u2014 especially point C.";
+  } else if (shiftStep === 4) {
+    show(".reveal.s4");
+    const b = document.getElementById("shiftBtn");
+    b.textContent = "All shown \u2713"; b.disabled = true;
+    document.getElementById("shiftNote").textContent =
+      "More resources \u2192 the PPC shifts outward. Moving ALONG the curve is a different thing than SHIFTING it.";
+  }
+}
 
 /* ═══════════ P4 On/Inside/Outside 三步拆解 ═══════════ */
 let oiStep = 0;

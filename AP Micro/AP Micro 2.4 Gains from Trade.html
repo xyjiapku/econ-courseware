@@ -729,14 +729,10 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
   else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
 });
-let tx0=null;
-document.addEventListener("touchstart",e=>tx0=e.touches[0].clientX,{passive:true});
-document.addEventListener("touchend",e=>{
-  if(tx0===null) return;
-  const dx = e.changedTouches[0].clientX - tx0;
-  if(Math.abs(dx)>60){ dx<0 ? gotoSlide(cur+1) : gotoSlide(cur-1); }
-  tx0=null;
-},{passive:true});
+/* 触摸滑动翻页：已按贾老师要求移除（2026-09-11），与 AP Micro 2.2 保持一致。
+   原因：电子屏上拖动图形里的点（见下方 totSvg 的 touch 拖拽）时，横向位移
+   > 60px 会误触发翻页。翻页现在只用三种方式：底部 ‹ Prev / Next › 按钮、
+   底部圆点、键盘（← → / 空格）。请勿再加回 swipe 监听。 */
 const hashInit = parseInt(location.hash.slice(1)||"0",10);
 if(!isNaN(hashInit)&&hashInit<TOTAL) gotoSlide(hashInit); else gotoSlide(0);
 
