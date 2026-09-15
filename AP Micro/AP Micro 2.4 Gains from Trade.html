@@ -310,6 +310,12 @@
   <h2>Find the deal zone</h2>
   <div class="stage">
     <p>Put the two questions together. By comparative advantage, <b>A hunts, B picks</b> — now A has rabbits to sell, and B wants to buy. At what price does the deal happen?</p>
+    <div class="hl" style="margin-top:.8vh;"><b>Each side's own opportunity cost:</b>
+      A gives up <b>2 fruits</b> to get one rabbit; B gives up <b>6 fruits</b> to get one rabbit.
+      Every cell in the table below is just “the price compared with my own number”.</div>
+    <div class="hl green" style="margin-top:.8vh;"><b>The rule:</b> when the price is <b>higher</b> than your
+      own opportunity cost of producing it, <b>sell</b> it; when the price is <b>lower</b> than your
+      opportunity cost, <b>buy</b> it instead of producing it yourself.</div>
     <div class="scroll">
       <table>
         <tr><th>Price of rabbit<br>(in fruits)</th><th>Will A sell?</th><th>Will B buy?</th><th>Deal?</th></tr>
@@ -324,6 +330,10 @@
       </table>
     </div>
     
+    <p style="color:var(--sub);font-size:clamp(22px,2.1vh,26px);margin-top:.5vh;">
+      “Maybe” means the price is <b>exactly equal</b> to that side's own opportunity cost, so he is
+      <b>indifferent</b> — that is why A stops saying no at 2, and B stops saying yes at 6.</p>
+
     <div class="btnrow">
       <button class="btn" onclick="showDealZone()">Show the deal zone</button>
       <button class="btn ghost" onclick="hideDealZone()">Hide</button>
@@ -333,9 +343,10 @@
         <span class="deal-range">2 &lt; Price of rabbit &lt; 6 fruits</span>
         
       </div>
-      <div class="hl green">Perfect match at 3, 4, 5: <b>A sells</b> (price &ge; his OC 2) and <b>B buys</b> (price &le; his OC 6).<br>
-      </div>
-      <div class="hl" style="margin-top:.8vh;">The terms of trade must lie <b>between the two opportunity costs</b>.<br>
+      <div class="hl green">Perfect match at 3, 4, 5 — exactly the rule above:
+        the price is <b>above A's opportunity cost (2)</b>, so A sells; and it is
+        <b>below B's opportunity cost (6)</b>, so B buys. Both gain from the same deal.</div>
+      <div class="hl" style="margin-top:.8vh;">So the terms of trade must lie <b>between the two opportunity costs</b>: above the seller's, below the buyer's.<br>
       </div>
       <div class="hl amber" style="margin-top:.8vh;">Next page — the same deal zone on a <b>number line</b>. </div>
     </div>

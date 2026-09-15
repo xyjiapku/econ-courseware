@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PRE-DP 2-5 - Demand</title>
+<title>AP Micro 3.3 — Demand</title>
 <style>
 :root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;}
 body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
 .view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,3vh,48px) clamp(60px,7vw,110px) 80px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,3vh,48px) clamp(60px,7vw,110px) 80px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;overflow-x:hidden;}
 .slide.active{opacity:1;pointer-events:auto;}
 /* nav */
 .nav{position:fixed;bottom:0;left:0;right:0;height:56px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
@@ -109,8 +109,8 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 .vtab .ec{font-weight:700;text-align:center;}
 .vtab .zh{text-align:center;}
 /* summary steps */
-.ssteps{font-size:clamp(20px,2.2vw,28px);line-height:1.7;width:100%;}
-.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(12px,1.5vh,22px);}
+.ssteps{font-size:clamp(22px,1.9vw,24px);line-height:1.45;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(6px,.8vh,10px);}
 .sstep.show{opacity:1;}
 .sstep .blank{display:inline-block;min-width:clamp(50px,5vw,90px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
 .sstep .blank.filled{color:var(--blue);}
@@ -140,7 +140,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
     @keyframes pricering { 0%{transform:scale(1)} 40%{transform:scale(1.14)} 100%{transform:scale(1)} }
     .pulse { animation: pricering .7s ease-out 2; transform-box: fill-box; transform-origin: center; }
 
-    /* ── demand 交互页统一样式 ── */
+    /* ── shared styles for the demand interaction pages ── */
     .big-btn { padding:12px 26px; border:none; background:var(--blue); color:#fff; border-radius:12px; font-size:clamp(20px,2.2vw,28px); font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(26,58,92,.3); transition:.15s; }
     .big-btn:hover { filter:brightness(1.12); transform:translateY(-1px); }
     .big-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
@@ -151,6 +151,8 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
     .data-table { border-collapse:collapse; width:100%; }
     .data-table th, .data-table td { border:2px solid #d5e3f2; padding:10px 14px; font-size:clamp(20px,2.2vw,27px); text-align:center; }
     .data-table th { background:#E3F0FC; color:#1a3a5c; font-weight:800; }
+    /* compact table: tighter padding for tables with many rows (font floor stays 22px) */
+    .data-table.compact th, .data-table.compact td { font-size:clamp(22px,1.7vw,25px); padding:6px 10px; }
 </style>
 </head>
 <body>
@@ -172,10 +174,10 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <!-- S1: Cover -->
 <div class="slide cover active" data-i="0">
-  <div class="course-tag">IGCSE ECONOMICS 0455 · UNIT 2</div>
+  <div class="course-tag">AP MICROECONOMICS · UNIT 2 · TOPIC 2.1</div>
   <h1>Demand</h1>
   <div class="sep"></div>
-  <div style="font-size:clamp(20px,2.4vw,30px);color:#5b6b7b;font-weight:600;">From a physics law to the law of demand · 需求定律与需求曲线</div>
+  <div style="font-size:clamp(20px,2.4vw,30px);color:#5b6b7b;font-weight:600;">From a physics law to the law of demand · 需求定律</div>
   <div class="author">DR. JIA</div>
   <div class="botbar"></div>
 </div>
@@ -184,23 +186,42 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <div class="slide" data-i="1">
   <div class="content">
-  <div class="course-tag">WARM-UP · TODAY'S ROUTE</div>
-  <h1>Today's plan</h1><hr>
+  <div class="course-tag">DEFINITION · 需求是什么</div>
+  <h1>What is demand?</h1>
+  <div class="sub">Not every wish is demand — economics is careful about three words: <b>needs</b>, <b>wants</b> and <b>demand</b>.</div><hr>
   <div class="txt">
     <div class="rgrp show">
-      <p class="b db">Last time:</p>
-      <p>The market answers the three questions through <b>prices</b>. But who sets the price? <b>Buyers and sellers</b>.</p>
+      <svg viewBox="0 0 1000 210" style="width:auto;height:20vh;max-width:100%;">
+        <rect x="20" y="25" width="200" height="130" rx="14" fill="#EAF2FB" stroke="#2a5a8c" stroke-width="3"/>
+        <text x="120" y="71" font-size="26" font-weight="800" fill="#1a5276" text-anchor="middle">NEED / WANT</text>
+        <text x="120" y="105" font-size="22" fill="#5b6b7b" text-anchor="middle">a desire,</text>
+        <text x="120" y="135" font-size="22" fill="#5b6b7b" text-anchor="middle">and it is free</text>
+        <line x1="230" y1="90" x2="258" y2="90" stroke="#94a3b8" stroke-width="6"/>
+        <path d="M256 78 L274 90 L256 102 Z" fill="#94a3b8"/>
+        <rect x="275" y="25" width="200" height="130" rx="14" fill="#EAF2FB" stroke="#2a5a8c" stroke-width="3"/>
+        <text x="375" y="71" font-size="26" font-weight="800" fill="#1a5276" text-anchor="middle">ABILITY</text>
+        <text x="375" y="105" font-size="22" fill="#5b6b7b" text-anchor="middle">to pay</text>
+        <text x="375" y="135" font-size="22" fill="#5b6b7b" text-anchor="middle">money in hand</text>
+        <line x1="485" y1="90" x2="513" y2="90" stroke="#94a3b8" stroke-width="6"/>
+        <path d="M511 78 L529 90 L511 102 Z" fill="#94a3b8"/>
+        <rect x="530" y="25" width="200" height="130" rx="14" fill="#EAF2FB" stroke="#2a5a8c" stroke-width="3"/>
+        <text x="630" y="71" font-size="26" font-weight="800" fill="#1a5276" text-anchor="middle">WILLINGNESS</text>
+        <text x="630" y="105" font-size="22" fill="#5b6b7b" text-anchor="middle">to pay</text>
+        <text x="630" y="135" font-size="22" fill="#5b6b7b" text-anchor="middle">will spend it</text>
+        <line x1="740" y1="90" x2="768" y2="90" stroke="#94a3b8" stroke-width="6"/>
+        <path d="M766 78 L784 90 L766 102 Z" fill="#94a3b8"/>
+        <rect x="785" y="25" width="200" height="130" rx="14" fill="#E8F5E9" stroke="#1e8449" stroke-width="3"/>
+        <text x="885" y="71" font-size="26" font-weight="800" fill="#1e8449" text-anchor="middle">DEMAND</text>
+        <text x="885" y="105" font-size="22" fill="#1e8449" text-anchor="middle">a want that is</text>
+        <text x="885" y="135" font-size="22" fill="#1e8449" text-anchor="middle">paid for</text>
+        <text x="20" y="190" font-size="24" font-weight="700" fill="#1a5276">A want becomes demand only when the buyer can pay AND will pay.</text>
+      </svg>
     </div>
     <div class="rgrp">
-      <p class="b db" style="margin-top:6px;">Today we look at the buying side — <b class="blue">DEMAND</b>:</p>
-      <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
-        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">1 · A physics law 🔬</div>
-        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">2 · The law of demand 📈</div>
-        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">3 · Drawing the curve ✏️</div>
-        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">4 · Along the curve ↔</div>
-        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">5 · Individual → market 👥</div>
-        <div style="background:#eaf2fb;border-radius:10px;padding:8px 14px;font-weight:700;color:#1a3a5c;">6 · Shifts of the curve ↔↔</div>
+      <div style="background:#EAF4FF;border-left:8px solid var(--blue);border-radius:10px;padding:10px 16px;margin-bottom:10px;">
+        <span style="font-size:clamp(22px,2vw,24px);color:#1a5276;font-weight:700;">DEMAND = willingness + ability to pay, at a given price, over a period of time.</span>
       </div>
+      <p>Two words do all the work: <b>ability</b> — do you have the money? And <b>willingness</b> — do you actually choose to spend it?</p>
     </div>
   </div>
   </div>
@@ -209,6 +230,38 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 <div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">NEEDS · WANTS · DEMAND · 三者区别</div>
+  <h1>Needs, wants, demand — spot the difference</h1>
+  <div class="sub">A need is not demand. A want is not demand. Only a want that gets <b>paid for</b> is demand.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table" style="width:100%;">
+        <tr><th style="width:20%;"> </th><th style="width:38%;">What it is</th><th style="width:42%;">Is it demand?</th></tr>
+        <tr><td><b>Need</b></td><td>must-have to survive</td><td>only if you <b>can</b> and <b>will</b> pay</td></tr>
+        <tr><td><b>Want</b></td><td>anything you desire</td><td><b>no</b> — a want is not demand</td></tr>
+        <tr><td><b>Demand</b></td><td>a want with <b>money behind it</b></td><td><b>yes</b> — <b>effective demand</b></td></tr>
+      </table>
+    </div>
+    <div class="rgrp">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:#F7FBFD;border:2px solid #d5e3f2;border-radius:10px;padding:5px 14px;font-size:clamp(22px,1.9vw,24px);">A student <b>dreams</b> of a private jet but has no money → <b style="color:#b03a2e;">a want, not demand</b></div>
+        <div style="background:#E8F5E9;border:2px solid #1e8449;border-radius:10px;padding:5px 14px;font-size:clamp(22px,1.9vw,24px);">You have <b>¥15</b>, milk tea costs <b>¥12</b>, and you are thirsty → <b style="color:#1e8449;">demand ✓</b></div>
+        <div style="background:#F7FBFD;border:2px solid #d5e3f2;border-radius:10px;padding:5px 14px;font-size:clamp(22px,1.9vw,24px);">A millionaire can easily afford a yacht but <b>never wants</b> one → <b style="color:#b03a2e;">not demand</b> (no willingness)</div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <p class="b" style="color:var(--red);">Common mistake</p>
+      <p>Demand is <b>not</b> the same as desire: a shop cannot sell to a want, only to a want with <b>money behind it</b>.<br>
+      A <b>need</b> is still not demand unless it is paid for.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="3">
   <div class="content">
   <div class="course-tag">HOW A LAW IS BORN · A PHYSICS EXAMPLE</div>
   <h1>Hooke's Law — from data to a law</h1>
@@ -278,14 +331,14 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 
-<div class="slide" data-i="3">
+<div class="slide" data-i="4">
   <div class="content">
   <div class="course-tag">HOW A LAW IS BORN · THE ECONOMICS TWIN</div>
   <h1>The Law of Demand — same recipe, different variables</h1>
   <div class="sub">Now run the <b>same steps</b> on the canteen's milk tea. Watch a second law emerge.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
     <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
-      <div id="dm-schlab" style="display:none;background:#1a5276;color:#fff;border-radius:10px;padding:8px 14px;font-weight:800;font-size:clamp(20px,2.2vw,28px);text-align:center;">This TABLE = <b>DEMAND SCHEDULE</b> 需求表</div>
+      <div id="dm-schlab" style="display:none;background:#1a5276;color:#fff;border-radius:10px;padding:8px 14px;font-weight:800;font-size:clamp(20px,2.2vw,28px);text-align:center;">This table is the <b>DEMAND SCHEDULE</b></div>
       <table class="data-table" style="width:100%;">
         <tr><th>P (¥)</th><th>Qd (cups)</th></tr>
         <tr id="dm-r1" style="opacity:.25"><td>10</td><td>9</td></tr>
@@ -349,7 +402,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 
-<div class="slide" data-i="4">
+<div class="slide" data-i="5">
   <div class="content">
   <div class="course-tag">HOW A LAW IS BORN · TWO LAWS, ONE LOGIC</div>
   <h1>Side by side — physics and economics</h1>
@@ -384,9 +437,9 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 
-<div class="slide" data-i="5">
+<div class="slide" data-i="6">
   <div class="content">
-  <div class="course-tag">DEMAND CURVE · 绘制</div>
+  <div class="course-tag">DEMAND CURVE · 画曲线</div>
   <h1>Drawing the demand curve</h1>
   <div class="sub">Step 1: plot the points. Step 2: join them. Step 3: slide the price and watch the dot ride the curve.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
@@ -396,7 +449,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
         <text x="600" y="485" font-size="22" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
         <text x="30" y="40" font-size="22" font-weight="700" fill="#5b6b7b">P (¥)</text>
-        <text x="96" y="44" font-size="20" fill="#94a3b8">Demand curve · 需求曲线</text>
+        <text x="96" y="44" font-size="20" fill="#94a3b8">Demand curve</text>
         <g id="dc-grid" opacity="0">
           <circle cx="382" cy="378" r="9" fill="#1E88E5"/><circle cx="317" cy="296" r="9" fill="#1E88E5"/>
           <circle cx="252" cy="214" r="9" fill="#1E88E5"/><circle cx="187" cy="132" r="9" fill="#1E88E5"/>
@@ -414,15 +467,15 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
     </div>
     <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
       <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
-        <p class="b db" style="margin-bottom:6px;">Price slider · 拖动价格</p>
+        <p class="b db" style="margin-bottom:6px;">Price slider</p>
         <input type="range" id="dcP" min="10" max="40" step="1" value="25" style="width:100%;accent-color:var(--blue);">
         <p style="margin:6px 0 0;font-family:Consolas,monospace;font-size:clamp(22px,2.4vw,30px);" id="dcRead">P = ¥25 → Qd = 6 cups</p>
       </div>
       <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
         <p class="b db" style="margin-bottom:6px;">What the curve tells us:</p>
         <p style="margin:0;">Every point = <b>one price</b> and the <b>quantity demanded</b> at that price.</p>
-        <p style="margin:8px 0 0;">Price ↓ → slide <b>down</b>: <b style="color:#1e8449;">EXTENSION</b> 需求量扩张 = AP <b>increase in quantity demanded</b><br>Price ↑ → slide <b>up</b>: <b style="color:#b03a2e;">CONTRACTION</b> 需求量收缩 = AP <b>decrease in quantity demanded</b></p>
-        <p style="margin:8px 0 0;color:#5b6b7b;">都是<b>沿线</b>移动——曲线不动，动的只是位置（什么变了？只有价格）。</p>
+        <p style="margin:8px 0 0;">Price ↓ → slide <b>down</b>: an <b style="color:#1e8449;">INCREASE in quantity demanded</b><br>Price ↑ → slide <b>up</b>: a <b style="color:#b03a2e;">DECREASE in quantity demanded</b></p>
+        <p style="margin:8px 0 0;color:#5b6b7b;">The curve itself <b>never moves</b> — only our position on it. (What changed? <b>Only the price.</b>)</p>
       </div>
       <div style="display:flex;gap:10px;">
         <button class="big-btn" id="dcPlot" onclick="dcPlotPts()">1 · Plot the points</button>
@@ -472,11 +525,11 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 
-<div class="slide" data-i="6">
+<div class="slide" data-i="7">
   <div class="content">
   <div class="course-tag">FROM INDIVIDUAL TO MARKET · 加总</div>
   <h1>Individual demand → market demand</h1>
-  <div class="sub">The <b>market demand curve</b> is the horizontal sum of every buyer's curve. 加总 = aggregate。</div><hr>
+  <div class="sub">The <b>market demand curve</b> is the <b>horizontal sum</b> of every buyer's curve — that is what “aggregate” means.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
     <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
       <table class="data-table" style="width:100%;">
@@ -490,7 +543,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <p style="margin:0;">Two buyers in the milk-tea market: <b>A</b> is price-sensitive, <b>B</b> buys 3 cups whatever the price (brand loyal).</p>
       </div>
       <div class="rgrp">
-        <p style="margin:0;">Market demand at each price = <b>A + B</b> — add the quantities <b>horizontally</b> (左<strong>横</strong>着加，不是竖着加).</p>
+        <p style="margin:0;">Market demand at each price = <b>A + B</b> — add the quantities <b>horizontally</b>, never vertically.</p>
       </div>
     </div>
     <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
@@ -535,11 +588,11 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 
-<div class="slide" data-i="7">
+<div class="slide" data-i="8">
   <div class="content">
   <div class="course-tag">YOUR TURN · 练习</div>
   <h1>Now aggregate THREE buyers</h1>
-  <div class="sub">横着加：at each price, add X + Y. 先自己算，再 Reveal。</div><hr>
+  <div class="sub">Add horizontally: at each price, X + Y. Work it out first, then Reveal.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
     <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
       <table class="data-table" style="width:100%;">
@@ -552,7 +605,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <button class="big-btn" onclick="pkReveal()">Reveal answers</button>
         <button class="big-btn ghost" onclick="pkHide()">↺ Hide</button>
       </div>
-      <p style="margin:4px 0 0;color:#5b6b7b;">Check: the market curve is <b>flatter</b> than either individual curve — more buyers, more responsive quantity. 加的人越多，市场曲线越平缓。</p>
+      <p style="margin:4px 0 0;color:#5b6b7b;">Check: the market curve is <b>flatter</b> than either individual curve — more buyers, a more responsive quantity.</p>
     </div>
     <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
       <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
@@ -593,62 +646,31 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 })();
 </script>
 
-<div class="slide" data-i="8">
+<div class="slide" data-i="9">
   <div class="content">
   <div class="course-tag">FACTORS ① INCOME · 收入变化</div>
   <h1>Income changes — normal vs inferior goods</h1>
-  <div class="sub">The most important shift factor. But the direction depends on the TYPE of good · 方向取决于商品类型。</div><hr>
+  <div class="sub">The most important determinant. But the direction depends on the <b>type</b> of good.</div><hr>
   <div class="txt">
     <div class="rgrp show">
       <div style="display:flex;gap:16px;">
         <div style="flex:1;background:#fff;border:3px solid var(--green);border-radius:14px;padding:14px 18px;">
-          <p class="b" style="color:var(--green);font-size:clamp(23px,2.4vw,32px);">Normal goods · 正常物品</p>
-          <p style="margin-top:6px;">Income ↑ → demand <b>rises</b> (shift RIGHT) · 收入↑需求↑</p>
-          <p style="color:#5b6b7b;margin-top:4px;">e.g. milk tea, new phones, eating out · 奶茶、新手机、外出就餐</p>
+          <p class="b" style="color:var(--green);font-size:clamp(23px,2.4vw,32px);">Normal goods</p>
+          <p style="margin-top:6px;">Income ↑ → demand <b>rises</b> (shift RIGHT)</p>
+          <p style="color:#5b6b7b;margin-top:4px;">e.g. milk tea, new phones, eating out</p>
         </div>
         <div style="flex:1;background:#fff;border:3px solid var(--red);border-radius:14px;padding:14px 18px;">
-          <p class="b" style="color:var(--red);font-size:clamp(23px,2.4vw,32px);">Inferior goods · 劣等商品</p>
-          <p style="margin-top:6px;">Income ↑ → demand <b>falls</b> (shift LEFT) · 收入↑需求反而↓</p>
-          <p style="color:#5b6b7b;margin-top:4px;">e.g. instant noodles, bus rides, second-hand clothes · 方便面、公交、二手衣</p>
+          <p class="b" style="color:var(--red);font-size:clamp(23px,2.4vw,32px);">Inferior goods</p>
+          <p style="margin-top:6px;">Income ↑ → demand <b>falls</b> (shift LEFT)</p>
+          <p style="color:#5b6b7b;margin-top:4px;">e.g. instant noodles, bus rides, second-hand clothes</p>
         </div>
       </div>
     </div>
     <div class="rgrp">
-      <p style="margin-top:8px;">"Inferior" is not an insult — it just means students <b>switch away</b> from it when they get richer. 劣等 ≠ 差，只是有钱后就不买了。</p>
+      <p style="margin-top:8px;">“Inferior” is not an insult — it just means buyers <b>switch away</b> from it when they get richer.</p>
     </div>
     <div class="rgrp">
-      <p style="margin-top:8px;" class="b blue">记住这对方向 · memorise: Normal → income ↑ = shift <b>right</b>；Inferior → income ↑ = shift <b>left</b>. 方向随商品类型反转。</p>
-    </div>
-  </div>
-  </div>
-</div>
-
-
-
-<div class="slide" data-i="9">
-  <div class="content">
-  <div class="course-tag">FACTORS ② RELATED GOODS · 相关产品价格</div>
-  <h1>Substitutes &amp; complements</h1>
-  <div class="sub">替代品与互补品 — the price of a RELATED good shifts your curve too.</div><hr>
-  <div class="txt">
-    <div class="rgrp show">
-      <div style="display:flex;gap:16px;">
-        <div style="flex:1;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
-          <p class="b blue" style="font-size:clamp(23px,2.4vw,32px);">Substitutes · 替代品</p>
-          <p style="margin-top:6px;">Goods that <b>replace</b> each other: Coke &amp; Pepsi, tea &amp; coffee, bus &amp; metro.</p>
-          <p style="margin-top:6px;" class="b">Substitute's price ↑ → our demand ↑ (shift RIGHT)</p>
-          <p style="color:#5b6b7b;">百事涨价 → 大家改喝可口可乐</p>
-        </div>
-        <div style="flex:1;background:#fff;border:3px solid var(--red);border-radius:14px;padding:14px 18px;">
-          <p class="b" style="color:var(--red);font-size:clamp(23px,2.4vw,32px);">Complements · 互补品</p>
-          <p style="margin-top:6px;">Goods <b>used together</b>: game console &amp; games, printer &amp; ink, phones &amp; apps.</p>
-          <p style="margin-top:6px;" class="b">Complement's price ↑ → our demand ↓ (shift LEFT)</p>
-          <p style="color:#5b6b7b;">游戏机涨价 → 游戏的需求也减少</p>
-        </div>
-      </div>
-    </div>
-    <div class="rgrp">
-      <p style="margin-top:8px;" class="b blue">记住这对方向 · memorise: Substitute price ↑ = shift <b>right</b>；Complement price ↑ = shift <b>left</b>. 方向相反，考试爱考。</p>
+      <p style="margin-top:8px;" class="b blue">Memorise the pair: normal good → income ↑ = shift <b>right</b>; inferior good → income ↑ = shift <b>left</b>.</p>
     </div>
   </div>
   </div>
@@ -658,30 +680,28 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <div class="slide" data-i="10">
   <div class="content">
-  <div class="course-tag">FACTORS ③ THE REST · 其余因素</div>
-  <h1>Advertising, population, tastes — and more</h1>
-  <div class="sub">零碎但常考 · each one shifts the WHOLE curve.</div><hr>
+  <div class="course-tag">FACTORS ② RELATED GOODS · 相关品价格</div>
+  <h1>Substitutes &amp; complements</h1>
+  <div class="sub">The price of a <b>related</b> good shifts your curve too — in opposite directions.</div><hr>
   <div class="txt">
-    <div style="display:flex;gap:14px;flex-wrap:wrap;">
-      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
-        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">📢 Advertising · 广告</p>
-        <p style="margin-top:4px;">A successful campaign makes the brand popular → demand <b>shifts right</b>.</p>
-      </div>
-      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
-        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">👥 Population · 人口</p>
-        <p style="margin-top:4px;">More people (or more students in school) → demand <b>shifts right</b>.</p>
-      </div>
-      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
-        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">👗 Tastes &amp; fashion · 品味时尚</p>
-        <p style="margin-top:4px;">Trendy → <b>right</b>; out of fashion → <b>left</b>.</p>
-      </div>
-      <div style="flex:1 1 100%;background:#fff;border:3px solid var(--green);border-radius:14px;padding:12px 18px;">
-        <p class="b" style="font-size:clamp(22px,2.3vw,30px);color:var(--green);">…and more · 其它因素</p>
-        <p style="margin-top:4px;">Weather 天气（hot summer → ice cream）· Expectations 预期（expect prices to rise → buy today）· Special days 特殊日子（Valentine's → roses）— all shift demand <b>right</b> here.</p>
+    <div class="rgrp show">
+      <div style="display:flex;gap:16px;">
+        <div style="flex:1;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+          <p class="b blue" style="font-size:clamp(23px,2.4vw,32px);">Substitutes</p>
+          <p style="margin-top:6px;">Goods that <b>replace</b> each other: Coke &amp; Pepsi, tea &amp; coffee, bus &amp; metro.</p>
+          <p style="margin-top:6px;" class="b">Substitute's price ↑ → our demand ↑ (shift RIGHT)</p>
+          <p style="color:#5b6b7b;">Pepsi gets dearer → buyers switch to Coke</p>
+        </div>
+        <div style="flex:1;background:#fff;border:3px solid var(--red);border-radius:14px;padding:14px 18px;">
+          <p class="b" style="color:var(--red);font-size:clamp(23px,2.4vw,32px);">Complements</p>
+          <p style="margin-top:6px;">Goods <b>used together</b>: game console &amp; games, printer &amp; ink, phones &amp; apps.</p>
+          <p style="margin-top:6px;" class="b">Complement's price ↑ → our demand ↓ (shift LEFT)</p>
+          <p style="color:#5b6b7b;">Consoles get dearer → fewer games are wanted too</p>
+        </div>
       </div>
     </div>
-    <div class="rgrp" style="margin-top:10px;">
-      <p class="b blue">All of these move the WHOLE curve — never a movement along it. 这些因素移动整条需求曲线。</p>
+    <div class="rgrp">
+      <p style="margin-top:8px;" class="b blue">Memorise the pair: substitute's price ↑ = shift <b>right</b>; complement's price ↑ = shift <b>left</b>. The two directions are opposites — AP loves this.</p>
     </div>
   </div>
   </div>
@@ -691,9 +711,279 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <div class="slide" data-i="11">
   <div class="content">
+  <div class="course-tag">FACTORS ③ THE REST · 其余因素</div>
+  <h1>Advertising, population, tastes — and more</h1>
+  <div class="sub">Small but heavily tested — each one shifts the <b>whole</b> curve.</div><hr>
+  <div class="txt">
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">📢 Advertising</p>
+        <p style="margin-top:4px;">A successful campaign makes the brand popular → demand <b>shifts right</b>.</p>
+      </div>
+      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">👥 Number of buyers</p>
+        <p style="margin-top:4px;">More people (or more students in school) → demand <b>shifts right</b>.</p>
+      </div>
+      <div style="flex:1 1 30%;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;">
+        <p class="b blue" style="font-size:clamp(22px,2.3vw,30px);">👗 Tastes &amp; fashion</p>
+        <p style="margin-top:4px;">Trendy → <b>right</b>; out of fashion → <b>left</b>.</p>
+      </div>
+      <div style="flex:1 1 100%;background:#fff;border:3px solid var(--green);border-radius:14px;padding:12px 18px;">
+        <p class="b" style="font-size:clamp(22px,2.3vw,30px);color:var(--green);">…and more</p>
+        <p style="margin-top:4px;">Weather (a hot summer → ice cream) · <b>Expectations</b> of future prices (expect a price rise → buy today) · Special days (Valentine's → roses) — each one shifts the curve.</p>
+      </div>
+    </div>
+    <div class="rgrp" style="margin-top:10px;">
+      <p class="b blue">All of these move the <b>whole</b> curve — never a movement along it.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">AP SKILL ① · 沿线</div>
+  <h1>Change in <span style="color:#1e8449;">quantity demanded</span> — move along the curve</h1>
+  <div class="sub">The canteen puts the price of milk tea <b>up by ¥5</b>. Nothing else in the world has changed — not your pocket money, not your taste, not the price of anything else. You simply buy fewer cups.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <svg viewBox="0 0 900 340" style="width:auto;height:33vh;max-width:100%;">
+        <line x1="90" y1="290" x2="830" y2="290" stroke="#7a93ad" stroke-width="4"/>
+        <line x1="90" y1="290" x2="90" y2="40" stroke="#7a93ad" stroke-width="4"/>
+        <text x="838" y="298" font-size="25" fill="#5b6b7b">Q</text>
+        <text x="66" y="50" font-size="25" fill="#5b6b7b">P</text>
+        <line x1="140" y1="70" x2="780" y2="266" stroke="#2a5a8c" stroke-width="7" stroke-linecap="round"/>
+        <text x="790" y="272" font-size="26" font-weight="800" fill="#2a5a8c">D</text>
+        <line x1="300" y1="290" x2="300" y2="119" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <line x1="90" y1="119" x2="300" y2="119" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <circle cx="300" cy="119" r="11" fill="#2a5a8c"/>
+        <text x="276" y="106" font-size="23" fill="#1a5276">P high</text>
+        <line x1="560" y1="290" x2="560" y2="199" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <line x1="90" y1="199" x2="560" y2="199" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <circle cx="560" cy="199" r="11" fill="#1e8449"/>
+        <path d="M316 130 L544 190" stroke="#1e8449" stroke-width="6" fill="none"/>
+        <path d="M530 178 L546 192 L528 198 Z" fill="#1e8449"/>
+        <text x="590" y="150" font-size="24" font-weight="800" fill="#1e8449">price ↓</text>
+        <text x="590" y="182" font-size="24" font-weight="800" fill="#1e8449">→ Qd ↑</text>
+        <text x="120" y="322" font-size="24" font-weight="700" fill="#1a5276">the curve itself does NOT move — you do</text>
+      </svg>
+    </div>
+    <div class="rgrp">
+      <p class="b db">Key idea</p>
+      <p>Price ↓ → you slide <b>down</b> D and buy <b>more</b>. Price ↑ → you slide <b>up</b> and buy <b>less</b>.</p>
+      <p style="margin-top:4px;">You never leave the curve: the <b>same</b> D, just a different point on it.</p>
+    </div>
+    <div class="rgrp">
+      <p class="b" style="color:var(--red);">Common mistake</p>
+      <p>If the price changed, say “<b>quantity demanded</b> fell” — never “demand fell”.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">AP SKILL ② · 平移</div>
+  <h1>Change in <span style="color:#b03a2e;">demand</span> — the whole curve shifts</h1>
+  <div class="sub">Now the milk tea price stays at ¥20, but something <b>else</b> changes: your pocket money rises. At <b>every</b> price you now want more cups — so the whole curve moves right.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <svg viewBox="0 0 900 340" style="width:auto;height:33vh;max-width:100%;">
+        <line x1="90" y1="290" x2="830" y2="290" stroke="#7a93ad" stroke-width="4"/>
+        <line x1="90" y1="290" x2="90" y2="40" stroke="#7a93ad" stroke-width="4"/>
+        <text x="838" y="298" font-size="25" fill="#5b6b7b">Q</text>
+        <text x="66" y="50" font-size="25" fill="#5b6b7b">P</text>
+        <line x1="160" y1="70" x2="700" y2="266" stroke="#94a3b8" stroke-width="5" stroke-dasharray="10 9"/>
+        <text x="706" y="272" font-size="26" font-weight="800" fill="#94a3b8">D</text>
+        <line x1="270" y1="70" x2="810" y2="266" stroke="#2a5a8c" stroke-width="7" stroke-linecap="round"/>
+        <text x="820" y="272" font-size="26" font-weight="800" fill="#2a5a8c">D′</text>
+        <line x1="90" y1="160" x2="620" y2="160" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <circle cx="384" cy="160" r="10" fill="#94a3b8"/>
+        <circle cx="494" cy="160" r="10" fill="#1e8449"/>
+        <path d="M400 160 L478 160" stroke="#1e8449" stroke-width="6" fill="none"/>
+        <path d="M466 150 L482 160 L466 170 Z" fill="#1e8449"/>
+        <text x="150" y="212" font-size="24" font-weight="800" fill="#1e8449">same price, MORE bought</text>
+        <text x="110" y="322" font-size="24" font-weight="700" fill="#1a5276">at every price, quantity changed — the curve SHIFTED</text>
+      </svg>
+    </div>
+    <div class="rgrp">
+      <p class="b db">Key idea</p>
+      <p>Only the good's <b>own price</b> moves you along D. <b>Every other cause</b> moves the whole curve.</p>
+      <p style="margin-top:4px;">At <b>every single price</b> the quantity bought is now different — that is what “the curve shifted” means.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="slide" data-i="14">
+  <div class="content">
+  <div class="course-tag">DETERMINANTS · 需求的决定因素</div>
+  <h1>What shifts the curve?</h1>
+  <div class="sub">Seven things move the whole demand curve — and the good's own price is <b>not</b> one of them.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table compact" style="width:100%;">
+        <tr><th>Determinant</th><th>Direction</th></tr>
+        <tr><td>Income — <b>normal</b> good</td><td>income ↑ → shift <b>right</b></td></tr>
+        <tr><td>Income — <b>inferior</b> good</td><td>income ↑ → shift <b>left</b></td></tr>
+        <tr><td>Price of a <b>substitute</b></td><td>substitute's price ↑ → shift <b>right</b></td></tr>
+        <tr><td>Price of a <b>complement</b></td><td>complement's price ↑ → shift <b>left</b></td></tr>
+        <tr><td><b>Tastes</b> / advertising</td><td>more popular → shift <b>right</b></td></tr>
+        <tr><td>Number of <b>buyers</b></td><td>more buyers → shift <b>right</b></td></tr>
+        <tr><td><b>Expectations</b> of future prices</td><td>expect a price rise → shift <b>right</b></td></tr>
+      </table>
+    </div>
+    <div class="rgrp">
+      <p class="b" style="color:var(--red);">Common mistake</p>
+      <p>A shift is caused by <b>anything except</b> the price of the good itself. If the sentence mentions the good's own price → it is a <b>movement</b>, never a shift.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="15">
+  <div class="content">
+  <div class="course-tag">WORDING · 术语对照</div>
+  <h1>Extension / contraction — or increase / decrease?</h1>
+  <div class="sub">IGCSE books use one pair of words, AP uses another. Same movement — but only when the <b>price of the good itself</b> changed.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table compact" style="width:100%;">
+        <tr><th style="width:44%;">Wording</th><th style="width:20%;">Cause</th><th style="width:36%;">On the graph</th></tr>
+        <tr><td><b>Extension</b> of demand <span class="gray">(IGCSE)</span> = <b>increase in quantity demanded</b> <span class="gray">(AP)</span></td><td>price ↓</td><td>slide <b>down along</b> the same D</td></tr>
+        <tr><td><b>Contraction</b> of demand <span class="gray">(IGCSE)</span> = <b>decrease in quantity demanded</b> <span class="gray">(AP)</span></td><td>price ↑</td><td>slide <b>up along</b> the same D</td></tr>
+        <tr><td><b>Increase / decrease in demand</b> <span class="gray">(both)</span></td><td>a determinant changes</td><td>the whole curve shifts <b>D → D′</b></td></tr>
+      </table>
+    </div>
+    <div class="rgrp">
+      <p class="b blue">Say it the right way</p>
+      <p style="margin-top:4px;">Price changed → <b>extension / contraction</b> (IGCSE) = <b>increase / decrease in quantity demanded</b> (AP).<br>
+      Determinant changed → <b>increase / decrease in demand</b> — the curve shifts.</p>
+    </div>
+    <div class="rgrp">
+      <p class="b" style="color:var(--red);">Common mistake</p>
+      <p>Income rises and people buy more at every price → that is an <b>increase in demand</b> (shift), <b>not</b> an “extension”. Extension only ever means a price change.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="slide" data-i="16">
+  <div class="content">
+  <div class="course-tag">WHY ↓ REASON ① · 替代效应</div>
+  <h1>Reason ① The substitution effect</h1>
+  <div class="sub">Milk tea goes from ¥20 to ¥30. Coke is still ¥3. Nothing else changed — but milk tea just became <b>dear compared with Coke</b>, so buyers switch.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <svg viewBox="0 0 900 250" style="width:auto;height:26vh;max-width:100%;">
+        <rect x="70" y="70" width="300" height="66" rx="12" fill="#fdeaea" stroke="#b03a2e" stroke-width="3"/>
+        <text x="220" y="112" font-size="26" font-weight="800" fill="#b03a2e" text-anchor="middle">Milk tea ¥30</text>
+        <rect x="70" y="160" width="120" height="66" rx="12" fill="#eafaf1" stroke="#1e8449" stroke-width="3"/>
+        <text x="130" y="202" font-size="26" font-weight="800" fill="#1e8449" text-anchor="middle">Coke ¥3</text>
+        <path d="M400 118 L520 118" stroke="#1e8449" stroke-width="7" fill="none"/>
+        <path d="M508 106 L526 118 L508 130 Z" fill="#1e8449"/>
+        <text x="560" y="96" font-size="24" font-weight="800" fill="#1e8449">buyers switch</text>
+        <text x="560" y="132" font-size="24" font-weight="700" fill="#5b6b7b">to the cheaper good</text>
+        <text x="560" y="168" font-size="24" font-weight="700" fill="#1a5276">→ fewer cups are wanted</text>
+      </svg>
+    </div>
+    <div class="rgrp">
+      <p class="b db">Key idea</p>
+      <p>A higher price makes this good <b>relatively more expensive</b> — its <b>opportunity cost</b> in other goods goes up — so buyers switch away.</p>
+      <p style="margin-top:4px;">Other goods have not changed; this one is simply a <b>worse deal</b>.</p>
+    </div>
+    <div class="rgrp">
+      <p class="b" style="color:var(--red);">Common mistake</p>
+      <p>It is about the price <b>relative to other goods</b> — not about how much money you have. “Buyers have less money” belongs to the next page (the income effect).</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="slide" data-i="17">
+  <div class="content">
+  <div class="course-tag">WHY ↓ REASON ② · 收入效应</div>
+  <h1>Reason ② The income effect</h1>
+  <div class="sub">Pocket money is still <b>¥100 a week</b>. Milk tea goes from ¥20 to ¥25. Nothing about your income changed — but your money now <b>buys less</b>.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <svg viewBox="0 0 900 230" style="width:auto;height:24vh;max-width:100%;">
+        <rect x="70" y="40" width="330" height="76" rx="12" fill="#eaf2fb" stroke="#2a5a8c" stroke-width="3"/>
+        <text x="235" y="72" font-size="25" font-weight="800" fill="#2a5a8c" text-anchor="middle">¥100 ÷ ¥20 a cup</text>
+        <text x="235" y="102" font-size="25" font-weight="800" fill="#2a5a8c" text-anchor="middle">= 5 cups</text>
+        <rect x="70" y="136" width="330" height="76" rx="12" fill="#fdeaea" stroke="#b03a2e" stroke-width="3"/>
+        <text x="235" y="168" font-size="25" font-weight="800" fill="#b03a2e" text-anchor="middle">¥100 ÷ ¥25 a cup</text>
+        <text x="235" y="198" font-size="25" font-weight="800" fill="#b03a2e" text-anchor="middle">= only 4 cups</text>
+        <text x="440" y="94" font-size="24" font-weight="800" fill="#1a5276">the same wallet</text>
+        <text x="440" y="126" font-size="24" font-weight="700" fill="#5b6b7b">now buys less of everything</text>
+        <text x="440" y="190" font-size="24" font-weight="800" fill="#b03a2e">→ real income fell</text>
+      </svg>
+    </div>
+    <div class="rgrp">
+      <p class="b db">Key idea</p>
+      <p>A price rise makes your <b>real income</b> (purchasing power) fall — the same money buys fewer units, so <b>quantity demanded falls</b>.</p>
+      <p style="margin-top:4px;">Both effects push the <b>same</b> way when the price rises.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="slide" data-i="18">
+  <div class="content">
+  <div class="course-tag">THE CLASSIC TRAP · 经典陷阱</div>
+  <h1>Income effect ≠ change in income</h1>
+  <div class="sub">Both sentences mention money. Only <b>one</b> of them moves the curve.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table compact" style="width:100%;">
+        <tr><th style="width:50%;">The <b>income effect</b></th><th style="width:50%;">A <b>change in income</b></th></tr>
+        <tr><td>caused by a change in the good's <b>price</b></td><td>a <b>determinant</b> changing (pocket money really changes)</td></tr>
+        <tr><td>you <b>move along</b> the same curve D</td><td>the <b>whole curve shifts</b> (D → D′)</td></tr>
+        <tr><td>say: “quantity demanded falls”</td><td>say: “demand falls”</td></tr>
+      </table>
+      <p style="margin-top:10px;">“Income effect” is <b>not</b> the same thing as “income changed”: one is a <b>movement</b>, the other is a <b>shift</b>.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="slide" data-i="19">
+  <div class="content">
+  <div class="course-tag">WHY ↓ REASON ③ · 边际效用递减</div>
+  <h1>Reason ③ Diminishing marginal utility</h1>
+  <div class="sub">The third reason is the one you already met in lessons 3.1 and 3.2 — and it explains the <b>shape</b> of the curve.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <p class="b db">Each extra unit is worth less</p>
+      <p>The first cup of milk tea on a hot day is worth a lot. The fourth cup is worth much less. So a buyer only takes extra units if the price is <b>lower</b> — and that is exactly a downward-sloping demand curve.</p>
+    </div>
+    <div class="rgrp">
+      <p class="b db">The demand curve is the marginal benefit curve</p>
+      <p>The <b>height</b> of the demand curve at any quantity shows what the <b>last</b> unit is worth to the buyer — the <b>marginal benefit</b>.
+      Because marginal benefit falls as quantity rises, the buyer's <b>willingness to pay</b> falls, so the curve slopes down.</p>
+    </div>
+    <div class="rgrp">
+      <p class="b blue">Put the three reasons together:</p>
+      <p style="margin-top:4px;">① substitution effect — other goods become relatively cheaper → switch away.<br>
+      ② income effect — your money buys less → you can afford fewer units.<br>
+      ③ diminishing marginal utility — each extra unit is worth less → you only buy more at a lower price.</p>
+      <p style="margin-top:6px;">All three push the <b>same</b> way: price ↑ → quantity demanded ↓. That is the law of demand.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="slide" data-i="20">
+  <div class="content">
   <div class="course-tag">CETERIS PARIBUS · 控制变量</div>
   <h1>Four sliders — which one moves the curve?</h1>
-  <div class="sub">四根滑杆：只有 <b>Price</b> 沿线滑动，其它三根移动整条曲线。控制变量是关键。</div><hr>
+  <div class="sub">Four sliders. Only <b>price</b> slides you along the curve; the other three move the <b>whole</b> curve. Ceteris paribus is the key.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
     <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
       <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
@@ -712,11 +1002,11 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
     </div>
     <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
       <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
-        <p class="b db" style="margin-bottom:2px;">① Price · 价格（沿线 ALONG）</p>
+        <p class="b db" style="margin-bottom:2px;">① Price (along the curve)</p>
         <input type="range" id="cvP" min="10" max="40" step="1" value="20" style="width:100%;accent-color:#E74C3C;">
       </div>
       <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
-        <p class="b db" style="margin-bottom:2px;">② Income · 收入（平移 SHIFT）</p>
+        <p class="b db" style="margin-bottom:2px;">② Income (shifts the curve)</p>
         <div style="display:flex;gap:8px;margin-bottom:4px;">
           <button class="factor-btn" id="cvN" onclick="cvMode('normal')" style="border-color:var(--green);color:#1b5e20;">Normal</button>
           <button class="factor-btn" id="cvI" onclick="cvMode('inferior')">Inferior</button>
@@ -724,14 +1014,14 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <input type="range" id="cvIv" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#2E7D32;">
       </div>
       <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
-        <p class="b db" style="margin-bottom:2px;">③ Complement price · 互补品价格</p>
+        <p class="b db" style="margin-bottom:2px;">③ Complement price</p>
         <input type="range" id="cvC" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#C62828;">
       </div>
       <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
-        <p class="b db" style="margin-bottom:2px;">④ Substitute price · 替代品价格</p>
+        <p class="b db" style="margin-bottom:2px;">④ Substitute price</p>
         <input type="range" id="cvS" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#1E88E5;">
       </div>
-      <div id="cvCap" style="font-size:clamp(19px,2vw,27px);font-weight:800;min-height:56px;background:#FFF8E1;border-left:6px solid #F0B429;padding:8px 14px;border-radius:0 10px 10px 0;">Slide any slider — one of them does NOT move the curve. 试试每根滑杆。</div>
+      <div id="cvCap" style="font-size:clamp(19px,2vw,27px);font-weight:800;min-height:56px;background:#FFF8E1;border-left:6px solid #F0B429;padding:8px 14px;border-radius:0 10px 10px 0;">Slide each one — exactly one of them does <b>NOT</b> move the curve.</div>
     </div>
   </div>
   </div>
@@ -766,43 +1056,39 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
     homeD();
     dot.setAttribute('cx', 90 + q/16*520);
     dot.setAttribute('cy', 460 - 8.2*p);
-    if(p < 19) setCap('Price ↓ → EXTENSION along D1 需求量扩张（沿线）', '#1e8449');
-    else if(p > 21) setCap('Price ↑ → CONTRACTION along D1 需求量收缩（沿线）', '#b03a2e');
-    else setCap('Price back near the start — D never moved. D 从未移动。', '#b03a2e');
+    if(p < 19) setCap('Price ↓ → an INCREASE in quantity demanded, along D1', '#1e8449');
+    else if(p > 21) setCap('Price ↑ → a DECREASE in quantity demanded, along D1', '#b03a2e');
+    else setCap('Price back near the start — D never moved.', '#b03a2e');
   });
   document.getElementById('cvIv').addEventListener('input', function(){
     const v = +this.value, d = (v-5)/5;
     shiftD(d * 90 * (mode==='normal' ? 1 : -1));
-    const word = v > 5 ? 'Income RISES 收入↑' : (v < 5 ? 'Income FALLS 收入↓' : 'Income unchanged');
-    if(v === 5){ setCap('Income unchanged — D stays at D1. 控制变量不动，D 不动。', '#F0B429'); return; }
-    if(mode === 'normal') setCap(word + ' → normal good → shift ' + (d>0?'RIGHT':'LEFT') + ' 正常物品', d>0?'#1e8449':'#b03a2e');
-    else setCap(word + ' → inferior good → shift ' + (d>0?'LEFT':'RIGHT') + ' 劣等商品', d>0?'#b03a2e':'#1e8449');
+    const word = v > 5 ? 'Income RISES' : (v < 5 ? 'Income FALLS' : 'Income unchanged');
+    if(v === 5){ setCap('Income unchanged — D stays at D1 (ceteris paribus).', '#F0B429'); return; }
+    if(mode === 'normal') setCap(word + ' → normal good → demand shifts ' + (d>0?'RIGHT':'LEFT'), d>0?'#1e8449':'#b03a2e');
+    else setCap(word + ' → inferior good → demand shifts ' + (d>0?'LEFT':'RIGHT'), d>0?'#b03a2e':'#1e8449');
   });
   document.getElementById('cvC').addEventListener('input', function(){
     const v = +this.value, d = (v-5)/5;
     shiftD(-d * 90);
-    if(v === 5){ setCap('Complement price unchanged. 互补品价格不变。', '#F0B429'); return; }
-    setCap('Complement price ' + (v>5?'↑':'↓') + ' → our demand shifts ' + (v>5?'LEFT':'RIGHT') + ' 互补品价格→反向移动', v>5?'#b03a2e':'#1e8449');
+    if(v === 5){ setCap('Complement price unchanged — D stays at D1.', '#F0B429'); return; }
+    setCap('Complement price ' + (v>5?'↑':'↓') + ' → our demand shifts ' + (v>5?'LEFT':'RIGHT') + ' (opposite direction)', v>5?'#b03a2e':'#1e8449');
   });
   document.getElementById('cvS').addEventListener('input', function(){
     const v = +this.value, d = (v-5)/5;
     shiftD(d * 90);
-    if(v === 5){ setCap('Substitute price unchanged. 替代品价格不变。', '#F0B429'); return; }
-    setCap('Substitute price ' + (v>5?'↑':'↓') + ' → our demand shifts ' + (v>5?'RIGHT':'LEFT') + ' 替代品价格→同向移动', v>5?'#1e8449':'#b03a2e');
+    if(v === 5){ setCap('Substitute price unchanged — D stays at D1.', '#F0B429'); return; }
+    setCap('Substitute price ' + (v>5?'↑':'↓') + ' → our demand shifts ' + (v>5?'RIGHT':'LEFT') + ' (same direction)', v>5?'#1e8449':'#b03a2e');
   });
 })();
-</script><div class="slide" data-i="12">
+</script><div class="slide" data-i="21">
   <div class="content">
-  <div class="course-tag">CHECK YOUR UNDERSTANDING</div>
-  <h1>Along the curve, or a shift?</h1>
-  <div class="sub">Read each situation — is it an extension, a contraction, or a shift of the demand curve?</div><hr>
-  <div style="width:100%;background:#EAF4FF;border-left:6px solid var(--blue);border-radius:0 10px 10px 0;padding:8px 14px;margin-bottom:8px;font-size:clamp(20px,2vw,26px);line-height:1.35;">
-    <b>Extension</b> = <b>increase in quantity demanded</b> · <b>Contraction</b> = <b>decrease in quantity demanded</b>（AP 说法）→ 都是<b>沿线</b>移动<br>
-    <b>Shift</b> = <b>increase / decrease in demand</b>（需求增加 / 减少）→ <b>整条曲线</b>移动，<b>不能</b>说成 extension
-  </div>
+  <div class="course-tag">CHECK YOUR UNDERSTANDING · 小测</div>
+  <h1>Quantity demanded, or demand?</h1>
+  <div class="sub">Is this a change in <b>quantity demanded</b> (price changed → move along the curve) or a change in <b>demand</b> (a determinant changed → the curve shifts)?<br>Qd = quantity demanded · D = demand</div><hr>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;width:100%;">
     <span style="font-size:clamp(20px,2.2vw,28px);font-weight:700;color:var(--darkblue);">Score: <span id="g1score">0</span></span>
-    <span style="font-size:clamp(18px,1.8vw,24px);color:#5b6b7b;">Q <span id="g1q">1</span> / <span id="g1n">8</span></span>
+    <span style="font-size:clamp(18px,1.8vw,24px);color:#5b6b7b;">Q <span id="g1q">1</span> / <span id="g1n">9</span></span>
   </div>
   <div class="g1-box" id="g1box">
     <div class="scenario" id="g1scenario">…</div>
@@ -820,7 +1106,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 
-<div class="slide" data-i="13">
+<div class="slide" data-i="22">
   <div class="content">
   <div class="course-tag">SUMMARY · 总结</div>
   <h1>Summary</h1>
@@ -833,7 +1119,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
       Law of demand: price ↑ → quantity demanded <span class="blank empty" data-a="falls">___</span> — the curve slopes <span class="blank empty" data-a="downward">___</span>.
     </div>
     <div class="sstep" id="ss2">
-      Price changes → movement <span class="blank empty" data-a="along">___</span> the curve: price ↓ = <span class="blank empty" data-a="extension">___</span>, price ↑ = <span class="blank empty" data-a="contraction">___</span> — AP wording: increase / decrease in <span class="blank empty" data-a="quantity demanded">___</span>.
+      A change in <b>price</b> → movement <span class="blank empty" data-a="along">___</span> the curve = a change in <span class="blank empty" data-a="quantity demanded">___</span> <span class="gray">(IGCSE: extension / contraction)</span>; a <b>determinant</b> change → the curve <span class="blank empty" data-a="shifts">___</span> = a change in <span class="blank empty" data-a="demand">___</span>.
     </div>
     <div class="sstep" id="ss3">
       Market demand = horizontal <span class="blank empty" data-a="sum">___</span> of individual demands → the <span class="blank empty" data-a="aggregate">___</span> market curve.
@@ -842,7 +1128,19 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
       Income: a <span class="blank empty" data-a="normal">___</span> good shifts right when income rises; an <span class="blank empty" data-a="inferior">___</span> good shifts left.
     </div>
     <div class="sstep" id="ss5">
-      Related goods: <span class="blank empty" data-a="substitute">___</span>'s price ↑ → shift right; <span class="blank empty" data-a="complement">___</span>'s price ↑ → shift left. Advertising, population, fashion, weather… also shift the curve.
+      Related goods: <span class="blank empty" data-a="substitute">___</span>'s price ↑ → shift right; <span class="blank empty" data-a="complement">___</span>'s price ↑ → shift left.<br>
+      Other determinants: tastes, advertising, number of <span class="blank empty" data-a="buyers">___</span>, weather, and expectations of future <span class="blank empty" data-a="prices">___</span>.
+    </div>
+    <div class="sstep" id="ss6">
+      <b>Why the curve slopes down — two effects on the same curve:</b>
+      <b>①</b> the <span class="blank empty" data-a="substitution">___</span> effect — a higher price makes the good <b>relatively</b> more expensive, so buyers switch to other goods.
+      <b>②</b> the <span class="blank empty" data-a="income">___</span> effect — the same money buys less, so <b>real income</b> <span class="blank empty" data-a="falls">___</span>.
+    </div>
+    <div class="sstep" id="ss7">
+      <span style="display:inline-block;padding:2px 10px;border-radius:8px;background:#FDECEA;color:#b03a2e;font-weight:700;font-size:clamp(19px,1.9vw,24px);">The classic trap — do not mix these up</span><br>
+      The <b>income effect</b> follows a <b>price</b> change → you move <span class="blank empty" data-a="along">___</span> the curve and say “quantity demanded”.
+      A <b>real change in income</b> is a determinant → the curve <span class="blank empty" data-a="shifts">___</span> and you say “demand”.
+      And reason ③: diminishing <span class="blank empty" data-a="marginal utility">___</span> — the curve's height is the <span class="blank empty" data-a="marginal benefit">___</span> of the last unit.
     </div>
   </div>
   </div>
@@ -850,11 +1148,11 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 
 
-<div class="slide cover" data-i="14">
+<div class="slide cover" data-i="23">
   <div class="course-tag">THANK YOU · 谢谢</div>
   <h1 style="font-size:clamp(40px,5.5vw,60px);">Demand — done ✓</h1>
   <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">You can now draw it, slide it, shift it.</div>
-  <div style="font-size:clamp(20px,2.2vw,28px);color:#5b6b7b;">Next: the selling side — <b>Supply</b> · 供给</div>
+  <div style="font-size:clamp(20px,2.2vw,28px);color:#5b6b7b;">AP Micro · Unit 2, Topic 2.1 — done ✓ &nbsp; Next lesson: the selling side — <b>Supply</b> · 供给</div>
   <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
   <div class="botbar"></div>
 </div>
@@ -867,7 +1165,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <div class="dots" id="dots"></div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="copy">© 2026 Dr. Jia</span>
-    <span class="page" id="pageNum">1 / 15</span>
+    <span class="page" id="pageNum">1 / 24</span>
     <button id="nextBtn">▶</button>
   </div>
 </div>
@@ -936,7 +1234,7 @@ document.addEventListener('keydown',e=>{
 const dotBox = document.getElementById('dots');
 for(let i=0;i<total;i++){
   const s = document.createElement('span');
-  if(i===2) s.className='g1';
+  if(slides[i].querySelector('#g1box')) s.className='g1';
   s.onclick = (()=>showSlide(i));
   dotBox.appendChild(s);
 }
@@ -953,14 +1251,15 @@ document.getElementById('lbox').onclick = function(){ this.classList.remove('sho
 
 /* Game 1 */
 const G1Q = [
-  {s:"The price of bubble tea falls — quantity demanded rises.", a:"Extension"},
-  {s:"The price of bubble tea rises — quantity demanded falls.", a:"Contraction"},
-  {s:"Incomes rise, and milk tea is a NORMAL good.", a:"Shift right"},
-  {s:"Incomes rise, but instant noodles are an INFERIOR good.", a:"Shift left"},
-  {s:"The price of a SUBSTITUTE (soft drinks) rises.", a:"Shift right"},
-  {s:"The price of a COMPLEMENT (pearl toppings) rises.", a:"Shift left"},
-  {s:"A celebrity endorses the brand — everyone wants to try it.", a:"Shift right"},
-  {s:"Cold weather arrives — demand for ice cream at every price…", a:"Shift left"},
+  {s:"The price of bubble tea falls — buyers take more cups.", a:"Qd ↑ (along D)"},
+  {s:"The price of bubble tea rises — buyers take fewer cups.", a:"Qd ↓ (along D)"},
+  {s:"Incomes rise, and milk tea is a NORMAL good.", a:"D ↑ (shift right)"},
+  {s:"Incomes rise, but instant noodles are an INFERIOR good.", a:"D ↓ (shift left)"},
+  {s:"The price of a SUBSTITUTE (soft drinks) rises.", a:"D ↑ (shift right)"},
+  {s:"The price of a COMPLEMENT (pearl toppings) rises.", a:"D ↓ (shift left)"},
+  {s:"A celebrity endorses the brand — everyone wants to try it.", a:"D ↑ (shift right)"},
+  {s:"Cold weather arrives — demand for ice cream at every price…", a:"D ↓ (shift left)"},
+  {s:"Buyers expect the price to rise next month.", a:"D ↑ (shift right)"},
 ];
 let g1i=0, g1s=0, g1a=false;
 function g1render(){
@@ -971,7 +1270,7 @@ function g1render(){
   g1a = false;
   const box = document.getElementById('g1btns');
   box.innerHTML = '';
-  ['Extension','Contraction','Shift right','Shift left'].forEach(c=>{
+  ['Qd ↑ (along D)','Qd ↓ (along D)','D ↑ (shift right)','D ↓ (shift left)'].forEach(c=>{
     const b = document.createElement('button');
     b.textContent = c;
     b.onclick = ()=>g1pick(c,b);
