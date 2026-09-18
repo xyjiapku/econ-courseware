@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro · Unit 3 · Lesson 2 — Fiscal Policy, Multipliers &amp; Automatic Stabilizers</title>
+<style>
+:root{--accent:#1CADE4;--accent-dark:#0e7fae;--accent-light:#e3f4fb;--ink:#1f2d3d;--sub:#5b7288;--bg:#f4f8fc;--card:#ffffff;--line:#cfe0ee;--red:#d9534f;--red-light:#fdeaea;--green:#2e9e6b;--green-light:#e8f6ef;--amber:#e6a23c;--amber-light:#fdf3e3;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+main{flex:1;min-height:0;position:relative;}
+.progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+.slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+    overflow-y:auto;
+  }
+.slide.active{display:flex;opacity:1;transform:none;}
+nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.2vh 2vw;background:#fff;border-top:2px solid var(--line);
+  }
+.navbtn{
+    background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;
+  }
+.navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+.dots{display:flex;gap:.5vw;align-items:center;}
+.dot{width:14px;height:14px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+.dot.active{background:var(--accent);transform:scale(1.25);}
+.pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+.copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+.ns21 .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+.ns21 .cn{font-size:clamp(20px,2vh,24px);color:var(--sub);}
+.ns21 h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+.ns21 h2{font-size:clamp(28px,3.1vh,38px);color:var(--ink);line-height:1.3;margin-bottom:1vh;}
+.ns21 p{font-size:clamp(23px,2.4vh,28px);line-height:1.55;margin-bottom:1vh;}
+.ns21 ul, .ns21 ol{margin-left:1.6em;margin-bottom:1vh;}
+.ns21 li{font-size:clamp(23px,2.4vh,28px);line-height:1.5;margin-bottom:.6vh;}
+.ns21 b{color:var(--ink);}
+.ns21 .accent{color:var(--accent-dark);}
+.ns21 .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+.ns21 .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.6vh 1.4vw;flex:1 1 0;min-width:18%;}
+.ns21 .card h3{font-size:clamp(24px,2.5vh,30px);color:var(--accent-dark);margin-bottom:.8vh;}
+.ns21 .card p{font-size:clamp(22px,2.3vh,27px);}
+.ns21 .card .big{font-size:clamp(26px,2.8vh,33px);font-weight:700;color:var(--ink);}
+.ns21 .card.win{background:var(--green-light);border-color:var(--green);}
+.ns21 .card.warn{background:var(--amber-light);border-color:var(--amber);}
+.ns21 .card.lose{background:var(--red-light);border-color:var(--red);}
+.ns21 table{border-collapse:collapse;width:100%;background:var(--card);}
+.ns21 th, .ns21 td{border:2px solid var(--line);padding:1vh .9vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+.ns21 th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+.ns21 td.l{text-align:left;}
+.ns21 td.yes{color:var(--green);font-weight:700;}
+.ns21 .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+.ns21 .btn:hover{background:var(--accent-dark);}
+.ns21 .btn:active{transform:scale(.97);}
+.ns21 .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+.ns21 .btn.green{background:var(--green);}
+.ns21 .btn.red{background:var(--red);}
+.ns21 .btn.sm{font-size:clamp(20px,2.1vh,24px);padding:.8vh 1vw;}
+.ns21 .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+.ns21 .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.2vh;flex-wrap:wrap;}
+.ns21 .s-foot{margin-top:auto;padding-top:1.4vh;}
+.ns21 .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.2vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,28px);font-weight:700;color:var(--ink);
+  }
+.ns21 .hl.green{background:var(--green-light);border-color:var(--green);}
+.ns21 .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+.ns21 .hl.red{background:var(--red-light);border-color:var(--red);}
+.ns21 .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+.ns21 .cover h1{font-size:clamp(48px,6.4vh,84px);line-height:1.18;color:#fff;}
+.ns21 .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+.ns21 .cover .q{font-size:clamp(32px,4vh,50px);color:#fff;font-weight:700;max-width:88%;}
+.ns21 .cover p{font-size:clamp(26px,3vh,36px);color:#fff;}
+.ns21 .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+.ns21 .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.8vh 1.4vw;margin:1vh 0;flex:1;min-height:0;overflow-y:auto;}
+.ns21 .qtext{font-size:clamp(24px,2.6vh,30px);font-weight:700;color:var(--accent-dark);margin-bottom:1vh;}
+.ns21 .lab{
+    background:var(--card);border:3px solid var(--accent);border-radius:14px;
+    padding:1.6vh 1.4vw;flex:1;min-height:0;display:flex;flex-direction:column;
+  }
+.ns21 .lab-head{display:flex;justify-content:space-between;align-items:center;gap:1vw;flex-wrap:wrap;margin-bottom:1vh;}
+.ns21 .lab-title{font-size:clamp(24px,2.6vh,30px);font-weight:800;color:var(--accent-dark);}
+.ns21 .lab-desc{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 8px 8px 0;
+    padding:1vh 1vw;font-size:clamp(21px,2.2vh,25px);margin-bottom:1vh;line-height:1.5;}
+.ns21 .tabs{display:flex;gap:.8vw;flex-wrap:wrap;}
+.ns21 .tab{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(21px,2.2vh,25px);font-weight:700;padding:.8vh 1.2vw;cursor:pointer;}
+.ns21 .tab.on{background:var(--accent);color:#fff;}
+.ns21 .lab-grid{display:flex;gap:1.2vw;flex:1;min-height:0;}
+.ns21 .lab-graph{flex:2;background:#fff;border:1px solid var(--line);border-radius:10px;position:relative;min-height:34vh;}
+.ns21 .lab-graph canvas{width:100%;height:100%;display:block;}
+.ns21 .lab-side{flex:1;display:flex;flex-direction:column;gap:1vh;min-width:230px;}
+.ns21 .stat{background:var(--accent-light);border-radius:10px;padding:1vh 1vw;text-align:center;}
+.ns21 .stat .lab-num{font-size:clamp(30px,3.4vh,42px);font-weight:800;color:var(--accent-dark);}
+.ns21 .stat .lab-lab{font-size:clamp(20px,2.1vh,24px);color:var(--sub);font-weight:700;}
+.ns21 .stat.bad{background:var(--red-light);}
+.ns21 .stat.bad .lab-num{color:var(--red);}
+.ns21 .stat.good{background:var(--green-light);}
+.ns21 .stat.good .lab-num{color:var(--green);}
+.ns21 .stat.warn{background:var(--amber-light);}
+.ns21 .stat.warn .lab-num{color:var(--amber);}
+.ns21 .lab-ctrl{display:flex;align-items:center;gap:1.2vw;margin-top:1.2vh;flex-wrap:wrap;}
+.ns21 .lab-ctrl label{font-size:clamp(21px,2.2vh,25px);font-weight:700;color:var(--ink);white-space:nowrap;}
+.ns21 .lab-ctrl input[type=range]{flex:1;min-width:200px;cursor:pointer;height:8px;max-width:300px;}
+.ns21 .lab-val{font-weight:800;color:var(--accent-dark);font-size:clamp(21px,2.2vh,25px);}
+.ns21 .lab-hint{font-size:clamp(20px,2vh,24px);color:var(--sub);margin-top:.6vh;}
+.ns21 .verdict{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1.2vw;border-radius:10px;}
+.ns21 .verdict.good{background:var(--green-light);color:var(--green);}
+.ns21 .verdict.bad{background:var(--red-light);color:var(--red);}
+.ns21 .verdict.warn{background:var(--amber-light);color:var(--amber);}
+.ns21 .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+.ns21 .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(21px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+.ns21 .ds-btn.on{background:var(--accent);color:#fff;}
+.ns21 .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:700;text-align:center;line-height:1.4;font-family:inherit;cursor:pointer;
+  }
+.ns21 .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(21px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:1vh;gap:1vw;}
+.ns21 .game-fb{margin-top:1.2vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:3vh;}
+.ns21 .game-fb.good{background:var(--green-light);color:var(--green);}
+.ns21 .game-fb.bad{background:var(--red-light);color:var(--red);}
+.ns21 .chip{display:inline-block;background:var(--accent-light);color:var(--accent-dark);border-radius:999px;
+    padding:.3vh 1vw;font-size:clamp(19px,2vh,23px);font-weight:700;margin:.2vh .3vw;cursor:pointer;}
+.ns21 .chip.on{background:var(--accent);color:#fff;}
+.ns21 .flow-btns{display:flex;gap:.6vw;flex-wrap:wrap;}
+.ns21 .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+.ns21 .fill.done{color:var(--green);border-color:var(--green);}
+@media (max-width:900px){.ns21 .cards{flex-direction:column;}.ns21 .card{min-width:auto;}.ns21 .lab-grid{flex-direction:column;}.ns21 .lab-side{flex-direction:row;flex-wrap:wrap;}.ns21 .stat{flex:1;min-width:120px;}}
+.ns21 .btnrow.side{position:absolute;right:1.4vw;top:50%;transform:translateY(-50%);flex-direction:column;align-items:stretch;margin:0;z-index:30;}
+.ns21 .btnrow.side .btn{white-space:normal;max-width:11vw;text-align:center;box-shadow:0 4px 14px rgba(14,127,174,.25);}
+.ns21 .svgwrap{flex:1;min-height:0;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:1.2vw;}
+.ns21 .svgbox{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4vh;}
+.ns21 .svgbox svg{flex:1;min-height:0;width:100%;}
+.ns21 .cap{font-size:clamp(23px,2.4vh,28px);font-weight:800;color:var(--accent-dark);text-align:center;max-width:100%;}
+.ns21 .eqline{display:flex;align-items:center;gap:1vw;flex-wrap:wrap;}
+.ns21 .zhbox{background:#fffaf0;border:3px solid var(--amber);border-radius:12px;padding:1.1vh 1.1vw;line-height:1.45;}
+.ns21 .zhbox .cn{font-size:clamp(25px,2.7vh,31px);font-weight:800;color:#a06400;}
+.ns21 .zhbox .en{font-size:clamp(21px,2.2vh,25px);color:var(--sub);font-weight:600;}
+/* ---- 数学排版 ---- */
+.ns21 .mstep{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-left:8px solid var(--accent);border-radius:12px;padding:.7vh 1vw;}
+.ns21 .mstep .no{flex:0 0 auto;width:2.8vw;min-width:46px;height:2.8vw;min-height:46px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.5vh,29px);font-weight:800;}
+.ns21 .mstep .mbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:.3vh;}
+.ns21 .mstep .mtitle{font-size:clamp(21px,2.2vh,26px);font-weight:800;color:var(--accent-dark);line-height:1.25;}
+.ns21 .mstep .mnote{font-size:clamp(20px,2.1vh,24px);color:var(--sub);line-height:1.35;}
+.ns21 .mfrac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
+    font-size:.8em;line-height:1.15;margin:0 .3em;}
+.ns21 .mfrac .num{border-bottom:3px solid currentColor;padding:0 .42em .12em;}
+.ns21 .mfrac .den{padding:.12em .42em 0;}
+.ns21 .eqbox{display:flex;align-items:center;justify-content:center;gap:.45vw;flex-wrap:wrap;
+    background:var(--accent-dark);color:#fff;border-radius:12px;padding:.75vh 1vw;
+    font-size:clamp(24px,2.6vh,32px);font-weight:800;line-height:1.4;text-align:center;}
+.ns21 .eqbox.green{background:var(--green);}
+.ns21 .eqbox.amber{background:var(--amber);}
+.ns21 .eqbox.ghost{background:#fff;color:var(--ink);border:3px solid var(--accent);}
+.ns21 .eqbox .lbl{font-size:clamp(20px,2.1vh,24px);font-weight:700;}
+.ns21 .mvar{font-family:"Cambria Math",Cambria,Georgia,serif;font-style:italic;font-weight:700;}
+.ns21 .mrownote{font-size:clamp(21px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+/* ---- 练习格 + 关键词高亮 ---- */
+.ns21 td.ans{font-weight:800;color:var(--sub);background:#eef2f6;}
+.ns21 td.ans.done{color:#1e7a52;background:var(--green-light);}
+.ns21 td.given{font-weight:700;}
+.ns21 .kw{display:inline-block;padding:.1em .45em;border-radius:8px;font-weight:800;border:2px solid;}
+.ns21 .kw.def{background:var(--red-light);color:var(--red);border-color:var(--red);}
+.ns21 .kw.sur{background:var(--green-light);color:var(--green);border-color:var(--green);}
+.ns21 .exq{font-size:clamp(22px,2.3vh,27px);font-weight:700;line-height:1.4;}
+@media (max-width:900px){.ns21 .svgwrap{flex-wrap:wrap;}}
+.ns23 .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+.ns23 .cn{font-size:clamp(22px,2.1vh,25px);color:var(--sub);}
+.ns23 h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+.ns23 h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+.ns23 p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+.ns23 ul, .ns23 ol{margin-left:1.6em;margin-bottom:.8vh;}
+.ns23 li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+.ns23 b{color:var(--ink);}
+.ns23 .accent{color:var(--accent-dark);}
+.ns23 .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+.ns23 .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;}
+.ns23 .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+.ns23 .card p{font-size:clamp(22px,2.3vh,26px);}
+.ns23 .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+.ns23 .card.win{background:var(--green-light);border-color:var(--green);}
+.ns23 .card.warn{background:var(--amber-light);border-color:var(--amber);}
+.ns23 .card.lose{background:var(--red-light);border-color:var(--red);}
+.ns23 table{border-collapse:collapse;width:100%;background:var(--card);}
+.ns23 th, .ns23 td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+.ns23 th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+.ns23 td.l{text-align:left;}
+.ns23 td.yes{color:var(--green);font-weight:700;}
+.ns23 td.no{color:var(--red);font-weight:700;}
+.ns23 .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+.ns23 .btn:hover{background:var(--accent-dark);}
+.ns23 .btn:active{transform:scale(.97);}
+.ns23 .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+.ns23 .btn.green{background:var(--green);}
+.ns23 .btn.red{background:var(--red);}
+.ns23 .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+.ns23 .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+.ns23 .s-foot{margin-top:auto;padding-top:1.2vh;}
+.ns23 .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+.ns23 .hl.green{background:var(--green-light);border-color:var(--green);}
+.ns23 .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+.ns23 .hl.red{background:var(--red-light);border-color:var(--red);}
+.ns23 .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+.ns23 .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+.ns23 .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+.ns23 .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+.ns23 .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+.ns23 .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1;min-height:0;overflow-y:auto;}
+.ns23 .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+.ns23 .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+.ns23 .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+.ns23 .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;}
+.ns23 .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+.ns23 .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+.ns23 .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+.ns23 .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+.ns23 .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+.ns23 .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+.ns23 .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+.ns23 .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+.ns23 .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+.ns23 .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+.ns23 .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+.ns23 .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+.ns23 .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+.ns23 .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+.ns23 .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+.ns23 .imgbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+.ns23 .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+.ns23 .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+.ns23 .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+.ns23 .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+.ns23 .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+.ns23 .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+.ns23 .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+.ns23 .ds-btn.on{background:var(--accent);color:#fff;}
+.ns23 .flowwrap{display:flex;gap:1.4vw;flex:1;min-height:0;align-items:stretch;}
+.ns23 .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+.ns23 .flowimg img{max-width:100%;max-height:100%;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+.ns23 .flowimg svg{width:100%;height:auto;max-height:48vh;}
+.ns23 .flowside .hl{font-size:clamp(22px,2.2vh,25px);padding:.9vh 1vw;}
+.ns23 .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+.ns23 .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+.ns23 .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+.ns23 .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+.ns23 .game-fb.good{background:var(--green-light);color:var(--green);}
+.ns23 .game-fb.bad{background:var(--red-light);color:var(--red);}
+.ns23 .anslist{columns:2;column-gap:2.4vw;}
+.ns23 .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+.ns23 .aim.top{background:var(--accent-light);border-color:var(--accent);border-left-width:10px;}
+.ns23 .aim.first{background:linear-gradient(100deg,#1CADE4 0%,#0e7fae 100%);border-color:var(--accent-dark);
+    border-left-width:14px;padding:1.8vh 1.4vw;box-shadow:0 6px 18px rgba(14,127,174,.28);}
+.ns23 .aim.first .no{background:#fff;color:var(--accent-dark);width:3.6vw;min-width:62px;height:3.6vw;min-height:62px;
+    font-size:clamp(27px,3vh,35px);}
+.ns23 .aim.first .at{color:#fff;font-size:clamp(27px,3vh,34px);letter-spacing:.5px;}
+.ns23 .aim.first .ad{color:rgba(255,255,255,.92);font-size:clamp(23px,2.4vh,27px);}
+.ns23 .aim.dim{opacity:.72;}
+.ns23 .svgwrap{flex:1;min-height:0;display:flex;flex-direction:row;gap:2vw;align-items:center;justify-content:center;}
+.ns23 .svgbox{flex:1;min-width:0;max-width:46%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3vh;}
+.ns23 .svgbox svg{width:100%;height:auto;max-height:46vh;}
+.ns23 .cap{font-size:clamp(23px,2.4vh,28px);font-weight:800;color:var(--accent-dark);}
+.ns23 .split{display:flex;gap:1.8vw;flex:1;min-height:0;align-items:stretch;}
+.ns23 .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+.ns23 .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+.ns23 .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+.ns23 .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+.ns23 .mk circle{transition:fill .25s,r .25s;}
+.ns23 .flowlegend{display:flex;gap:1vw;margin-top:.9vh;}
+.ns23 .flowlegend .lg{flex:1;background:#f4f8fc;border:2px solid var(--line);border-left:8px solid var(--line);
+    border-radius:10px;padding:1vh 1vw;transition:background .25s,border-color .25s;}
+.ns23 .flowlegend .lg.on{background:var(--accent-light);border-color:var(--accent);}
+.ns23 .flowlegend .lg b{display:block;font-size:clamp(23px,2.4vh,27px);color:var(--accent-dark);}
+.ns23 .flowlegend .lg p{font-size:clamp(22px,2.2vh,25px);line-height:1.4;margin:.4vh 0 0;}
+@media (max-width:900px){.ns23 .cards{flex-direction:column;}.ns23 .card{min-width:auto;}.ns23 .two{flex-direction:column;}.ns23 .flowwrap{flex-direction:column;}.ns23 .flowside{flex:1 1 auto;}.ns23 .bar-label{flex:0 0 30vw;}.ns23 .bar-num{flex:0 0 22vw;}.ns23 .anslist{columns:1;}}
+.ns25 .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+.ns25 .cn{font-size:clamp(22px,2.1vh,25px);color:var(--sub);}
+.ns25 h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+.ns25 h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+.ns25 p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+.ns25 ul, .ns25 ol{margin-left:1.6em;margin-bottom:.8vh;}
+.ns25 li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+.ns25 b{color:var(--ink);}
+.ns25 .accent{color:var(--accent-dark);}
+.ns25 .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+.ns25 .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;}
+.ns25 .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+.ns25 .card p{font-size:clamp(22px,2.3vh,26px);}
+.ns25 .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+.ns25 .card.win{background:var(--green-light);border-color:var(--green);}
+.ns25 .card.warn{background:var(--amber-light);border-color:var(--amber);}
+.ns25 .card.lose{background:var(--red-light);border-color:var(--red);}
+.ns25 table{border-collapse:collapse;width:100%;background:var(--card);}
+.ns25 th, .ns25 td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+.ns25 th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+.ns25 td.l{text-align:left;}
+.ns25 td.yes{color:var(--green);font-weight:700;}
+.ns25 td.no{color:var(--red);font-weight:700;}
+.ns25 .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+.ns25 .btn:hover{background:var(--accent-dark);}
+.ns25 .btn:active{transform:scale(.97);}
+.ns25 .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+.ns25 .btn.green{background:var(--green);}
+.ns25 .btn.red{background:var(--red);}
+.ns25 .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+.ns25 .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+.ns25 .s-foot{margin-top:auto;padding-top:1.2vh;}
+.ns25 .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+.ns25 .hl.green{background:var(--green-light);border-color:var(--green);}
+.ns25 .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+.ns25 .hl.red{background:var(--red-light);border-color:var(--red);}
+.ns25 .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+.ns25 .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+.ns25 .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+.ns25 .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+.ns25 .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+.ns25 .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1;min-height:0;overflow-y:auto;}
+.ns25 .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+.ns25 .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+.ns25 .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+.ns25 .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;}
+.ns25 .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+.ns25 .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+.ns25 .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+.ns25 .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+.ns25 .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+.ns25 .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+.ns25 .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+.ns25 .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+.ns25 .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+.ns25 .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+.ns25 .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+.ns25 .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+.ns25 .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+.ns25 .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+.ns25 .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+.ns25 .imgbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+.ns25 .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+.ns25 .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+.ns25 .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+.ns25 .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+.ns25 .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+.ns25 .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+.ns25 .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+.ns25 .ds-btn.on{background:var(--accent);color:#fff;}
+.ns25 .flowwrap{display:flex;gap:1.4vw;flex:1;min-height:0;align-items:stretch;}
+.ns25 .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+.ns25 .flowimg img{max-width:100%;max-height:100%;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+.ns25 .flowimg svg{width:100%;height:auto;max-height:48vh;}
+.ns25 .flowside .hl{font-size:clamp(22px,2.2vh,25px);padding:.9vh 1vw;}
+.ns25 .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+.ns25 .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+.ns25 .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+.ns25 .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+.ns25 .game-fb.good{background:var(--green-light);color:var(--green);}
+.ns25 .game-fb.bad{background:var(--red-light);color:var(--red);}
+.ns25 .anslist{columns:2;column-gap:2.4vw;}
+.ns25 .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+.ns25 .aim.top{background:var(--accent-light);border-color:var(--accent);border-left-width:10px;}
+.ns25 .aim.first{background:linear-gradient(100deg,#1CADE4 0%,#0e7fae 100%);border-color:var(--accent-dark);
+    border-left-width:14px;padding:1.8vh 1.4vw;box-shadow:0 6px 18px rgba(14,127,174,.28);}
+.ns25 .aim.first .no{background:#fff;color:var(--accent-dark);width:3.6vw;min-width:62px;height:3.6vw;min-height:62px;
+    font-size:clamp(27px,3vh,35px);}
+.ns25 .aim.first .at{color:#fff;font-size:clamp(27px,3vh,34px);letter-spacing:.5px;}
+.ns25 .aim.first .ad{color:rgba(255,255,255,.92);font-size:clamp(23px,2.4vh,27px);}
+.ns25 .aim.dim{opacity:.72;}
+.ns25 .svgwrap{flex:1;min-height:0;display:flex;flex-direction:row;gap:2vw;align-items:center;justify-content:center;}
+.ns25 .svgbox{flex:1;min-width:0;max-width:46%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3vh;}
+.ns25 .svgbox svg{width:100%;height:auto;max-height:46vh;}
+.ns25 .cap{font-size:clamp(23px,2.4vh,28px);font-weight:800;color:var(--accent-dark);}
+.ns25 .split{display:flex;gap:1.8vw;flex:1;min-height:0;align-items:stretch;}
+.ns25 .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+.ns25 .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+.ns25 .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+.ns25 .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+.ns25 .mk circle{transition:fill .25s,r .25s;}
+.ns25 .flowlegend{display:flex;gap:1vw;margin-top:.9vh;}
+.ns25 .flowlegend .lg{flex:1;background:#f4f8fc;border:2px solid var(--line);border-left:8px solid var(--line);
+    border-radius:10px;padding:1vh 1vw;transition:background .25s,border-color .25s;}
+.ns25 .flowlegend .lg.on{background:var(--accent-light);border-color:var(--accent);}
+.ns25 .flowlegend .lg b{display:block;font-size:clamp(23px,2.4vh,27px);color:var(--accent-dark);}
+.ns25 .flowlegend .lg p{font-size:clamp(22px,2.2vh,25px);line-height:1.4;margin:.4vh 0 0;}
+.ns25 .eqn{display:flex;align-items:center;justify-content:center;gap:1.2vw;background:var(--accent-dark);color:#fff;
+    border-radius:12px;padding:1.5vh 1.2vw;font-size:clamp(26px,2.9vh,34px);font-weight:800;margin-bottom:.9vh;}
+.ns25 .eqn .frac{display:inline-flex;flex-direction:column;align-items:center;font-size:clamp(24px,2.7vh,31px);line-height:1.25;}
+.ns25 .eqn .num{border-bottom:4px solid #fff;padding:0 1vw .35vh;}
+.ns25 .eqn .den{padding:.35vh 1vw 0;}
+.ns25 .eqn .lbl{white-space:nowrap;}
+.ns25 th.sub{font-size:clamp(21px,2.2vh,24px);font-weight:600;}
+.ns25 td.bl{border-left:3px solid var(--accent);}
+.ns25 .split .pic svg{width:100%;height:auto;max-height:44vh;}
+.ns25 .popbox{background:#fff;border:3px solid var(--accent-dark);border-radius:12px;padding:1vh 1vw;margin-top:.4vh;}
+.ns25 .popcap{font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);margin-bottom:.5vh;}
+.ns25 .poprow{display:flex;gap:1vw;align-items:stretch;}
+.ns25 .poppart{border-radius:10px;padding:.9vh .8vw;flex:1;}
+.ns25 .poppart.nolf{background:#eef2f6;border:2px solid #c4d0da;color:var(--sub);
+    font-size:clamp(21px,2.2vh,25px);font-weight:700;line-height:1.35;}
+.ns25 .poppart.lf{background:var(--accent-light);border:2px solid var(--accent);flex:1.35;}
+.ns25 .popcap2{font-size:clamp(21px,2.2vh,25px);font-weight:800;color:var(--accent-dark);margin-bottom:.5vh;}
+.ns25 .poprow2{display:flex;gap:.8vw;}
+.ns25 .poprow2 .poppart{font-size:clamp(21px,2.2vh,25px);font-weight:700;}
+.ns25 .poppart.emp{background:#e8f6ef;border:2px solid var(--green);color:#1e7a52;}
+.ns25 .poppart.une{background:#fdeaea;border:2px solid var(--red);color:#a94442;}
+.ns25 #c1Box, .ns25 #c2Box{display:flex;gap:.9vw;flex-wrap:nowrap;}
+.ns25 #c1Box > div, .ns25 #c2Box > div{flex:1;min-width:0;}
+.ns25 #euList{columns:1;}
+.ns25 .cmpAns{visibility:hidden;}
+.ns25 .labframe{width:100%;height:74vh;border:2px solid var(--line);border-radius:10px;background:#fff;display:block;}
+.ns25 .imgfull{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+@media (max-width:900px){.ns25 .cards{flex-direction:column;}.ns25 .card{min-width:auto;}.ns25 .two{flex-direction:column;}.ns25 .flowwrap{flex-direction:column;}.ns25 .flowside{flex:1 1 auto;}.ns25 .bar-label{flex:0 0 30vw;}.ns25 .bar-num{flex:0 0 22vw;}.ns25 .anslist{columns:1;}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+<div class="ns21"><section class="slide cover" id="fb0">
+  <div class="tag">AP Macroeconomics · Unit 3 · 3.2</div>
+  <h1>Fiscal Policy, Multipliers &amp; Automatic Stabilizers</h1>
+  <div class="q">From the marginal propensities to policy in the AD-AS model</div>
+  <p>Continues from the AD-AS deck — pick up at MPC &amp; MPS</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section></div>
+<div class="ns21"><section class="slide" id="s15">
+  <div class="tag">Toolbox ③ · Marginal propensities</div>
+  <h2>C, S and the marginal propensities</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;height:100%;align-items:stretch;">
+      <div style="flex:1 1 0;display:flex;flex-direction:column;gap:.9vh;min-width:0;">
+        <div id="mpBox" style="display:flex;flex-direction:column;gap:.7vh;font-size:clamp(15px,1.5vw,20px);font-weight:700;color:var(--ink);"></div>
+        <div class="card" style="margin-top:auto;">
+          <h3 style="font-size:clamp(15px,1.5vw,20px);">Disposable income slider</h3>
+          <input type="range" id="cfY" min="0" max="100" step="1" value="50" style="width:100%;accent-color:#1CADE4;">
+          <p id="cfRead" style="font-family:Consolas,monospace;font-size:clamp(15px,1.5vw,20px);margin-top:.6vh;">Yd = 50 · C = 48.8 · S = 1.2</p>
+          <p id="cfMarg" style="font-family:Consolas,monospace;font-size:clamp(15px,1.5vw,20px);font-weight:800;color:#0e7fae;">MPC = 0.50 · MPS = 0.50</p>
+        </div>
+        <div class="btnrow">
+          <button class="btn" id="mpBtn" onclick="cfNext()">Next step ▶</button>
+          <button class="btn ghost" onclick="cfReset()">Reset</button>
+        </div>
+      </div>
+      <div class="svgbox" style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:.4vh;">
+        <svg viewBox="0 0 1000 460" id="cfSvg" style="width:100%;flex:1 1 0;min-height:0;">
+          <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+            <g stroke="#eef4f9" stroke-width="1"><line x1="120" y1="324" x2="900" y2="324"/><line x1="120" y1="258" x2="900" y2="258"/><line x1="120" y1="192" x2="900" y2="192"/><line x1="120" y1="126" x2="900" y2="126"/><line x1="120" y1="60" x2="900" y2="60"/></g>
+            <g id="cfAx" opacity="0" style="transition:opacity .4s;">
+              <line x1="120" y1="390" x2="930" y2="390" stroke="#343a40" stroke-width="3"/>
+              <line x1="120" y1="440" x2="120" y2="30" stroke="#343a40" stroke-width="3"/>
+              <text x="560" y="448" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d">Disposable income  Yd →</text>
+              <text x="66" y="230" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d" transform="rotate(-90 66 230)">Consumption &amp; saving</text>
+              <g font-size="22" fill="#8a99a8"><text x="120" y="418">0</text><text x="276" y="418">20</text><text x="432" y="418">40</text><text x="588" y="418">60</text><text x="744" y="418">80</text><text x="886" y="418">100</text></g>
+            </g>
+            <g id="cf45" opacity="0" style="transition:opacity .4s;">
+              <line x1="120" y1="390" x2="900" y2="60" stroke="#8a99a8" stroke-width="3" stroke-dasharray="9 7"/>
+              <text x="672" y="98" font-size="26" font-weight="800" fill="#6b7c8f">45° line: C = Yd</text>
+              <text x="672" y="128" font-size="22" fill="#8a99a8">break-even</text>
+            </g>
+            <g id="cfC" opacity="0" style="transition:opacity .4s;">
+              <polyline points="120.0,340.5 135.6,334.9 151.2,329.5 166.8,324.1 182.4,318.8 198.0,313.6 213.6,308.5 229.2,303.5 244.8,298.6 260.4,293.8 276.0,289.0 291.6,284.4 307.2,279.8 322.8,275.4 338.4,271.0 354.0,266.7 369.6,262.6 385.2,258.5 400.8,254.5 416.4,250.6 432.0,246.8 447.6,243.1 463.2,239.4 478.8,235.9 494.4,232.5 510.0,229.1 525.6,225.9 541.2,222.7 556.8,219.6 572.4,216.7 588.0,213.8 603.6,211.0 619.2,208.3 634.8,205.7 650.4,203.2 666.0,200.7 681.6,198.4 697.2,196.2 712.8,194.0 728.4,192.0 744.0,190.0 759.6,188.2 775.2,186.4 790.8,184.7 806.4,183.1 822.0,181.6 837.6,180.2 853.2,178.9 868.8,177.7 884.4,176.5 900.0,175.5" fill="none" stroke="#1CADE4" stroke-width="5"/>
+              <text x="452" y="286" font-size="30" font-weight="800" fill="#0e7fae">C</text>
+              <text x="452" y="314" font-size="22" fill="#5b7288">rises, but flattens</text>
+            </g>
+            <g id="cfS" opacity="0" style="transition:opacity .4s;">
+              <line id="cfGap" x1="510" y1="390" x2="510" y2="390" stroke="#2e9e6b" stroke-width="4"/>
+              <polyline points="120.0,439.5 135.6,438.5 151.2,437.3 166.8,436.1 182.4,434.8 198.0,433.4 213.6,431.9 229.2,430.3 244.8,428.6 260.4,426.8 276.0,425.0 291.6,423.0 307.2,421.0 322.8,418.8 338.4,416.6 354.0,414.3 369.6,411.8 385.2,409.3 400.8,406.7 416.4,404.0 432.0,401.2 447.6,398.3 463.2,395.4 478.8,392.3 494.4,389.1 510.0,385.9 525.6,382.5 541.2,379.1 556.8,375.6 572.4,371.9 588.0,368.2 603.6,364.4 619.2,360.5 634.8,356.5 650.4,352.4 666.0,348.3 681.6,344.0 697.2,339.6 712.8,335.2 728.4,330.6 744.0,326.0 759.6,321.2 775.2,316.4 790.8,311.5 806.4,306.5 822.0,301.4 837.6,296.2 853.2,290.9 868.8,285.5 884.4,280.1 900.0,274.5" fill="none" stroke="#2e9e6b" stroke-width="4" stroke-dasharray="8 6"/>
+              <text x="430" y="330" font-size="28" font-weight="800" fill="#1f7a52">S = Yd − C</text>
+              <text x="430" y="358" font-size="22" fill="#5b7288">grows faster &amp; faster</text>
+              <text x="160" y="452" font-size="22" font-weight="800" fill="#d9534f">negative S (dissaving)</text>
+            </g>
+            <g id="cfTan" opacity="0" style="transition:opacity .4s;">
+              <line id="cfTanLine" x1="0" y1="0" x2="0" y2="0" stroke="#d97800" stroke-width="5" stroke-linecap="round"/>
+              <circle id="cfTanDot" cx="0" cy="0" r="7" fill="#d97800" stroke="#fff" stroke-width="2.5"/>
+              <text id="cfTanTxt" x="0" y="0" font-size="26" font-weight="900" fill="#a35200">slope of C = MPC</text>
+            </g>
+            <g id="cfTanS" opacity="0" style="transition:opacity .4s;">
+              <line id="cfTanSLine" x1="0" y1="0" x2="0" y2="0" stroke="#8e44ad" stroke-width="5" stroke-linecap="round"/>
+              <circle id="cfTanSDot" cx="0" cy="0" r="7" fill="#8e44ad" stroke="#fff" stroke-width="2.5"/>
+              <text id="cfTanSTxt" x="0" y="0" font-size="26" font-weight="900" fill="#5e2d80">slope of S = MPS</text>
+            </g>
+            <circle id="cfPt" cx="510" cy="230" r="9" fill="#d9534f" stroke="#fff" stroke-width="3" opacity="0"/>
+          </g>
+        </svg>
+        <svg viewBox="0 0 1000 460" id="mpSvg" style="width:100%;flex:1 1 0;min-height:0;">
+          <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+            <g id="cfMM" opacity="0" style="transition:opacity .4s;">
+              <line x1="120" y1="390" x2="940" y2="390" stroke="#343a40" stroke-width="3"/>
+              <line x1="120" y1="410" x2="120" y2="36" stroke="#343a40" stroke-width="3"/>
+              <text x="560" y="448" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d">Disposable income  Yd →</text>
+              <text x="50" y="215" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d" transform="rotate(-90 50 215)">Propensity</text>
+              <g font-size="22" fill="#8a99a8"><text x="120" y="418">0</text><text x="276" y="418">20</text><text x="432" y="418">40</text><text x="588" y="418">60</text><text x="744" y="418">80</text><text x="886" y="418">100</text></g>
+              <g font-size="22" fill="#8a99a8">
+                <text x="106" y="397" text-anchor="end">0</text>
+                <text x="106" y="232" text-anchor="end">.5</text>
+                <text x="106" y="67" text-anchor="end">1</text>
+              </g>
+              <line x1="120" y1="225" x2="900" y2="225" stroke="#b9c9d6" stroke-width="2" stroke-dasharray="6 4"/>
+              <line x1="120" y1="109.5" x2="900" y2="340.5" stroke="#1CADE4" stroke-width="5"/>
+              <text x="152" y="92" font-size="28" font-weight="900" fill="#0e7fae">MPC</text>
+              <line x1="120" y1="340.5" x2="900" y2="109.5" stroke="#2e9e6b" stroke-width="5"/>
+              <text x="152" y="380" font-size="28" font-weight="900" fill="#1f7a52">MPS</text>
+              <circle cx="510" cy="225" r="6" fill="#1f2d3d"/>
+              <text x="540" y="215" font-size="22" font-weight="800" fill="#1f2d3d">MPC = MPS = 0.5 at Yd = 50</text>
+              <line id="mpCur" x1="510" y1="36" x2="510" y2="390" stroke="#d9534f" stroke-width="2.5" stroke-dasharray="5 4"/>
+              <circle id="mpCpt" cx="510" cy="225" r="9" fill="#1CADE4" stroke="#fff" stroke-width="2.5"/>
+              <circle id="mpSpt" cx="510" cy="225" r="9" fill="#2e9e6b" stroke="#fff" stroke-width="2.5"/>
+              <text id="mpCTxt" x="0" y="0" font-size="24" font-weight="900" fill="#0e7fae">MPC = 0.50</text>
+              <text id="mpSTxt" x="0" y="0" font-size="24" font-weight="900" fill="#1f7a52">MPS = 0.50</text>
+              <text x="640" y="112" font-size="26" font-weight="900" fill="#1f2d3d">MPC + MPS = 1</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_spendincome">
+  <div class="tag">Toolbox ④ · The circular flow</div>
+  <h2>One person's spending is another person's income</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow:hidden;">
+    <div class="hl green" style="line-height:1.5;">The government spends <b>$100</b> repaving a road. The money does not stop there: every dollar spent is a dollar of <b>income</b> for somebody else — and income is exactly what we count as GDP.</div>
+    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+      <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;">
+        <div id="ripBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1;min-height:0;"></div>
+      </div>
+      <div class="svgbox" style="flex:0 0 400px;max-width:400px;">
+        <svg viewBox="0 0 420 400" id="ripSvg" style="width:100%;flex:1 1 0;min-height:0;"></svg>
+        <div class="cap">Every ripple = MPC × the one before it</div>
+      </div>
+    </div>
+    <div class="btnrow" style="flex-wrap:nowrap;">
+      <button class="btn" id="ripBtn" onclick="ripNext()">Next round ▶</button>
+      <button class="btn ghost" onclick="ripReset()">Reset</button>
+      <span style="font-size:clamp(21px,2.2vh,25px);font-weight:700;">MPC&nbsp;<span class="lab-val" id="ripMpcV">0.60</span></span>
+      <input type="range" id="ripMpc" min="0.5" max="0.9" step="0.1" value="0.6" oninput="ripSet()" style="flex:0 0 190px;height:8px;accent-color:#1CADE4;cursor:pointer;">
+      <div class="hl amber" style="margin:0 0 0 auto;padding:.6vh 1.1vw;">GDP created so far: <b id="ripTot">$0.0</b></div>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_zhuangzi">
+  <div class="tag">Toolbox ⑤ · How do we add them all up?</div>
+  <h2>Endless rounds — but a finite total?</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow:hidden;">
+    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+      <div style="flex:0 0 45%;min-width:0;display:flex;flex-direction:column;gap:.7vh;">
+        <div class="zhbox">
+          <div class="cn">一尺之捶，日取其半，万世不竭。</div>
+          <div class="en">"A foot-long stick: halve what is left every day, and it will never be used up." — Zhuangzi</div>
+        </div>
+        <div id="zzBox" style="display:flex;flex-direction:column;gap:.45vh;overflow-y:auto;flex:1;min-height:0;"></div>
+        <div class="btnrow">
+          <button class="btn" id="zzBtn" onclick="zzNext()">Cut again ▶</button>
+          <button class="btn ghost" onclick="zzReset()">Reset</button>
+        </div>
+      </div>
+      <div class="svgbox" style="flex:1 1 0;min-width:0;">
+        <svg viewBox="0 0 520 300" id="zzSvg" style="width:100%;flex:1 1 0;min-height:0;"></svg>
+        <div class="cap">The sliver never reaches zero — but the pieces add up to one stick</div>
+      </div>
+    </div>
+    <div class="hl green" style="line-height:1.5;">Endless terms, finite sum. The spending chain has exactly the same shape: <b>1 + MPC + MPC² + …</b></div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_geom">
+  <div class="tag">Toolbox ⑥ · The geometric series</div>
+  <h2>From a geometric series to the spending multiplier</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow-y:auto;">
+    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+      <div style="flex:1.32;min-width:0;display:flex;flex-direction:column;gap:.6vh;">
+        <div id="gmBox" style="display:flex;flex-direction:column;gap:.55vh;overflow-y:auto;flex:1;min-height:0;"></div>
+        <div class="btnrow" style="margin-top:.4vh;">
+          <button class="btn" id="gmBtn" onclick="nextGm()">Next step ▶</button>
+          <button class="btn ghost" onclick="resetGm()">Reset</button>
+        </div>
+      </div>
+      <div style="flex:0 0 32%;min-width:0;display:flex;flex-direction:column;gap:.8vh;">
+        <table>
+          <tr><th>MPC</th><th>MPS</th><th>Multiplier</th></tr>
+          <tr><td>0.5</td><td>0.5</td><td>2.0</td></tr>
+          <tr><td>0.6</td><td>0.4</td><td>2.5</td></tr>
+          <tr><td>0.8</td><td>0.2</td><td>5.0</td></tr>
+        </table>
+        <div class="hl amber" style="line-height:1.5;">Check: MPC = 0.6 → 1 / (1 − 0.6) = 1 / 0.4 = <b>2.5</b>. So $10 bn of new spending → <b>$25 bn</b> of GDP.</div>
+        <div class="hl" style="line-height:1.5;margin-top:auto;">The <b>smaller</b> the leakage (MPS), the <b>bigger</b> the multiplier — every round keeps more of the money in the flow.</div>
+      </div>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_ex_spend">
+  <div class="tag">Practice ① · Spending multiplier</div>
+  <h2>Drill: new government spending</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+    <div class="hl" style="line-height:1.5;">multiplier = <span class="mfrac"><span class="num">1</span><span class="den">1 − MPC</span></span> &nbsp;·&nbsp; ΔAD = ΔG × multiplier &nbsp;·&nbsp; G ↑ always shifts AD <b>right</b></div>
+    <div style="flex:1;min-height:0;overflow-y:auto;">
+      <table>
+        <tr><th>#</th><th>New government spending</th><th>MPC</th><th>Multiplier</th><th>ΔAD</th></tr>
+        <tr>
+          <td>1</td><td class="given">ΔG = +$20 bn</td><td class="given">0.8</td>
+          <td class="ans" id="exS_m_0">?</td><td class="ans" id="exS_y_0">?</td>
+        </tr>
+        <tr>
+          <td>2</td><td class="given">ΔG = +$50 bn</td><td class="given">0.5</td>
+          <td class="ans" id="exS_m_1">?</td><td class="ans" id="exS_y_1">?</td>
+        </tr>
+        <tr>
+          <td>3</td><td class="given">ΔG = +$10 bn</td><td class="given">0.75</td>
+          <td class="ans" id="exS_m_2">?</td><td class="ans" id="exS_y_2">?</td>
+        </tr>
+        <tr>
+          <td>4</td><td class="given">ΔG = +$5 bn</td><td class="given">0.6</td>
+          <td class="ans" id="exS_m_3">?</td><td class="ans" id="exS_y_3">?</td>
+        </tr>
+      </table>
+      <div class="mrownote" style="margin-top:.7vh;">Rows 1 and 2 end in the same ΔAD — a bigger multiplier on a smaller injection, or a smaller multiplier on a bigger one.</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn" id="exSBtn" onclick="exSNext()">Reveal next ▶</button>
+      <button class="btn green" onclick="exSAll()">Reveal all</button>
+      <button class="btn ghost" onclick="exSReset()">Reset</button>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_taxmult">
+  <div class="tag">Policy ② · Taxes work through spending</div>
+  <h2>The tax multiplier</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:1vh;">
+    <div class="hl" style="line-height:1.5;">Tax multiplier = <b>− MPC / (1 − MPC)</b> = <b>− MPC / MPS</b></div>
+    <div class="hl" style="background:var(--amber-light);border-color:var(--amber);line-height:1.5;">A tax <b>cut</b> raises disposable income, but households <b>save part of it</b> first — only MPC of it becomes spending. With MPC = 0.6: − 0.6/0.4 = <b>−1.5</b>.</div>
+    <table>
+      <tr><th>Policy (MPC = 0.6)</th><th>Multiplier</th><th>ΔAD</th></tr>
+      <tr><td>ΔG = +$10 bn</td><td>×2.5</td><td>+$25 bn</td></tr>
+      <tr><td>ΔT = −$10 bn</td><td>×1.5</td><td>+$15 bn</td></tr>
+    </table>
+    <div class="hl" style="line-height:1.5;">Same direction, smaller punch: <b>|tax multiplier| = spending multiplier − 1</b>.</div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_ex_tax">
+  <div class="tag">Practice ② · Tax multiplier</div>
+  <h2>Drill: taxes up, or taxes down?</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+    <div class="hl" style="line-height:1.5;">tax multiplier = <span class="mfrac"><span class="num">−MPC</span><span class="den">1 − MPC</span></span> &nbsp;·&nbsp; ΔAD = ΔT × tax multiplier &nbsp;·&nbsp; T ↓ shifts AD <b>right</b>, T ↑ shifts AD <b>left</b></div>
+    <div style="flex:1;min-height:0;overflow-y:auto;">
+      <table>
+        <tr><th>#</th><th>Change in taxes</th><th>MPC</th><th>Tax multiplier</th><th>ΔAD</th></tr>
+        <tr>
+          <td>1</td><td class="given">ΔT = −$20 bn (cut)</td><td class="given">0.8</td>
+          <td class="ans" id="exT_m_0">?</td><td class="ans" id="exT_y_0">?</td>
+        </tr>
+        <tr>
+          <td>2</td><td class="given">ΔT = +$10 bn (rise)</td><td class="given">0.6</td>
+          <td class="ans" id="exT_m_1">?</td><td class="ans" id="exT_y_1">?</td>
+        </tr>
+        <tr>
+          <td>3</td><td class="given">ΔT = −$40 bn (cut)</td><td class="given">0.75</td>
+          <td class="ans" id="exT_m_2">?</td><td class="ans" id="exT_y_2">?</td>
+        </tr>
+        <tr>
+          <td>4</td><td class="given">ΔT = +$25 bn (rise)</td><td class="given">0.5</td>
+          <td class="ans" id="exT_m_3">?</td><td class="ans" id="exT_y_3">?</td>
+        </tr>
+      </table>
+      <div class="mrownote" style="margin-top:.7vh;">Watch the sign: a tax <b>cut</b> (ΔT &lt; 0) times a <b>negative</b> multiplier gives a <b>positive</b> ΔAD — AD shifts right.</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn" id="exTBtn" onclick="exTNext()">Reveal next ▶</button>
+      <button class="btn green" onclick="exTAll()">Reveal all</button>
+      <button class="btn ghost" onclick="exTReset()">Reset</button>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_bbm">
+  <div class="tag">Policy ③ · Think deeper</div>
+  <h2>Tax more, spend it all — does GDP still rise?</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow:hidden;">
+    <div class="hl amber" style="line-height:1.5;">The tax multiplier is <b>smaller</b> than the spending multiplier. So: raise taxes by $10 bn, spend the whole $10 bn, keep the budget balanced — is that still expansionary?</div>
+    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+      <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;">
+        <div id="bbBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1;min-height:0;"></div>
+        <div class="btnrow" style="margin-top:.6vh;">
+          <button class="btn" id="bbBtn" onclick="bbNext()">Next step ▶</button>
+          <button class="btn ghost" onclick="bbReset()">Reset</button>
+          <label style="font-size:clamp(21px,2.2vh,25px);font-weight:700;">MPC <span class="lab-val" id="bbMpcV">0.60</span></label>
+          <input type="range" id="bbMpc" min="0.5" max="0.9" step="0.1" value="0.6" oninput="bbSet()" style="flex:0 0 180px;height:8px;accent-color:#1CADE4;cursor:pointer;">
+        </div>
+      </div>
+      <div class="svgbox" style="flex:0 0 420px;max-width:420px;">
+        <svg viewBox="0 0 420 330" id="bbSvg" style="width:100%;flex:1 1 0;min-height:0;"></svg>
+        <div class="cap">+25 from spending, −15 from taxes: net +10</div>
+      </div>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_fiscal">
+  <div class="tag">Policy ④ · The two levers inside the model</div>
+  <h2>Fiscal policy in the AD-AS model</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+    <div class="hl" style="line-height:1.5;">Fiscal policy = the government's use of <b>spending (G)</b> and <b>taxation (T)</b> to shift <b>AD</b> towards potential output <b>GDP*</b>.</div>
+    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+      <div style="flex:0 0 50%;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+        <table>
+          <tr><th>What to fix</th><th>Policy</th><th>G</th><th>T</th><th>AD</th><th>Budget</th></tr>
+          <tr>
+            <td class="l"><b>Recessionary gap</b><br>Y &lt; GDP*</td>
+            <td><b>Expansionary</b></td><td>↑</td><td>↓</td><td>right</td><td>towards <span class="kw def">deficit</span></td>
+          </tr>
+          <tr>
+            <td class="l"><b>Inflationary gap</b><br>Y &gt; GDP*</td>
+            <td><b>Contractionary</b></td><td>↓</td><td>↑</td><td>left</td><td>towards <span class="kw sur">surplus</span></td>
+          </tr>
+        </table>
+        <div class="mrownote" style="margin-top:.8vh;">The size of the AD shift is not the size of the policy: <b>ΔAD = ΔSpending × multiplier</b> (or ΔT × tax multiplier).</div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.9vh;">
+        <div class="svgbox" style="flex:1;">
+          <svg viewBox="0 0 464 250" style="width:100%;max-height:100%;">
+            <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+              <line x1="75" y1="34" x2="75" y2="200" stroke="#343a40" stroke-width="3"/>
+              <line x1="75" y1="200" x2="435" y2="200" stroke="#343a40" stroke-width="3"/>
+              <text x="29" y="50" font-size="22" font-weight="800" fill="#343a40">PL</text>
+              <text x="429" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Real GDP</text>
+              <line x1="276" y1="42" x2="276" y2="200" stroke="#9aa8b5" stroke-width="4"/>
+              <text x="284" y="58" font-size="22" font-weight="800" fill="#5b7288">LRAS</text>
+              <text x="284" y="196" font-size="20" font-weight="800" fill="#5b7288">GDP*</text>
+              <line x1="90" y1="195" x2="420" y2="70" stroke="#2e9e6b" stroke-width="4"/>
+              <text x="371" y="92" font-size="22" font-weight="800" fill="#1f7a52">SRAS</text>
+              <line x1="225" y1="144" x2="225" y2="200" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="6 4"/>
+              <line x1="90" y1="97" x2="333" y2="181" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>
+              <text x="345" y="187" font-size="22" font-weight="800" fill="#5b7288">AD₁</text>
+              <line x1="90" y1="61" x2="333" y2="145" stroke="#1CADE4" stroke-width="5"/>
+              <text x="345" y="151" font-size="22" font-weight="800" fill="#0e7fae">AD₂</text>
+              <line x1="188" y1="130" x2="284" y2="130" stroke="#1CADE4" stroke-width="4"/>
+              <polygon points="286,130 265,124 265,136" fill="#1CADE4"/>
+              <text x="236" y="122" text-anchor="middle" font-size="21" font-weight="800" fill="#0e7fae">ΔAD</text>
+              <path d="M225,204 L225,214 L276,214 L276,204" fill="none" stroke="#d9534f" stroke-width="3"/>
+              <circle cx="225" cy="144" r="6" fill="#5b7288"/>
+            </g>
+          </svg>
+          <div class="cap">Recessionary gap → expansionary → AD right</div>
+        </div>
+        <div class="svgbox" style="flex:1;">
+          <svg viewBox="0 0 464 250" style="width:100%;max-height:100%;">
+            <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+              <line x1="75" y1="34" x2="75" y2="200" stroke="#343a40" stroke-width="3"/>
+              <line x1="75" y1="200" x2="435" y2="200" stroke="#343a40" stroke-width="3"/>
+              <text x="29" y="50" font-size="22" font-weight="800" fill="#343a40">PL</text>
+              <text x="429" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Real GDP</text>
+              <line x1="276" y1="42" x2="276" y2="200" stroke="#9aa8b5" stroke-width="4"/>
+              <text x="284" y="58" font-size="22" font-weight="800" fill="#5b7288">LRAS</text>
+              <text x="284" y="196" font-size="20" font-weight="800" fill="#5b7288">GDP*</text>
+              <line x1="90" y1="195" x2="420" y2="70" stroke="#2e9e6b" stroke-width="4"/>
+              <text x="371" y="92" font-size="22" font-weight="800" fill="#1f7a52">SRAS</text>
+              <line x1="326" y1="105" x2="326" y2="200" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="6 4"/>
+              <line x1="145" y1="43" x2="348" y2="113" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>
+              <text x="360" y="119" font-size="22" font-weight="800" fill="#5b7288">AD₁</text>
+              <line x1="90" y1="61" x2="348" y2="150" stroke="#1CADE4" stroke-width="5"/>
+              <text x="360" y="156" font-size="22" font-weight="800" fill="#0e7fae">AD₂</text>
+              <line x1="362" y1="120" x2="267" y2="120" stroke="#1CADE4" stroke-width="4"/>
+              <polygon points="265,120 286,114 286,126" fill="#1CADE4"/>
+              <text x="315" y="112" text-anchor="middle" font-size="21" font-weight="800" fill="#0e7fae">ΔAD</text>
+              <path d="M276,204 L276,214 L326,214 L326,204" fill="none" stroke="#e6a23c" stroke-width="3"/>
+              <circle cx="326" cy="105" r="6" fill="#5b7288"/>
+            </g>
+          </svg>
+          <div class="cap">Inflationary gap → contractionary → AD left</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_autostab">
+  <div class="tag">Policy ⑤ · Built in, no vote needed</div>
+  <h2>Automatic stabilizers</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:1vh;">
+    <div class="hl" style="line-height:1.5;">Features of the budget that dampen the cycle <b>automatically</b> — no new legislation required.</div>
+    <div class="cards">
+      <div class="card"><h3>Progressive income taxes</h3><p>Boom: incomes ↑ → tax revenue ↑ → spending dampened. Recession: revenue ↓ → spending cushioned.</p></div>
+      <div class="card"><h3>Unemployment benefits</h3><p>Means-tested transfers rise automatically in a downturn, supporting incomes and spending.</p></div>
+      <div class="card win"><h3>Automatic vs discretionary</h3><p>Discretionary policy needs legislation and suffers lags; automatic stabilizers act immediately, every cycle.</p></div>
+    </div>
+    <div class="svgbox" style="flex:1;min-height:0;">
+      <svg viewBox="0 0 660 220" width="660" height="205">
+        <line x1="45" y1="25" x2="45" y2="185" stroke="#343a40" stroke-width="3"/>
+        <line x1="45" y1="185" x2="630" y2="185" stroke="#343a40" stroke-width="3"/>
+        <text x="14" y="40" font-size="18" font-weight="bold" fill="#343a40">Real GDP</text>
+        <text x="560" y="208" font-size="18" font-weight="bold" fill="#343a40">Time</text>
+        <line x1="55" y1="150" x2="620" y2="45" stroke="#5b7288" stroke-width="3" stroke-dasharray="8 5"/>
+        <text x="500" y="70" font-size="17" font-weight="bold" fill="#5b7288">trend</text>
+        <path d="M55,150 C100,60 130,130 175,120 C230,108 260,45 315,80 C370,115 400,160 445,140 C500,116 540,70 620,52"
+              fill="none" stroke="#d9534f" stroke-width="3" stroke-dasharray="6 4"/>
+        <text x="70" y="62" font-size="17" font-weight="bold" fill="#d9534f">without</text>
+        <path d="M55,150 C100,110 130,130 175,124 C230,116 260,72 315,88 C370,104 400,142 445,136 C500,128 540,80 620,52"
+              fill="none" stroke="#1CADE4" stroke-width="4"/>
+        <text x="230" y="168" font-size="17" font-weight="bold" fill="#0e7fae">with stabilizers</text>
+      </svg>
+      <div class="cap">Automatic stabilizers flatten the swings around the trend</div>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_procyclical">
+  <div class="tag">Policy ⑥ · Procyclical &amp; countercyclical</div>
+  <h2>With the cycle, or against it?</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+    <div class="hl" style="line-height:1.5;">A variable or a policy is <b>procyclical</b> when it moves in the <b>same</b> direction as the cycle — it amplifies the swing. It is <b>countercyclical</b> when it moves in the <b>opposite</b> direction — it damps the swing.</div>
+    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+      <div style="flex:0 0 40%;min-width:0;display:flex;flex-direction:column;gap:.7vh;">
+        <div class="card lose"><h3>Procyclical — amplifies</h3><p>Moves <b>with</b> GDP: up in a boom, down in a slump.</p><p>Investment, hiring, bank lending, consumer durables … and, politically, spending cuts forced in a slump.</p></div>
+        <div class="card win"><h3>Countercyclical — damps</h3><p>Moves <b>against</b> GDP: up in a slump, down in a boom.</p><p>Automatic stabilizers — progressive taxes, unemployment benefits — and discretionary expansion in a slump.</p></div>
+        <div class="hl amber" style="line-height:1.45;margin-top:auto;">Automatic stabilizers are countercyclical <b>by design</b>. That is precisely why they are called stabilizers.</div>
+      </div>
+      <div class="svgwrap" style="flex:1;">
+        <div class="svgbox">
+          <svg viewBox="0 0 320 250" style="width:100%;max-height:100%;">
+            <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+              <line x1="52" y1="40" x2="52" y2="200" stroke="#343a40" stroke-width="3"/>
+              <line x1="52" y1="200" x2="300" y2="200" stroke="#343a40" stroke-width="3"/>
+              <text x="296" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Time</text>
+              <line x1="52" y1="135" x2="300" y2="135" stroke="#dbe6ee" stroke-width="2" stroke-dasharray="5 4"/>
+              <polyline points="52,135 83,106.7 114,95 145,106.7 176,135 207,163.3 238,175 269,163.3 300,135"
+                        fill="none" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>
+              <text x="114" y="88" text-anchor="middle" font-size="20" font-weight="800" fill="#5b7288">GDP</text>
+              <polyline points="52,135 83,92.6 114,75 145,92.6 176,135 207,177.4 238,195 269,177.4 300,135"
+                        fill="none" stroke="#d9534f" stroke-width="5"/>
+              <text x="114" y="66" text-anchor="middle" font-size="22" font-weight="800" fill="#d9534f">Investment</text>
+            </g>
+          </svg>
+          <div class="cap">In phase, wider swings → amplifies</div>
+        </div>
+        <div class="svgbox">
+          <svg viewBox="0 0 320 250" style="width:100%;max-height:100%;">
+            <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+              <line x1="52" y1="40" x2="52" y2="200" stroke="#343a40" stroke-width="3"/>
+              <line x1="52" y1="200" x2="300" y2="200" stroke="#343a40" stroke-width="3"/>
+              <text x="296" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Time</text>
+              <line x1="52" y1="135" x2="300" y2="135" stroke="#dbe6ee" stroke-width="2" stroke-dasharray="5 4"/>
+              <polyline points="52,135 83,106.7 114,95 145,106.7 176,135 207,163.3 238,175 269,163.3 300,135"
+                        fill="none" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>
+              <text x="114" y="88" text-anchor="middle" font-size="20" font-weight="800" fill="#5b7288">GDP</text>
+              <polyline points="52,135 83,166.8 114,180 145,166.8 176,135 207,103.2 238,90 269,103.2 300,135"
+                        fill="none" stroke="#2e9e6b" stroke-width="5"/>
+              <text x="238" y="80" text-anchor="middle" font-size="22" font-weight="800" fill="#1f7a52">Benefits</text>
+            </g>
+          </svg>
+          <div class="cap">Out of phase → offsets the swing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide" id="new_summary">
+  <div class="tag">Unit 3 · Recap</div>
+  <h2>Everything on one page</h2>
+  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;">
+    <table>
+      <tr><th>Idea</th><th>Formula / rule</th><th>What it means</th></tr>
+      <tr>
+        <td class="l"><b>Marginal propensities</b></td>
+        <td>MPC + MPS = 1</td>
+        <td class="l">Every extra dollar is split between spending and saving.</td>
+      </tr>
+      <tr>
+        <td class="l"><b>The circular flow</b></td>
+        <td>spending = income = GDP</td>
+        <td class="l">One person's spending is another person's income — that is why a ripple grows.</td>
+      </tr>
+      <tr>
+        <td class="l"><b>Spending multiplier</b></td>
+        <td><span class="mfrac"><span class="num">1</span><span class="den">1 − MPC</span></span> = <span class="mfrac"><span class="num">1</span><span class="den">MPS</span></span></td>
+        <td class="l">Multiply <b>any</b> change in autonomous spending: G, I, X or autonomous C.</td>
+      </tr>
+      <tr>
+        <td class="l"><b>Tax multiplier</b></td>
+        <td><span class="mfrac"><span class="num">−MPC</span><span class="den">1 − MPC</span></span></td>
+        <td class="l">Weaker — taxes reach spending only through disposable income.</td>
+      </tr>
+      <tr>
+        <td class="l"><b>Balanced budget</b></td>
+        <td>multiplier = 1</td>
+        <td class="l">Equal ΔG and ΔT still raise GDP by that amount; deficit unchanged.</td>
+      </tr>
+      <tr>
+        <td class="l"><b>Fiscal policy</b></td>
+        <td>recessionary → AD right<br>inflationary → AD left</td>
+        <td class="l">G ↑ / T ↓ to close a recessionary gap; G ↓ / T ↑ for an inflationary one.</td>
+      </tr>
+      <tr>
+        <td class="l"><b>Automatic stabilizers</b></td>
+        <td>countercyclical</td>
+        <td class="l">Progressive taxes + unemployment benefits damp the cycle, no vote needed.</td>
+      </tr>
+    </table>
+    <div class="hl amber" style="line-height:1.5;">Two easy marks: (1) the tax multiplier is smaller than the spending multiplier by exactly <b>1</b>; (2) the AD shift is the policy change <b>× the multiplier</b> — never just the policy change.</div>
+  </div>
+</section></div>
+<div class="ns21"><section class="slide cover" id="fb_end">
+  <div class="tag">AP Macroeconomics · Unit 3</div>
+  <h1>Thank you</h1>
+  <div class="q">Fiscal Policy, Multipliers &amp; Automatic Stabilizers</div>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section></div>
+</main>
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 14</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+<script>
+(function(){var _ge=document.getElementById.bind(document);
+function stub(){var api={};var fn=function(){return api;};
+var h={get:function(t,k){if(k==='style'||k==='classList'||k==='dataset')return api;
+if(k in api)return api[k];if(k==='length')return 0;if(k==='value')return 0;
+if(k==='textContent'||k==='innerHTML')return '';return fn;},set:function(){return true;},apply:function(){return api;}};
+return new Proxy(fn,h);}
+document.getElementById=function(id){return _ge(id)||stub();};})();
+</script><script>
+(function(){
+  const C = y => 15 + 0.85*y - 0.0035*y*y;
+  const MPC = y => 0.85 - 0.007*y;
+  const S = y => y - C(y);
+  const X = y => 120 + 7.8*y;
+  const V = v => 390 - 3.3*v;
+  const STEPS = [
+    "① Axes — X: disposable income; Y: spending",
+    "② 45° line — where C = Yd (break-even)",
+    "③ C curve — consumption rises with income, but the extra spending gets smaller",
+    "④ Saving = the GAP: S = Yd − C. It grows, and grows faster",
+    "⑤ Tangent to C — its slope is MPC",
+    "⑥ Tangent to S — its slope is MPS",
+    "⑦ MPC and MPS at every income level — the two always add to 1"
+  ];
+  const GROUPS = ["cfAx","cf45","cfC","cfS","cfTan","cfTanS","cfMM"];
+  let step = 0;
+  const box = document.getElementById("mpBox");
+  const btn = document.getElementById("mpBtn");
+  function paint(){
+    const y = +document.getElementById("cfY").value;
+    const c = C(y), s = S(y), mpc = MPC(y), mps = 1-mpc;
+    const px = X(y), pc = V(c), p45 = V(y);
+    const pt = document.getElementById("cfPt");
+    pt.setAttribute("cx", px); pt.setAttribute("cy", pc);
+    pt.setAttribute("opacity", step >= 3 ? 1 : 0);
+    const gap = document.getElementById("cfGap");
+    gap.setAttribute("x1", px); gap.setAttribute("x2", px);
+    gap.setAttribute("y1", pc); gap.setAttribute("y2", p45);
+    gap.setAttribute("stroke", s >= 0 ? "#2e9e6b" : "#d9534f");
+    // --- step5 tangent to C: touches the curve at one point, slope = MPC ---
+    // screen slope = dV/dX = -(3.3/7.8)*mpc (screen y points down); right end goes up-right
+    const dx = Math.max(70, Math.min(130, px-150, 970-px));
+    const ss = -(3.3/7.8)*mpc;
+    const tl = document.getElementById("cfTanLine");
+    tl.setAttribute("x1", px-dx); tl.setAttribute("y1", pc - ss*dx);
+    tl.setAttribute("x2", px+dx); tl.setAttribute("y2", pc + ss*dx);
+    document.getElementById("cfTanDot").setAttribute("cx", px);
+    document.getElementById("cfTanDot").setAttribute("cy", pc);
+    const tanTxt = document.getElementById("cfTanTxt");
+    if (px+dx+250 > 990) {
+      tanTxt.setAttribute("x", px-dx-14); tanTxt.setAttribute("y", pc - ss*dx + 30);
+      tanTxt.setAttribute("text-anchor", "end");
+    } else {
+      tanTxt.setAttribute("x", px+dx+14); tanTxt.setAttribute("y", pc + ss*dx + 8);
+      tanTxt.setAttribute("text-anchor", "start");
+    }
+    // --- step6 tangent to S: S is convex, tangent below the curve, slope = MPS ---
+    const ps = V(S(y));
+    const ssS = -(3.3/7.8)*mps;
+    const dxS = Math.max(40, Math.min(dx, (452-ps)/(-ssS), (ps-30)/(-ssS)));
+    const tlS = document.getElementById("cfTanSLine");
+    tlS.setAttribute("x1", px-dxS); tlS.setAttribute("y1", ps - ssS*dxS);
+    tlS.setAttribute("x2", px+dxS); tlS.setAttribute("y2", ps + ssS*dxS);
+    document.getElementById("cfTanSDot").setAttribute("cx", px);
+    document.getElementById("cfTanSDot").setAttribute("cy", ps);
+    const tsTxt = document.getElementById("cfTanSTxt");
+    if (px+dxS+250 > 990) {
+      tsTxt.setAttribute("x", px-dxS-14); tsTxt.setAttribute("y", ps - ssS*dxS + 30);
+      tsTxt.setAttribute("text-anchor", "end");
+    } else {
+      tsTxt.setAttribute("x", px+dxS+14); tsTxt.setAttribute("y", ps + ssS*dxS + 8);
+      tsTxt.setAttribute("text-anchor", "start");
+    }
+    // --- step7 lower chart: current points on MPC/MPS lines (same x-mapping as main chart) ---
+    const mX = 120 + 7.8*y;
+    const mY = v => 390 - 330*v;
+    const mcY = mY(mpc), msY = mY(1-mpc);
+    document.getElementById("mpCur").setAttribute("x1", mX);
+    document.getElementById("mpCur").setAttribute("x2", mX);
+    document.getElementById("mpCpt").setAttribute("cx", mX);
+    document.getElementById("mpCpt").setAttribute("cy", mcY);
+    document.getElementById("mpSpt").setAttribute("cx", mX);
+    document.getElementById("mpSpt").setAttribute("cy", msY);
+    const mRight = mX > 640;
+    const cTxt = document.getElementById("mpCTxt");
+    cTxt.setAttribute("x", mRight ? mX-16 : mX+16);
+    cTxt.setAttribute("y", mcY-14);
+    cTxt.setAttribute("text-anchor", mRight ? "end" : "start");
+    cTxt.textContent = "MPC = " + mpc.toFixed(2);
+    const sTxt = document.getElementById("mpSTxt");
+    sTxt.setAttribute("x", mRight ? mX-16 : mX+16);
+    sTxt.setAttribute("y", msY+30);
+    sTxt.setAttribute("text-anchor", mRight ? "end" : "start");
+    sTxt.textContent = "MPS = " + (1-mpc).toFixed(2);
+    document.getElementById("cfRead").textContent = "Yd = " + y + " · C = " + c.toFixed(1) + " · S = " + s.toFixed(1) + (s < 0 ? " (dissaving)" : "");
+    document.getElementById("cfMarg").textContent = "MPC = " + mpc.toFixed(2) + " · MPS = " + mps.toFixed(2);
+  }
+  function reveal(){
+    GROUPS.forEach((g,i)=>{ document.getElementById(g).setAttribute("opacity", i < step ? 1 : 0); });
+    box.innerHTML = "";
+    STEPS.slice(0, step).forEach((t,i)=>{
+      const d = document.createElement("div");
+      d.style.cssText = "background:#eef7fc;border-left:5px solid #1CADE4;border-radius:0 8px 8px 0;padding:.5vh .8vw;";
+      d.textContent = t;
+      box.appendChild(d);
+    });
+    if(step >= STEPS.length){ btn.disabled = true; btn.textContent = "All shown ✓"; }
+    paint();
+  }
+  window.cfNext = function(){ if(step < STEPS.length) step++; reveal(); };
+  window.cfReset = function(){ step = 0; btn.disabled = false; btn.textContent = "Next step ▶"; reveal(); };
+  document.getElementById("cfY").addEventListener("input", paint);
+  reveal();
+})();
+</script><script>function makeStepper(btnId, boxId, items){
+  let idx = -1;
+  const btn = document.getElementById(btnId), box = document.getElementById(boxId);
+  function next(){
+    idx++;
+    if(idx >= items.length){ btn.disabled = true; btn.textContent = "All shown ✓"; return; }
+    const d = document.createElement("div");
+    d.innerHTML = items[idx];
+    box.appendChild(d);
+    if(idx === items.length-1){ btn.disabled = true; btn.textContent = "All shown ✓"; }
+  }
+  function reset(){
+    idx = -1; box.innerHTML = "";
+    btn.disabled = false; btn.textContent = btn.dataset.label;
+  }
+  btn.dataset.label = btn.textContent;
+  return { next, reset };
+}
+const msStep = makeStepper("msBtn","msBox",[
+  `<div class="hl">Movement = <b>own price</b> only. Shift = <b>non-price</b> factors (I-R-T-E-N). </div>`,
+  `<div class="hl">D → = more at every price · D ← = less at every price. The <b>whole curve</b> moves. </div>`,
+  `<div class="hl amber">AP trap: "price of coffee falls, people buy more" — that's a <b>movement</b>, not a shift! </div>`
+]);
+function nextMs(){ msStep.next(); } function resetMs(){ msStep.reset(); }
+const adStep2 = makeStepper("adBtn","adBox",[
+  `<div class="card win"><h3>① Wealth effect</h3><p>PL ▼ → money buys more → real wealth ▲ → <b>C ▲</b></p></div>`,
+  `<div class="card win"><h3>② Interest-rate effect</h3><p>PL ▼ → money demand ▼ → rates ▼ → <b>I ▲</b></p></div>`,
+  `<div class="card win"><h3>③ Foreign-purchase effect</h3><p>Domestic prices ▼ → exports ▲, imports ▼ → <b>NX ▲</b></p></div>`,
+  `<div class="hl amber">D slopes down: <b>substitution</b> + income effect. AD slopes down: wealth + interest-rate + foreign-purchase. <b>Different machines, same look.</b></div>`
+]);
+function nextAd2(){ adStep2.next(); } function resetAd2(){ adStep2.reset(); }
+function toggleWhy(){
+  const b = document.getElementById("whyBox");
+  const s = b.style.display;
+  b.style.display = (s === "none" || s === "") ? "inline-block" : "none";
+  const btn = document.getElementById("whyBtn");
+  btn.textContent = (s === "none" || s === "") ? "Hide the answer" : "Ask the class: why does D slope down?";
+}
+
+function ansToggle(btn){
+  const ans = btn.parentElement.querySelector(".hl");
+  const s = ans.style.display;
+  ans.style.display = (s === "none" || s === "") ? "inline-block" : "none";
+  btn.textContent = (s === "none" || s === "") ? "Hide answer" : "Reveal answer";
+}
+
+
+/* ═══════════ Summary 填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+
+/* ═══════════════════════════════════════════════
+   s9 市场均衡（price 模式：过剩/短缺）
+   模型：P = 8 − 0.08Q（D）· P = 0 + 0.08Q（S）→ Q*=50, P*=4
+   ═══════════════════════════════════════════════ */
+const SD = { slope: 0.08, d0: 8, s0: 0 };
+let sdPrice = 6;
+const sdCanvas = document.getElementById("sdCanvas");
+const sdCtx = sdCanvas.getContext("2d");
+function sdMode(){
+  sdPrice = 6;
+  const ctrl = document.getElementById("sdCtrl");
+  ctrl.innerHTML = `<label>Price: $<span class="lab-val" id="sdPv">6.0</span></label>
+    <input type="range" id="sdSlider" min="0.5" max="9.5" step="0.1" value="6" oninput="sdSlide()">`;
+  sdRender();
+}
+function sdSlide(){
+  sdPrice = parseFloat(document.getElementById("sdSlider").value);
+  document.getElementById("sdPv").textContent = sdPrice.toFixed(1);
+  sdRender();
+}
+function sdResize(){
+  if(sdCanvas.offsetWidth > 0){
+    sdCanvas.width = sdCanvas.offsetWidth;
+    sdCanvas.height = sdCanvas.offsetHeight;
+  }
+}
+function sdRender(){
+  const W = sdCanvas.width, H = sdCanvas.height, pad = 60;
+  if(W === 0) return;
+  const mQ = q => pad + q / 100 * (W - 2 * pad);
+  const mP = p => H - pad - p / 10 * (H - 2 * pad);
+  sdCtx.clearRect(0, 0, W, H);
+  sdCtx.strokeStyle = "#343a40"; sdCtx.lineWidth = 3;
+  sdCtx.beginPath();
+  sdCtx.moveTo(pad, 20); sdCtx.lineTo(pad, H - pad);
+  sdCtx.moveTo(pad, H - pad); sdCtx.lineTo(W - 25, H - pad);
+  sdCtx.stroke();
+  sdCtx.fillStyle = "#343a40"; sdCtx.font = "bold 17px Arial";
+  sdCtx.fillText("P", pad - 30, 34);
+  sdCtx.fillText("Q", W - 38, H - pad + 26);
+  drawLine(mQ(0), mP(SD.d0), mQ(100), mP(SD.d0 - SD.slope * 100), "#1CADE4", 5);
+  sdCtx.fillStyle = "#1CADE4"; sdCtx.font = "bold 20px Arial";
+  sdCtx.fillText("D", mQ(100) - 28, mP(SD.d0 - SD.slope * 100) + 24);
+  drawLine(mQ(0), mP(SD.s0), mQ(100), mP(SD.s0 + SD.slope * 100), "#2e9e6b", 5);
+  sdCtx.fillStyle = "#2e9e6b"; sdCtx.font = "bold 20px Arial";
+  sdCtx.fillText("S", mQ(100) - 28, mP(SD.s0 + SD.slope * 100) - 14);
+  const qStar = (SD.d0 - SD.s0) / (2 * SD.slope);
+  const pStar = (SD.d0 + SD.s0) / 2;
+  drawLine(mQ(0), mP(sdPrice), mQ(100), mP(sdPrice), "#e6a23c", 3, [8, 5]);
+  sdCtx.fillStyle = "#e6a23c"; sdCtx.font = "bold 16px Arial";
+  sdCtx.fillText("P = $" + sdPrice.toFixed(1), pad + 8, mP(sdPrice) - 10);
+  const qd = (SD.d0 - sdPrice) / SD.slope;
+  const qs = (sdPrice - SD.s0) / SD.slope;
+  const gap = qs - qd;
+  if(Math.abs(gap) > 0.5){
+    const col = gap > 0 ? "#d9534f" : "#e6a23c";
+    sdCtx.strokeStyle = col; sdCtx.lineWidth = 7; sdCtx.globalAlpha = 0.45;
+    sdCtx.beginPath();
+    sdCtx.moveTo(mQ(Math.min(qd, qs)), mP(sdPrice));
+    sdCtx.lineTo(mQ(Math.max(qd, qs)), mP(sdPrice));
+    sdCtx.stroke();
+    sdCtx.globalAlpha = 1;
+    sdCtx.fillStyle = col; sdCtx.font = "bold 17px Arial";
+    const midQ = (qd + qs) / 2;
+    sdCtx.fillText((gap > 0 ? "SURPLUS " : "SHORTAGE ") + Math.abs(Math.round(gap)), mQ(midQ) - 70, mP(sdPrice) - 16);
+    const ax = pad + 40;
+    sdCtx.strokeStyle = col; sdCtx.lineWidth = 3;
+    sdCtx.beginPath();
+    if(gap > 0){ sdCtx.moveTo(ax, mP(sdPrice) - 18); sdCtx.lineTo(ax, mP(sdPrice) + 26); }
+    else { sdCtx.moveTo(ax, mP(sdPrice) + 18); sdCtx.lineTo(ax, mP(sdPrice) - 26); }
+    sdCtx.stroke();
+    arrowHead(mQ(0) + 40, gap > 0 ? mP(sdPrice) + 26 : mP(sdPrice) - 26, gap > 0 ? Math.PI / 2 : -Math.PI / 2, col);
+    sdCtx.fillStyle = col; sdCtx.font = "bold 16px Arial";
+    sdCtx.fillText(gap > 0 ? "price ▼" : "price ▲", pad + 70, mP(sdPrice) + (gap > 0 ? 46 : -40));
+  }
+  dot(mQ(qd), mP(sdPrice), "#1CADE4");
+  dot(mQ(qs), mP(sdPrice), "#2e9e6b");
+  dash(mQ(qd), mP(sdPrice), mQ(qd), H - pad);
+  dash(mQ(qs), mP(sdPrice), mQ(qs), H - pad);
+  sdCtx.fillStyle = "#1CADE4"; sdCtx.font = "bold 16px Arial";
+  sdCtx.fillText("Qd", mQ(qd) - 12, H - pad + 22);
+  sdCtx.fillStyle = "#2e9e6b";
+  sdCtx.fillText("Qs", mQ(qs) - 12, H - pad + 22);
+  dash(mQ(qStar), mP(pStar), mQ(qStar), H - pad, "#bbb");
+  dot(mQ(qStar), mP(pStar), "#888");
+  setStat("stP", "$" + sdPrice.toFixed(1), "");
+  setStat("stQd", Math.round(qd), "");
+  setStat("stQs", Math.round(qs), "");
+  if(Math.abs(gap) <= 0.5){
+    setStat("stStat", "EQUILIBRIUM", "good");
+    verdict("good", "✓ <b>Market clearing!</b> Qd = Qs = " + Math.round(qd) + " at $" + sdPrice.toFixed(1) + " — no pressure to change. ");
+  } else if(gap > 0){
+    setStat("stStat", "SURPLUS " + Math.round(gap), "bad");
+    verdict("bad", "Price is <b>above</b> P* ($4): sellers can't sell " + Math.round(gap) + " units → they <b>cut prices</b> → P falls toward $4. ");
+  } else {
+    setStat("stStat", "SHORTAGE " + Math.abs(Math.round(gap)), "warn");
+    verdict("warn", "Price is <b>below</b> P* ($4): buyers queue for " + Math.abs(Math.round(gap)) + " missing units → they <b>bid prices up</b> → P rises toward $4. ");
+  }
+  function drawLine(x1, y1, x2, y2, col, w, dash){
+    sdCtx.strokeStyle = col; sdCtx.lineWidth = w;
+    sdCtx.setLineDash(dash || []);
+    sdCtx.beginPath(); sdCtx.moveTo(x1, y1); sdCtx.lineTo(x2, y2); sdCtx.stroke();
+    sdCtx.setLineDash([]);
+  }
+  function dash(x1, y1, x2, y2, col){
+    sdCtx.strokeStyle = col || "rgba(0,0,0,0.25)"; sdCtx.lineWidth = 1.5;
+    sdCtx.setLineDash([4, 4]);
+    sdCtx.beginPath(); sdCtx.moveTo(x1, y1); sdCtx.lineTo(x2, y2); sdCtx.stroke();
+    sdCtx.setLineDash([]);
+  }
+  function dot(x, y, col){
+    sdCtx.fillStyle = col;
+    sdCtx.beginPath(); sdCtx.arc(x, y, 8, 0, Math.PI * 2); sdCtx.fill();
+    sdCtx.strokeStyle = "#fff"; sdCtx.lineWidth = 2.5; sdCtx.stroke();
+  }
+  function arrowHead(x, y, ang, col){
+    sdCtx.fillStyle = col;
+    sdCtx.save(); sdCtx.translate(x, y); sdCtx.rotate(ang);
+    sdCtx.beginPath(); sdCtx.moveTo(0, 0); sdCtx.lineTo(-11, -5); sdCtx.lineTo(-11, 5); sdCtx.closePath(); sdCtx.fill();
+    sdCtx.restore();
+  }
+}
+function setStat(id, val, cls){
+  const el = document.getElementById(id);
+  el.querySelector(".lab-num").textContent = val;
+  el.className = "stat" + (cls ? " " + cls : "");
+}
+function verdict(cls, html){
+  const v = document.getElementById("sdVerdict");
+  v.className = "verdict " + cls;
+  v.innerHTML = html;
+}
+
+/* ═══════════ s10 AD-AS Gap Viewer（LRAS/SRAS 固定，AD 滑条平移） ═══════════ */
+const AAS = { srasP0: 2, srasK: 0.06, adP0: 8.48, adK: 0.048, gdpStar: 60 };
+let adShift = 0;
+const adCanvas = document.getElementById("adCanvas");
+const adCtx = adCanvas.getContext("2d");
+function adMode(){
+  adShift = 0;
+  const ctrl = document.getElementById("adCtrl");
+  ctrl.innerHTML = `<label>AD position: <span class="lab-val" id="adSv">0</span></label>
+    <input type="range" id="adSlider" min="-40" max="40" step="1" value="0" oninput="adSlide()">`;
+  adRender();
+}
+function adSlide(){
+  adShift = parseInt(document.getElementById("adSlider").value);
+  document.getElementById("adSv").textContent = adShift;
+  adRender();
+}
+function adResize(){
+  if(adCanvas.offsetWidth > 0){
+    adCanvas.width = adCanvas.offsetWidth;
+    adCanvas.height = adCanvas.offsetHeight;
+  }
+}
+function adRender(){
+  const W = adCanvas.width, H = adCanvas.height, pad = 60;
+  if(W === 0) return;
+  const mQ = q => pad + q / 120 * (W - 2 * pad);
+  const mP = p => H - pad - p / 10 * (H - 2 * pad);
+  adCtx.clearRect(0, 0, W, H);
+  adCtx.strokeStyle = "#343a40"; adCtx.lineWidth = 3;
+  adCtx.beginPath();
+  adCtx.moveTo(pad, 20); adCtx.lineTo(pad, H - pad);
+  adCtx.moveTo(pad, H - pad); adCtx.lineTo(W - 25, H - pad);
+  adCtx.stroke();
+  adCtx.fillStyle = "#343a40"; adCtx.font = "bold 17px Arial";
+  adCtx.fillText("PL", pad - 30, 34);
+  adCtx.fillText("Real GDP", W - 118, H - pad + 26);
+  const xStar = mQ(AAS.gdpStar);
+  adCtx.strokeStyle = "#9aa8b5"; adCtx.lineWidth = 4; adCtx.setLineDash([8, 5]);
+  adCtx.beginPath(); adCtx.moveTo(xStar, 30); adCtx.lineTo(xStar, H - pad); adCtx.stroke();
+  adCtx.setLineDash([]);
+  adCtx.fillStyle = "#5b7288"; adCtx.font = "bold 18px Arial";
+  adCtx.fillText("LRAS", xStar + 10, 48);
+  adCtx.font = "14px Arial";
+  adCtx.fillText("GDP*", xStar - 26, H - pad + 24);
+  const srasP2 = AAS.srasP0 + AAS.srasK * 100;
+  adCtx.strokeStyle = "#2e9e6b"; adCtx.lineWidth = 4;
+  adCtx.beginPath(); adCtx.moveTo(mQ(0), mP(AAS.srasP0)); adCtx.lineTo(mQ(100), mP(srasP2)); adCtx.stroke();
+  adCtx.fillStyle = "#1f7a4d"; adCtx.font = "bold 19px Arial";
+  adCtx.fillText("SRAS", mQ(100) - 30, mP(srasP2) - 10);
+  const adP0 = AAS.adP0 + AAS.adK * adShift;
+  const adP1 = adP0 - AAS.adK * 100;
+  adCtx.strokeStyle = "#1CADE4"; adCtx.lineWidth = 5;
+  adCtx.beginPath(); adCtx.moveTo(mQ(0), mP(adP0)); adCtx.lineTo(mQ(100), mP(adP1)); adCtx.stroke();
+  adCtx.fillStyle = "#0e7fae"; adCtx.font = "bold 19px Arial";
+  adCtx.fillText("AD", mQ(100) - 26, mP(adP1) + 24);
+  const qE = AAS.gdpStar + 0.444 * adShift;
+  const pE = AAS.srasP0 + AAS.srasK * qE;
+  const gapQ = qE - AAS.gdpStar;
+  if(Math.abs(gapQ) > 2){
+    const col = gapQ > 0 ? "#d9534f" : "#1CADE4";
+    adCtx.fillStyle = col; adCtx.globalAlpha = 0.15;
+    const gx1 = Math.min(xStar, mQ(qE)), gx2 = Math.max(xStar, mQ(qE));
+    adCtx.fillRect(gx1, mP(pE), gx2 - gx1, (H - pad) - mP(pE));
+    adCtx.globalAlpha = 1;
+    adCtx.fillStyle = col; adCtx.font = "bold 15px Arial";
+    adCtx.fillText(gapQ > 0 ? "inflationary gap" : "recessionary gap", (gx1 + gx2) / 2 - 72, mP(pE) - 12);
+  }
+  adCtx.strokeStyle = "rgba(0,0,0,0.25)"; adCtx.lineWidth = 1.5; adCtx.setLineDash([4, 4]);
+  adCtx.beginPath();
+  adCtx.moveTo(mQ(qE), H - pad); adCtx.lineTo(mQ(qE), mP(pE));
+  adCtx.moveTo(pad, mP(pE)); adCtx.lineTo(mQ(qE), mP(pE));
+  adCtx.stroke(); adCtx.setLineDash([]);
+  adCtx.fillStyle = "#d9534f";
+  adCtx.beginPath(); adCtx.arc(mQ(qE), mP(pE), 7, 0, Math.PI * 2); adCtx.fill();
+  adCtx.strokeStyle = "#fff"; adCtx.lineWidth = 2.5; adCtx.stroke();
+  adCtx.fillStyle = "#d9534f"; adCtx.font = "bold 16px Arial";
+  adCtx.fillText("E", mQ(qE) + 12, mP(pE) - 8);
+  const st = document.getElementById("adStState");
+  const stQ = document.getElementById("adStGap");
+  st.querySelector(".lab-num").textContent = gapQ > 2 ? "Overheating" : gapQ < -2 ? "Recession" : "Equilibrium";
+  st.className = "stat" + (gapQ > 2 ? " warn" : gapQ < -2 ? " bad" : " good");
+  stQ.querySelector(".lab-num").textContent = (gapQ > 0 ? "+" : "") + Math.round(gapQ) + " vs GDP*";
+  stQ.className = "stat";
+  const v = document.getElementById("adVerdict");
+  if(Math.abs(gapQ) <= 2){
+    v.className = "verdict good";
+    v.innerHTML = "✓ <b>Long-run equilibrium</b> — E sits on the LRAS line. Output at potential; no pressure on PL. ";
+  } else if(gapQ > 0){
+    v.className = "verdict warn";
+    v.innerHTML = "▲ <b>Inflationary gap</b> — short-run output <b>above</b> GDP*; PL is being pushed <b>up</b>. ";
+  } else {
+    v.className = "verdict bad";
+    v.innerHTML = "▼ <b>Recessionary gap</b> — short-run output <b>below</b> GDP*; PL is being pushed <b>down</b>. ";
+  }
+}
+
+/* ═══════════ s11 拖动 D-S 模型 + P/Q 结果表格 ═══════════ */
+let dsShiftD = 0, dsShiftS = 0;
+let dsDragging = null;
+const dsSvg = document.getElementById("dsSvg");
+function dsGet(e){
+  const r = dsSvg.getBoundingClientRect();
+  return (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+}
+function dsStart(e, which){
+  dsDragging = which;
+  dsLastX = dsGet(e);
+  if(e.cancelable) e.preventDefault();
+}
+let dsLastX = 0;
+function dsMove(e){
+  if(!dsDragging) return;
+  const x = dsGet(e);
+  const dx = x - dsLastX;
+  dsLastX = x;
+  if(dsDragging === "D") dsShiftD = Math.max(-110, Math.min(110, dsShiftD + dx));
+  else dsShiftS = Math.max(-110, Math.min(110, dsShiftS + dx));
+  dsRender();
+}
+function dsRender(){
+  const cD = document.getElementById("dsD1");
+  const cS = document.getElementById("dsS1");
+  const hD = document.getElementById("dsHD"), hS = document.getElementById("dsHS");
+  if(cD){ cD.setAttribute("x1", 90 + dsShiftD); cD.setAttribute("x2", 330 + dsShiftD); }
+  if(hD) hD.setAttribute("cx", 120 + dsShiftD);
+  if(cS){ cS.setAttribute("x1", 90 + dsShiftS); cS.setAttribute("x2", 330 + dsShiftS); }
+  if(hS) hS.setAttribute("cx", 120 + dsShiftS);
+  const eqX = 210 + (dsShiftD + dsShiftS) / 2;
+  const eqY = 175 + (dsShiftS - dsShiftD) / 2;
+  const elP = document.getElementById("dsEqP"), elQ = document.getElementById("dsEqQ");
+  const dot = document.getElementById("dsDot"), dl = document.getElementById("dsDotLabel");
+  const moved = Math.abs(dsShiftD) > 5 || Math.abs(dsShiftS) > 5;
+  if(moved){
+    if(elP){ elP.setAttribute("x1", 55); elP.setAttribute("y1", eqY); elP.setAttribute("x2", eqX); elP.setAttribute("y2", eqY); elP.setAttribute("opacity", 0.6); }
+    if(elQ){ elQ.setAttribute("x1", eqX); elQ.setAttribute("y1", 280); elQ.setAttribute("x2", eqX); elQ.setAttribute("y2", eqY); elQ.setAttribute("opacity", 0.6); }
+    if(dot){ dot.setAttribute("cx", eqX); dot.setAttribute("cy", eqY); }
+    if(dl){ dl.setAttribute("x", eqX + 12); dl.setAttribute("y", eqY - 8); dl.textContent = "E₁"; }
+  } else {
+    if(elP) elP.setAttribute("opacity", 0);
+    if(elQ) elQ.setAttribute("opacity", 0);
+    if(dl) dl.textContent = "E";
+  }
+  const st = document.getElementById("dsStatus");
+  let parts = [];
+  if(Math.abs(dsShiftD) > 5) parts.push(dsShiftD > 0 ? "D ▲" : "D ▼");
+  if(Math.abs(dsShiftS) > 5) parts.push(dsShiftS > 0 ? "S ▼" : "S ▲");
+  if(parts.length === 0) st.textContent = "drag the D or S handle →";
+  else st.textContent = parts.join(" · ");
+}
+const dsHD = document.getElementById("dsHD"), dsHS = document.getElementById("dsHS");
+dsHD.addEventListener("mousedown", e => dsStart(e, "D"));
+dsHD.addEventListener("touchstart", e => dsStart(e, "D"), {passive:false});
+dsHS.addEventListener("mousedown", e => dsStart(e, "S"));
+dsHS.addEventListener("touchstart", e => dsStart(e, "S"), {passive:false});
+window.addEventListener("mousemove", dsMove);
+window.addEventListener("touchmove", e => { if(dsDragging){ dsMove(e); if(e.cancelable) e.preventDefault(); } }, {passive:false});
+window.addEventListener("mouseup", ()=>dsDragging = null);
+window.addEventListener("touchend", ()=>dsDragging = null);
+let dsRow = 0;
+const dsRows = document.querySelectorAll("#dsTable tr.ds-row, #dsTable tr");
+function dsNextRow(){
+  const rows = Array.from(document.querySelectorAll("#dsTable tr")).slice(1);
+  if(dsRow >= rows.length) return;
+  const cells = rows[dsRow].querySelectorAll(".ds-ans");
+  cells.forEach(c=>c.style.display = "");
+  dsRow++;
+  const btn = document.getElementById("dsRowBtn");
+  if(dsRow >= rows.length){ btn.disabled = true; btn.textContent = "All rows ✓"; }
+}
+function dsResetRows(){
+  dsRow = 0;
+  document.querySelectorAll("#dsTable .ds-ans").forEach(c=>c.style.display = "none");
+  const btn = document.getElementById("dsRowBtn");
+  btn.disabled = false; btn.textContent = "Reveal next row";
+}
+dsRender();
+
+/* ═══════════ s13 实证/规范分类游戏 ═══════════ */
+const GM = [
+  { s: "The unemployment rate is 5%.", a: "positive", why: "A verifiable fact — check the data." },
+  { s: "The government should cut taxes.", a: "normative", why: "The word 'should' signals a value judgment." },
+  { s: "A tax cut increases GDP.", a: "positive", why: "Testable prediction — could be confirmed or refuted." },
+  { s: "Inflation is worse than unemployment.", a: "normative", why: "A judgment about which evil is greater." },
+  { s: "Rent ceilings create housing shortages.", a: "positive", why: "A testable claim about cause and effect." },
+  { s: "Everyone deserves a living wage.", a: "normative", why: "'Deserves' is a value judgment, not a fact." },
+  { s: "Higher interest rates reduce borrowing.", a: "positive", why: "Testable with data on credit markets." },
+  { s: "The central bank should lower interest rates now.", a: "normative", why: "'Should' — a policy opinion." }
+];
+let gmI = 0, gmScore = 0, gmDone = false;
+function gmShow(){
+  document.getElementById("gmProg").textContent = (gmI + 1) + " / " + GM.length;
+  document.getElementById("gmScore").textContent = "Score: " + gmScore;
+  document.getElementById("gmCard").textContent = GM[gmI].s;
+  document.getElementById("gmFb").textContent = "";
+  document.getElementById("gmFb").className = "game-fb";
+}
+function gmAnswer(pick){
+  if(gmDone) return;
+  const q = GM[gmI], fb = document.getElementById("gmFb");
+  if(pick === q.a){
+    gmScore++;
+    fb.className = "game-fb good";
+    fb.innerHTML = "✓ Correct — " + q.why;
+  } else {
+    fb.className = "game-fb bad";
+    fb.innerHTML = "✗ It's <b>" + q.a.toUpperCase() + "</b> — " + q.why;
+  }
+  document.getElementById("gmScore").textContent = "Score: " + gmScore;
+  gmDone = true;
+  document.getElementById("gmNext").style.display = "inline-block";
+}
+function gmNextQ(){
+  if(!gmDone) return;
+  gmDone = false;
+  document.getElementById("gmNext").style.display = "none";
+  gmI++;
+  if(gmI >= GM.length){
+    document.getElementById("gmCard").innerHTML = "Final score: <b style='color:var(--accent-dark);'>" + gmScore + " / " + GM.length + "</b>" + (gmScore === GM.length ? " — perfect! 🏆" : " — restart and try again?");
+    document.getElementById("gmProg").textContent = "Done";
+    document.getElementById("gmFb").textContent = "";
+    document.getElementById("gmFb").className = "game-fb";
+  } else {
+    gmShow();
+  }
+}
+function gmRestart(){
+  gmI = 0; gmScore = 0; gmDone = false;
+  document.getElementById("gmNext").style.display = "none";
+  gmShow();
+}
+gmShow();
+
+
+/* ═══════════ s15 MPC vs MPS 分步 ═══════════ */
+const MP = [
+  `<div class="cards" style="flex-direction:column;gap:.8vh;">
+    <div class="card win"><h3>MPC = ΔC / ΔY</h3><p><b>Marginal</b> propensity to consume — the fraction of an <b>extra</b> dollar spent. <b>= slope of the C line.</b></p></div>
+    <div class="card warn"><h3>MPS = ΔS / ΔY</h3><p><b>Marginal</b> propensity to save — the fraction of an <b>extra</b> dollar saved. <b>= slope of the S line.</b> <b>MPC + MPS = 1</b>.</p></div>
+  </div>`,
+  `<div class="hl amber">Marginal ≠ average: MPC looks at the <b>next</b> dollar; APC looks at all dollars. As income grows, MPC falls, but APC can stay above it.</div>`,
+  `<div class="hl green"><b>Macro bridge</b>: MPC + MPS = 1 → the <b>spending multiplier</b> in Unit 3.</div>`
+];
+const mpStep = makeStepper("mpBtn","mpBox",MP);
+function nextMp(){ mpStep.next(); const a = document.getElementById("mpSlope"); if(a) a.style.opacity = 1; const b = document.getElementById("mpSlope2"); if(b) b.style.opacity = 1; }
+function resetMp(){ mpStep.reset(); const a = document.getElementById("mpSlope"); if(a) a.style.opacity = 0; const b = document.getElementById("mpSlope2"); if(b) b.style.opacity = 0; }
+
+/* ── side controls: pad content away from right-edge buttons ── */
+document.querySelectorAll(".slide").forEach(sl=>{
+  if(sl.querySelector(".btnrow.side")){
+    const st = sl.querySelector(".stage") || sl.querySelector(".lab");
+    if(st) st.style.paddingRight = "14vw";
+  }
+});
+
+/* ═══════════ 初始化（残留画布调用一律包 try/catch） ═══════════ */
+window.addEventListener("resize", ()=>{
+  try{ if(document.querySelector("#sdCanvas")){ sdResize(); sdRender(); } }catch(e){}
+  try{ if(document.querySelector("#adCanvas")){ adResize(); adRender(); } }catch(e){}
+});
+try{ if(document.querySelector("#sdCanvas")) sdMode(); }catch(e){}
+try{ if(document.querySelector("#adCanvas") && typeof adMode==='function') adMode(); }catch(e){}
+const brStep = makeStepper("brBtn","brBox",[
+  `<div class="card win"><h3>S&amp;D → AD–AS</h3><p>Supply &amp; demand scales up to <b>aggregate</b> supply &amp; demand (Unit 3) — but AD slopes down for <b>different reasons</b>.</p></div>`,
+  `<div class="card win"><h3>Marginal thinking → MPC / MPS</h3><p>Each extra dollar → fraction consumed (MPC) + fraction saved (MPS). <b>MPC + MPS = 1</b> — sets up the <b>spending multiplier</b> in Unit 3.</p></div>`,
+  `<div class="card win"><h3>Positive / Normative → Policy debates</h3><p>Positive = "what is" (testable). Normative = "what should be" (values). Every macro policy argument mixes both — <b>name them</b>.</p></div>`,
+  `<div class="card win"><h3>Factors → Growth</h3><p>More/better resources shift the PPC <b>and</b> LRAS (Units 4–5)</p></div>`,
+  `<div class="card win"><h3>Market failure → Policy</h3><p>Fiscal &amp; monetary policy respond to <b>economy-wide</b> failures (Unit 4)</p></div>`
+]);
+function nextBr(){ brStep.next(); }
+function resetBr(){ brStep.reset(); }</script><script>
+/* ═══════════════════════════════════════════════════════
+   Toolbox ④ · circular-flow ripple:
+   $100 injection → income → MPC of it re-spent → …
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var PEOPLE = [
+    {p:"the road crew", g:"the road-repair invoice"},
+    {p:"the grocer",    g:"groceries"},
+    {p:"the barber",    g:"a haircut"},
+    {p:"the farmer",    g:"vegetables"},
+    {p:"the mechanic",  g:"a bike repair"},
+    {p:"the tutor",     g:"a guitar lesson"}
+  ];
+  var INJ = 100, N = 6;
+  var COLORS = ["#0e7fae","#1CADE4","#55c0ea","#8ad6f2","#aee0f6","#cdeefb"];
+  var mpc = 0.6, step = 0;
+  var svg = document.getElementById("ripSvg");
+  var box = document.getElementById("ripBox");
+  var btn = document.getElementById("ripBtn");
+  function fmt(v){ return (Math.round(v*10)/10).toFixed(1); }
+  function amt(k){ return INJ * Math.pow(mpc, k-1); }
+  function drawStory(){
+    box.innerHTML = "";
+    var cum = 0;
+    for(var k=1;k<=step;k++){
+      var a = amt(k); cum += a;
+      var cur = PEOPLE[k-1], prev = PEOPLE[k-2];
+      var d = document.createElement("div");
+      d.style.cssText = "background:#eef7fc;border-left:6px solid #1CADE4;border-radius:0 8px 8px 0;padding:.5vh .9vw;";
+      var body;
+      if(k===1){
+        body = "<b>Round " + k + "</b> · The <b>government</b> pays " + cur.p + " $" + fmt(a)
+             + " for the repair — income created: <b>$" + fmt(a) + "</b>.";
+      } else {
+        body = "<b>Round " + k + "</b> · " + prev.p + " spends $" + fmt(a) + " on " + cur.g
+             + " → income for <b>" + cur.p + "</b>: $" + fmt(a) + ". The rest, $" + fmt(amt(k-1)*(1-mpc))
+             + ", is saved — it <b>leaks</b> out of the flow.";
+      }
+      d.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);line-height:1.4;'>" + body + "</div>"
+        + "<div style='font-size:clamp(20px,2.1vh,24px);font-weight:800;color:#0e7fae;margin-top:.2vh;'>"
+        + "GDP + $" + fmt(a) + " &nbsp;·&nbsp; running total $" + fmt(cum) + "</div>";
+      box.appendChild(d);
+    }
+    if(step >= N){
+      var f = document.createElement("div");
+      f.style.cssText = "background:#fdf3e3;border-left:6px solid #e6a23c;border-radius:0 8px 8px 0;padding:.6vh .9vw;";
+      f.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);font-weight:800;line-height:1.4;'>"
+        + "Round 7, 8, 9 … the ripple never quite stops. <b>How do we add up infinitely many rounds?</b></div>";
+      box.appendChild(f);
+    }
+  }
+  function drawSvg(){
+    var cx = 30, cy = 352;
+    var s = '<g font-family="Segoe UI, Microsoft YaHei, sans-serif">';
+    s += '<line x1="'+cx+'" y1="'+cy+'" x2="415" y2="'+cy+'" stroke="#dbe6ee" stroke-width="3"/>';
+    s += '<line x1="'+cx+'" y1="'+cy+'" x2="'+cx+'" y2="16" stroke="#dbe6ee" stroke-width="3"/>';
+    s += '<circle cx="'+cx+'" cy="'+cy+'" r="9" fill="#0e7fae"/>';
+    s += '<text x="'+(cx+16)+'" y="'+(cy+32)+'" font-size="22" font-weight="800" fill="#5b7288">the $100 injection</text>';
+    for(var k=1;k<=N;k++){
+      var a = amt(k);
+      var r = 40 + (k-1)*52;
+      var t = 10 + 40*(a/100);
+      var op = (k<=step) ? 1 : 0.13;
+      s += '<path d="M '+(cx+r).toFixed(1)+','+cy+' A '+r+','+r+' 0 0 0 '+cx+','+(cy-r)
+         + '" fill="none" stroke="'+COLORS[k-1]+'" stroke-width="'+t.toFixed(1)
+         + '" opacity="'+op+'" style="transition:opacity .35s"/>';
+      if(k<=step){
+        var rr = r + t/2 + 20;
+        s += '<text x="'+(cx+rr*0.7071).toFixed(1)+'" y="'+(cy-rr*0.7071).toFixed(1)
+           + '" text-anchor="middle" font-size="27" font-weight="800" fill="#0e7fae">$'+fmt(a)+'</text>';
+      }
+    }
+    s += '</g>';
+    svg.innerHTML = s;
+  }
+  function paint(){
+    var tot = 0;
+    for(var k=1;k<=step;k++) tot += amt(k);
+    document.getElementById("ripTot").textContent = "$" + fmt(tot);
+    document.getElementById("ripMpcV").textContent = mpc.toFixed(2);
+    drawStory(); drawSvg();
+    if(step >= N){ btn.disabled = true; btn.textContent = "All rounds ✓"; }
+  }
+  window.ripNext = function(){ if(step < N) step++; paint(); };
+  window.ripReset = function(){ step = 0; btn.disabled = false; btn.textContent = "Next round ▶"; paint(); };
+  window.ripSet = function(){
+    mpc = parseFloat(document.getElementById("ripMpc").value);
+    paint();
+  };
+  paint();
+})();
+
+/* ═══════════════════════════════════════════════════════
+   Toolbox ⑤ · Zhuangzi's stick: endless pieces, finite sum
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var N = 6, day = 0;
+  var COLORS = ["#0e7fae","#1CADE4","#55c0ea","#8ad6f2","#aee0f6","#cdeefb"];
+  var NICE = ["½","¼","⅛","1/16","1/32","1/64"];
+  var svg = document.getElementById("zzSvg");
+  var box = document.getElementById("zzBox");
+  var btn = document.getElementById("zzBtn");
+  function pw(n){ return Math.pow(2, n); }
+  function drawStory(){
+    box.innerHTML = "";
+    for(var k=1;k<=day;k++){
+      var d = document.createElement("div");
+      d.style.cssText = "background:#eef7fc;border-left:6px solid #1CADE4;border-radius:0 8px 8px 0;padding:.45vh .9vw;";
+      d.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);line-height:1.4;font-weight:700;'>"
+        + "Day " + k + " · take <b>" + NICE[k-1] + "</b> · taken so far <b>" + (pw(k)-1) + "/" + pw(k)
+        + "</b> · still left <b>1/" + pw(k) + "</b></div>";
+      box.appendChild(d);
+    }
+    if(day >= N){
+      var f = document.createElement("div");
+      f.style.cssText = "background:#e8f6ef;border-left:6px solid #2e9e6b;border-radius:0 8px 8px 0;padding:.55vh .9vw;";
+      f.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);font-weight:800;line-height:1.45;'>"
+        + "So is it really inexhaustible? Strictly, <b>yes</b> — (½)ⁿ is never exactly 0, a sliver always remains. "
+        + "But the sliver shrinks towards nothing, and the endless list of pieces adds up to exactly <b>ONE</b> stick.</div>";
+      box.appendChild(f);
+    }
+  }
+  function drawSvg(){
+    var x0 = 40, W = 440, y = 48, h = 46;
+    var s = '<g font-family="Segoe UI, Microsoft YaHei, sans-serif">';
+    s += '<text x="'+x0+'" y="28" font-size="24" font-weight="800" fill="#1f2d3d">The stick — halved every day</text>';
+    var x = x0;
+    for(var k=1;k<=N;k++){
+      var w = W * Math.pow(0.5, k);
+      if(k <= day){
+        s += '<rect x="'+x.toFixed(1)+'" y="'+y+'" width="'+w.toFixed(1)+'" height="'+h+'" fill="'+COLORS[k-1]+'" stroke="#fff" stroke-width="3"/>';
+        if(w >= 46){
+          s += '<text x="'+(x+w/2).toFixed(1)+'" y="'+(y+32)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#0b3d54">'+NICE[k-1]+'</text>';
+        }
+      }
+      x += w;
+    }
+    var remW = W * Math.pow(0.5, day);
+    var remX = x0 + (W - remW);
+    s += '<rect x="'+remX.toFixed(1)+'" y="'+y+'" width="'+remW.toFixed(1)+'" height="'+h+'" fill="#eef2f6" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>';
+    s += '<text x="'+(remX+remW/2).toFixed(1)+'" y="'+(y-8)+'" text-anchor="middle" font-size="22" font-weight="800" fill="#5b7288">1/'+pw(day)+'</text>';
+    var terms = [];
+    for(var j=1;j<=day;j++) terms.push(NICE[j-1]);
+    if(day > 0) terms.push("…");
+    var line1 = (day === 0) ? "not cut yet" : terms.join(" + ");
+    var line2 = (day === 0) ? "0" : (pw(day)-1) + "/" + pw(day);
+    s += '<text x="'+x0+'" y="180" font-size="27" font-weight="800" fill="#1f2d3d">'+line1+'</text>';
+    s += '<text x="'+x0+'" y="228" font-size="32" font-weight="800" fill="#0e7fae">= '+line2+' &nbsp;→&nbsp; 1</text>';
+    if(day >= N){
+      s += '<text x="'+x0+'" y="270" font-size="24" font-weight="800" fill="#1f7a52">endless pieces · finite total</text>';
+    }
+    s += '</g>';
+    svg.innerHTML = s;
+  }
+  function paint(){
+    drawStory(); drawSvg();
+    if(day >= N){ btn.disabled = true; btn.textContent = "All cut ✓"; }
+  }
+  window.zzNext = function(){ if(day < N) day++; paint(); };
+  window.zzReset = function(){ day = 0; btn.disabled = false; btn.textContent = "Cut again ▶"; paint(); };
+  paint();
+})();
+
+/* ═══════════════════════════════════════════════════════
+   Toolbox ⑥ · geometric series → the multiplier (分步揭示)
+   ═══════════════════════════════════════════════════════ */
+var gmStep = makeStepper("gmBtn", "gmBox", [
+  `<div class="mstep">
+     <div class="no">1</div>
+     <div class="mbody">
+       <div class="mtitle">The rounds ARE a geometric series</div>
+       <div class="eqbox">ΔY = ΔA · ( 1 + MPC + MPC² + … + MPC<sup>n−1</sup> )</div>
+       <div class="mnote">First term <span class="mvar">a</span> = 1, common ratio <span class="mvar">r</span> = MPC — each round is MPC × the round before it.</div>
+     </div>
+   </div>`,
+  `<div class="mstep">
+     <div class="no">2</div>
+     <div class="mbody">
+       <div class="mtitle">Sum of the first <span class="mvar">n</span> terms</div>
+       <div class="eqbox">
+         <span class="mvar">S</span><sub>n</sub> =
+         <span class="mfrac"><span class="num"><span class="mvar">a</span> (1 − <span class="mvar">r</span><sup>n</sup>)</span><span class="den">1 − <span class="mvar">r</span></span></span>
+         &nbsp;=&nbsp;
+         <span class="mfrac"><span class="num">1 − MPC<sup>n</sup></span><span class="den">1 − MPC</span></span>
+       </div>
+       <div class="mnote">The standard finite-sum formula, with <span class="mvar">a</span> = 1 and <span class="mvar">r</span> = MPC substituted in.</div>
+     </div>
+   </div>`,
+  `<div class="mstep">
+     <div class="no">3</div>
+     <div class="mbody">
+       <div class="mtitle">Now let the rounds run on: <span class="mvar">n</span> → ∞</div>
+       <div class="eqbox">
+         0 &lt; MPC &lt; 1 &nbsp;⟹&nbsp; MPC<sup>n</sup> → 0 &nbsp;⟹&nbsp;
+         <span class="mvar">S</span><sub>∞</sub> =
+         <span class="mfrac"><span class="num">1 − 0</span><span class="den">1 − MPC</span></span>
+         =
+         <span class="mfrac"><span class="num">1</span><span class="den">1 − MPC</span></span>
+       </div>
+       <div class="mnote">Endless rounds, finite total — Zhuangzi's stick all over again.</div>
+     </div>
+   </div>`,
+  `<div class="mstep" style="border-left-color:var(--green);">
+     <div class="no" style="background:var(--green);">4</div>
+     <div class="mbody">
+       <div class="mtitle">That limit is the spending multiplier</div>
+       <div class="eqbox green">
+         spending multiplier =
+         <span class="mfrac"><span class="num">1</span><span class="den">1 − MPC</span></span>
+         =
+         <span class="mfrac"><span class="num">1</span><span class="den">MPS</span></span>
+       </div>
+       <div class="eqbox ghost" style="margin-top:.35vh;">
+         ΔY = ΔSpending ×
+         <span class="mfrac"><span class="num">1</span><span class="den">1 − MPC</span></span>
+       </div>
+       <div class="mnote">Works for <b>any</b> change in autonomous spending — G, I, X or autonomous C.</div>
+     </div>
+   </div>`
+]);
+function nextGm(){ gmStep.next(); }
+function resetGm(){ gmStep.reset(); }
+
+/* ═══════════════════════════════════════════════════════
+   Practice ①② · 乘数与 ΔAD 练习
+   ═══════════════════════════════════════════════════════ */
+function makeDrill(prefix, btnId, rows){
+  var idx = -1, btn = document.getElementById(btnId);
+  function fill(i){
+    var m = document.getElementById(prefix + "_m_" + i);
+    var y = document.getElementById(prefix + "_y_" + i);
+    if(!m || !y) return;
+    m.textContent = rows[i].m; m.classList.add("done");
+    y.textContent = rows[i].y; y.classList.add("done");
+  }
+  function wipe(i){
+    var m = document.getElementById(prefix + "_m_" + i);
+    var y = document.getElementById(prefix + "_y_" + i);
+    if(!m || !y) return;
+    m.textContent = "?"; m.classList.remove("done");
+    y.textContent = "?"; y.classList.remove("done");
+  }
+  return {
+    next: function(){
+      if(idx + 1 >= rows.length) return;
+      idx++; fill(idx);
+      if(idx === rows.length - 1){ btn.disabled = true; btn.textContent = "All shown ✓"; }
+    },
+    all: function(){
+      for(var i = 0; i < rows.length; i++) fill(i);
+      idx = rows.length - 1; btn.disabled = true; btn.textContent = "All shown ✓";
+    },
+    reset: function(){
+      for(var i = 0; i < rows.length; i++) wipe(i);
+      idx = -1; btn.disabled = false; btn.textContent = "Reveal next ▶";
+    }
+  };
+}
+var exS = makeDrill("exS", "exSBtn", [
+  { m:"× 5.0",  y:"+$100.0 bn" },   // ΔG 20, MPC .8
+  { m:"× 2.0",  y:"+$100.0 bn" },   // ΔG 50, MPC .5
+  { m:"× 4.0",  y:"+$40.0 bn"  },   // ΔG 10, MPC .75
+  { m:"× 2.5",  y:"+$12.5 bn"  }    // ΔG 5,  MPC .6
+]);
+function exSNext(){ exS.next(); }
+function exSAll(){ exS.all(); }
+function exSReset(){ exS.reset(); }
+var exT = makeDrill("exT", "exTBtn", [
+  { m:"× (−4.0)", y:"+$80.0 bn"  },  // ΔT −20, MPC .8
+  { m:"× (−1.5)", y:"−$15.0 bn"  },  // ΔT +10, MPC .6
+  { m:"× (−3.0)", y:"+$120.0 bn" },  // ΔT −40, MPC .75
+  { m:"× (−1.0)", y:"−$25.0 bn"  }   // ΔT +25, MPC .5
+]);
+function exTNext(){ exT.next(); }
+function exTAll(){ exT.all(); }
+function exTReset(){ exT.reset(); }
+(function(){
+  var D = 10;                      // ΔG = ΔT = $10 bn
+  var mpc = 0.6, step = 0, N = 5;
+  var svg = document.getElementById("bbSvg");
+  var box = document.getElementById("bbBox");
+  var btn = document.getElementById("bbBtn");
+  function f2(v){ return v.toFixed(2); }
+  function kg(){ return 1/(1-mpc); }
+  function kt(){ return -mpc/(1-mpc); }
+  function fr(num, den){ return '<span class="mfrac"><span class="num">'+num+'</span><span class="den">'+den+'</span></span>'; }
+  function drawStory(){
+    box.innerHTML = "";
+    var g = D*kg(), t = Math.abs(D*kt());
+    var rows = [
+      { t:"The spending side",
+        e:'ΔY<sub>G</sub> = ΔG × '+fr('1','1 − MPC')+' = 10 × '+f2(kg())+' = <b>+'+f2(g)+' bn</b>',
+        n:"The whole $10 bn enters the spending flow in round 1.", c:"#1CADE4" },
+      { t:"The tax side",
+        e:'ΔY<sub>T</sub> = ΔT × '+fr('−MPC','1 − MPC')+' = 10 × ('+f2(kt())+') = <b>−'+f2(t)+' bn</b>',
+        n:"Taxes reach spending only indirectly — households absorb part of them out of saving.", c:"#d9534f" },
+      { t:"Add the two effects",
+        e:'ΔY = '+f2(g)+' − '+f2(t)+' = <b>+10.00 bn</b> = ΔG',
+        n:"Still expansionary: output rises by exactly the size of the balanced change.", c:"#1CADE4" },
+      { t:"The general algebra",
+        e:'ΔY = ΔB · [ '+fr('1','1 − MPC')+' − '+fr('MPC','1 − MPC')+' ] = ΔB · '+fr('1 − MPC','1 − MPC')+' = <b>ΔB</b>',
+        n:"Balanced-budget multiplier = <b>1</b> for any MPC — just the two multipliers added together.", c:"#2e9e6b" },
+      { t:"Why it is not zero",
+        e:'ΔY = ( ΔG − MPC · ΔT ) × '+fr('1','1 − MPC')+' = ( 10 − '+f2(mpc*D)+' ) × '+f2(kg())+' = <b>10.00 bn</b>',
+        n:"The tax removes only MPC × 10 of spending; government puts back all 10 — deficit unchanged.", c:"#e6a23c" }
+    ];
+    for(var i=0;i<step;i++){
+      var r = rows[i];
+      var d = document.createElement("div");
+      d.className = "mstep";
+      d.style.borderLeftColor = r.c;
+      d.innerHTML = '<div class="no" style="background:'+r.c+';">'+(i+1)+'</div>'
+        + '<div class="mbody">'
+        +   '<div class="mtitle">'+r.t+'</div>'
+        +   '<div class="eqbox">'+r.e+'</div>'
+        +   '<div class="mnote">'+r.n+'</div>'
+        + '</div>';
+      box.appendChild(d);
+    }
+    if(step >= N){
+      var f = document.createElement("div");
+      f.style.cssText = "background:#e8f6ef;border-left:6px solid #2e9e6b;border-radius:0 8px 8px 0;padding:.6vh .9vw;";
+      f.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);font-weight:800;line-height:1.45;'>"
+        + "Balanced-budget multiplier = <b>1</b>. Equal increases in G and T raise GDP by that same amount — the budget stays balanced and the economy still expands.</div>";
+      box.appendChild(f);
+    }
+  }
+  function drawSvg(){
+    var g = D*kg(), t = Math.abs(D*kt()), net = D;
+    var maxv = Math.max(g, t, net);
+    var sc = 118/maxv;
+    var hg = g*sc, ht = t*sc, hn = net*sc;
+    var zero = 200, bw = 78;
+    var centers = [88, 210, 332];
+    var s = '<g font-family="Segoe UI, Microsoft YaHei, sans-serif">';
+    s += '<line x1="30" y1="'+zero+'" x2="405" y2="'+zero+'" stroke="#343a40" stroke-width="3"/>';
+    s += '<text x="34" y="'+(zero-8)+'" font-size="20" font-weight="800" fill="#5b7288">0</text>';
+    s += '<rect x="'+(centers[0]-bw/2)+'" y="'+(zero-hg).toFixed(1)+'" width="'+bw+'" height="'+hg.toFixed(1)+'" fill="#2e9e6b"/>';
+    s += '<text x="'+centers[0]+'" y="'+(zero-hg-10).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#1f7a52">+'+f2(g)+'</text>';
+    s += '<rect x="'+(centers[1]-bw/2)+'" y="'+zero+'" width="'+bw+'" height="'+ht.toFixed(1)+'" fill="#d9534f"/>';
+    s += '<text x="'+centers[1]+'" y="'+(zero+ht+28).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#a94442">−'+f2(t)+'</text>';
+    s += '<rect x="'+(centers[2]-bw/2)+'" y="'+(zero-hn).toFixed(1)+'" width="'+bw+'" height="'+hn.toFixed(1)+'" fill="#1CADE4"/>';
+    s += '<text x="'+centers[2]+'" y="'+(zero-hn-10).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#0e7fae">+'+f2(net)+'</text>';
+    s += '<text x="'+centers[0]+'" y="290" text-anchor="middle" font-size="22" font-weight="800" fill="#343a40">G ↑ 10</text>';
+    s += '<text x="'+centers[1]+'" y="290" text-anchor="middle" font-size="22" font-weight="800" fill="#343a40">T ↑ 10</text>';
+    s += '<text x="'+centers[2]+'" y="290" text-anchor="middle" font-size="22" font-weight="800" fill="#343a40">Net</text>';
+    s += '<text x="'+centers[0]+'" y="316" text-anchor="middle" font-size="20" font-weight="700" fill="#5b7288">× '+f2(kg())+'</text>';
+    s += '<text x="'+centers[1]+'" y="316" text-anchor="middle" font-size="20" font-weight="700" fill="#5b7288">× '+f2(kt())+'</text>';
+    s += '<text x="'+centers[2]+'" y="316" text-anchor="middle" font-size="20" font-weight="700" fill="#5b7288">× 1</text>';
+    s += '</g>';
+    svg.innerHTML = s;
+  }
+  function paint(){
+    document.getElementById("bbMpcV").textContent = mpc.toFixed(2);
+    drawStory(); drawSvg();
+    if(step >= N){ btn.disabled = true; btn.textContent = "All shown ✓"; }
+  }
+  window.bbNext = function(){ if(step < N) step++; paint(); };
+  window.bbReset = function(){ step = 0; btn.disabled = false; btn.textContent = "Next step ▶"; paint(); };
+  window.bbSet = function(){
+    mpc = parseFloat(document.getElementById("bbMpc").value);
+    paint();
+  };
+  paint();
+})();
+</script><script>
+var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var TOTAL = slides.length, cur = 0;
+function renderHooks(){
+  try{ var sl = slides[cur]; if(!sl||!sl.querySelector) return;
+    if(sl.querySelector('#adCanvas')){ if(typeof adResize==='function'){adResize(); if(typeof adRender==='function') adRender();} }
+    if(sl.querySelector('#sdCanvas')){ if(typeof sdResize==='function'){sdResize(); if(typeof sdRender==='function') sdRender();} }
+  }catch(e){}
+}
+function gotoSlide(i){
+  if(isNaN(i)) return;
+  cur = Math.max(0, Math.min(TOTAL-1, i));
+  for(var k=0;k<slides.length;k++){ slides[k].classList.toggle('active', k===cur); }
+  var info=document.getElementById('pageinfo'); if(info) info.textContent=(cur+1)+' / '+TOTAL;
+  var prog=document.getElementById('progress'); if(prog) prog.style.width=((cur+1)/TOTAL*100)+'%';
+  var pb=document.getElementById('prevBtn'), nb=document.getElementById('nextBtn');
+  if(pb) pb.disabled=(cur===0); if(nb) nb.disabled=(cur===TOTAL-1);
+  var box=document.getElementById('dots');
+  if(box) for(var d=0;d<box.children.length;d++){ box.children[d].classList.toggle('active', d===cur); }
+  renderHooks();
+}
+(function(){
+  try{ var box=document.getElementById('dots');
+    if(box){ box.innerHTML=''; slides.forEach(function(_,i){ var d=document.createElement('div'); d.className='dot'; d.onclick=function(){ gotoSlide(i); }; box.appendChild(d); }); }
+    gotoSlide(0);
+  }catch(e){ console.error(e); }
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); gotoSlide(cur+1); }
+    else if(e.key==='ArrowLeft'){ e.preventDefault(); gotoSlide(cur-1); }
+  });
+  var tx=null;
+  document.addEventListener('touchstart', function(e){ tx=e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){ if(tx===null) return; var dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>60){ dx<0?gotoSlide(cur+1):gotoSlide(cur-1); } tx=null; }, {passive:true});
+})();
+</script>
+</body>
+</html>
