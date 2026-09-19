@@ -53,6 +53,12 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 .dr{color:var(--red);}
 .green{color:var(--green);}
 .gray{color:#5b6b7b;}
+/* Body-text fallback size. A paragraph with no font-size silently inherits body's 16px, which is
+   unreadable from the back of the room. Found on 2026-09-19 on 4 pages (law of supply, firm to
+   market, three-firm practice, four-slider page) - and CSS-declaration scanning cannot catch it,
+   because an inherited value never appears as a `font-size:` declaration. Keep this 22px floor in
+   sync with the global rule; the per-page check lives in fonts-*.js (getComputedStyle sweep). */
+.ftxt{font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
 /* reveal groups */
 .rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
 .rgrp.show{opacity:1;max-height:1400px;}
@@ -312,13 +318,13 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <circle id="sc-dot" cx="220" cy="255" r="12" fill="#E74C3C" stroke="#fff" stroke-width="3" opacity="0"/>
       </svg>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
-      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
+    <div class="ftxt" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:6px 16px;">
         <p class="b db" style="margin-bottom:6px;">Price slider</p>
         <input type="range" id="scP" min="10" max="40" step="1" value="25" style="width:100%;accent-color:var(--blue);">
         <p style="margin:8px 0 0;font-family:Consolas,monospace;font-size:clamp(22px,2.4vw,30px);color:#1a3a5c;font-weight:700;" id="scRead">P = ¥25 → Qs = 4 cups</p>
       </div>
-      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:6px 16px;">
         <p class="b db" style="margin-bottom:6px;">What the curve tells us:</p>
         <p style="margin:0;">Every point = <b>one price</b> and the <b>quantity sellers are willing to supply</b> at that price.</p>
         <p style="margin:10px 0 0;">Price ↑ → slide <b>up</b>: <b style="color:#1e8449;">EXTENSION of supply</b> (increase in quantity supplied)<br>Price ↓ → slide <b>down</b>: <b style="color:#b03a2e;">CONTRACTION of supply</b> (decrease in quantity supplied)</p>
@@ -340,7 +346,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <h1>One shop's supply → market supply</h1>
   <div class="sub">The <b>market supply curve</b> is the horizontal sum of every firm's curve. At each price, add the quantities.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+    <div class="ftxt" style="flex:1;display:flex;flex-direction:column;gap:8px;">
       <table class="data-table" style="width:100%;">
         <tr><th>P (¥)</th><th>Firm A</th><th>Firm B</th><th>Market</th></tr>
         <tr><td>10</td><td>1</td><td>0</td><td id="mk1" style="opacity:.2;font-weight:800;">1</td></tr>
@@ -397,18 +403,18 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <h1>Now aggregate THREE firms</h1>
   <div class="sub">Add the quantities at each price. Work it out first, then reveal.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+    <div class="ftxt" style="flex:1;display:flex;flex-direction:column;gap:10px;">
       <table class="data-table" style="width:100%;">
-        <tr><th>P (¥)</th><th>X</th><th>Y</th><th>Market</th></tr>
-        <tr><td>10</td><td>1</td><td>3</td><td id="pk1" class="blank empty" data-a="4">___</td></tr>
-        <tr><td>20</td><td>4</td><td>3</td><td id="pk2" class="blank empty" data-a="7">___</td></tr>
-        <tr><td>30</td><td>7</td><td>3</td><td id="pk3" class="blank empty" data-a="10">___</td></tr>
+        <tr><th>P (¥)</th><th>X</th><th>Y</th><th>Z</th><th>Market</th></tr>
+        <tr><td>10</td><td>2</td><td>3</td><td>3</td><td id="pk1" class="blank empty" data-a="8">___</td></tr>
+        <tr><td>20</td><td>4</td><td>3</td><td>6</td><td id="pk2" class="blank empty" data-a="13">___</td></tr>
+        <tr><td>30</td><td>6</td><td>3</td><td>9</td><td id="pk3" class="blank empty" data-a="18">___</td></tr>
       </table>
       <div style="display:flex;gap:10px;">
         <button class="big-btn" id="pkReveal">Reveal answers</button>
         <button class="big-btn ghost" id="pkHide">↺ Hide</button>
       </div>
-      <p style="margin:4px 0 0;" class="gray">Firm <b>Y</b> is at full capacity: <b>3 cups at any price</b> — a <b>vertical</b> curve. Adding its 3 cups moves the market curve right, with the same slope as X.</p>
+      <p style="margin:4px 0 0;" class="gray">Firm <b>Y</b> is at full capacity: <b>3 cups at any price</b> — a <b>vertical</b> curve. <b>X</b> and <b>Z</b> both offer more as the price rises, and <b>Z</b> responds fastest (its curve is flatter).</p>
     </div>
     <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
       <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
@@ -428,11 +434,13 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         </g>
         <line x1="155" y1="460" x2="155" y2="58" stroke="#F0B429" stroke-width="3" stroke-dasharray="9 7"/>
         <text x="168" y="86" font-size="30" font-weight="800" fill="#a57d12">Y</text>
-        <line x1="90" y1="405" x2="372" y2="50" stroke="#1E88E5" stroke-width="3" stroke-dasharray="9 7"/>
-        <text x="372" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#1E88E5">X</text>
+        <line x1="90" y1="460" x2="306.7" y2="50" stroke="#1E88E5" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="306.7" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#1E88E5">X</text>
+        <line x1="90" y1="460" x2="415" y2="50" stroke="#8E44AD" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="415" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#8E44AD">Z</text>
         <g id="pk-mkt" opacity="0">
-          <line x1="112" y1="460" x2="437" y2="50" stroke="#1b5e20" stroke-width="5"/>
-          <text x="452" y="42" font-size="30" font-weight="800" fill="#1b5e20">MARKET</text>
+          <line x1="155" y1="460" x2="588.3" y2="132" stroke="#1b5e20" stroke-width="5"/>
+          <text x="580" y="118" text-anchor="end" font-size="30" font-weight="800" fill="#1b5e20">MARKET</text>
         </g>
       </svg>
     </div>
@@ -723,7 +731,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <circle id="cv-dot" cx="188" cy="296" r="12" fill="#E74C3C" stroke="#fff" stroke-width="3" style="transition:opacity .3s;"/>
       </svg>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+    <div class="ftxt" style="flex:1;display:flex;flex-direction:column;gap:8px;">
       <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
         <p class="b db" style="margin-bottom:4px;">① Price (movement ALONG)</p>
         <input type="range" id="cvP" min="10" max="40" step="1" value="20" style="width:100%;accent-color:#E74C3C;">
@@ -821,7 +829,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <div class="dots" id="dots"></div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="copy">© 2026 Dr. Jia</span>
-    <span class="page" id="pageNum">1 / 16</span>
+    <span class="page" id="pageNum">1 / 14</span>
     <button id="nextBtn">▶</button>
   </div>
 </div>
