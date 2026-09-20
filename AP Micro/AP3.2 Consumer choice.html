@@ -86,6 +86,9 @@
   td.best { background:#e8f8f2; font-weight:800; color:#2e7d5b; }
   td.eq { background:#fff7e0; font-weight:700; }
   tr.neg td { background:#fdeaea; }
+  tr.inside td { background:#e8f8f2; }        /* affordable, money left over */
+  tr.online td { background:#fff7e0; font-weight:700; }  /* exactly the income */
+  tr.outside td { background:#fdeaea; }       /* cannot be afforded */
   td.empty { color:#c3d4e4; }
   .scroll { overflow-y:auto; overflow-x:hidden; min-height:0; }
 
@@ -156,6 +159,21 @@
   .eq { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.4em;
         margin:.45vh 0; }
   .eq.left { justify-content:flex-start; }
+  /* ③ tangency: the two equations read ACROSS, and the MU-per-dollar one is bold + red */
+  .eqrow { display:flex; align-items:center; justify-content:center; gap:1.2vw;
+           flex-wrap:wrap; margin:.2vh 0; }
+  .eqrow .eq { margin:0; }
+  .eqarrow { font-size:clamp(26px,3.2vh,38px); font-weight:800; color:var(--primary-deep); }
+  .eq-final { font-weight:800; color:var(--accent-red); }
+  /* 第 14 页：大括号把两条条件联立成一个方程组。
+     大括号用 SVG 画 + vector-effect:non-scaling-stroke，这样任意拉伸粗细都均匀；
+     换成 CSS 的 border 画法只能得到方括号。 */
+  .eqsys { display:flex; align-items:stretch; gap:.5vw; margin:.4vh 0 .2vh; }
+  .eqsys .brace { flex:0 0 20px; width:20px; height:100%; min-height:64px;
+                  color:var(--primary-deep); }
+  .eqsys-body { flex:1; min-width:0; display:flex; flex-direction:column;
+                justify-content:center; gap:.5vh; }
+  .eqsys-body .eq { margin:0; justify-content:flex-start; }
 
   .s-banner { background:#e8f6fd; border-left:6px solid var(--primary); border-radius:6px;
     padding:.7vh 1.2vw; font-size:clamp(22px,2.1vh,26px); font-weight:700;
@@ -212,37 +230,56 @@
     <div class="s-body">
       <div class="row">
         <div class="col" style="flex:1.05;">
-          <div class="card">
-            <h3>Hamburgers and soda</h3>
-            <p>A consumer buys only two goods:</p>
-            <p>🍔 Hamburger <b>P<sub>H</sub> = $5</b> &nbsp;·&nbsp; 🥤 Soda <b>P<sub>S</sub> = $3</b></p>
-            <p>Income: <b>I = $300</b> per week. Everything is spent — no borrowing, no saving.</p>
-            <div class="hl">Every bundle must satisfy the <b>budget constraint</b>:<br>
-              <b>5H + 3S ≤ 300</b></div>
+          <div class="card" style="justify-content:flex-start;">
+            <h3>Spend every dollar — what must H and S satisfy?</h3>
+            <p>🍔 Hamburger <b>P<sub>H</sub> = $5</b> &nbsp;·&nbsp; 🥤 Soda
+              <b>P<sub>S</sub> = $3</b> &nbsp;·&nbsp; Income <b>I = $300</b> per week.</p>
+            <p>He buys <b>H</b> hamburgers and <b>S</b> sodas and spends the <b>whole $300</b> —
+              nothing borrowed, nothing left over.</p>
+            <div class="reveal b1">
+              <div class="hl"><b>Question:</b> what condition must H and S satisfy?</div>
+              <div class="eq" style="font-size:clamp(26px,3.4vh,38px);font-weight:800;">5H + 3S = 300</div>
+            </div>
+            <div class="reveal b2">
+              <p>Now make <b>S</b> the subject — soda as a function of hamburgers:</p>
+              <div class="eq" style="font-size:clamp(25px,3.2vh,36px);font-weight:800;">
+                S = <span class="frac"><span>300 − 5H</span><span>3</span></span>
+                = 100 − <span class="frac"><span>5</span><span>3</span></span>H
+              </div>
+              <div class="hl">S falls at a <b>constant rate</b>: every extra hamburger costs the same
+                <b>5/3 sodas</b>. A constant rate is a <b>straight line</b> — this is the
+                <b>budget line</b>.</div>
+            </div>
           </div>
         </div>
         <div class="col" style="flex:1;">
           <div class="card" style="justify-content:flex-start;">
-            <h3>Bundles that cost exactly $300</h3>
-            <div class="scroll" style="max-height:44vh;">
+            <h3>Test three kinds of bundle</h3>
+            <div class="scroll" style="max-height:42vh;">
               <table id="budTable">
-                <tr><th>Hamburgers H</th><th>Soda S</th><th>5H + 3S</th><th>Affordable?</th></tr>
-                <tr id="bt-0"><td>0</td><td id="bs-0" class="empty">·</td><td id="bc-0" class="empty">·</td><td id="ba-0" class="empty">·</td></tr>
-                <tr id="bt-1"><td>12</td><td id="bs-1" class="empty">·</td><td id="bc-1" class="empty">·</td><td id="ba-1" class="empty">·</td></tr>
-                <tr id="bt-2"><td>24</td><td id="bs-2" class="empty">·</td><td id="bc-2" class="empty">·</td><td id="ba-2" class="empty">·</td></tr>
-                <tr id="bt-3"><td>30</td><td id="bs-3" class="empty">·</td><td id="bc-3" class="empty">·</td><td id="ba-3" class="empty">·</td></tr>
-                <tr id="bt-4"><td>36</td><td id="bs-4" class="empty">·</td><td id="bc-4" class="empty">·</td><td id="ba-4" class="empty">·</td></tr>
-                <tr id="bt-5"><td>48</td><td id="bs-5" class="empty">·</td><td id="bc-5" class="empty">·</td><td id="ba-5" class="empty">·</td></tr>
-                <tr id="bt-6"><td>60</td><td id="bs-6" class="empty">·</td><td id="bc-6" class="empty">·</td><td id="ba-6" class="empty">·</td></tr>
-                <tr id="bt-7"><td>40</td><td id="bs-7" class="empty">·</td><td id="bc-7" class="empty">·</td><td id="ba-7" class="empty">·</td></tr>
+                <tr><th>H</th><th>S</th><th>5H + 3S</th><th>Where it sits</th></tr>
+                <tr id="bt-0"><td>12</td><td id="bs-0" class="empty">·</td><td id="bc-0" class="empty">·</td><td id="ba-0" class="empty">·</td></tr>
+                <tr id="bt-1"><td>24</td><td id="bs-1" class="empty">·</td><td id="bc-1" class="empty">·</td><td id="ba-1" class="empty">·</td></tr>
+                <tr id="bt-2"><td>12</td><td id="bs-2" class="empty">·</td><td id="bc-2" class="empty">·</td><td id="ba-2" class="empty">·</td></tr>
+                <tr id="bt-3"><td>12</td><td id="bs-3" class="empty">·</td><td id="bc-3" class="empty">·</td><td id="ba-3" class="empty">·</td></tr>
               </table>
+            </div>
+            <div class="reveal b3" style="margin-top:.8vh;">
+              <div class="readout">
+                <span style="color:#2e7d5b;">■ inside — money left over</span>
+                <span style="color:#a06a12;">■ on the line — exactly $300</span>
+                <span style="color:var(--accent-red);">■ outside — cannot afford</span>
+              </div>
+              <div class="hl">Only the points <b>on</b> the line spend the whole income. Inside it
+                there is money left over; outside it the bundle is out of reach.</div>
             </div>
           </div>
         </div>
       </div>
       <div class="s-foot">
-        <span class="note" id="budNote">0 hamburgers → how much soda can he still buy?</span>
-        <button class="btn" id="budBtn" onclick="budNext()">① Fill the table</button>
+        <span class="note" id="budNote">He spends all $300 — so what must H and S satisfy?</span>
+        <button class="btn" id="budBtn" onclick="budNext()">① The condition</button>
+        <button class="btn ghost" onclick="budReset()">↺ Reset</button>
       </div>
     </div>
   </section>
@@ -328,10 +365,58 @@
     </div>
   </section>
 
+  <!-- ════ P4b THE UTILITY FUNCTION → A LANDSCAPE (new) ════ -->
+  <section class="slide" id="utilLab" data-title="Utility function">
+    <div class="s-head">
+      <span class="tag">Step 4</span><h2>The Utility Function</h2><span class="en">效用函数</span>
+    </div>
+    <div class="s-body">
+      <div class="row" style="min-height:0;">
+        <div class="col" style="flex:1;min-height:0;">
+          <div class="def"><b>Utility</b> is a score for a bundle. Here the score is
+            <b>U = √H + √S</b>: more of either good raises it, but each extra unit adds
+            <b>less</b> than the one before.</div>
+          <div class="card" style="padding:.7vh 1vw;justify-content:flex-start;min-height:0;">
+            <h3 style="font-size:clamp(23px,2.5vh,29px);">U for a few bundles</h3>
+            <div class="scroll" style="min-height:0;">
+              <table id="uTable" style="font-size:clamp(22px,2.2vh,26px);"></table>
+            </div>
+          </div>
+          <div class="card" style="padding:.7vh 1vw;">
+            <div class="lab-ctrl" style="margin-top:0;">
+              <label>H <span class="lab-val" id="uHv">22.5</span></label>
+              <input type="range" id="uH" min="0" max="60" step="0.5" value="22.5">
+            </div>
+            <div class="lab-ctrl">
+              <label>S <span class="lab-val" id="uSv">62.5</span></label>
+              <input type="range" id="uS" min="0" max="100" step="0.5" value="62.5">
+            </div>
+            <div class="readout" style="margin-top:.3vh;">
+              <span>This bundle: <b id="uRead">U = 12.65</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="col" style="flex:1.12;min-height:0;">
+          <div class="graph" style="min-height:0;">
+            <svg id="u3dSvg" viewBox="0 0 620 640"></svg>
+          </div>
+          <div class="lab-hint" style="text-align:center;">Drag the surface to rotate it ·
+            height = <b>U</b></div>
+        </div>
+      </div>
+      <div class="s-foot">
+        <span class="note" id="uNote">Read a cell in the table, then find that height on the surface —
+          the same function, two ways.</span>
+        <button class="btn ghost" onclick="u3dReset()">↺ Reset view</button>
+        <button class="btn ghost" id="u3dSpinBtn" onclick="u3dSpin()">▶ Auto-rotate</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ════ P5 UTILITY MAP → INDIFFERENCE CURVES ════ -->
   <section class="slide" id="landLab" data-title="Heat map to IC">
     <div class="s-head">
-      <span class="tag">Step 4</span><h2>From Heat Map to Indifference Curve</h2><span class="en">从热力图到无差异曲线</span>
+      <span class="tag">Step 5</span><h2>From Heat Map to Indifference Curve</h2><span class="en">从热力图到无差异曲线</span>
     </div>
     <div class="s-body">
       <div class="lab">
@@ -353,47 +438,48 @@
     </div>
   </section>
 
-  <!-- ════ P6 MRS: a zoomed-in trade ════ -->
+  <!-- ════ P6 MRS: the trade along one curve ════ -->
   <section class="slide" data-title="MRS">
     <div class="s-head">
-      <span class="tag">Step 5</span><h2>The Marginal Rate of Substitution</h2><span class="en">边际替代率</span>
+      <span class="tag">Step 6</span><h2>The Marginal Rate of Substitution</h2><span class="en">边际替代率</span>
     </div>
     <div class="s-body">
-      <div class="s-banner">Zoom in on <b>one point</b> of an indifference curve. Take <b>one hamburger away</b> —
-        how many sodas must be added back to stay <b>equally happy</b>? That number is the <b>MRS</b>.</div>
+      <div class="s-banner">One indifference curve, seen whole. Take <b>one hamburger away</b> — how many
+        sodas must be added back to stay <b>equally happy</b>? That number is the <b>MRS</b>, and it
+        <b>changes</b> as you slide along the curve.</div>
       <div class="row" style="min-height:0;">
-        <div class="col" style="flex:1.2;min-height:0;">
+        <div class="col" style="flex:1.3;min-height:0;">
           <div class="graph">
-            <svg id="mrsSvg" viewBox="0 0 700 470" style="height:44vh;">
-              <g id="mrsStatic"></g><g id="mrsStep"></g><g id="mrsMore"></g>
+            <svg id="mrsSvg" viewBox="0 0 700 470" style="cursor:grab;">
+              <g id="mrsStatic"></g><g id="mrsMore"></g><g id="mrsMove"></g>
             </svg>
           </div>
         </div>
-        <div class="col" style="flex:.85;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
-          <div class="card reveal s1" style="border-left:6px solid var(--violet);padding:1vh 1.1vw;">
-            <h3 style="color:#5a49b8;font-size:clamp(22px,2.3vh,27px);">① The bundle</h3>
-            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">12 hamburgers and 42.7 sodas —
-              utility U = 10. This is the point we zoom in on.</p>
+        <div class="col" style="flex:.72;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
+          <div class="card reveal s1" style="border-left:6px solid var(--violet);padding:1.1vh 1.1vw;">
+            <h3 style="color:#5a49b8;font-size:clamp(23px,2.6vh,30px);">① The bundle</h3>
+            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">Start from one point on the curve.</p>
           </div>
-          <div class="card reveal s2" style="border-left:6px solid var(--accent-red);padding:1vh 1.1vw;">
-            <h3 style="color:var(--accent-red);font-size:clamp(22px,2.3vh,27px);">② One hamburger goes</h3>
-            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">With 11 hamburgers and the
-              <b>same</b> soda, he is <b>below</b> his curve — worse off.</p>
+          <div class="card reveal s2" style="border-left:6px solid var(--accent-red);padding:1.1vh 1.1vw;">
+            <h3 style="color:var(--accent-red);font-size:clamp(23px,2.6vh,30px);">② One hamburger goes</h3>
+            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">One hamburger fewer, same soda: he drops
+              <b>below</b> the curve — worse off.</p>
           </div>
-          <div class="card reveal s3" style="border-left:6px solid var(--accent-green);padding:1vh 1.1vw;">
-            <h3 style="color:#2e7d5b;font-size:clamp(22px,2.3vh,27px);">③ Add sodas back</h3>
-            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">He must add <b>1.9 sodas</b> to
-              return to U = 10 → <b>MRS ≈ 1.9</b> at that point.</p>
+          <div class="card reveal s3" style="border-left:6px solid var(--accent-green);padding:1.1vh 1.1vw;">
+            <h3 style="color:#2e7d5b;font-size:clamp(23px,2.6vh,30px);">③ Add sodas back</h3>
+            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">Buying sodas climbs him back to the
+              same curve. The amount needed is the <b>MRS</b>.</p>
           </div>
-          <div class="hl violet reveal s4" style="font-size:clamp(22px,2.1vh,25px);">
-            <b>④ And it falls:</b> one hamburger further right (12 → 13) costs only
-            <b>1.8 sodas</b> → MRS diminishes → the curve must be <b>convex</b>.
-            And MRS = MU<sub>H</sub> ÷ MU<sub>S</sub>.</div>
+          <div class="hl violet reveal s4" style="font-size:clamp(22px,2.2vh,26px);">
+            <b>④ And it falls.</b> Further right, the same trade costs <b>fewer</b> sodas — so the MRS
+            falls, and that is exactly why the curve is <b>convex</b>. (MRS = MU<sub>H</sub> ÷ MU<sub>S</sub>.)
+            <br><b>Drag the triangle</b> along the curve and watch the bar shrink.</div>
         </div>
       </div>
       <div class="s-foot">
         <span class="note" id="mrsNote">Step ① — start from one point on the curve.</span>
         <button class="btn" id="mrsBtn" onclick="mrsNext()">① Show the point</button>
+        <button class="btn ghost" onclick="mrsReset()">↺ Reset</button>
       </div>
     </div>
   </section>
@@ -401,55 +487,49 @@
   <!-- ════ P8 PROPERTIES ════ -->
   <section class="slide" data-title="IC properties">
     <div class="s-head">
-      <span class="tag">Step 6</span><h2>Four Properties of Indifference Curves</h2><span class="en">曲线性质</span>
+      <span class="tag">Step 7</span><h2>Four Properties of Indifference Curves</h2><span class="en">曲线性质</span>
     </div>
     <div class="s-body">
       <div class="s-banner">These four properties are what the exam expects you to draw <b>and</b> explain.</div>
       <div class="row" style="min-height:0;">
-        <div class="col">
-          <div class="card reveal s1" style="border-left:6px solid var(--primary);padding:1.1vh 1.2vw;">
+        <!-- left: the four properties, stacked -->
+        <div class="col" style="flex:1;min-height:0;">
+          <div class="card reveal s1" style="border-left:6px solid var(--primary);padding:.85vh 1.1vw;">
             <h3 style="font-size:clamp(23px,2.5vh,30px);">1 · Higher is better</h3>
             <p style="font-size:clamp(22px,2.2vh,27px);">A curve further from the origin means more of at
               least one good, so <b>utility is higher</b>.</p>
           </div>
-          <div class="card reveal s2" style="border-left:6px solid var(--violet);padding:1.1vh 1.2vw;">
+          <div class="card reveal s2" style="border-left:6px solid var(--violet);padding:.85vh 1.1vw;">
             <h3 style="font-size:clamp(23px,2.5vh,30px);">2 · Downward sloping</h3>
             <p style="font-size:clamp(22px,2.2vh,27px);">To keep utility constant, <b>more of one good
               means less of the other</b>.</p>
           </div>
-        </div>
-        <div class="col">
-          <div class="card reveal s3" style="border-left:6px solid var(--accent-orange);padding:1.1vh 1.2vw;">
+          <div class="card reveal s3" style="border-left:6px solid var(--accent-orange);padding:.85vh 1.1vw;">
             <h3 style="font-size:clamp(23px,2.5vh,30px);">3 · Convex (bowed in)</h3>
             <p style="font-size:clamp(22px,2.2vh,27px);">Diminishing MU makes <b>MRS fall</b> as you move
               right — the curve flattens.</p>
           </div>
-          <div class="card reveal s4" style="border-left:6px solid var(--accent-red);padding:1.1vh 1.2vw;">
+          <div class="card reveal s4" style="border-left:6px solid var(--accent-red);padding:.85vh 1.1vw;">
             <h3 style="font-size:clamp(23px,2.5vh,30px);">4 · They never cross</h3>
             <p style="font-size:clamp(22px,2.2vh,27px);">Crossing would mean two different utility levels
               at one bundle — <b>impossible</b>.</p>
           </div>
         </div>
-      </div>
-      <div class="row reveal s5" style="flex:.95;min-height:0;">
-        <div class="col">
-          <div class="card" style="padding:.8vh .9vw;align-items:center;">
-            <svg id="shp1" viewBox="0 0 240 190" style="width:auto;height:15vh;"></svg>
-            <p style="font-size:clamp(22px,2vh,25px);text-align:center;margin-top:.4vh;">
+        <!-- right: the three shapes, one under the other -->
+        <div class="col reveal s5" style="flex:.92;min-height:0;">
+          <div class="card" style="padding:.6vh .8vw;align-items:center;justify-content:center;">
+            <svg id="shp1" viewBox="0 0 240 190" style="width:auto;height:15.5vh;"></svg>
+            <p style="font-size:clamp(22px,2vh,25px);text-align:center;margin-top:.3vh;">
               <b>U = √H + √S</b> → diminishing MU → <b>convex</b></p>
           </div>
-        </div>
-        <div class="col">
-          <div class="card" style="padding:.8vh .9vw;align-items:center;">
-            <svg id="shp2" viewBox="0 0 240 190" style="width:auto;height:15vh;"></svg>
-            <p style="font-size:clamp(22px,2vh,25px);text-align:center;margin-top:.4vh;">
+          <div class="card" style="padding:.6vh .8vw;align-items:center;justify-content:center;">
+            <svg id="shp2" viewBox="0 0 240 190" style="width:auto;height:15.5vh;"></svg>
+            <p style="font-size:clamp(22px,2vh,25px);text-align:center;margin-top:.3vh;">
               <b>U = H + S</b> → constant MU → <b>straight lines</b></p>
           </div>
-        </div>
-        <div class="col">
-          <div class="card" style="padding:.8vh .9vw;align-items:center;">
-            <svg id="shp3" viewBox="0 0 240 190" style="width:auto;height:15vh;"></svg>
-            <p style="font-size:clamp(22px,2vh,25px);text-align:center;margin-top:.4vh;">
+          <div class="card" style="padding:.6vh .8vw;align-items:center;justify-content:center;">
+            <svg id="shp3" viewBox="0 0 240 190" style="width:auto;height:15.5vh;"></svg>
+            <p style="font-size:clamp(22px,2vh,25px);text-align:center;margin-top:.3vh;">
               <b>U = H² + S²</b> → increasing MU → <b>bowed the other way</b></p>
           </div>
         </div>
@@ -457,6 +537,7 @@
       <div class="s-foot">
         <span class="note" id="propNote">Step ① — why must a higher curve mean more utility?</span>
         <button class="btn" id="propBtn" onclick="propNext()">① Property 1</button>
+        <button class="btn ghost" onclick="propReset()">↺ Reset</button>
       </div>
     </div>
   </section>
@@ -464,7 +545,7 @@
   <!-- ════ P9 THE BEST AFFORDABLE BUNDLE (interactive) ════ -->
   <section class="slide" id="optLab" data-title="Optimum">
     <div class="s-head">
-      <span class="tag">Step 7</span><h2>The Best Bundle You Can Afford</h2><span class="en">相切即最优</span>
+      <span class="tag">Step 8</span><h2>The Best Bundle You Can Afford</h2><span class="en">相切即最优</span>
     </div>
     <div class="s-body">
       <div class="lab">
@@ -487,37 +568,40 @@
   <!-- ════ P9 TANGENCY → MU PER DOLLAR (general, no numbers) ════ -->
   <section class="slide" data-title="Solving it">
     <div class="s-head">
-      <span class="tag">Step 8</span><h2>Why the Two Rules Are the Same Rule</h2><span class="en">相切 ⇒ 两边斜率相等</span>
+      <span class="tag">Step 9</span><h2>Why the Two Rules Are the Same Rule</h2><span class="en">相切 ⇒ 两边斜率相等</span>
     </div>
     <div class="s-body">
       <div class="s-banner">At the best bundle the budget line and the indifference curve <b>touch</b>:
         same slope at that point. Write both slopes and the exam formula falls out.</div>
       <div class="row" style="min-height:0;">
-        <div class="col" style="flex:1.05;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
-          <div class="card reveal s1" style="border-left:6px solid var(--violet);padding:1vh 1.2vw;">
-            <h3 style="font-size:clamp(22px,2.4vh,28px);">① The slope of the indifference curve</h3>
-            <div class="eq math left">−<span class="frac"><span>MU<sub>H</sub></span><span>MU<sub>S</sub></span></span>
-              &nbsp;=&nbsp; −MRS</div>
-            <p style="font-size:clamp(22px,2.1vh,26px);margin:.3vh 0 0;">To keep utility unchanged, giving up
-              sodas must be paid for with hamburgers — in the ratio of their marginal utilities.</p>
+        <div class="col" style="flex:1.05;min-height:0;">
+          <!-- ① and ② sit side by side: two slopes, one line each -->
+          <div style="display:flex;gap:1vw;min-height:0;">
+            <div class="card reveal s1" style="flex:1;border-left:6px solid var(--violet);padding:1vh 1vw;">
+              <h3 style="font-size:clamp(22px,2.4vh,28px);">① The curve's slope</h3>
+              <div class="eq math left" style="margin:.2vh 0 0;">−<span class="frac"><span>MU<sub>H</sub></span><span>MU<sub>S</sub></span></span>
+                &nbsp;=&nbsp; −MRS</div>
+            </div>
+            <div class="card reveal s2" style="flex:1;border-left:6px solid var(--accent-red);padding:1vh 1vw;">
+              <h3 style="font-size:clamp(22px,2.4vh,28px);">② The budget line's slope</h3>
+              <div class="eq math left" style="margin:.2vh 0 0;">−<span class="frac"><span>P<sub>H</sub></span><span>P<sub>S</sub></span></span></div>
+            </div>
           </div>
-          <div class="card reveal s2" style="border-left:6px solid var(--accent-red);padding:1vh 1.2vw;">
-            <h3 style="font-size:clamp(22px,2.4vh,28px);">② The slope of the budget line</h3>
-            <div class="eq math left">−<span class="frac"><span>P<sub>H</sub></span><span>P<sub>S</sub></span></span></div>
-            <p style="font-size:clamp(22px,2.1vh,26px);margin:.3vh 0 0;">The relative price: how many sodas one
-              more hamburger costs in the market.</p>
-          </div>
+          <!-- ③ full width, and the two equations read across, not down -->
           <div class="card reveal s3" style="border-left:6px solid var(--accent-green);padding:1vh 1.2vw;">
             <h3 style="font-size:clamp(22px,2.4vh,28px);">③ Tangency: set them equal</h3>
-            <div class="eq math"><span class="frac"><span>MU<sub>H</sub></span><span>MU<sub>S</sub></span></span>
-              = <span class="frac"><span>P<sub>H</sub></span><span>P<sub>S</sub></span></span></div>
-            <div class="eq math">⇓</div>
-            <div class="eq math"><span class="frac"><span>MU<sub>H</sub></span><span>P<sub>H</sub></span></span>
-              = <span class="frac"><span>MU<sub>S</sub></span><span>P<sub>S</sub></span></span></div>
+            <div class="eqrow">
+              <div class="eq math">
+                <span class="frac"><span>MU<sub>H</sub></span><span>MU<sub>S</sub></span></span>
+                = <span class="frac"><span>P<sub>H</sub></span><span>P<sub>S</sub></span></span>
+              </div>
+              <div class="eqarrow">⇒</div>
+              <div class="eq math eq-final">
+                <span class="frac"><span>MU<sub>H</sub></span><span>P<sub>H</sub></span></span>
+                = <span class="frac"><span>MU<sub>S</sub></span><span>P<sub>S</sub></span></span>
+              </div>
+            </div>
           </div>
-          <div class="hl good reveal s4" style="font-size:clamp(22px,2.15vh,27px);">
-            <b>That is the rule AP tests:</b> the last dollar spent on each good must give the same utility.
-            Worked with whole units it becomes “buy until MU ÷ P is equal on both sides”.</div>
         </div>
         <div class="col" style="flex:.95;min-height:0;">
           <div class="graph">
@@ -535,7 +619,7 @@
   <!-- ════ P10 THE DISCRETE ROUTE (Maria, step by step) ════ -->
   <section class="slide" data-title="Equal MU per dollar">
     <div class="s-head">
-      <span class="tag">Step 9</span><h2>The Discrete Route, Step by Step</h2><span class="en">每元边际效用</span>
+      <span class="tag">Step 10</span><h2>The Discrete Route, Step by Step</h2><span class="en">每元边际效用</span>
     </div>
     <div class="s-body">
       <div class="s-banner">Maria has <b>$52</b>. Souvenirs cost <b>$8</b>, games cost <b>$4</b>.
@@ -697,16 +781,28 @@
       <div class="card" style="padding:1.1vh 1.3vw;">
         <h3>2 · The procedure</h3>
         <p style="font-size:clamp(22px,2.2vh,27px);">① turn TU into <b>MU</b> (ΔTU) → ② divide by the price →
-          ③ buy the unit with the <b>highest MU ÷ P</b> → ④ stop when the two
-          <span class="blank" data-step="2" data-ans="MU ÷ P are equal" style="min-width:17ch"></span>
-          and the money is gone → ⑤ check <b>i·P<sub>X</sub> + j·P<sub>Y</sub> = income</b>.</p>
+          ③ buy the unit with the <b>highest MU ÷ P</b> until <b>all the money is gone</b>.</p>
       </div>
-      <div class="card" style="padding:1.1vh 1.3vw;">
+      <div class="card" style="padding:1vh 1.3vw;">
         <h3>3 · How to write the answer</h3>
-        <p style="font-size:clamp(22px,2.2vh,27px);">Name the two ratios and give the number:
-          <b>MU<sub>X</sub>/P<sub>X</sub> = MU<sub>Y</sub>/P<sub>Y</sub> = 【<span class="blank" data-step="3" data-ans="number" style="min-width:9ch"></span>】</b>,
-          then the budget line
-          <span class="blank" data-step="3" data-ans="i·PX + j·PY = income" style="min-width:20ch"></span>.</p>
+        <p style="font-size:clamp(22px,2.2vh,26px);">Write the two conditions the best bundle must satisfy —
+          <b>the same utility per dollar</b> and <b>the income all spent</b> — then <b>solve them together</b>:</p>
+        <div class="eqsys">
+          <svg class="brace" viewBox="0 0 20 100" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M17 2 C9 2 13 44 2 50 C13 56 9 98 17 98" fill="none" stroke="currentColor"
+                  stroke-width="3.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+          </svg>
+          <div class="eqsys-body">
+            <div class="eq math">
+              <span class="frac"><span>MU<sub>X</sub></span><span>P<sub>X</sub></span></span> =
+              <span class="frac"><span>MU<sub>Y</sub></span><span>P<sub>Y</sub></span></span> =
+              <span class="blank" data-step="2" data-ans="number" style="min-width:9ch"></span>
+            </div>
+            <div class="eq math">
+              <span class="blank" data-step="2" data-ans="i·PX + j·PY = income" style="min-width:22ch"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="s-foot" style="padding-top:.8vh;">
@@ -745,7 +841,7 @@
   <button id="navPrev" onclick="go(-1)">‹ Prev</button>
   <div style="display:flex;align-items:center;gap:1vw;">
     <div class="dots" id="dots"></div>
-    <div class="page" id="pageNum">1 / 14</div>
+    <div class="page" id="pageNum">1 / 15</div>
   </div>
   <div style="display:flex;align-items:center;gap:.9vw;margin-left:auto;">
     <span class="copy">© 2026 Dr. Jia · CBS</span>
@@ -833,33 +929,86 @@ function labResize(c) {
   if (w > 0 && h > 0) { c.width = w; c.height = h; }
 }
 
-/* ═══════════════ P2 · THE BUDGET TABLE ═══════════════ */
-const ROWS = [{h:0},{h:12},{h:24},{h:30},{h:36},{h:48},{h:60},{h:40,s:50}];  /* last one is unaffordable */
-let budRow = -1;
+/* ═══════════════ P2 · THE BUDGET TABLE ═══════════════
+   Three kinds of bundle, tested one row at a time:
+     online  → 5H + 3S = 300  spends the whole income (these S come from S = 100 − 5H/3)
+     inside  → 5H + 3S < 300  affordable, money left over
+     outside → 5H + 3S > 300  cannot be afforded
+   The reveal walks the route the user asked for — the condition 5H + 3S = 300 →
+   rearranged as S = 100 − 5H/3, a straight line → then ONE ROW PER CLICK, in the order
+   two on the line, one inside, one outside. Six steps, never the whole table at once.
+   Rows 1, 3 and 4 all keep H = 12 so the three regions can be compared directly. */
+const BUD_ROWS = [
+  { h:12, s:80, kind:"online"  },
+  { h:24, s:60, kind:"online"  },
+  { h:12, s:60, kind:"inside"  },
+  { h:12, s:90, kind:"outside" }
+];
+/* the note for each row is generated from the row itself — no hand-typed numbers */
+function budRowNote(R, i) {
+  const cost = PH * R.h + PS * R.s;
+  if (R.kind === "online")
+    return "Row " + (i + 1) + " — H = " + R.h + ", S = " + R.s + ": 5(" + R.h + ") + 3(" + R.s +
+           ") = " + cost + " → on the line.";
+  if (R.kind === "inside")
+    return "Row " + (i + 1) + " — still " + R.h + " hamburgers but only " + R.s + " sodas: " + cost +
+           " → $" + (INC - cost) + " left over, so inside the line.";
+  return "Row " + (i + 1) + " — still " + R.h + " hamburgers but " + R.s + " sodas: " + cost +
+         " → $" + (cost - INC) + " over, so outside the line.";
+}
+const BUD_NOTE = [
+  "He spends all $300 — so what must H and S satisfy?",
+  "5H + 3S = 300 — the whole income goes on the two goods.",
+  "S = 100 − 5H/3: every extra hamburger costs the same 5/3 sodas → a straight line."
+].concat(BUD_ROWS.map(budRowNote));
+const BUD_BTN = ["① The condition", "② Rearrange for S", "③ Row 1 of 4", "④ Row 2 of 4",
+                 "⑤ Row 3 of 4", "⑥ Row 4 of 4", "All shown ✓"];
+const BUD_STEPS = 2 + BUD_ROWS.length;          /* 2 explanation steps + one step per row */
+let budStep = 0;
+
+function budVerdict(R, cost) {
+  if (R.kind === "inside")  return "inside · $" + (INC - cost) + " left";
+  if (R.kind === "outside") return "outside · $" + (cost - INC) + " over";
+  return "on the line";
+}
+function budPaint() {
+  const btn = document.getElementById("budBtn");
+  btn.textContent = BUD_BTN[budStep];
+  btn.disabled = budStep >= BUD_STEPS;
+  document.getElementById("budNote").textContent = BUD_NOTE[budStep];
+  document.querySelectorAll(".slide.active .b1").forEach(el => el.classList.toggle("show", budStep >= 1));
+  document.querySelectorAll(".slide.active .b2").forEach(el => el.classList.toggle("show", budStep >= 2));
+  /* the legend waits until every row has been shown */
+  document.querySelectorAll(".slide.active .b3").forEach(el => el.classList.toggle("show", budStep >= BUD_STEPS));
+}
+/* fill exactly one row */
+function budFillRow(i) {
+  const R = BUD_ROWS[i];
+  const cost = PH * R.h + PS * R.s;
+  ["bs-", "bc-", "ba-"].forEach(p =>
+    document.getElementById(p + i).classList.remove("empty"));
+  document.getElementById("bs-" + i).textContent = R.s;
+  document.getElementById("bc-" + i).textContent = cost;
+  document.getElementById("ba-" + i).textContent = budVerdict(R, cost);
+  document.getElementById("bt-" + i).className = R.kind;
+}
 function budNext() {
-  if (budRow >= ROWS.length - 1) return;
-  budRow++;
-  const R = ROWS[budRow];
-  const h = R.h;
-  const s = (R.s != null) ? R.s : (INC - PH * h) / PS;
-  const cost = PH * h + PS * s;
-  const ok = cost <= INC;
-  document.getElementById("bs-" + budRow).textContent = (Math.round(s) === s ? s.toFixed(0) : s.toFixed(1));
-  document.getElementById("bc-" + budRow).textContent = cost;
-  document.getElementById("ba-" + budRow).textContent = ok ? "Yes — all spent" : "No";
-  ["bs-", "bc-", "ba-"].forEach(p => document.getElementById(p + budRow).classList.remove("empty"));
-  const row = document.getElementById("bt-" + budRow);
-  row.classList.add(ok ? "hl" : "neg");
-  document.getElementById("budNote").textContent = ok
-    ? "H = " + h + " leaves " + (INC - PH * h) + " ÷ 3 = " + (s.toFixed(1).replace(".0","")) +
-      " sodas · 5(" + h + ") + 3(" + s.toFixed(1).replace(".0","") + ") = " + cost + " — exactly the income."
-    : "H = " + h + " costs 5 × " + h + " = " + (PH * h) + ", leaving only " + (INC - PH * h) +
-      " → 3S = " + (INC - PH * h) + " gives S = " + s.toFixed(1) +
-      ", which costs " + cost + " > 300. Not affordable.";
-  if (budRow >= ROWS.length - 1) {
-    const b = document.getElementById("budBtn");
-    b.disabled = true; b.textContent = "Table complete ✓";
-  }
+  if (budStep >= BUD_STEPS) return;
+  budStep++;
+  if (budStep > 2) budFillRow(budStep - 3);     /* steps 3..6 → rows 0..3 */
+  budPaint();
+}
+function budReset() {
+  budStep = 0;
+  BUD_ROWS.forEach((R, i) => {
+    ["bs-", "bc-", "ba-"].forEach(p => {
+      const el = document.getElementById(p + i);
+      el.textContent = "·";
+      el.classList.add("empty");
+    });
+    document.getElementById("bt-" + i).className = "";
+  });
+  budPaint();
 }
 
 /* ═══════════════ P3 · THE BUDGET LINE ═══════════════ */
@@ -951,6 +1100,241 @@ function shNext() {
 }
 
 /* ═══════════════ CANVAS LABS ═══════════════ */
+/* ═══════════════ P4b · U = F(H,S) AS A ROTATABLE SURFACE ═══════════════
+   The table and the 3-D surface are the same function shown twice. Projection and
+   drag-to-rotate follow the pattern from the Linear Regression deck: rotate about Z by
+   az, tilt by el, then project orthographically. Everything is null-guarded and wrapped
+   in try/catch — a drawing failure must never break paging. */
+const UT_H = [5, 15, 25, 40, 60];        /* hamburger rows of the table */
+const UT_S = [10, 30, 50, 70, 90];       /* soda columns of the table   */
+function buildUTable() {
+  const t = document.getElementById("uTable");
+  if (!t) return;
+  let html = '<tr><th>H \ S</th>' + UT_S.map(s => "<th>" + s + "</th>").join("") + "</tr>";
+  UT_H.forEach(h => {
+    html += '<tr><th>' + h + "</th>" +
+      UT_S.map(s => "<td>" + U(h, s).toFixed(2) + "</td>").join("") + "</tr>";
+  });
+  t.innerHTML = html;
+}
+(function initUtility3D() {
+  try {
+    buildUTable();
+    const svg = document.getElementById("u3dSvg");
+    if (!svg) return;
+    const NSV = "http://www.w3.org/2000/svg";
+    const N = 10;                             /* mesh divisions each way */
+    const UMAX = U(H_MAX, S_MAX);             /* 17.746 — top of the U axis */
+    const AZ0 = -0.62, EL0 = 0.36;            /* starting view */
+    const ZAMP = 1.15, AXX = 1.05;            /* z exaggeration, axis overshoot past the unit cube */
+    const VBW = 620, VBH = 640, PADM = 58;    /* drawing box and the margin labels need */
+    const CXP = VBW / 2, CYP = VBH / 2;
+    /* One scale for every rotation. The scene is centred (cx,cy,cz all symmetric about 0), so
+       the box centre is the right screen centre; we only need the worst-case half-extent over
+       the whole allowed az/el range. Fixing the scale means nothing ever clips and the picture
+       never breathes while you drag — the earlier fixed constants let the "U" label fall off
+       the top at some angles, and the "S" label off the bottom at others. */
+    const SCP = (function fitScale() {
+      const pts = [];
+      [0, 1].forEach(X => [0, 1].forEach(Y => [0, 1.15].forEach(Z => pts.push([X, Y, Z]))));
+      pts.push([AXX, 0, 0], [0, AXX, 0], [0, 0, AXX + 0.08]);
+      let wx = 0, wy = 0;
+      for (let a = -3.2; a <= 3.2; a += 0.1) {
+        for (let e = 0.08; e <= 1.25; e += 0.05) {
+          const ca = Math.cos(a), sa = Math.sin(a), ce = Math.cos(e), se = Math.sin(e);
+          let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+          for (let k = 0; k < pts.length; k++) {
+            const p = pts[k];
+            const cx = p[0] - 0.5, cy = p[1] - 0.5, cz = (p[2] - 0.5) * ZAMP;
+            const px = cx * ca - cy * sa, py = -(cz * ce - (cx * sa + cy * ca) * se);
+            if (px < x0) x0 = px; if (px > x1) x1 = px;
+            if (py < y0) y0 = py; if (py > y1) y1 = py;
+          }
+          wx = Math.max(wx, Math.abs(x0), Math.abs(x1));
+          wy = Math.max(wy, Math.abs(y0), Math.abs(y1));
+        }
+      }
+      return Math.min((VBW / 2 - PADM) / wx, (VBH / 2 - PADM) / wy);
+    })();
+    let az = AZ0, el = EL0, ph = 22.5, ps = 62.5, spinning = false;
+
+    const G = mk("g", {}, null);
+    svg.appendChild(G);
+    const defs = mk("defs", {}, null);
+    svg.appendChild(defs);
+    const arw = mk("marker", { id:"u3darw", markerWidth:5, markerHeight:5,
+                               refX:3.5, refY:2.5, orient:"auto" }, null);
+    arw.appendChild(mk("path", { d:"M0,0 L5,2.5 L0,5 z", fill:"#1f2d3d" }, null));
+    defs.appendChild(arw);
+
+    /* h, s in 0..1 · u in 0..1 → screen */
+    function P3(x, y, z) {
+      const cx = x - 0.5, cy = y - 0.5, cz = (z - 0.5) * ZAMP;
+      const ca = Math.cos(az), sa = Math.sin(az);
+      const rx = cx * ca - cy * sa, ry = cx * sa + cy * ca;
+      const ce = Math.cos(el), se = Math.sin(el);
+      return { x: CXP + rx * SCP, y: CYP - (cz * ce - ry * se) * SCP, d: ry };
+    }
+    const uOf = (h, s) => U(h, s) / UMAX;     /* utility → 0..1 */
+    function seg(p, q, attrs) {
+      G.appendChild(mk("line", Object.assign(
+        { x1:p.x.toFixed(1), y1:p.y.toFixed(1), x2:q.x.toFixed(1), y2:q.y.toFixed(1) }, attrs), null));
+    }
+    function txt(p, s, attrs) {
+      G.appendChild(mk("text", Object.assign(
+        { x:p.x.toFixed(1), y:p.y.toFixed(1), "font-size":26, "font-weight":800,
+          "font-family":'"Segoe UI","Microsoft YaHei",Arial', fill:"#25324b" }, attrs), s));
+    }
+    function dot(p, r, fill) {
+      G.appendChild(mk("circle", { cx:p.x.toFixed(1), cy:p.y.toFixed(1), r:r,
+        fill:fill, stroke:"#fff", "stroke-width":3 }, null));
+    }
+    function redraw() {
+      G.innerHTML = "";
+      let i, j, t;
+      /* floor */
+      for (i = 0; i <= 4; i++) {
+        t = i / 4;
+        seg(P3(t, 0, 0), P3(t, 1, 0), { stroke:"#dce8f2", "stroke-width":1.6 });
+        seg(P3(0, t, 0), P3(1, t, 0), { stroke:"#dce8f2", "stroke-width":1.6 });
+      }
+      /* semi-transparent sheet — paint the quads back to front, and let the tint deepen
+         with height so the ridge reads even before you rotate */
+      const quads = [];
+      for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+          const x0 = i / N, x1 = (i + 1) / N, y0 = j / N, y1 = (j + 1) / N;
+          const z00 = uOf(x0 * H_MAX, y0 * S_MAX), z10 = uOf(x1 * H_MAX, y0 * S_MAX);
+          const z11 = uOf(x1 * H_MAX, y1 * S_MAX), z01 = uOf(x0 * H_MAX, y1 * S_MAX);
+          const a = P3(x0, y0, z00), b = P3(x1, y0, z10), c = P3(x1, y1, z11), d = P3(x0, y1, z01);
+          quads.push({ d: (a.d + b.d + c.d + d.d) / 4, z: (z00 + z10 + z11 + z01) / 4,
+                       pts: [a, b, c, d] });
+        }
+      }
+      quads.sort((p, q) => p.d - q.d);
+      quads.forEach(q => {
+        G.appendChild(mk("polygon", {
+          points: q.pts.map(p => p.x.toFixed(1) + "," + p.y.toFixed(1)).join(" "),
+          fill:"#7C6BD6", "fill-opacity":(0.055 + 0.075 * q.z).toFixed(3), stroke:"none" }, null));
+      });
+      /* wireframe on top so no line is hidden */
+      for (i = 0; i <= N; i++) {
+        t = i / N;
+        let prev = null;
+        for (j = 0; j <= N; j++) {
+          const p = P3(t, j / N, uOf(t * H_MAX, (j / N) * S_MAX));
+          if (prev) seg(prev, p, { stroke:"#7C6BD6", "stroke-width":1.7, "stroke-opacity":.5 });
+          prev = p;
+        }
+        prev = null;
+        for (j = 0; j <= N; j++) {
+          const p = P3(j / N, t, uOf((j / N) * H_MAX, t * S_MAX));
+          if (prev) seg(prev, p, { stroke:"#7C6BD6", "stroke-width":1.7, "stroke-opacity":.5 });
+          prev = p;
+        }
+      }
+      /* axes */
+      const o = P3(0, 0, 0);
+      const ax = [[P3(AXX, 0, 0), "H"], [P3(0, AXX, 0), "S"], [P3(0, 0, AXX + 0.08), "U"]];
+      ax.forEach(a => seg(o, a[0], { stroke:"#1f2d3d", "stroke-width":3.4, "marker-end":"url(#u3darw)" }));
+      ax.forEach(a => {
+        const p = a[0], dx = p.x - o.x, dy = p.y - o.y;
+        const L = Math.sqrt(dx * dx + dy * dy) || 1;
+        /* clamp inside the viewBox — the S axis points down-right and its label used to clip */
+        const lx2 = Math.max(34, Math.min(586, p.x + dx / L * 30));
+        const ly2 = Math.max(30, Math.min(628, p.y + dy / L * 30 + 9));
+        txt({ x: lx2, y: ly2 }, a[1], { "text-anchor":"middle" });
+      });
+      /* probe: the bundle the sliders pick, and the height the function gives it */
+      const z = uOf(ph, ps);
+      const g1 = P3(ph / H_MAX, ps / S_MAX, z), g0 = P3(ph / H_MAX, ps / S_MAX, 0);
+      seg(g0, g1, { stroke:"#2e9e6b", "stroke-width":4, "stroke-dasharray":"10 8" });
+      dot(g0, 6, "rgba(46,158,107,.35)");
+      dot(g1, 11, "#2e9e6b");
+      const uu = U(ph, ps);
+      const right = g1.x < 330;
+      let lx = g1.x + (right ? 26 : -26), ly = g1.y - 22;
+      if (ly < 52) ly = g1.y + 52;
+      lx = Math.max(30, Math.min(590, lx));
+      const lb = mk("text", { x:lx.toFixed(1), y:ly.toFixed(1), "font-size":27, "font-weight":800,
+        "font-family":'"Segoe UI","Microsoft YaHei",Arial', fill:"#1e7a52",
+        "text-anchor": right ? "start" : "end", stroke:"#ffffff", "stroke-width":7,
+        "paint-order":"stroke", "stroke-linejoin":"round" }, "U = " + uu.toFixed(2));
+      G.appendChild(lb);
+    }
+    function syncProbe() {
+      const a = document.getElementById("uH"), b = document.getElementById("uS");
+      if (!a || !b) return;
+      ph = +a.value; ps = +b.value;
+      document.getElementById("uHv").textContent = ph.toFixed(1);
+      document.getElementById("uSv").textContent = ps.toFixed(1);
+      document.getElementById("uRead").textContent = "U = " + U(ph, ps).toFixed(2);
+      redraw();
+    }
+    const raf = cb => (window.requestAnimationFrame || (f => setTimeout(() => f(Date.now()), 16)))(cb);
+    let dragging = false, lx = 0, ly = 0, queued = false;
+    function schedule() {
+      if (queued) return;
+      queued = true;
+      raf(() => { queued = false; redraw(); });
+    }
+    function spinBy(dx, dy) {
+      az += dx * 0.010;
+      el = Math.max(0.08, Math.min(1.25, el + dy * 0.008));
+      schedule();
+    }
+    svg.style.cursor = "grab";
+    svg.addEventListener("mousedown", e => {
+      dragging = true; lx = e.clientX; ly = e.clientY; svg.style.cursor = "grabbing";
+      e.preventDefault();
+    });
+    window.addEventListener("mousemove", e => {
+      if (!dragging) return;
+      spinBy(e.clientX - lx, e.clientY - ly); lx = e.clientX; ly = e.clientY;
+    });
+    window.addEventListener("mouseup", () => { dragging = false; svg.style.cursor = "grab"; });
+    svg.addEventListener("touchstart", e => {
+      if (e.touches.length !== 1) return;
+      dragging = true; lx = e.touches[0].clientX; ly = e.touches[0].clientY;
+    }, { passive: true });
+    svg.addEventListener("touchmove", e => {
+      if (!dragging || e.touches.length !== 1) return;
+      spinBy(e.touches[0].clientX - lx, e.touches[0].clientY - ly);
+      lx = e.touches[0].clientX; ly = e.touches[0].clientY;
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+    svg.addEventListener("touchend", () => { dragging = false; });
+    function loop() { if (!spinning) return; az += 0.012; redraw(); raf(loop); }
+    window.u3dSpin = function () {
+      spinning = !spinning;
+      const b = document.getElementById("u3dSpinBtn");
+      if (b) b.textContent = spinning ? "⏸ Stop" : "▶ Auto-rotate";
+      if (spinning) loop();
+    };
+    window.u3dReset = function () {
+      az = AZ0; el = EL0;
+      if (spinning) window.u3dSpin();
+      const a = document.getElementById("uH"), b = document.getElementById("uS");
+      if (a) a.value = 22.5;
+      if (b) b.value = 62.5;
+      syncProbe();
+    };
+    /* step hooks so the automated checks can drive this page deterministically */
+    window.u3dSet = function (h, s) {
+      const a = document.getElementById("uH"), b = document.getElementById("uS");
+      if (a) a.value = h;
+      if (b) b.value = s;
+      syncProbe();
+    };
+    window.u3dAz = v => { az = v; redraw(); };
+    ["uH", "uS"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", syncProbe);
+    });
+    syncProbe();
+  } catch (e) { /* draw nothing, keep the deck navigable */ }
+})();
+
 const mapCanvas = document.getElementById("mapCanvas");
 const icCanvas  = document.getElementById("icCanvas");
 const optCanvas = document.getElementById("optCanvas");
@@ -1175,84 +1559,200 @@ function drawOpt() {
 }
 
 /* ═══════════════ P6 · MRS (zoomed-in trade) ═══════════════ */
-const MZ = { u: 10, h0: 12, dh: 1, hMin: 8.5, hMax: 14.5, sMin: 38, sMax: 51 };
+/* ═══════════════ P6 · MRS — THE TRADE ALONG ONE CURVE ═══════════════
+   Two things fight each other here: a WIDE window is what makes the bow visible, but a wide
+   window also shrinks the one-hamburger triangle until the legs disappear under the dots.
+   The window below is the compromise — it still covers the whole arc that carries the bow
+   (slope runs from −4.0 at H = 4 to −1.24 at H = 20), while the tighter soda range lifts the
+   vertical leg to ~18 viewBox units, enough to stay clear of the dots.
+   The four reveal steps then hand over to a DRAGGABLE triangle; slide it and the readout box
+   and the gauge update live. */
+const MZ = { u: 10, h0: 12, dh: 1, hMin: 4, hMax: 20, sMin: 28, sMax: 64 };
 const MZS = h => Math.pow(MZ.u - Math.sqrt(h), 2);          /* soda on U = 10 at H = h */
 const MZX = h => 110 + (h - MZ.hMin) / (MZ.hMax - MZ.hMin) * 500;
 const MZY = s => 400 - (s - MZ.sMin) / (MZ.sMax - MZ.sMin) * 330;
 const MRS_AT = h => MZS(h - 1) - MZS(h);                    /* sodas needed back for one hamburger */
+/* The drag stops at H = 16 so the live triangle never runs into the fixed comparison triangle
+   at H = 18 — that one goes on to show "even further right". */
+const MZ_DRAG = { lo: 6, hi: 16 };
+const MZ_GHOST = 18;                                        /* the fixed comparison point of step ④ */
+let mzH = MZ.h0, mzLive = false;
+
 function buildMRS() {
   const st = document.getElementById("mrsStatic");
   if (!st || st.dataset.done) return;
   st.dataset.done = "1";
-  /* grid */
-  for (let h = 9; h <= 14; h++) st.appendChild(mk("line", {class:"ggrid", x1:MZX(h), y1:60, x2:MZX(h), y2:400}));
-  for (let s2 = 38; s2 <= 50; s2 += 2) st.appendChild(mk("line", {class:"ggrid", x1:110, y1:MZY(s2), x2:610, y2:MZY(s2)}));
-  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:400, x2:610, y2:400}));
-  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:60, x2:110, y2:400}));
-  for (let h = 9; h <= 14; h++) st.appendChild(mk("text", {class:"gtick", x:MZX(h), y:428, "text-anchor":"middle"}, h));
-  for (let s2 = 38; s2 <= 50; s2 += 2) st.appendChild(mk("text", {class:"gtick", x:96, y:MZY(s2)+8, "text-anchor":"end"}, s2));
-  st.appendChild(mk("text", {class:"glabel", x:360, y:462, "text-anchor":"middle"}, "Hamburgers H →"));
-  st.appendChild(mk("text", {class:"glabel", x:30, y:240, transform:"rotate(-90 30 240)", "text-anchor":"middle"}, "Soda S →"));
-  st.appendChild(mk("text", {class:"glabel violet", x:130, y:86}, "zoomed in · U = 10"));
+  /* grid + frame */
+  for (let h = MZ.hMin; h <= MZ.hMax; h += 4)
+    st.appendChild(mk("line", { class:"ggrid", x1:MZX(h), y1:56, x2:MZX(h), y2:400 }));
+  for (let s2 = 30; s2 <= 60; s2 += 10)
+    st.appendChild(mk("line", { class:"ggrid", x1:110, y1:MZY(s2), x2:610, y2:MZY(s2) }));
+  st.appendChild(mk("line", { class:"gaxis", x1:110, y1:400, x2:610, y2:400 }));
+  st.appendChild(mk("line", { class:"gaxis", x1:110, y1:56, x2:110, y2:400 }));
+  for (let h = MZ.hMin; h <= MZ.hMax; h += 4)
+    st.appendChild(mk("text", { class:"gtick", x:MZX(h), y:428, "text-anchor":"middle" }, h));
+  for (let s2 = 30; s2 <= 60; s2 += 10)
+    st.appendChild(mk("text", { class:"gtick", x:96, y:MZY(s2) + 8, "text-anchor":"end" }, s2));
+  st.appendChild(mk("text", { class:"glabel", x:360, y:462, "text-anchor":"middle" }, "Hamburgers H →"));
+  st.appendChild(mk("text", { class:"glabel", x:30, y:200, transform:"rotate(-90 30 200)",
+    "text-anchor":"middle" }, "Soda S →"));
 
-  /* the local curve + the two points */
-  const c1 = document.getElementById("mrsStatic");
+  /* the whole curve — this arc is where the bow shows */
   let d = "", started = false;
   for (let h = MZ.hMin; h <= MZ.hMax; h += 0.05) {
-    const s2 = MZS(h); if (s2 < MZ.sMin || s2 > MZ.sMax) continue;
-    d += (started ? " L" : "M") + MZX(h).toFixed(1) + " " + MZY(s2).toFixed(1); started = true;
+    const s2 = MZS(h);
+    if (s2 < MZ.sMin || s2 > MZ.sMax) continue;
+    d += (started ? " L" : "M") + MZX(h).toFixed(1) + " " + MZY(s2).toFixed(1);
+    started = true;
   }
-  c1.appendChild(mk("path", {class:"gline violet reveal s1", d:d, style:"stroke:var(--violet)"}));
-  const s0 = MZS(MZ.h0), s1 = MZS(MZ.h0 - MZ.dh);
-  const c1p = document.getElementById("mrsStep");
-  c1p.appendChild(mk("circle", {class:"gpoint violet reveal s1", cx:MZX(MZ.h0), cy:MZY(s0), r:12}));
-  c1p.appendChild(mk("text", {class:"glabel violet reveal s1", x:MZX(MZ.h0)+16, y:MZY(s0)-14},
-    "(" + MZ.h0 + ", " + s0.toFixed(1) + ")"));
-  c1p.appendChild(mk("text", {class:"glabel sub reveal s1", x:MZX(MZ.h0)+16, y:MZY(s0)+26}, "U = 10"));
-  /* ② one hamburger away (move left, same soda) */
-  c1p.appendChild(mk("line", {class:"gdash reveal s2", stroke:"var(--accent-red)",
-    x1:MZX(MZ.h0), y1:MZY(s0), x2:MZX(MZ.h0 - MZ.dh), y2:MZY(s0)}));
-  c1p.appendChild(mk("circle", {class:"gpoint red reveal s2", cx:MZX(MZ.h0 - MZ.dh), cy:MZY(s0), r:11}));
-  c1p.appendChild(mk("text", {class:"glabel red reveal s2", x:MZX(MZ.h0 - MZ.dh) - 6,
-    y:MZY(s0) + 20, "text-anchor":"end"}, "−1 hamburger"));
-  c1p.appendChild(mk("text", {class:"glabel red reveal s2", x:240, y:360,
-    "text-anchor":"middle"}, "worse off"));
-  /* ③ sodas back up to the same curve */
-  const g3 = document.getElementById("mrsMore");
-  g3.appendChild(mk("line", {class:"gdash reveal s3", stroke:"var(--accent-green)",
-    x1:MZX(MZ.h0 - MZ.dh), y1:MZY(s0), x2:MZX(MZ.h0 - MZ.dh), y2:MZY(s1)}));
-  g3.appendChild(mk("circle", {class:"gpoint green reveal s3", cx:MZX(MZ.h0 - MZ.dh), cy:MZY(s1), r:12}));
-  g3.appendChild(mk("text", {class:"glabel green reveal s3", x:MZX(MZ.h0 - MZ.dh) + 16, y:MZY(s1) - 14},
-    "add " + MRS_AT(MZ.h0).toFixed(1) + " sodas"));
-  g3.appendChild(mk("text", {class:"glabel green reveal s3", x:505, y:305},
-    "MRS = " + MRS_AT(MZ.h0).toFixed(1)));
-  /* ④ further right it is cheaper */
-  g3.appendChild(mk("line", {class:"gdash reveal s4", stroke:"var(--accent-orange)",
-    x1:MZX(13), y1:MZY(MZS(13)), x2:MZX(12), y2:MZY(MZS(13))}));
-  g3.appendChild(mk("text", {class:"glabel reveal s4", fill:"#c47f0a", x:540, y:388,
-    "text-anchor":"end"}, "here only " + MRS_AT(13).toFixed(1) + " → MRS falls"));
+  st.appendChild(mk("path", { class:"gline violet reveal s1", d:d, style:"stroke:var(--violet)" }));
+
+  /* step ④'s fixed comparison: the same trade at H = 18 — a smaller triangle */
+  const gm = document.getElementById("mrsMore"), gs0 = MZS(MZ_GHOST), gs1 = MZS(MZ_GHOST - 1);
+  gm.appendChild(mk("line", { class:"gdash reveal s4", stroke:"var(--accent-orange)",
+    x1:MZX(MZ_GHOST), y1:MZY(gs0), x2:MZX(MZ_GHOST - 1), y2:MZY(gs0) }));
+  gm.appendChild(mk("line", { class:"gdash reveal s4", stroke:"var(--accent-orange)",
+    x1:MZX(MZ_GHOST - 1), y1:MZY(gs0), x2:MZX(MZ_GHOST - 1), y2:MZY(gs1) }));
+  gm.appendChild(mk("text", { class:"glabel reveal s4", fill:"#c47f0a",
+    x:604, y:MZY(gs0) + 40, "text-anchor":"end" }, "here only " + MRS_AT(MZ_GHOST).toFixed(1)));
+  gm.appendChild(mk("text", { class:"glabel reveal s4", fill:"#c47f0a",
+    x:MZX(MZ_GHOST) + 6, y:MZY(gs0) - 14 }, "H = " + MZ_GHOST));
+
+  /* The live, draggable triangle. Cards ② and ③ carry the explanation, so the figure only has
+     to be readable: small dots (big ones used to swallow the one-hamburger legs) and a fixed
+     readout box in the top-right, where the curve never reaches. */
+  const mv = document.getElementById("mrsMove");
+  mv.appendChild(mk("line", { id:"mzHleg", class:"gdash reveal s2", stroke:"var(--accent-red)",
+    "stroke-width":6 }));
+  mv.appendChild(mk("line", { id:"mzVleg", class:"gdash reveal s3", stroke:"var(--accent-green)",
+    "stroke-width":6 }));
+  mv.appendChild(mk("circle", { id:"mzPtdot", class:"gpoint violet reveal s1", r:7 }));
+  mv.appendChild(mk("circle", { id:"mzReddot", class:"gpoint red reveal s2", r:6 }));
+  mv.appendChild(mk("circle", { id:"mzGrndot", class:"gpoint green reveal s3", r:6.5 }));
+  /* No text hangs off the triangle: near the y-axis there is nowhere for a label to sit that
+     does not hit the ticks. The legs are colour-matched to cards ② and ③, and every number —
+     including the "per −1 hamburger" reminder — lives in this fixed box. */
+  const box = mk("g", { id:"mzBox", class:"reveal s1" }, null);
+  box.appendChild(mk("rect", { x:320, y:46, width:294, height:170, rx:12,
+    fill:"#ffffff", "fill-opacity":.93, stroke:"var(--violet)", "stroke-width":2 }, null));
+  box.appendChild(mk("text", { id:"mzBoxIC", class:"glabel sub", x:338, y:78 }, "U = 10"));
+  box.appendChild(mk("text", { id:"mzBoxH", class:"glabel", x:338, y:110 }, ""));
+  box.appendChild(mk("text", { id:"mzBoxM", class:"glabel violet", x:338, y:142 }, ""));
+  box.appendChild(mk("text", { id:"mzBoxD", class:"glabel sub", x:338, y:170 }, "per −1 hamburger"));
+  /* a gauge: the MRS leg is only a few pixels of curve, so the number alone would not show
+     the change. This bar is scaled to the MRS itself. */
+  box.appendChild(mk("rect", { x:338, y:182, width:258, height:17, rx:8, fill:"#eef2f7" }, null));
+  box.appendChild(mk("rect", { id:"mzBar", x:338, y:182, width:200, height:17, rx:8,
+    fill:"var(--violet)" }, null));
+  mv.appendChild(box);
+  mzRender();
 }
+
+/* redraw the triangle for the current H — called by the drag, and by the step hooks */
+function mzRender() {
+  const g = id => document.getElementById(id);
+  if (!g("mzHleg")) return;
+  const h = mzH, s0 = MZS(h), s1 = MZS(h - 1), m = MRS_AT(h);
+  const x1 = MZX(h), x0 = MZX(h - 1), y0 = MZY(s0), y1 = MZY(s1);
+  g("mzHleg").setAttribute("x1", x1); g("mzHleg").setAttribute("y1", y0);
+  g("mzHleg").setAttribute("x2", x0); g("mzHleg").setAttribute("y2", y0);
+  g("mzVleg").setAttribute("x1", x0); g("mzVleg").setAttribute("y1", y0);
+  g("mzVleg").setAttribute("x2", x0); g("mzVleg").setAttribute("y2", y1);
+  g("mzPtdot").setAttribute("cx", x1); g("mzPtdot").setAttribute("cy", y0);
+  g("mzReddot").setAttribute("cx", x0); g("mzReddot").setAttribute("cy", y0);
+  g("mzGrndot").setAttribute("cx", x0); g("mzGrndot").setAttribute("cy", y1);
+  g("mzBoxH").textContent = "H = " + h.toFixed(1) + " · S = " + s0.toFixed(1);
+  g("mzBoxM").textContent = "MRS = " + m.toFixed(2);
+  g("mzBar").setAttribute("width", Math.max(12, Math.min(258, 258 * m / 3.6)).toFixed(0));
+  if (mzLive) {
+    document.getElementById("mrsNote").textContent =
+      "H = " + h.toFixed(1) + " → MRS = " + m.toFixed(2) +
+      " · at H = " + MZ_GHOST + " the same trade costs only " + MRS_AT(MZ_GHOST).toFixed(2) +
+      " → MRS falls as H rises";
+  }
+}
+
 let mrsStep = 0;
 const MRS_STEPS = [
-  { btn:"② Take a hamburger away", note:"Step ② — one hamburger fewer, same soda: he drops below his own curve, so he is worse off." },
-  { btn:"③ Add sodas back", note:"Step ③ — buying sodas climbs him back to U = 10, and the amount needed is the MRS at that point." },
-  { btn:"All shown ✓", note:"Step ④ — one hamburger further right costs less, so MRS falls: that is why indifference curves are convex." }
+  { btn:"② Take a hamburger away", note:"Step ② — one hamburger fewer, same soda: he drops below his own curve." },
+  { btn:"③ Add sodas back", note:"Step ③ — the sodas needed to climb back to the curve are the MRS." },
+  { btn:"④ Further right it is cheaper", note:"Step ④ — further right the same trade costs fewer sodas, so the MRS falls." },
+  { btn:"All shown ✓", note:"Now drag the triangle along the curve and watch the MRS shrink — that falling MRS is what makes the curve convex." }
 ];
 function mrsNext() {
+  if (mrsStep >= 4) return;
   mrsStep++;
   showStep(".reveal.s" + mrsStep, 150);
   const st = MRS_STEPS[mrsStep - 1];
-  if (st) { document.getElementById("mrsBtn").textContent = st.btn; document.getElementById("mrsNote").textContent = st.note; }
-  if (mrsStep >= 4) document.getElementById("mrsBtn").disabled = true;
+  if (st) {
+    document.getElementById("mrsBtn").textContent = st.btn;
+    document.getElementById("mrsNote").textContent = st.note;
+  }
+  if (mrsStep >= 4) {
+    document.getElementById("mrsBtn").disabled = true;
+    mzLive = true;                                   /* dragging takes over from here */
+    mzRender();
+  }
 }
+function mrsReset() {
+  mrsStep = 0; mzLive = false; mzH = MZ.h0;
+  document.querySelectorAll(".slide.active .reveal").forEach(el => el.classList.remove("show"));
+  const b = document.getElementById("mrsBtn");
+  b.disabled = false; b.textContent = "① Show the point";
+  document.getElementById("mrsNote").textContent = "Step ① — start from one point on the curve.";
+  mzRender();
+}
+/* ---- drag the triangle along the curve (live only once the steps are done) ---- */
+(function mzDragInit() {
+  const svg = document.getElementById("mrsSvg");
+  if (!svg) return;
+  const VBW = 700;
+  function toH(clientX) {
+    const r = svg.getBoundingClientRect();
+    if (!r.width) return mzH;
+    const vx = (clientX - r.left) / r.width * VBW;
+    const h = MZ.hMin + (vx - 110) / 500 * (MZ.hMax - MZ.hMin);
+    return Math.max(MZ_DRAG.lo, Math.min(MZ_DRAG.hi, h));
+  }
+  function apply(clientX) {
+    if (!mzLive) return;
+    mzH = Math.round(toH(clientX) * 10) / 10;
+    mzRender();
+  }
+  let down = false;
+  svg.addEventListener("mousedown", e => {
+    if (!mzLive) return;
+    down = true; svg.style.cursor = "grabbing"; apply(e.clientX); e.preventDefault();
+  });
+  window.addEventListener("mousemove", e => { if (down) apply(e.clientX); });
+  window.addEventListener("mouseup", () => { if (down) { down = false; svg.style.cursor = "grab"; } });
+  svg.addEventListener("touchstart", e => {
+    if (!mzLive || e.touches.length !== 1) return;
+    down = true; apply(e.touches[0].clientX);
+  }, { passive: true });
+  svg.addEventListener("touchmove", e => {
+    if (!down || e.touches.length !== 1) return;
+    apply(e.touches[0].clientX);
+    if (e.cancelable) e.preventDefault();
+  }, { passive: false });
+  svg.addEventListener("touchend", () => { down = false; });
+  /* deterministic hooks for the automated checks */
+  window.mrsSetH = function (h) {
+    mzH = Math.max(MZ_DRAG.lo, Math.min(MZ_DRAG.hi, h));
+    mzRender();
+    return mzH;
+  };
+  window.mrsState = () => ({ h: mzH, mrs: MRS_AT(mzH) });
+})();
 
 /* ═══════════════ P8 · PROPERTIES ═══════════════ */
 let propStep = 0;
 const PROP_STEPS = [
   { btn:"② Property 2", note:"More of a good can never leave utility unchanged — so a curve cannot be upward sloping." },
   { btn:"③ Property 3", note:"Because MU falls, the curve must flatten to the right: it is convex to the origin." },
-  { btn:"⑤ Why convex?", note:"Two curves meeting would give one bundle two utilities — logically impossible." },
-  { btn:"All shown ✓", note:"Now the key: the SHAPE of a curve is a statement about marginal utility. Diminishing MU → convex; constant MU → straight lines; increasing MU → bowed the other way." }
+  { btn:"④ Property 4", note:"Two curves meeting would give one bundle two utilities — logically impossible." },
+  { btn:"⑤ Why convex?", note:"Now the key: the SHAPE of a curve is a statement about marginal utility — see the three panels on the right." },
+  { btn:"All shown ✓", note:"Diminishing MU → convex · constant MU → straight lines · increasing MU → bowed the other way." }
 ];
 function propNext() {
   propStep++;
@@ -1260,6 +1760,13 @@ function propNext() {
   const s = PROP_STEPS[propStep - 1];
   if (s) { document.getElementById("propBtn").textContent = s.btn; document.getElementById("propNote").textContent = s.note; }
   if (propStep >= 5) document.getElementById("propBtn").disabled = true;
+}
+function propReset() {
+  propStep = 0;
+  document.querySelectorAll(".slide.active .reveal").forEach(el => el.classList.remove("show"));
+  const b = document.getElementById("propBtn");
+  b.disabled = false; b.textContent = "① Property 1";
+  document.getElementById("propNote").textContent = "Step ① — why must a higher curve mean more utility?";
 }
 
 /* P8b · the three shapes (why convex = diminishing MU) */
@@ -1338,11 +1845,12 @@ const SOL_STEPS = [
   { btn:"All shown ✓", note:"Step ③ — tangency means equal slopes, and rearranging MU_H/MU_S = P_H/P_S gives MU_H/P_H = MU_S/P_S: equal utility per dollar." }
 ];
 function solNext() {
+  if (solStep >= 3) return;
   solStep++;
   showStep(".reveal.s" + solStep, 160);
   const st = SOL_STEPS[solStep - 1];
   if (st) { document.getElementById("solBtn").textContent = st.btn; document.getElementById("solNote").textContent = st.note; }
-  if (solStep >= 4) document.getElementById("solBtn").disabled = true;
+  if (solStep >= 3) document.getElementById("solBtn").disabled = true;
 }
 
 /* ═══════════════ P10 · MARIA step by step ═══════════════ */
@@ -1461,17 +1969,34 @@ function theoFill(upTo) {
     }
   }
 }
-function theoCandidates() {                           /* every MU/$ value that appears on both sides */
+/* One colour per matching PAIR, so the student can see WHICH snack cell pairs with WHICH movie
+   cell. Six common MU/$ values → six distinct (light, dark-text) fills. */
+const THEO_PAIRCOLS = ["#cfe8ff", "#ffe0d6", "#d9f2e3", "#fde8f5", "#fff2cc", "#e3e0ff"];
+function theoCommonValues() {          /* the MU/$ values that appear on BOTH sides, descending */
+  const sSet = [], mSet = [];
+  for (let i = 0; i < 8; i++) {
+    sSet.push(+(THEO_MUS(i) / THEO.PS).toFixed(1));
+    mSet.push(+(THEO_MUM(i) / THEO.PM).toFixed(1));
+  }
+  const common = sSet.filter(v => mSet.indexOf(v) >= 0);
+  return common.filter((v, i) => common.indexOf(v) === i);
+}
+function theoCandidates() {                           /* mark each pair in its own colour */
   const sSet = [], mSet = [];
   for (let i = 0; i < 8; i++) { sSet.push(+(THEO_MUS(i) / THEO.PS).toFixed(1)); mSet.push(+(THEO_MUM(i) / THEO.PM).toFixed(1)); }
+  const common = theoCommonValues();
   for (let i = 0; i < 8; i++) {
     const a1 = document.getElementById("trs-" + i), b1 = document.getElementById("trm-" + i);
-    if (a1 && mSet.indexOf(sSet[i]) >= 0) a1.classList.add("eq");
-    if (b1 && sSet.indexOf(mSet[i]) >= 0) b1.classList.add("eq");
+    const ka = common.indexOf(sSet[i]), kb = common.indexOf(mSet[i]);
+    if (a1 && ka >= 0) { a1.classList.add("eq"); a1.style.background = THEO_PAIRCOLS[ka % THEO_PAIRCOLS.length]; }
+    if (b1 && kb >= 0) { b1.classList.add("eq"); b1.style.background = THEO_PAIRCOLS[kb % THEO_PAIRCOLS.length]; }
   }
 }
 function theoAnswer() {                               /* only the pair that also clears the budget */
-  document.querySelectorAll("#theoTable td.eq").forEach(td => td.classList.remove("eq"));
+  document.querySelectorAll("#theoTable td.eq").forEach(td => {
+    td.classList.remove("eq");
+    td.style.background = "";
+  });
   [["trs-", THEO_BEST.s - 1], ["trm-", THEO_BEST.m - 1]].forEach(([pre, idx]) => {
     const cell = document.getElementById(pre + idx);
     if (cell) cell.classList.add("best");
@@ -1481,7 +2006,7 @@ let theoStep = 0;
 const THEO_STEPS = [
   { btn:"Step 2 · MU per dollar", note:"Step 1 — MU is ΔTU: snacks 20, 16, 14, 12, 10, 8, 6, 4; movies 40, 32, 24, 20, 16, 12, 10, 6." },
   { btn:"Step 3 · Equimarginal ratios", note:"Step 2 — MU ÷ price: snacks 4.0, 3.2, 2.8, 2.4, 2.0, 1.6, 1.2, 0.8; movies 4.0, 3.2, 2.4, 2.0, 1.6, 1.2, 1.0, 0.6." },
-  { btn:"Step 4 · Verify the budget", note:"Step 3 — several pairs match (4.0, 3.2, 2.4, 2.0, 1.6, 1.2 all appear on both sides). The ratios alone cannot tell you which one is the answer." },
+  { btn:"Step 4 · Verify the budget", note:"Step 3 — six ratios appear on both sides, one colour per pair. The ratios alone cannot say which pair is the answer." },
   { btn:"All shown ✓", note:"Step 4 — the budget check narrows it down: only 4 snacks + 3 movies spends exactly $50, so MU/$ = 2.4 is the answer (green cells)." }
 ];
 function theoNext() {
@@ -1672,14 +2197,14 @@ function simView_(v) { simView = v; simRender(); }
 
 /* ═══════════════ P12 · SUMMARY ═══════════════ */
 const SUM_STEPS = [
-  { next:"Reveal ②", note:"① MUx/Px = MUy/Py — equal utility per dollar is the whole rule." },
-  { next:"Reveal ③", note:"② The procedure: TU → MU → MU ÷ P → buy the highest MU/P → stop when they are equal and the money is gone → check the budget." },
-  { next:"All shown ✓", note:"③ In the exam, quote the two ratios with a number, then the budget line i·Px + j·Py = income." }
+  { next:"Reveal ②", note:"① MUx/Px = MUy/Py — the last dollar spent on each good must buy the same utility." },
+  { next:"All shown ✓", note:"② Write both conditions — equal MU per dollar, income all spent — then solve them." }
 ];
 const SUM_HINT = "Try the blanks yourself first — then reveal them one card at a time.";
 let sumStep = 0, sumTimers = [];
 function sumNext() {
   const slide = slides[cur];
+  if (sumStep >= SUM_STEPS.length) return;
   sumStep++;
   slide.querySelectorAll('.blank[data-step="' + sumStep + '"]').forEach((el, i) =>
     sumTimers.push(setTimeout(() => { el.textContent = el.dataset.ans; el.classList.add("filled"); }, 180 * (i + 1))));
