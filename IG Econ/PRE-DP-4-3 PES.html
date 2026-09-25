@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRE-DP 4-3 - Price elasticity of supply</title>
+<style>
+:root{
+  --blue:#1E88E5; --blue2:#1565C0; --red:#C62828; --green:#2E7D32; --teal:#00838F;
+  --purple:#7C3AED; --amber:#F0B429; --ink:#1a3a5c; --gray:#5b6b7b; --line:#e6eef7;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI","Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;background:#eef3f8;color:var(--ink);overflow:hidden;}
+.view{position:relative;width:100vw;height:100vh;overflow:hidden;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;padding:clamp(16px,2.8vh,38px) clamp(22px,3.2vw,52px) clamp(60px,8.4vh,84px);font-size:clamp(22px,1.9vw,30px);line-height:1.5;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;}
+.slide.active{opacity:1;pointer-events:auto;}
+.slide.cover{justify-content:center;align-items:flex-start;}
+.content{flex:1;min-height:0;display:flex;flex-direction:column;}
+.course-tag{font-size:clamp(22px,1.35vw,24px);font-weight:800;letter-spacing:.06em;color:var(--blue2);text-transform:uppercase;margin-bottom:6px;}
+h1{font-size:clamp(30px,3.05vw,46px);line-height:1.16;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;}
+.sub{font-size:clamp(22px,1.85vw,29px);color:var(--gray);margin-bottom:10px;}
+hr{border:0;border-top:2px solid var(--line);margin:6px 0 14px;}
+.card{background:#fff;border-radius:14px;padding:clamp(10px,1.5vh,16px) clamp(12px,1.2vw,18px);box-shadow:0 2px 10px rgba(26,58,92,.07);border:2px solid var(--line);}
+.card h3{font-size:clamp(22px,1.75vw,27px);font-weight:800;margin-bottom:6px;}
+.card p{font-size:clamp(22px,1.62vw,26px);line-height:1.42;}
+.card.r{border-color:#f6d7d7;background:#fffafa;} .card.r h3{color:var(--red);}
+.card.g{border-color:#d6ecd8;background:#f7fdf8;} .card.g h3{color:var(--green);}
+.card.t{border-color:#cfe9ec;background:#f6fdfe;} .card.t h3{color:var(--teal);}
+.card.p{border-color:#e6dcfb;background:#fbf9ff;} .card.p h3{color:var(--purple);}
+.card.a{border-color:#f6e3bd;background:#fffdf6;} .card.a h3{color:#a57d12;}
+.card.blue h3{color:var(--blue2);}
+.note{border-radius:10px;padding:clamp(8px,1.1vh,12px) 14px;font-size:clamp(22px,1.55vw,25px);line-height:1.4;}
+.note p+p{margin-top:4px;}
+.txt{display:flex;flex-direction:column;gap:8px;}
+.compact{display:flex;flex-direction:column;gap:8px;}
+.chart{background:#fff;border-radius:14px;border:2px solid var(--line);padding:6px;box-shadow:0 2px 10px rgba(26,58,92,.06);}
+.panel{background:#F8FBFF;border:2px solid var(--line);border-radius:12px;padding:10px 12px;}
+.panel .b{font-weight:800;color:var(--ink);font-size:clamp(22px,1.6vw,26px);}
+.ends{display:flex;justify-content:space-between;font-size:clamp(22px,1.35vw,23px);color:var(--gray);font-weight:700;margin-top:2px;}
+.big-btn{border:0;border-radius:10px;padding:9px 16px;font-size:clamp(22px,1.5vw,25px);font-weight:800;color:#fff;background:var(--blue2);cursor:pointer;font-family:inherit;}
+.big-btn.ghost{background:#e8eef6;color:var(--ink);}
+.big-btn:disabled{opacity:.55;cursor:default;}
+.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:clamp(22px,1.4vw,24px);font-weight:800;color:var(--gray);cursor:pointer;font-family:inherit;}
+.chip.on{background:var(--blue2);color:#fff;border-color:var(--blue2);}
+.rgrp{display:none;}
+.rgrp.show{display:block;}
+.rbtn-wrap{position:absolute;left:50%;transform:translateX(-50%);bottom:clamp(52px,7.6vh,76px);display:none;gap:10px;z-index:20;}
+table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(26,58,92,.07);}
+.data-table th{background:#eaf2fb;color:var(--ink);font-weight:800;padding:8px 10px;font-size:clamp(22px,1.45vw,25px);border:2px solid #dbe7f3;}
+.data-table td{padding:8px 10px;font-size:clamp(22px,1.5vw,26px);border:2px solid #e9f0f8;text-align:center;vertical-align:middle;}
+.data-table tr.hit td{background:#f6fdf8;}
+.blank{font-weight:800;color:var(--blue2);}
+.blank.empty{color:#a9b8c8;}
+.rgrid{display:flex;gap:8px;flex-wrap:wrap;}
+.rgrid.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.rcell{background:#F8FBFF;border:2px solid var(--line);border-radius:10px;padding:5px 10px;flex:1 1 30%;min-width:120px;}
+.rcell .k{display:block;font-size:clamp(22px,1.35vw,23px);color:var(--gray);font-weight:700;}
+.rcell .v{font-size:clamp(22px,1.65vw,27px);font-weight:800;}
+.rcell .v.pur{color:var(--purple);} .rcell .v.teal{color:var(--teal);}
+.bbar{display:flex;height:46px;border-radius:10px;overflow:hidden;border:2px solid var(--line);}
+.bseg{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(22px,1.5vw,25px);color:#fff;white-space:nowrap;overflow:hidden;}
+.bseg.c{background:var(--purple);} .bseg.p{background:var(--teal);}
+.g1-box{background:#fff;border-radius:14px;border:2px solid var(--line);padding:14px 16px;box-shadow:0 2px 10px rgba(26,58,92,.07);}
+.scenario{font-size:clamp(22px,1.85vw,30px);font-weight:700;margin:6px 0 10px;min-height:2.4em;}
+.qbtns{display:flex;flex-direction:column;gap:8px;}
+.qbtns button{text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-size:clamp(22px,1.55vw,26px);font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;}
+.qbtns button.correct{background:#e8f6ea;border-color:#b6ddba;}
+.qbtns button.wrong{background:#fdeceb;border-color:#f3c6c3;}
+.g1-fb{font-size:clamp(22px,1.5vw,25px);font-weight:800;min-height:1.6em;margin-top:6px;}
+.result-box{display:none;text-align:center;}
+.result-box .big{font-size:clamp(34px,3.4vw,52px);font-weight:900;color:var(--blue2);margin:6px 0 10px;}
+.dots{display:flex;gap:6px;}
+.dots span{width:9px;height:9px;border-radius:50%;background:#c8d6e5;cursor:pointer;}
+.dots span.on{background:var(--blue2);}
+.nav{position:absolute;left:0;right:0;bottom:0;height:clamp(46px,6.4vh,62px);background:#fff;border-top:2px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,2vw,30px);z-index:30;}
+.nav button{border:0;background:var(--blue2);color:#fff;width:38px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;font-family:inherit;}
+.nav button:disabled{opacity:.4;}
+.nav .copy,.nav .page{font-size:clamp(22px,1.3vw,22px);color:var(--gray);font-weight:700;}
+.author{font-size:clamp(22px,1.4vw,24px);color:var(--gray);letter-spacing:.14em;font-weight:800;}
+.sep{width:120px;height:6px;border-radius:3px;background:var(--blue);margin:14px 0;}
+.botbar{position:absolute;left:0;bottom:0;width:100%;height:12px;background:linear-gradient(90deg,var(--blue),#5aa9f0);}
+.gray{color:#5b6b7b;}
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 8px;}
+.frac .top{border-bottom:3px solid var(--blue2);padding:0 12px 2px;}
+.frac .bot{padding:2px 12px 0;}
+</style>
+</head>
+<body>
+<div class="view" id="app">
+
+<!-- shared arrow heads -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ahBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2E4A6B"/></marker><marker id="ahSlim" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 1 L 8 5 L 0 9 z" fill="#1E88E5"/></marker>
+  <marker id="ahRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#C62828"/></marker>
+  <marker id="ahGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2E7D32"/></marker>
+</defs></svg>
+
+<!-- global reveal button -->
+<div class="rbtn-wrap" id="rbtnWrap">
+  <button class="big-btn" id="rbtn">Reveal more ▶</button>
+</div>
+
+<!-- ══════ 1 · COVER ══════ -->
+<div class="slide cover" data-i="0">
+  <div style="text-align:center;width:100%;">
+  <div class="course-tag" style="text-align:center;">IGCSE ECONOMICS 0455 · UNIT 2</div>
+  <h1 style="font-size:clamp(46px,5.6vw,84px);line-height:1.1;text-align:center;margin-bottom:18px;">Can a price rise<br>grow more food?</h1>
+  <div class="sep" style="margin:18px auto;"></div>
+  <div style="font-size:clamp(28px,3.4vw,46px);color:var(--blue2);font-weight:800;margin-bottom:14px;">Price elasticity of supply (PES)</div>
+  <div style="font-size:clamp(24px,2.6vw,34px);color:#5b6b7b;">A famine, a price cap — and what the supply curve says about both.</div>
+  <div class="author" style="margin-top:34px;">DR. JIA · © 2026</div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ══════ 2 · INTRO: THE FAMINE QUESTION ══════ -->
+<div class="slide" data-i="1">
+  <div class="content">
+  <div class="course-tag">THE FAMINE · 饥荒</div>
+  <h1>Bad harvest. Empty shelves. Raise the price?</h1>
+  <div class="sub">One region, one failed harvest, one hard decision — and two voices arguing.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="card">
+        <h3 class="blue">The situation</h3>
+        <p>The harvest fails. Grain is short: <b>queues, empty shelves, anger</b>. The government must decide — <b>let the price rise</b>, or <b>cap it</b>?</p>
+      </div>
+      <div class="card g">
+        <h3 class="green">"Let it rise"</h3>
+        <p>A higher price pulls out <b>more supply</b> — growers and traders ship grain in, so <b>more people get food</b>.</p>
+      </div>
+      <div class="card r">
+        <h3 class="dr">"Cap the price"</h3>
+        <p>Cap it, or the poorest <b>cannot eat</b>. Hunger becomes a <b>money</b> problem, not a shortage.</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Your call?</b> Hold it — the famine comes back on the second-to-last case page, with today's tool in hand.</p>
+      </div>
+    </div>
+    <div class="compact" style="flex:1.05;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div style="border-radius:14px;overflow:hidden;border:2px solid var(--line);flex:0 0 auto;">
+        <img src="images/pes-1.jpg" alt="" style="display:block;width:100%;height:300px;object-fit:cover;">
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="big-btn" id="faAn" style="background:var(--green);">Voice A ▶</button>
+        <button class="big-btn" id="faBn" style="background:var(--red);">Voice B ▶</button>
+      </div>
+      <div id="faA" style="visibility:hidden;">
+        <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+          <p><b>Voice A assumes supply <u>can</u> respond to price.</b> Steep or flat — nobody has checked. That is the question of the day.</p>
+        </div>
+      </div>
+      <div id="faB" style="visibility:hidden;">
+        <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);">
+          <p><b>Voice B assumes the problem is money, not quantity.</b> Also decided by the same number — and by what a price rise does to <b>hoarding</b>.</p>
+        </div>
+      </div>
+      <p class="gray" style="margin:0;">Both voices argue about the <b>same</b> thing: how much supply can answer a price. Today we measure it.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 3 · WHAT PES MEASURES ══════ -->
+<div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">SAME PRICE RISE · 直觉</div>
+  <h1>Same price rise — two very different answers</h1>
+  <div class="sub">Price rises <b>¥30 → ¥36</b> (a fixed <b>+20%</b>). Watch how differently quantity supplied answers.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;">
+      <div class="rgrp show">
+        <div class="card blue">
+          <h3 class="blue">The experiment</h3>
+          <p>Hold the price rise <b>fixed</b> (+20%) — the only thing that differs is the <b>steepness of supply</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card a">
+          <h3 style="color:#a57d12;">① Steep supply</h3>
+          <p>Quantity <b>5 → 5.3</b>: the same +20% price rise brings <b>hardly any</b> extra supply.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card t">
+          <h3 class="teal">② Flat supply</h3>
+          <p>Quantity <b>5 → 11</b>: the same +20% price rise brings <b>a lot</b> of extra supply.</p>
+        </div>
+        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:8px;">
+          <p><b>Same price rise, very different quantity answer.</b> Everything else equal — the number that measures this gap is on the next page.</p>
+        </div>
+      </div>
+    </div>
+    <div id="shA" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 4 · DEFINITION ══════ -->
+<div class="slide" data-i="3">
+  <div class="content">
+  <div class="course-tag">DEFINITION · 定义</div>
+  <h1>Meet PES</h1>
+  <div class="sub">We need a <b>number</b> that says how strongly sellers respond to a price change. Here it is.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <p><b class="db">1 · The idea</b> — <b>Coursebook:</b> "PES measures the extent to which the quantity supplied changes when the price of a product changes."</p>
+    </div>
+    <div class="rgrp">
+      <p><b class="db">2 · The formula</b></p>
+      <div style="font-size:clamp(26px,2.5vw,33px);display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap;">
+        <b class="blue">PES</b><span>=</span>
+        <span class="frac"><span class="top">%ΔQs</span><span class="bot">%ΔP</span></span>
+        <span>=</span>
+        <span class="frac"><span class="top">ΔQ ÷ Q</span><span class="bot">ΔP ÷ P</span></span>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b class="db">3 · Read the number.</b> PES is <b>positive</b> — price up, quantity supplied up (the law of supply). A PES of <b>2.6</b> means a 1% price rise extends supply by <b>2.6%</b>.</p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">4 · Why bother?</b> Because the <b>same price rise</b> can feed a region or just move money around (the famine), swing for <b>years</b> (pigs), and decide <b>who pays a tax</b> — last lesson. PES predicts which one happens.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 5 · DEGREES / DEMO ══════ -->
+<div class="slide" data-i="4">
+  <div class="content">
+  <div class="course-tag">DEMO · 演示</div>
+  <h1>Drag the supply curve — read the PES</h1>
+  <div class="sub">The price rise stays <b>¥30 → ¥36</b>. Only the steepness of S moves.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;">
+      <div class="panel">
+        <p class="b" style="margin-bottom:2px;">Supply: <span id="pkV">steep · inelastic</span></p>
+        <input type="range" id="pkK" min="1" max="20" step="0.5" value="20" style="width:100%;accent-color:#F0B429;">
+        <div class="ends"><span>flat<br>(elastic)</span><span>steep<br>(inelastic)</span></div>
+      </div>
+      <div class="rgrid grid3">
+        <div class="rcell"><span class="k">Q at ¥30</span><span class="v" id="pk-q0">5</span></div>
+        <div class="rcell"><span class="k">Q at ¥36</span><span class="v" id="pk-q">5.3</span></div>
+        <div class="rcell"><span class="k">PES</span><span class="v" id="pk-pes">0.30</span></div>
+        <div class="rcell"><span class="k">%Δ quantity</span><span class="v" id="pk-dq">+6%</span></div>
+        <div class="rcell"><span class="k">%Δ price</span><span class="v" id="pk-dp">+20%</span></div>
+        <div class="rcell"><span class="k">Elasticity</span><span class="v" id="pk-name">inelastic</span></div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p id="pk-say"><b>Inelastic (PES &lt; 1):</b> the same +20% price rise barely moves quantity supplied.</p>
+      </div>
+    </div>
+    <div id="pkA" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 6 · WORKED CALCULATION ══════ -->
+<div class="slide" data-i="5" data-nofirst="1">
+  <div class="content">
+  <div class="course-tag">CALCULATION · 计算</div>
+  <h1>Work out a PES — step by step</h1>
+  <div class="sub">Read the question. Work out your answer. Then reveal the four steps.</div><hr>
+  <div class="card a" style="border-width:3px;padding:14px 18px;margin-bottom:12px;">
+    <h3 style="color:#a57d12;font-size:clamp(24px,2vw,30px);">The question</h3>
+    <p style="font-size:clamp(24px,2.1vw,32px);">Price rises from <b>$10 to $12</b>. Quantity supplied rises from <b>100 to 130</b>.<br><b>Find the PES — and say whether supply is elastic.</b></p>
+  </div>
+  <div class="txt">
+    <div class="rgrp">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">1 · %ΔQs</b> — change ÷ original × 100: <b>(130 − 100) ÷ 100 × 100 = +30%</b></p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">2 · %ΔP</b> — same method: <b>(12 − 10) ÷ 10 × 100 = +20%</b></p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">3 · Divide</b> — <b>PES = +30% ÷ +20% = <span class="dr">1.5</span></b></p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b class="db">4 · Read it.</b> PES &gt; 1 → <b>elastic</b>: a 1% price rise pulls out <b>1.5%</b> more supply. Price falls? Both changes go negative — the ratio stays <b>positive</b>.</p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#F5F0FF;border-left:6px solid var(--purple);">
+        <p><b class="db">5 · Keep going</b> — two more, straight from the coursebook: ① Q 10 000 → 4 000 when price $5 → $4. ② Q 200 → 210 when price $10 → $14. Work both, then reveal.</p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+        <p><b>✓ ① 3 · elastic</b> — −60% ÷ −20%; both fall, the ratio stays positive. <b>✓ ② 0.125 · inelastic</b> — +5% ÷ +40%: price quadruples, supply barely moves.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 7 · PUZZLE: TWO LINES, SAME PRICE RISE ══════ -->
+<div class="slide" data-i="6">
+  <div class="content">
+  <div class="course-tag">PUZZLE · 猜想</div>
+  <h1>Two lines through the origin — guess both PES values</h1>
+  <div class="sub">Both supply curves start at the origin. Price rises from <b>¥1 to ¥5</b>. What is the PES on each?</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;">
+      <div class="rgrp show">
+        <div class="card p">
+          <h3 class="pur">The set-up</h3>
+          <p>S₁: <b>P = Q</b> (shallow). S₂: <b>P = 2Q</b> (twice as steep). Price <b>¥1 → ¥5</b> = <b>+400%</b>. Guess each PES first.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <h3 class="blue">① On S₁ (P = Q)</h3>
+          <p>Q goes <b>1 → 5</b>, so %ΔQ = <b>+400%</b> → PES = 400% ÷ 400% = <b>1</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <h3 class="blue">② On S₂ (P = 2Q)</h3>
+          <p>Q goes <b>0.5 → 2.5</b> — also <b>+400%</b> → PES = <b>1</b> again, though the line is twice as steep.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:8px;">
+          <p><b>The rule:</b> any straight line <b>through the origin</b> has <b>PES = 1</b> at every point. Steepness does not matter — only <b>proportionality</b> does. Proof below.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:8px;">
+          <p><b>Why (four lines):</b> P = k×Q → Q = P ÷ k → Q′ ÷ Q = P′ ÷ P (the k <b>cancels</b>) → PES = %ΔQ ÷ %ΔP = <b>1</b>. A line <b>not</b> through the origin has a <b>different</b> PES at each point.</p>
+        </div>
+      </div>
+    </div>
+    <div id="unA" class="chart" style="flex:1.05;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 8 · THE FIVE DEGREES (每种 PES 配小图) ══════ -->
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">FIVE DEGREES · 五种</div>
+  <h1>Five degrees — each with its own curve</h1>
+  <div class="sub">Read the shape first, then the number. The last one you just proved.</div><hr>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;flex:1;min-height:0;">
+    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
+      <div class="mini-sup" data-shape="elastic" style="flex:0 0 auto;"></div>
+      <p style="margin:4px 0 0;font-size:22px;"><b class="teal">ELASTIC · PES &gt; 1</b> — shallow line, touches the price axis. Paper clips, t-shirts.</p>
+    </div>
+    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
+      <div class="mini-sup" data-shape="inelastic" style="flex:0 0 auto;"></div>
+      <p style="margin:4px 0 0;font-size:22px;"><b class="dr">INELASTIC · PES &lt; 1</b> — steep line, touches the quantity axis. Wheat, apples, pork.</p>
+    </div>
+    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
+      <div class="mini-sup" data-shape="p-inelastic" style="flex:0 0 auto;"></div>
+      <p style="margin:4px 0 0;font-size:22px;"><b class="dr">PERFECTLY INELASTIC · PES = 0</b> — vertical. Cinema seats tonight.</p>
+    </div>
+    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
+      <div class="mini-sup" data-shape="p-elastic" style="flex:0 0 auto;"></div>
+      <p style="margin:4px 0 0;font-size:22px;"><b class="teal">PERFECTLY ELASTIC · PES = ∞</b> — horizontal. One seller among many identical ones.</p>
+    </div>
+    <div class="card p" style="padding:8px 12px;display:flex;flex-direction:column;">
+      <div class="mini-sup" data-shape="unitary" style="flex:0 0 auto;"></div>
+      <p style="margin:4px 0 0;font-size:22px;"><b class="pur">UNITARY · PES = 1</b> — any straight line <b>through the origin</b> (proved above).</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 9 · DETERMINANT 1: PRODUCTION PERIOD ══════ -->
+<div class="slide" data-i="8">
+  <div class="content">
+  <div class="course-tag">DETERMINANT 1</div>
+  <h1>The longer it takes to make, the LOWER the PES</h1>
+  <div class="sub">Coursebook: "If it takes a long time to make a product, supply is likely to be inelastic."</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="card a">
+        <h3 style="color:#a57d12;">The production period decides it</h3>
+        <p>This is about <b>the product itself</b>: how long from "make more" to the goods arriving. <b>Longer production period → lower PES</b>.</p>
+      </div>
+      <table class="data-table" style="width:100%;table-layout:fixed;">
+        <tr><th style="width:42%;">Product</th><th style="width:34%;">Time to make one more</th><th style="width:24%;">Supply</th></tr>
+        <tr><td style="text-align:left;">Cups of coffee</td><td style="text-align:left;">a minute</td><td class="b teal">elastic</td></tr>
+        <tr><td style="text-align:left;">Chairs</td><td style="text-align:left;">a few days</td><td class="b teal">elastic</td></tr>
+        <tr><td style="text-align:left;">Pork</td><td style="text-align:left;"><b>≈ 10 months</b> (sow → market pig)</td><td class="b" style="color:#a57d12;">inelastic</td></tr>
+        <tr><td style="text-align:left;">Wheat</td><td style="text-align:left;">a whole season</td><td class="b dr">inelastic</td></tr>
+        <tr><td style="text-align:left;">A new mine</td><td style="text-align:left;">years</td><td class="b dr">very inelastic</td></tr>
+      </table>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="card p">
+        <h3 class="pur">Why the pig cycle exists</h3>
+        <p>Pork cannot be rushed: <b>sow → piglet 4 months</b>, to 7 kg <b>1 month</b>, to market weight <b>5 months</b>. A price signal today becomes meat only <b>10 months later</b> — so supply cannot answer quickly, and the market overshoots.</p>
+      </div>
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b>Exam line:</b> long production period → inelastic. (This is <b>not</b> the same as "give firms more time" — that is the next page.)</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 10 · DETERMINANT 2: SPARE CAPACITY ══════ -->
+<div class="slide" data-i="9">
+  <div class="content">
+  <div class="course-tag">DETERMINANT 3</div>
+  <h1>Spare capacity — is there room to ramp up?</h1>
+  <div class="sub">Coursebook: if most factors are already in use, supply cannot rise much.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="card g">
+        <h3 class="green">Idle machines → ELASTIC</h3>
+        <p>Machines used <b>a few hours a day</b>, workers on short shifts → a price rise just means <b>switch them on</b>.</p>
+      </div>
+      <div class="card r">
+        <h3 class="dr">Running flat out → INELASTIC</h3>
+        <p>Every machine busy, every field planted → more output needs <b>new capital and new land</b> — that takes time.</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Why farms lose here:</b> land is <b>always</b> fully used. A factory can add a night shift; a wheat field cannot add a second summer.</p>
+      </div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="card a">
+        <h3 style="color:#a57d12;">Example — the same order, two factories</h3>
+        <p><b>Factory A</b> runs one shift → takes the order in <b>days</b>. <b>Factory B</b> runs three shifts → needs <b>new machines</b>, quoted in <b>months</b>.</p>
+      </div>
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b>Exam line:</b> spare capacity → supply can extend <b>quickly and cheaply</b> → elastic.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 11 · DETERMINANT 3: STORAGE ══════ -->
+<div class="slide" data-i="10">
+  <div class="content">
+  <div class="course-tag">DETERMINANT 4</div>
+  <h1>Can it be stored? Stocks bend the curve</h1>
+  <div class="sub">Coursebook: storable products can be released or held back when the price moves.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="card g">
+        <h3 class="green">Storable → ELASTIC</h3>
+        <p>Oil in tanks, <b>grain in silos</b>, tinned food: price rises → <b>sell from stock</b>; price falls → <b>hold it back</b>. No waiting for a harvest.</p>
+      </div>
+      <div class="card r">
+        <h3 class="dr">Perishable → INELASTIC</h3>
+        <p><b>Fresh milk, strawberries</b>, a haircut, a seat tonight: whatever is offered today is all there is.</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Connect the dots:</b> "bring grain in fast" works because <b>someone, somewhere, stored it</b> — and China's <b>frozen-pork reserve</b> is storage policy for the pig cycle.</p>
+      </div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="card a">
+        <h3 style="color:#a57d12;">The 2008 proof</h3>
+        <p>World rice production in 2007/08 was a <b>record high</b> — yet prices <b>tripled</b>. Hoarding + export bans emptied the <b>market</b>, not the silos. When Japan <b>released stock</b>, prices fell at once.</p>
+      </div>
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b>Exam line:</b> storable → stock smooths the response → elastic.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 12 · OTHER INFLUENCES ══════ -->
+<div class="slide" data-i="11">
+  <div class="content">
+  <div class="course-tag">OTHER INFLUENCES · 因素</div>
+  <h1>Remaining influences — one look</h1>
+  <div class="sub">Coursebook factors, briefly. The first three have their own pages; these are the rest.</div><hr>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;min-height:0;align-content:start;">
+    <div class="card a" style="padding:22px 20px;">
+      <h3 style="color:#a57d12;">Time period</h3>
+      <p>The longer producers are <b>given</b>, the more elastic: momentary → short run → long run. Farmers cannot replant tonight, but they can over years.</p>
+    </div>
+    <div class="card g" style="padding:22px 20px;">
+      <h3 class="green">Cost of altering supply</h3>
+      <p>Cheap to change output → elastic. Expensive — new plant, scarce specialists → inelastic. <b>Software ≫ a steel mill.</b></p>
+    </div>
+    <div class="card" style="padding:22px 20px;">
+      <h3 class="blue">Mobility of factors</h3>
+      <p>Workers, land and capital that can <b>switch</b> to making the dearer good → elastic. <b>Delivery riders</b> switch overnight.</p>
+    </div>
+    <div class="card r" style="padding:22px 20px;">
+      <h3 class="dr">Natural resources</h3>
+      <p>A resource that is <b>being depleted</b> gets harder to expand → inelastic. <b>Fish stocks in decline.</b></p>
+    </div>
+  </div>
+  <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:12px;">
+    <p><b>Room ≠ cheap (don't mix these up).</b> <b>Spare capacity</b> asks "is there <b>room</b>?" — idle machines switch on. <b>Cost of altering supply</b> asks "how <b>expensive</b> is the change?" — even with room, ramping up may need costly kit, so firms think twice.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 13 · WHY IT MATTERS ══════ -->
+<div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">WHY IT MATTERS · 意义</div>
+  <h1>Two people who really need PES</h1>
+  <div class="sub">One is deciding whether to expand. One is deciding who pays.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:12px;">
+        <div class="card blue" style="flex:1;">
+          <h3 class="blue">The firm 💼</h3>
+          <p>Demand jumps — <b>can you actually supply it</b>? Elastic supply → take the sales. Inelastic → customers go elsewhere, or you pay overtime.</p>
+        </div>
+        <div class="card g" style="flex:1;">
+          <h3 class="green">The government 🏛️</h3>
+          <p>Incidence needs <b>both</b> elasticities. Elastic supply → firms escape a tax. Inelastic supply → firms cannot escape it.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#F5F0FF;border-left:6px solid var(--purple);margin-top:12px;">
+        <p><b>Link back to last lesson:</b> a tax lands on the <b>less elastic</b> side — of demand <i>and</i> of supply. Steep S + steep D → the two sides share the burden; flat S → consumers pay almost all.</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;">
+        <p><b>And for a famine?</b> If supply cannot respond in time, a higher price does not create more grain — it only moves money. Test that on the last case page.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 14 · SORTING GAME ══════ -->
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">SORTING GAME · 归类</div>
+  <h1>Elastic or inelastic? Decide — then defend it</h1>
+  <div class="sub">Six products. Pick the side, then say which influence decided it.</div><hr>
+  <div class="g1-box">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+      <span class="b db" style="font-weight:800;color:var(--blue2);" id="g2n"></span>
+      <span style="font-weight:800;color:var(--blue2);">Score: <span id="g2score">0</span></span>
+    </div>
+    <div class="scenario" id="g2q"></div>
+    <div class="qbtns" id="g2btns"></div>
+    <div class="g1-fb" id="g2fb"></div>
+    <div style="margin-top:8px;">
+      <button class="big-btn" id="g2next" style="display:none;">Next ▶</button>
+    </div>
+    <div class="result-box" id="g2result">
+      <h3>Finished!</h3>
+      <div class="big" id="g2final"></div>
+      <button class="big-btn" id="g2again">↺ Play again</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 15 · THE PIG CYCLE ══════ -->
+<div class="slide" data-i="14">
+  <div class="content">
+  <div class="course-tag">REAL CASE · 猪周期</div>
+  <h1>The pig cycle — China's supply-response lag</h1>
+  <div class="sub">Real live-hog prices, 2019–2025. Demand barely moves — the <b>supply response takes about ten months</b>.</div><hr>
+  <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:8px;flex:0 0 auto;">
+    <div style="flex:0 0 auto;border-radius:12px;overflow:hidden;border:2px solid var(--line);">
+      <img src="images/pes-2.jpg" alt="" style="display:block;width:190px;height:122px;object-fit:cover;object-position:center 62%;">
+    </div>
+    <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);font-size:22px;flex:1;">
+      <p><b>Live-hog price — six real turning points:</b> ¥38.71 (Oct 2019) → ¥11.54 (Oct 2021) → ¥27.66 (Oct 2022) → ¥14.19 (Jul 2023) → ¥20.92 (Aug 2024) → ¥12.30 (Oct 2025). — a <b>−70%</b> fall in two years.</p>
+      <p style="color:#8a94a6;">Source: China Ministry of Agriculture and Rural Affairs monitoring, via a Huaan Securities industry report (Mar 2026).</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;">
+      <div class="rgrp show">
+        <div class="card a">
+          <h3 style="color:#a57d12;">① Why the wave</h3>
+          <p>Price up → farmers <b>keep more sows</b> → ≈10 months later pigs flood the market → price down → sows cut → shortage again.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card r">
+          <h3 class="dr">② The ten months</h3>
+          <p>Sow → piglet <b>4 months</b>; to 7 kg <b>1 month</b>; to market weight <b>5 months</b> ≈ <b>10 months</b> from decision to meat.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <h3 class="blue">③ The herd moves first</h3>
+          <p>African swine fever: sow herd <b>−32.9%</b> (Dec 2017 → Sep 2019), then <b>+52.1%</b> by Jun 2021 — the herd swings <b>before</b> the price does.</p>
+        </div>
+        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:8px;">
+          <p>1995–2022: <b>seven complete cycles</b>, shortest <b>36 months</b>, longest <b>49 months</b> → "3–4 years". Inelastic supply + a time lag = <b>overshooting</b>.</p>
+        </div>
+      </div>
+    </div>
+    <div id="pgA" style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:6px;">
+      <div style="border:2px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;">
+        <img src="images/pes-3.jpg" alt="" style="display:block;width:100%;">
+      </div>
+      <p class="gray" style="margin:0;font-size:22px;">Historic pig cycles, 2006–2022 (monthly live-hog price). Source: Wind / Ministry of Agriculture / Zheshang Securities.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 16 · SMOOTHING THE CYCLE ══════ -->
+<div class="slide" data-i="15">
+  <div class="content">
+  <div class="course-tag">POLICY · 平滑周期</div>
+  <h1>Fighting a lag you cannot remove</h1>
+  <div class="sub">Nobody can make a pig grow faster. So policy works on the <b>information</b> and the <b>stock</b>.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:12px;">
+        <div class="card g" style="flex:1;">
+          <h3 class="green">Buy low, release high</h3>
+          <p>State <b>frozen-pork reserves</b>: the government buys when price is low, sells when it is high — the missing stock that private farms cannot hold.</p>
+        </div>
+        <div class="card a" style="flex:1;">
+          <h3 style="color:#a57d12;">Target the herd, not the price</h3>
+          <p>A <b>sow-inventory band</b> (normal ≈ 43 m sows, floor 40 m) warns farmers <i>before</i> they all expand together.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div style="display:flex;gap:12px;margin-top:12px;">
+        <div class="card blue" style="flex:1;">
+          <h3 class="blue">Contracts and futures</h3>
+          <p>Hog <b>futures</b> let farms lock a price today — less guesswork, less herd-and-slaughter.</p>
+        </div>
+        <div class="card t" style="flex:1;">
+          <h3 class="teal">Information</h3>
+          <p>Publish the <b>sow count</b> and expected supply — if everyone knows the coming flood, fewer join it.</p>
+        </div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;">
+        <p><b>Why it works:</b> the lag (≈10 months) cannot be removed, so the aim is to stop <b>everyone reacting at once</b> — smoothing, not eliminating, the cycle.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 17 · BACK TO THE FAMINE ══════ -->
+<div class="slide" data-i="16">
+  <div class="content">
+  <div class="course-tag">BACK TO THE FAMINE · 回答</div>
+  <h1>So — should the price have been capped?</h1>
+  <div class="sub">Build it: the market, then the shortage, then the grain that arrives from elsewhere.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;">
+      <div class="rgrp show">
+        <div class="card">
+          <h3 class="blue">⓪ Before the famine</h3>
+          <p>Grain: D and S cross at <b>¥30 / 5 units</b>. Supply is steep — food cannot be made overnight.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card r">
+          <h3 class="dr">① The harvest fails → D jumps</h3>
+          <p>Price <b>¥30 → ¥34.8 (+16%)</b> but food supplied only <b>5 → 5.2 (+5%)</b>: PES ≈ <b>0.3</b>.</p>
+        </div>
+        <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);margin-top:8px;">
+          <p>The price rise <b>moves money</b>, it does not <b>grow grain</b>. And a bigger rise invites <b>hoarding</b> and <b>panic buying</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card g">
+          <h3 class="green">② Grain arrives from elsewhere</h3>
+          <p>Imports at <b>¥33</b> → total food <b>5.2 → 5.6</b> and the price <b>falls</b> back to ¥33. More food, lower price — from <b>moving</b> grain, not growing it.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+          <p><b>The answer:</b> let the price rise <b>some</b> — but cap the extremes, stop hoarding, and <b>bring grain in fast</b>.</p>
+        </div>
+      </div>
+    </div>
+    <div id="fmA" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 18 · A WAY OF THINKING (三重境界) ══════ -->
+<div class="slide" data-i="17">
+  <div class="content">
+  <div class="course-tag">A WAY OF THINKING</div>
+  <h1>Three ways to see the same famine</h1>
+  <div class="sub">See the mountain as a mountain → see it as not a mountain → see it as a mountain again.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div class="card" style="display:flex;gap:12px;align-items:center;">
+        <span style="flex:0 0 auto;font-size:clamp(30px,3vw,42px);font-weight:900;color:#5b6b7b;">1</span>
+        <div>
+          <h3 style="color:#5b6b7b;">No economics — the moral answer</h3>
+          <p>"Prices must not rise — the poor would starve." Intuition and <b>fairness</b>. It protects people, but it cannot say <b>what the price rise would actually do</b>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="card" style="display:flex;gap:12px;align-items:center;margin-top:10px;">
+        <span style="flex:0 0 auto;font-size:clamp(30px,3vw,42px);font-weight:900;color:var(--blue);">2</span>
+        <div>
+          <h3 class="blue">A little economics — the clever answer</h3>
+          <p>"Let prices rise! A higher price calls out more supply." Simple, confident — and it sounds <b>anti-moral</b>. It treats supply as if it always answers.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="card p" style="display:flex;gap:12px;align-items:center;margin-top:10px;">
+        <span style="flex:0 0 auto;font-size:clamp(30px,3vw,42px);font-weight:900;color:var(--purple);">3</span>
+        <div>
+          <h3 class="pur">Deeper economics — the full answer</h3>
+          <p>Short-run <b>PES ≈ 0</b>, and high prices invite <b>hoarding</b>. So: allow some rise, cap the extremes, stop hoarding, <b>import fast</b>. The moral goal of stage 1 survives — now with <b>science under it</b>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:12px;display:flex;gap:14px;align-items:center;">
+        <img src="images/pes-4.jpg" alt="" style="flex:0 0 auto;width:150px;height:150px;border-radius:12px;object-fit:cover;border:2px solid #e6e0c8;">
+        <div>
+          <p><b>A caution.</b> Some popular writers — <b>Xue Zhaofeng</b> (薛兆丰) is the classic case — like using first-pass economics to dress up <b>anti-common-sense, anti-moral</b> conclusions.</p>
+          <p>Economics is first a tool for <b>understanding reality</b> and the science behind common sense. Being counter-intuitive can sharpen thinking; it is <b>not</b> a licence for being counter-moral.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 19 · CHECK ══════ -->
+<div class="slide" data-i="18">
+  <div class="content">
+  <div class="course-tag">CHECK · 检测</div>
+  <h1>Check your understanding — ten quick ones</h1>
+  <div class="sub">Ten questions — everything examiners keep asking about supply, in exam words.</div><hr>
+  <div class="g1-box">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+      <span class="b db" style="font-weight:800;color:var(--blue2);">Question <span id="g1q">1</span> / <span id="g1n">7</span></span>
+      <span style="font-weight:800;color:var(--blue2);">Score: <span id="g1score">0</span></span>
+    </div>
+    <div class="scenario" id="g1scenario"></div>
+    <div class="qbtns" id="g1btns"></div>
+    <div class="g1-fb" id="g1fb"></div>
+    <div style="margin-top:8px;">
+      <button class="big-btn" id="g1next" style="display:none;">Next ▶</button>
+    </div>
+    <div class="result-box" id="g1result">
+      <h3>Finished!</h3>
+      <div class="big" id="g1final"></div>
+      <button class="big-btn" id="g1again">↺ Play again</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 20 · SUMMARY ══════ -->
+<div class="slide" data-i="19">
+  <div class="content">
+  <div class="course-tag">SUMMARY · 总结</div>
+  <h1>PES — the whole chapter in one table</h1>
+  <div class="sub">Coursebook chapter 11, exam words. Say each row out loud in one sentence.</div><hr>
+  <table class="data-table" id="smT" style="width:100%;table-layout:fixed;">
+    <tr>
+      <th style="width:22%;">Row</th><th style="width:48%;">What it says</th><th style="width:30%;">Quick check</th>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="dr">1 · PES</b></td>
+      <td style="text-align:left;">% change in <b>quantity supplied</b> ÷ % change in price — always <b>positive</b></td>
+      <td style="text-align:left;">2.6 → a 1% rise = 2.6% more</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="dr">2 · Elastic / inelastic</b></td>
+      <td style="text-align:left;"><b>&gt; 1</b> elastic (flat) · <b>&lt; 1</b> inelastic (steep) · vertical = <b>0</b> · horizontal = <b>∞</b></td>
+      <td style="text-align:left;">0.4 → inelastic</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="pur">3 · Unitary</b></td>
+      <td style="text-align:left;">Any straight line <b>through the origin</b>: PES = <b>1</b> everywhere (the constant cancels)</td>
+      <td style="text-align:left;">P = Q and P = 2Q → both 1</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="a">4 · Influences</b></td>
+      <td style="text-align:left;"><b>Time to produce</b> · <b>spare capacity</b> · <b>can be stored</b> · cost of altering supply · factor mobility · natural resources</td>
+      <td style="text-align:left;">rubber bands ≫ aircraft</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="a">5 · Time</b></td>
+      <td style="text-align:left;">The longer the period, the <b>more elastic</b>: momentary → short run → long run</td>
+      <td style="text-align:left;">PES ≈ 0 → &lt; 1 → &gt; 1</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="g">6 · Why it matters</b></td>
+      <td style="text-align:left;">Firms: can we supply the jump? Government: incidence needs <b>both</b> elasticities — the <b>less elastic</b> side pays</td>
+      <td style="text-align:left;">flat S → consumers pay</td>
+    </tr>
+  </table>
+  <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:12px;">
+    <p><b>Applied today:</b> the famine policy (rise some, stop hoarding, import fast) and the pig cycle — both are row 4 and row 5 at work.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ══════ 21 · CLOSING ══════ -->
+<div class="slide cover" data-i="20">
+  <div style="text-align:center;width:100%;">
+  <div class="course-tag" style="text-align:center;">THANK YOU · 谢谢</div>
+  <h1 style="font-size:clamp(56px,7.6vw,110px);text-align:center;margin:20px 0 26px;">PES — done ✓</h1>
+  <div style="font-size:clamp(28px,3.6vw,48px);color:var(--blue2);font-weight:800;margin:24px 0 18px;">Price can pull supply in.<br>It cannot grow it.</div>
+  <div style="font-size:clamp(24px,2.6vw,34px);color:#5b6b7b;">Steep supply → time, stock and trade decide.</div>
+  <div class="author" style="margin-top:34px;">DR. JIA · © 2026</div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn">◀</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="copy">© 2026 Dr. Jia</span>
+    <span class="page" id="pageNum">1 / 19</span>
+    <button id="nextBtn">▶</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ══════════ 22 · GEOMETRY (same scale as 2-5 / 3-1 / 3-2 / 3-3 / 3-4) ══════════
+   x = 90 + 32.5q ; y = 460 − 8.2P ; plot box x∈[90,630], y∈[50,460]
+   Base market: D: Pd = 30 + 5(5 − q) · S: Ps = 30 + k(q − 5) — both pass (5, ¥30).
+   The PES pages use a demand SHOCK of +¥6: Pd2 = 36 + 5(5 − q). */
+const QPX = 32.5, PPX = 8.2, X0 = 90, Y0 = 460;
+const PBOX = { x1: 90, y1: 50, x2: 630, y2: 460 };
+const SHOCK = 6;
+function XQ(q){ return X0 + QPX * q; }
+function YP(p){ return Y0 - PPX * p; }
+function Pd(q){ return 30 + 5 * (5 - q); }        /* base demand through (5,30) */
+function Pd2(q){ return 30 + SHOCK + 5 * (5 - q); }/* after the demand shock */
+function Ps(k, q){ return 30 + k * (q - 5); }     /* supply family through (5,30) */
+/* equilibria with the shock: (k+5)(q−5) = 6 */
+function eqQs(k){ return 5 + SHOCK / (k + 5); }
+function eqP(k){ return 30 + k * SHOCK / (k + 5); }
+function pes(k){ return 6 / k; }                  /* PES at this pair of changes */
+function f1(v){ const r = Math.round(v * 10) / 10; return (Math.abs(r % 1) < 1e-9) ? String(r) : r.toFixed(1); }
+function f2(v){ return (Math.round(v * 100) / 100).toFixed(2); }
+function pc(v){ const r = Math.round(v * 10) / 10; return (r > 0 ? '+' : '') + r + '%'; }
+function qs(v){ const r = Math.round(v * 10) / 10; return (Math.abs(r % 1) < 1e-9) ? String(r) : r.toFixed(1); }
+
+/* Liang–Barsky: keep only the part of the segment inside the plot box */
+function clipSeg(x1, y1, x2, y2){
+  let t0 = 0, t1 = 1;
+  const dx = x2 - x1, dy = y2 - y1;
+  const p = [-dx, dx, -dy, dy];
+  const q = [x1 - PBOX.x1, PBOX.x2 - x1, y1 - PBOX.y1, PBOX.y2 - y1];
+  for(let i = 0; i < 4; i++){
+    if(p[i] === 0){ if(q[i] < 0) return null; }
+    else {
+      const r = q[i] / p[i];
+      if(p[i] < 0){ if(r > t1) return null; if(r > t0) t0 = r; }
+      else { if(r < t0) return null; if(r < t1) t1 = r; }
+    }
+  }
+  return [x1 + t0 * dx, y1 + t0 * dy, x1 + t1 * dx, y1 + t1 * dy];
+}
+/* label parking (same discipline as 3-4: never hard-code a label position) */
+function inkW(text, size){
+  let w = 0;
+  for(let i = 0; i < text.length; i++){
+    const c = text.charCodeAt(i);
+    w += (c < 128) ? 0.55 * size : 1.0 * size;
+  }
+  return w;
+}
+function boxOf(x, y, text, size, anchor){
+  const w = inkW(text, size);
+  const x1 = (anchor === 'end') ? x - w : (anchor === 'middle') ? x - w / 2 : x;
+  return { x1: x1, y1: y - 0.78 * size, x2: x1 + w, y2: y + 0.22 * size };
+}
+function segInBox(s, b){
+  const dx = s[2] - s[0], dy = s[3] - s[1];
+  let t0 = 0, t1 = 1;
+  const p = [-dx, dx, -dy, dy];
+  const q = [s[0] - b.x1, b.x2 - s[0], s[1] - b.y1, b.y2 - s[1]];
+  for(let i = 0; i < 4; i++){
+    if(p[i] === 0){ if(q[i] < 0) return false; }
+    else {
+      const r = q[i] / p[i];
+      if(p[i] < 0){ if(r > t1) return false; if(r > t0) t0 = r; }
+      else { if(r < t0) return false; if(r < t1) t1 = r; }
+    }
+  }
+  return true;
+}
+function hitBox(a, b){ return !(a.x2 < b.x1 || b.x2 < a.x1 || a.y2 < b.y1 || b.y2 < a.y1); }
+function park(text, size, anchor, cands, segs, placed, margin){
+  const pad = margin ? 2 : 4;
+  const fits = function(px, py){
+    const bx = boxOf(px, py, text, size, anchor);
+    if(bx.x1 < (margin ? 4 : PBOX.x1 + pad)) return null;
+    if(bx.x2 > PBOX.x2 - pad || bx.y1 < PBOX.y1 + pad || bx.y2 > PBOX.y2 - pad) return null;
+    for(let j = 0; j < segs.length; j++){ if(segInBox(segs[j], bx)) return null; }
+    for(let j = 0; j < placed.length; j++){ if(hitBox(bx, placed[j])) return null; }
+    return bx;
+  };
+  for(let i = 0; i < cands.length; i++){
+    const bx = fits(cands[i][0], cands[i][1]);
+    if(bx){ placed.push(bx); return cands[i]; }
+  }
+  const pref = cands[0] || [PBOX.x1 + 20, PBOX.y1 + 40];
+  const pb = boxOf(pref[0], pref[1], text, size, anchor);
+  const pcx = (pb.x1 + pb.x2) / 2, pcy = (pb.y1 + pb.y2) / 2;
+  let best = null, bestD = Infinity;
+  for(let y = PBOX.y1 + 28; y <= PBOX.y2 - 12; y += 8){
+    for(let x = PBOX.x1 + 4; x <= PBOX.x2 - 4; x += 8){
+      const bx = fits(x, y);
+      if(!bx) continue;
+      const d = Math.abs((bx.x1 + bx.x2) / 2 - pcx) + Math.abs((bx.y1 + bx.y2) / 2 - pcy);
+      if(d < bestD){ bestD = d; best = [x, y, bx]; }
+    }
+  }
+  if(best){ placed.push(best[2]); return [best[0], best[1]]; }
+  return cands[cands.length - 1];
+}
+function along(seg, f){ return [seg[0] + (seg[2] - seg[0]) * f, seg[1] + (seg[3] - seg[1]) * f]; }
+
+/* axes + titles, shared by every figure */
+function axes(){
+  return '<line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>'
+    + '<line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>'
+    + '<text x="100" y="30" font-size="30" font-weight="700" fill="#5b6b7b">P (\u00A5) \u2191</text>'
+    + '<text x="626" y="442" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q \u2192</text>';
+}
+function wrap(g){ return '<svg viewBox="-26 0 726 520" style="width:100%;height:100%;display:block;">' + g + '</svg>'; }
+
+/* ══════════ 23 · SUPPLY SHAPE (pages 3 & 5) ══════
+   标准定义角度：价格变化固定（¥30 → ¥36，+20%），只看数量响应差多少。
+   lv1 = 陡供给 (k=20) · lv2 = 平供给 (k=1) · 滑杆模式 = 一条随 k 转的供给线 */
+function shapeSvg(o){
+  const lv = o.level || 0, k = o.k || 20;
+  const PR = 36;                                    /* 固定的新价格 */
+  const segs = [[90, 50, 90, 460], [90, 460, 630, 460]];
+  const placed = [];
+  let g = axes();
+  const yP = YP(PR), xO = XQ(5), yO = YP(30);
+  const list = (o.mode === 'slider') ? [k]
+    : (function(){ const a = []; if(lv >= 1) a.push(20); if(lv >= 2) a.push(1); return a; })();
+  const cols = ['#C62828', '#2E7D32'];
+  /* 供给曲线（都过 (5, ¥30)） */
+  list.forEach(function(kk, i){
+    const seg = clipSeg(XQ(0), YP(Ps(kk, 0)), XQ(16.6), YP(Ps(kk, 16.6)));
+    const col = (o.mode === 'slider') ? '#F0B429' : cols[i];
+    g += '<line x1="' + seg[0].toFixed(1) + '" y1="' + seg[1].toFixed(1) + '" x2="' + seg[2].toFixed(1) + '" y2="' + seg[3].toFixed(1) + '" stroke="' + col + '" stroke-width="4"/>';
+    segs.push(seg);
+  });
+  /* 起点 + 起始价虚线（¥30）。价格变化方向用纵轴标签旁一根轻细的小箭头表示 */
+  g += '<circle cx="' + xO + '" cy="' + yO + '" r="6" fill="#1a3a5c"/>';
+  g += '<line x1="90" y1="' + yO + '" x2="630" y2="' + yO + '" stroke="#94a3b8" stroke-width="3" stroke-dasharray="8 6"/>';
+  segs.push([90, yO, 630, yO]);
+  g += '<line x1="84" y1="' + (yO - 3) + '" x2="84" y2="' + (yP + 7).toFixed(1) + '" stroke="#1E88E5" stroke-width="2.4" marker-end="url(#ahSlim)"/>';
+  /* 固定的新价格线（仅在第 2 步起出现） */
+  if(lv >= 1 || o.mode === 'slider'){
+    g += '<line x1="90" y1="' + yP.toFixed(1) + '" x2="630" y2="' + yP.toFixed(1) + '" stroke="#7C3AED" stroke-width="4" stroke-dasharray="10 7"/>';
+    segs.push([90, yP, 630, yP]);
+    g += '<text x="72" y="' + (yP + 9) + '" text-anchor="end" font-size="30" font-weight="800" fill="#7C3AED">\u00A5' + PR + '</text>';
+  }
+  g += '<text x="72" y="' + (yO + 9) + '" text-anchor="end" font-size="30" font-weight="800" fill="#94a3b8">\u00A530</text>';
+  /* 每条曲线在新价格下的数量 + 水平量尺 */
+  list.forEach(function(kk, i){
+    const q1 = 5 + (PR - 30) / kk, x1 = XQ(q1);
+    const col = (o.mode === 'slider') ? '#F0B429' : cols[i];
+    segs.push([x1, yP, x1, 460]);
+    g += '<line x1="' + x1.toFixed(1) + '" y1="' + yP.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="460" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<circle cx="' + x1.toFixed(1) + '" cy="' + yP.toFixed(1) + '" r="6" fill="' + col + '"/>';
+  });
+  /* 轴上读数：挤不下就合成一条（3-4 同款规矩） */
+  const qAll = [5].concat(list.map(function(kk){ return 5 + (PR - 30) / kk; }));
+  let needCombined = false;
+  for(let i = 0; i < qAll.length && !needCombined; i++){
+    for(let j = i + 1; j < qAll.length; j++){
+      const gap = Math.abs(XQ(qAll[i]) - XQ(qAll[j]));
+      if(gap < (inkW(qs(qAll[i]), 30) + inkW(qs(qAll[j]), 30)) / 2 + 12){ needCombined = true; break; }
+    }
+  }
+  if(needCombined && qAll.length > 1){
+    const cx = qAll.reduce(function(a, v){ return a + XQ(v); }, 0) / qAll.length;
+    g += '<text x="' + cx.toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">' + qAll.map(qs).join(' \u2192 ') + '</text>';
+  } else {
+    g += '<text x="' + xO + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#94a3b8">5</text>';
+    list.forEach(function(kk, i){
+      const col = (o.mode === 'slider') ? '#F0B429' : cols[i];
+      g += '<text x="' + XQ(5 + (PR - 30) / kk).toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="' + col + '">' + qs(5 + (PR - 30) / kk) + '</text>';
+    });
+  }
+  /* S 标签 */
+  list.forEach(function(kk, i){
+    const seg = clipSeg(XQ(0), YP(Ps(kk, 0)), XQ(16.6), YP(Ps(kk, 16.6)));
+    const sl = along(seg, kk >= 10 ? 0.86 : 0.30);
+    const col = (o.mode === 'slider') ? '#F0B429' : cols[i];
+    const txt = (o.mode === 'slider') ? ('S (k=' + qs(kk) + ')') : ('S' + (i + 1));
+    const cands = [[sl[0] + 22, sl[1] + 6], [sl[0] + 22, sl[1] + 46], [sl[0] - 120, sl[1] + 6], [sl[0] + 22, sl[1] - 36], [sl[0] - 140, sl[1] + 46]];
+    if(o.mode === 'slider') cands.push([490, 205], [470, 245], [500, 300]);
+    const pS = park(txt, 32, 'start', cands, segs, placed, true);
+    g += '<text x="' + pS[0].toFixed(1) + '" y="' + pS[1].toFixed(1) + '" font-size="32" font-weight="800" fill="' + col + '">' + txt + '</text>';
+  });
+  return wrap(g);
+}
+
+/* ══════════ 24 · TIME HORIZONS (page 7) — price fixed, three supply curves ══════════ */
+function timeSvg(o){
+  const lv = o.level || 0;
+  const P1 = 36;
+  const segs = [[90, 50, 90, 460], [90, 460, 630, 460]];
+  const placed = [];
+  let g = axes();
+  const yP = YP(P1), xO = XQ(5), yO = YP(30);
+  const d1 = clipSeg(XQ(0), YP(Pd(0)), XQ(16.6), YP(Pd(16.6)));
+  segs.push(d1);
+  g += '<line x1="' + d1[0] + '" y1="' + d1[1] + '" x2="' + d1[2] + '" y2="' + d1[3] + '" stroke="#cbd5e1" stroke-width="4"/>';
+  /* fixed price line */
+  g += '<line x1="90" y1="' + yP.toFixed(1) + '" x2="630" y2="' + yP.toFixed(1) + '" stroke="#7C3AED" stroke-width="4" stroke-dasharray="10 7"/>';
+  segs.push([90, yP, 630, yP]);
+  g += '<text x="82" y="' + (yP + 9) + '" text-anchor="end" font-size="30" font-weight="800" fill="#7C3AED">\u00A5' + P1 + '</text>';
+  g += '<text x="72" y="' + (yO + 9) + '" text-anchor="end" font-size="30" font-weight="800" fill="#94a3b8">\u00A530</text>';
+  g += '<circle cx="' + xO + '" cy="' + yO + '" r="6" fill="#1a3a5c"/>';
+  const K = [999, 8, 1.5], COL = ['#C62828', '#a57d12', '#2E7D32'], TXT = ['1 · momentary', '2 · short run', '3 · long run'];
+  const shown = [];
+  for(let i = 0; i < 3; i++){
+    if(lv < i + 1) continue;
+    const kk = K[i];
+    let seg, xat;
+    if(kk > 100){ seg = clipSeg(xO, yP, xO, 460); xat = 5; }
+    else {
+      seg = clipSeg(XQ(0), YP(Ps(kk, 0)), XQ(16.6), YP(Ps(kk, 16.6)));
+      xat = 5 + (P1 - 30) / kk;
+    }
+    g += '<line x1="' + seg[0].toFixed(1) + '" y1="' + seg[1].toFixed(1) + '" x2="' + seg[2].toFixed(1) + '" y2="' + seg[3].toFixed(1) + '" stroke="' + COL[i] + '" stroke-width="4"/>';
+    segs.push(seg);
+    g += '<circle cx="' + XQ(xat).toFixed(1) + '" cy="' + yP.toFixed(1) + '" r="6" fill="' + COL[i] + '"/>';
+    shown.push({ xat: xat, col: COL[i], i: i });
+  }
+  /* 数量读数一律交给 park（价格线、三条供给线都在障碍集里） */
+  shown.forEach(function(s){
+    const xq = XQ(s.xat);
+    const p = park(qs(s.xat), 28, 'middle',
+      [[xq, yP - 18], [xq, yP + 34], [xq + 40, yP - 18], [xq - 40, yP - 18], [xq, yP - 54]], segs, placed, false);
+    g += '<text x="' + p[0].toFixed(1) + '" y="' + p[1].toFixed(1) + '" text-anchor="middle" font-size="28" font-weight="800" fill="' + s.col + '">' + qs(s.xat) + '</text>';
+  });
+  /* 图例块：放在右下角真正的空白区（价格线、三条 S、D 都不经过那里） */
+  if(shown.length){
+    const lx = 424, ly = 246, lh = 36 * shown.length + 20;
+    g += '<rect x="' + lx + '" y="' + ly + '" width="196" height="' + lh + '" rx="10" fill="#ffffff" fill-opacity="0.94" stroke="#e6eef7" stroke-width="2"/>';
+    shown.forEach(function(s, k){
+      const yy = ly + 32 + k * 36;
+      g += '<text x="' + (lx + 14) + '" y="' + yy + '" font-size="30" font-weight="800" fill="' + s.col + '">' + TXT[s.i] + '</text>';
+    });
+  }
+  const dl = along(d1, 0.66);
+  const pD = park('D', 32, 'start', [[dl[0] + 24, dl[1] + 8], [dl[0] + 24, dl[1] + 48], [dl[0] + 24, dl[1] - 34]], segs, placed, false);
+  g += '<text x="' + pD[0].toFixed(1) + '" y="' + pD[1].toFixed(1) + '" font-size="32" font-weight="800" fill="#1E88E5">D</text>';
+  return wrap(g);
+}
+
+/* ══════════ 25 · THE FAMINE (page 12) ══════════
+   lv0 market · lv1 harvest fails (D jumps, price spikes, food barely moves)
+   lv2 imports arrive at ¥33 (more food, lower price) */
+function famineSvg(o){
+  const lv = o.level || 0;
+  const segs = [[90, 50, 90, 460], [90, 460, 630, 460]];
+  const placed = [];
+  let g = axes();
+  const xO = XQ(5), yO = YP(30);
+  const d1 = clipSeg(XQ(0), YP(Pd(0)), XQ(16.6), YP(Pd(16.6)));
+  const ss = clipSeg(XQ(0), YP(Ps(20, 0)), XQ(16.6), YP(Ps(20, 16.6)));
+  segs.push(d1, ss);
+  g += '<line x1="' + d1[0].toFixed(1) + '" y1="' + d1[1].toFixed(1) + '" x2="' + d1[2].toFixed(1) + '" y2="' + d1[3].toFixed(1) + '" stroke="#cbd5e1" stroke-width="4"/>';
+  g += '<line x1="' + ss[0].toFixed(1) + '" y1="' + ss[1].toFixed(1) + '" x2="' + ss[2].toFixed(1) + '" y2="' + ss[3].toFixed(1) + '" stroke="#F0B429" stroke-width="4"/>';
+  g += '<circle cx="' + xO + '" cy="' + yO + '" r="6" fill="#1a3a5c"/>';
+  const tag = function(y, t, col){ return '<text x="82" y="' + (y + 9) + '" text-anchor="end" font-size="30" font-weight="800" fill="' + col + '">' + t + '</text>'; };
+  if(lv < 2) g += tag(yO, '\u00A530', '#94a3b8');          /* 进口价一进来，¥30 与 ¥33 只隔 25px → 只留一个 */
+  if(lv < 2) g += '<text x="' + xO + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#94a3b8">5</text>';
+  else g += '<text x="' + XQ(5.6).toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#2E7D32">5 → 5.2 → 5.6</text>';
+  const q1 = eqQs(20), P1 = eqP(20);            /* 5.2 / ¥34.8 */
+  const IMP = 33;                                /* world price of imported grain */
+  const q2 = 5 + (30 + SHOCK - IMP) / 5;         /* demand at ¥33 → 5.6 */
+  if(lv >= 1){
+    const d2 = clipSeg(XQ(0), YP(Pd2(0)), XQ(16.6), YP(Pd2(16.6)));
+    segs.push(d2);
+    g += '<line x1="' + d2[0].toFixed(1) + '" y1="' + d2[1].toFixed(1) + '" x2="' + d2[2].toFixed(1) + '" y2="' + d2[3].toFixed(1) + '" stroke="#C62828" stroke-width="4"/>';
+    const x1 = XQ(q1), y1 = YP(P1);
+    segs.push([x1, y1, x1, 460]);
+    g += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="460" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<circle cx="' + x1.toFixed(1) + '" cy="' + y1.toFixed(1) + '" r="6" fill="#C62828"/>';
+    if(lv < 2) g += tag(y1, '\u00A5' + f1(P1), '#C62828');
+    const dl = along(d2, 0.72);
+    const pD = park('D after', 30, 'start', [[dl[0] + 22, dl[1] + 6], [dl[0] + 22, dl[1] + 46], [dl[0] + 22, dl[1] - 34]], segs, placed, true);
+    g += '<text x="' + pD[0].toFixed(1) + '" y="' + pD[1].toFixed(1) + '" font-size="30" font-weight="800" fill="#C62828">D after</text>';
+  }
+  if(lv >= 2){
+    const yI = YP(IMP), xI = XQ(q2);
+    const imp = clipSeg(90, yI, 630, yI);
+    segs.push(imp);
+    g += '<line x1="' + imp[0].toFixed(1) + '" y1="' + imp[1].toFixed(1) + '" x2="' + imp[2].toFixed(1) + '" y2="' + imp[3].toFixed(1) + '" stroke="#2E7D32" stroke-width="4"/>';
+    segs.push([xI, yI, xI, 460]);
+    g += '<line x1="' + xI.toFixed(1) + '" y1="' + yI.toFixed(1) + '" x2="' + xI.toFixed(1) + '" y2="460" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<circle cx="' + xI.toFixed(1) + '" cy="' + yI.toFixed(1) + '" r="6" fill="#2E7D32"/>';
+    g += tag(yI, '\u00A5' + IMP, '#2E7D32');
+    const pI = park('grain from elsewhere', 28, 'middle',
+      [[500, yI + 36], [470, yI - 26], [380, yI + 36], [300, yI - 30]], segs, placed, false);
+    g += '<text x="' + pI[0].toFixed(1) + '" y="' + pI[1].toFixed(1) + '" text-anchor="middle" font-size="28" font-weight="800" fill="#2E7D32">grain from elsewhere</text>';
+  }
+  const sl = along(ss, 0.28);
+  const pS = park('S food', 30, 'start', [[sl[0] - 140, sl[1] + 6], [sl[0] + 20, sl[1] + 6], [sl[0] - 150, sl[1] + 46]], segs, placed, true);
+  g += '<text x="' + pS[0].toFixed(1) + '" y="' + pS[1].toFixed(1) + '" font-size="30" font-weight="800" fill="#a57d12">S food</text>';
+  const dl = along(d1, 0.30);
+  const pD = park('D', 32, 'start', [[dl[0] + 22, dl[1] + 6], [dl[0] + 22, dl[1] - 34], [dl[0] - 60, dl[1] + 6]], segs, placed, false);
+  g += '<text x="' + pD[0].toFixed(1) + '" y="' + pD[1].toFixed(1) + '" font-size="32" font-weight="800" fill="#94a3b8">D</text>';
+  /* "+16% 换 +5%" 放在最后落位：此时进口价线也已经在障碍集里 */
+  if(lv >= 1){
+    const x1 = XQ(q1), y1 = YP(P1);
+    const pP = park('+16% for +5% food', 28, 'start',
+      [[x1 + 26, y1 + 8], [x1 + 26, y1 + 40], [x1 + 26, y1 - 24], [x1 - 240, y1 + 8], [x1 - 240, y1 + 40]], segs, placed, false);
+    g += '<text x="' + pP[0].toFixed(1) + '" y="' + pP[1].toFixed(1) + '" font-size="28" font-weight="800" fill="#C62828">+16% for +5% food</text>';
+  }
+  return wrap(g);
+}
+
+/* ══════════ 26 · THE PIG CYCLE（真实数据：生猪价格六次拐点） ══════════
+   数据来源：农业农村部监测 / 华安证券《生猪养殖行业系列报告十四》2026-03 */
+const PIG_PTS = [
+  [2019.83, 38.71], [2021.77, 11.54], [2022.82, 27.66],
+  [2023.53, 14.19], [2024.62, 20.92], [2025.79, 12.30]
+];
+function pigSvg(o){
+  const lv = o.level || 0;
+  const X = t => 110 + (t - 2019.5) * 75, Yp = p => 380 - (p - 5) * 8.6;
+  let g = '';
+  g += '<line x1="110" y1="380" x2="600" y2="380" stroke="#94a3b8" stroke-width="2"/>'
+     + '<line x1="110" y1="380" x2="110" y2="56" stroke="#94a3b8" stroke-width="2"/>'
+     + '<text x="122" y="38" font-size="30" font-weight="700" fill="#5b6b7b">Live hog price (\u00A5/kg) \u2191</text>'
+     + '<text x="116" y="356" font-size="30" font-weight="700" fill="#5b6b7b">year \u2192</text>';
+  [2020, 2021, 2022, 2023, 2024, 2025].forEach(function(yr){
+    const x = X(yr);
+    g += '<line x1="' + x.toFixed(1) + '" y1="380" x2="' + x.toFixed(1) + '" y2="387" stroke="#94a3b8" stroke-width="3"/>';
+    g += '<text x="' + x.toFixed(1) + '" y="412" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">' + yr + '</text>';
+  });
+  /* 真实折线 */
+  g += '<polyline points="' + PIG_PTS.map(function(p){ return X(p[0]).toFixed(1) + ',' + Yp(p[1]).toFixed(1); }).join(' ') + '" fill="none" stroke="#7C3AED" stroke-width="6"/>';
+  if(lv >= 1){
+    PIG_PTS.forEach(function(p, i){
+      const x = X(p[0]), y = Yp(p[1]), peak = (i % 2 === 0);
+      g += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="7" fill="' + (peak ? '#C62828' : '#2E7D32') + '"/>';
+      const first = (i === 0);
+      g += '<text x="' + (first ? x + 16 : x).toFixed(1) + '" y="' + (peak ? y - 18 : y + 38).toFixed(1) + '" text-anchor="' + (first ? 'start' : 'middle') + '" font-size="30" font-weight="800" fill="' + (peak ? '#C62828' : '#2E7D32') + '">\u00A5' + p[1] + '</text>';
+    });
+  }
+  if(lv >= 2){
+    const a = PIG_PTS[0], b = PIG_PTS[1];
+    const xa = X(a[0]), ya = Yp(a[1]), xb = X(b[0]), yb = Yp(b[1]);
+    g += '<line x1="' + (xa + 14).toFixed(1) + '" y1="' + (ya + 22).toFixed(1) + '" x2="' + (xb - 16).toFixed(1) + '" y2="' + (yb - 26).toFixed(1) + '" stroke="#2E4A6B" stroke-width="4" stroke-dasharray="10 8" marker-end="url(#ahBlue)"/>';
+  }
+  const CIR = ['\u2460', '\u2461', '\u2462', '\u2463'];
+  const LEGEND = ['price high \u2192 keep more sows',
+    '\u2248 10 months on: pigs flood in',
+    'price low \u2192 sows culled',
+    'shortage again \u2192 price rises'];
+  LEGEND.forEach(function(t, i){
+    const y = 456 + i * 38;
+    g += '<text x="116" y="' + y + '" font-size="30" font-weight="700" fill="#1a3a5c">' + CIR[i] + '  ' + t + '</text>';
+  });
+  return '<svg viewBox="0 0 680 640" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+
+/* ══════════ 24b · FIVE DEGREES mini-diagrams + unitary proof ══════════ */
+function miniSvg(shape){
+  let g = '<svg viewBox="0 0 300 190" style="width:100%;height:150px;display:block;">'
+    + '<line x1="40" y1="160" x2="285" y2="160" stroke="#94a3b8" stroke-width="2"/>'
+    + '<line x1="40" y1="160" x2="40" y2="16" stroke="#94a3b8" stroke-width="2"/>'
+    + '<text x="288" y="152" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q</text>'
+    + '<text x="48" y="26" font-size="30" font-weight="700" fill="#5b6b7b">P</text>';
+  if(shape === 'elastic'){
+    g += '<line x1="52" y1="146" x2="278" y2="52" stroke="#00838F" stroke-width="5"/>';
+  } else if(shape === 'inelastic'){
+    g += '<line x1="150" y1="160" x2="222" y2="18" stroke="#C62828" stroke-width="5"/>';
+  } else if(shape === 'p-inelastic'){
+    g += '<line x1="150" y1="160" x2="150" y2="18" stroke="#C62828" stroke-width="6"/>';
+  } else if(shape === 'p-elastic'){
+    g += '<line x1="40" y1="80" x2="285" y2="80" stroke="#00838F" stroke-width="6"/>';
+  } else if(shape === 'unitary'){
+    g += '<line x1="40" y1="160" x2="278" y2="28" stroke="#7C3AED" stroke-width="5"/>'
+       + '<circle cx="150" cy="88" r="5" fill="#7C3AED"/><circle cx="232" cy="41" r="5" fill="#7C3AED"/>';
+  }
+  return g + '</svg>';
+}
+document.querySelectorAll('.mini-sup').forEach(function(d){ d.innerHTML = miniSvg(d.getAttribute('data-shape')); });
+/* 过原点的两条线：P = Q 与 P = 2Q，价格 ¥1 → ¥5（本地坐标，P、Q 同为 0..6） */
+(function(){
+  const Xa = function(q){ return 90 + 90 * q; };
+  const Ya = function(p){ return 460 - 66.7 * p; };
+  let g = axes();
+  const y1 = Ya(1), y5 = Ya(5);
+  g += '<line x1="90" y1="' + y1.toFixed(1) + '" x2="630" y2="' + y1.toFixed(1) + '" stroke="#94a3b8" stroke-width="3" stroke-dasharray="9 7"/>';
+  g += '<line x1="90" y1="' + y5.toFixed(1) + '" x2="630" y2="' + y5.toFixed(1) + '" stroke="#C62828" stroke-width="3" stroke-dasharray="9 7"/>';
+  g += '<text x="82" y="' + (y1 + 9).toFixed(1) + '" text-anchor="end" font-size="30" font-weight="800" fill="#5b6b7b">\u00A51</text>';
+  g += '<text x="82" y="' + (y5 + 9).toFixed(1) + '" text-anchor="end" font-size="30" font-weight="800" fill="#C62828">\u00A55</text>';
+  /* 两条供给线（标签交给 park：障碍集含两条线、两条价格线与坐标轴） */
+  const s1 = [90, 460, 630, 60], s2 = [90, 460, 360, 60];
+  g += '<line x1="' + s1[0] + '" y1="' + s1[1] + '" x2="' + s1[2] + '" y2="' + s1[3] + '" stroke="#7C3AED" stroke-width="5"/>';
+  g += '<line x1="' + s2[0] + '" y1="' + s2[1] + '" x2="' + s2[2] + '" y2="' + s2[3] + '" stroke="#00838F" stroke-width="5"/>';
+  const lseg = [[90, 50, 90, 460], [90, 460, 630, 460], [90, y1, 630, y1], [90, y5, 630, y5], s1, s2];
+  const lplaced = [];
+  const p1 = park('S\u2081 P = Q', 30, 'start', [[Xa(4.2) + 18, Ya(4.2) + 44], [Xa(3.4) + 18, Ya(3.4) + 52], [Xa(4.6) + 18, Ya(4.6) + 60], [470, 300]], lseg, lplaced, false);
+  g += '<text x="' + p1[0].toFixed(1) + '" y="' + p1[1].toFixed(1) + '" font-size="30" font-weight="800" fill="#7C3AED">S\u2081 P = Q</text>';
+  const p2 = park('S\u2082 P = 2Q', 30, 'start', [[Xa(0.95) + 18, Ya(0.95) - 46], [Xa(1.6) + 18, Ya(1.6) + 52], [Xa(0.6) + 18, Ya(0.6) - 46], [200, 250]], lseg, lplaced, false);
+  g += '<text x="' + p2[0].toFixed(1) + '" y="' + p2[1].toFixed(1) + '" font-size="30" font-weight="800" fill="#00838F">S\u2082 P = 2Q</text>';
+  /* 四个点 + 数量读数 */
+  [[1, 1, 1, '#7C3AED'], [1, 5, 5, '#7C3AED'], [2, 0.5, 0.5, '#00838F'], [2, 2.5, 2.5, '#00838F']].forEach(function(p){
+    const x = Xa(p[1]), y = Ya(p[2]);
+    g += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="7" fill="' + p[3] + '"/>';
+    g += '<text x="' + x.toFixed(1) + '" y="492" text-anchor="middle" font-size="30" font-weight="800" fill="' + p[3] + '">' + qs(p[1]) + '</text>';
+  });
+  document.getElementById('unA') && (document.getElementById('unA').innerHTML = wrap(g));
+})();
+
+/* ══════════ 27 · NAVIGATION ══════════ */
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+const $ = id => document.getElementById(id);
+const globalR = {
+  show(){ $('rbtnWrap').style.display = 'flex'; },
+  hide(){ $('rbtnWrap').style.display = 'none'; },
+  setup(grps){
+    const btn = $('rbtn');
+    btn.textContent = 'Reveal more ▶';
+    btn.disabled = false;
+    this.show();
+    btn.onclick = function(){
+      let curIdx = -1;
+      grps.forEach(function(g, i){ if(g.classList.contains('show')) curIdx = i; });
+      const next = curIdx + 1;
+      if(next < grps.length){
+        grps[next].classList.add('show');
+        if(next >= grps.length - 1) btn.textContent = 'All shown ✓';
+        syncSlideEffects();
+      }
+    };
+  }
+};
+globalR.hide();
+
+function showSlide(i){
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  slides[i].classList.add('active');
+  cur = i;
+  $('prevBtn').disabled = (i === 0);
+  $('nextBtn').disabled = (i === total - 1);
+  $('pageNum').textContent = (i + 1) + ' / ' + total;
+  document.querySelectorAll('.dots span').forEach(function(s, j){ s.classList.toggle('on', j === i); });
+  const grps = slides[i].querySelectorAll('.rgrp');
+  if(grps.length){
+    const nofirst = slides[i].hasAttribute('data-nofirst');
+    grps.forEach(function(g, idx){ g.classList.toggle('show', !nofirst && idx === 0); });
+  }
+  if(grps.length > 1) globalR.setup(grps); else globalR.hide();
+  syncSlideEffects();
+}
+
+/* ══════════ 28 · PAGE EFFECTS ══════════ */
+function syncSlideEffects(){
+  const slide = document.querySelector('.slide.active');
+  if(!slide) return;
+  try { if(slide.querySelector('#shA')) syncShape(); } catch(e){ console.error('sh', e); }
+  try { if(slide.querySelector('#pkA')) syncPeak(); } catch(e){ console.error('pk', e); }
+  try { if(slide.querySelector('#tmA')) syncTime(); } catch(e){ console.error('tm', e); }
+  try { if(slide.querySelector('#fmA')) syncFamine(); } catch(e){ console.error('fm', e); }
+  try { if(slide.querySelector('#pgA')) syncPig(); } catch(e){ console.error('pg', e); }
+}
+function shownGroups(sel){ return [].filter.call(sel, function(g){ return g.classList.contains('show'); }).length; }
+
+/* page 3 — the two shapes (steep then flat) */
+function syncShape(){
+  const box = $('shA'); if(!box) return;
+  const n = shownGroups(box.closest('.slide').querySelectorAll('.rgrp'));
+  box.innerHTML = shapeSvg({ level: n - 1 });
+}
+/* page 4 — the continuous slider */
+function syncPeak(){
+  const box = $('pkA'); if(!box) return;
+  const k = +$('pkK').value;
+  const P0 = 30, PR = 36;
+  const q1 = 5 + (PR - P0) / k;
+  const dq = (q1 - 5) / 5 * 100, dp = (PR - P0) / P0 * 100, e = pes(k);
+  $('pk-q0').textContent = '5';
+  $('pk-pes').textContent = f2(e);
+  $('pk-q').textContent = qs(q1);
+  $('pk-dq').textContent = pc(dq);
+  $('pk-dp').textContent = '+' + (dp % 1 === 0 ? dp : f1(dp)) + '%';
+  $('pk-name').textContent = (e > 1.02) ? 'elastic' : (e < 0.98 ? 'inelastic' : 'unitary');
+  $('pkV').textContent = (e > 1.02) ? 'flat \u00B7 elastic' : (e < 0.98 ? 'steep \u00B7 inelastic' : 'unitary');
+  $('pk-say').innerHTML = (e > 1.02)
+    ? '<b class="teal">Elastic (PES &gt; 1):</b> the same +20% price rise pulls out a lot of extra supply.'
+    : (e < 0.98
+      ? '<b class="dr">Inelastic (PES &lt; 1):</b> the same +20% price rise barely moves quantity supplied.'
+      : '<b>Unitary (PES = 1):</b> %\u0394Q = %\u0394P \u2014 the two changes match.');
+  box.innerHTML = shapeSvg({ mode: 'slider', k: k });
+}
+/* page 7 — time horizons */
+function syncTime(){
+  const box = $('tmA'); if(!box) return;
+  const n = shownGroups(box.closest('.slide').querySelectorAll('.rgrp'));
+  box.innerHTML = timeSvg({ level: n });
+}
+/* page 12 — the famine */
+function syncFamine(){
+  const box = $('fmA'); if(!box) return;
+  const n = shownGroups(box.closest('.slide').querySelectorAll('.rgrp'));
+  box.innerHTML = famineSvg({ level: n - 1 });
+}
+/* page 10 — the pig cycle */
+function syncPig(){
+  /* 猪页现在用真实历史曲线图（老师提供的 R-C.png）—— 只做画布尺寸适配，不再重画 SVG */
+  const box = $('pgA'); if(!box) return;
+}
+
+/* ══════════ 29 · NAV BINDING ══════════ */
+try {
+  $('prevBtn').onclick = function(){ if(cur > 0) showSlide(cur - 1); };
+  $('nextBtn').onclick = function(){ if(cur < total - 1) showSlide(cur + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){ e.preventDefault(); if(cur < total - 1) showSlide(cur + 1); }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); if(cur > 0) showSlide(cur - 1); }
+  });
+  const dotBox = $('dots');
+  for(let i = 0; i < total; i++){
+    const s = document.createElement('span');
+    s.onclick = (function(kk){ return function(){ showSlide(kk); }; })(i);
+    dotBox.appendChild(s);
+  }
+  showSlide(0);
+} catch(err){ console.error('nav init', err); }
+
+/* ══════════ 30 · SLIDER ══════════ */
+try {
+  $('pkK').addEventListener('input', syncPeak);
+} catch(err){ console.error('slider bind', err); }
+
+/* ══════════ 31 · ROW-REVEAL TABLES ══════════ */
+try {
+  function makeRowReveal(rows, nextId, resetId){
+    let i = 0;
+    function paint(){
+      rows.forEach(function(id, ri){
+        const tr = $(id), done = ri < i;
+        tr.classList.toggle('hit', done);
+        tr.querySelectorAll('.blank').forEach(function(b){
+          b.textContent = done ? b.getAttribute('data-a') : '___';
+          b.classList.toggle('empty', !done);
+        });
+      });
+    }
+    $(nextId).onclick = function(){
+      if(i >= rows.length) return;
+      i++; paint();
+      if(i >= rows.length){ this.textContent = 'All shown ✓'; this.disabled = true; }
+    };
+    $(resetId).onclick = function(){
+      i = 0; paint();
+      $(nextId).textContent = 'Reveal next row ▶';
+      $(nextId).disabled = false;
+    };
+    paint();
+  }
+} catch(err){ console.error('row reveal', err); }
+
+/* ══════════ 32 · QUIZ ══════════ */
+try {
+  (function(){
+    const G1Q = [
+      { s: 'What is the formula for PES?', o: ['percentage change in quantity supplied \u00F7 percentage change in price', 'change in quantity supplied \u00F7 change in price', 'percentage change in quantity demanded \u00F7 percentage change in price', 'change in price \u00F7 change in quantity supplied'], a: 'percentage change in quantity supplied \u00F7 percentage change in price' },
+      { s: 'A PES of 0.8 indicates that supply is\u2026', o: ['elastic', 'inelastic', 'perfectly elastic', 'perfectly inelastic'], a: 'inelastic' },
+      { s: 'Price rises +10% and quantity supplied rises +3%. PES = \u2026', o: ['0.3', '3', '0.03', '13'], a: '0.3' },
+      { s: 'In which case is supply most likely to be elastic?', o: ['the product can be stored', 'it takes a long time to produce', 'production needs very expensive capital', 'the factors of production are hard to move'], a: 'the product can be stored' },
+      { s: 'Supply falls from 820 to 656 when price falls from $8 to $4. PES = \u2026', o: ['0.4', '1.0', '1.9', '2.5'], a: '0.4' },
+      { s: 'Which supply curve shows perfectly inelastic supply?', o: ['a vertical line', 'a horizontal line', 'a line through the origin', 'a shallow upward slope'], a: 'a vertical line' },
+      { s: 'Any straight supply line through the origin has PES\u2026', o: ['equal to 1 at every point', 'equal to 0', 'equal to its slope', 'different at each point'], a: 'equal to 1 at every point' },
+      { s: 'Why is farm supply inelastic in the short run?', o: ['crops and herds take time to grow', 'farmers dislike higher prices', 'food cannot be eaten', 'land is unlimited'], a: 'crops and herds take time to grow' },
+      { s: 'A tax on a good with flat (elastic) supply: who pays most?', o: ['consumers', 'producers', 'the government', 'nobody'], a: 'consumers' },
+      { s: 'Which raises PES: holding stocks, or a longer production period?', o: ['holding stocks', 'a longer production period', 'both equally', 'neither'], a: 'holding stocks' }
+    ];
+    let qi = 0, score = 0;
+    function render(){
+      $('g1q').textContent = qi + 1;
+      $('g1n').textContent = G1Q.length;
+      $('g1scenario').textContent = G1Q[qi].s;
+      $('g1fb').textContent = '';
+      $('g1next').style.display = 'none';
+      const box = $('g1btns');
+      box.innerHTML = '';
+      G1Q[qi].o.forEach(function(opt){
+        const b = document.createElement('button');
+        b.textContent = opt;
+        b.onclick = function(){
+          Array.prototype.slice.call(box.children).forEach(function(x){ x.disabled = true; });
+          const right = opt === G1Q[qi].a;
+          if(right) score++;
+          $('g1score').textContent = score;
+          Array.prototype.slice.call(box.children).forEach(function(x){
+            if(x.textContent === G1Q[qi].a) x.classList.add('correct');
+            else if(x === b) x.classList.add('wrong');
+          });
+          $('g1fb').textContent = right ? 'Correct!' : 'The right answer is: ' + G1Q[qi].a;
+          $('g1next').style.display = 'inline-block';
+          $('g1next').textContent = qi >= G1Q.length - 1 ? 'See result \u25B6' : 'Next \u25B6';
+        };
+        box.appendChild(b);
+      });
+    }
+    $('g1next').onclick = function(){
+      qi++;
+      if(qi >= G1Q.length){
+        $('g1btns').style.display = 'none';
+        $('g1scenario').style.display = 'none';
+        $('g1result').style.display = 'block';
+        $('g1final').textContent = score + ' / ' + G1Q.length;
+      } else render();
+    };
+    $('g1again').onclick = function(){
+      qi = 0; score = 0; $('g1score').textContent = '0';
+      $('g1result').style.display = 'none';
+      $('g1btns').style.display = 'flex';
+      $('g1scenario').style.display = 'block';
+      render();
+    };
+    render();
+  })();
+} catch(err){ console.error('game', err); }
+/* ══════════ 33 · INTRO BUTTONS (famine voices) ══════════ */
+try {
+  $('faAn').onclick = function(){
+    var a = $('faA'), b = $('faB');
+    a.style.visibility = 'visible';
+    b.style.visibility = 'hidden';
+  };
+  $('faBn').onclick = function(){
+    var a = $('faA'), b = $('faB');
+    b.style.visibility = 'visible';
+    a.style.visibility = 'hidden';
+  };
+} catch(err){ console.error('famine intro bind', err); }
+
+/* ══════════ 34 · SORTING GAME ══════════ */
+try {
+  (function(){
+    var G2Q = [
+      { s: 'Rubber bands', a: 'ELASTIC', why: 'quick and cheap to make — time and cost of altering supply are tiny' },
+      { s: 'Fresh strawberries', a: 'INELASTIC', why: 'perishable and seasonal — cannot be stored for a higher price' },
+      { s: 'T-shirts', a: 'ELASTIC', why: 'simple product, spare capacity everywhere, made in weeks' },
+      { s: 'Concert seats tonight', a: 'INELASTIC', why: 'fixed capacity — the supply curve is vertical (PES = 0)' },
+      { s: 'Pork next year', a: 'INELASTIC', why: 'the breeding lag: about 10 months before a decision becomes meat' },
+      { s: 'Bottled water', a: 'ELASTIC', why: 'cheap to produce and easy to store — stocks smooth the response' }
+    ];
+    var qi = 0, score = 0;
+    function render(){
+      $('g2n').textContent = 'Item ' + (qi + 1) + ' / ' + G2Q.length;
+      $('g2q').textContent = G2Q[qi].s + ' — elastic or inelastic supply?';
+      $('g2fb').textContent = '';
+      $('g2next').style.display = 'none';
+      var box = $('g2btns');
+      box.innerHTML = '';
+      ['ELASTIC', 'INELASTIC'].forEach(function(opt){
+        var b = document.createElement('button');
+        b.textContent = opt;
+        b.onclick = function(){
+          Array.prototype.slice.call(box.children).forEach(function(x){ x.disabled = true; });
+          var right = opt === G2Q[qi].a;
+          if(right) score++;
+          $('g2score').textContent = score;
+          Array.prototype.slice.call(box.children).forEach(function(x){
+            if(x.textContent === G2Q[qi].a) x.classList.add('correct');
+            else if(x === b) x.classList.add('wrong');
+          });
+          $('g2fb').textContent = (right ? 'Correct! ' : 'Actually: ') + G2Q[qi].why;
+          $('g2next').style.display = 'inline-block';
+          $('g2next').textContent = qi >= G2Q.length - 1 ? 'See result ▶' : 'Next ▶';
+        };
+        box.appendChild(b);
+      });
+    }
+    $('g2next').onclick = function(){
+      qi++;
+      if(qi >= G2Q.length){
+        $('g2btns').style.display = 'none';
+        $('g2q').style.display = 'none';
+        $('g2result').style.display = 'block';
+        $('g2final').textContent = score + ' / ' + G2Q.length;
+      } else render();
+    };
+    $('g2again').onclick = function(){
+      qi = 0; score = 0; $('g2score').textContent = '0';
+      $('g2result').style.display = 'none';
+      $('g2btns').style.display = 'flex';
+      $('g2q').style.display = 'block';
+      render();
+    };
+    render();
+  })();
+} catch(err){ console.error('sorting game', err); }
+</script>
+</body>
+</html>

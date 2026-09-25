@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 4-1 - Price elasticity of demand</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;--amber:#F0B429;--teal:#00838F;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+/* The base size lives on .slide on purpose: any paragraph that forgets its own font-size then
+   inherits this 22-25px instead of body's 16px (the 3-1 deck fell into that hole twice). */
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,3vh,48px) clamp(60px,7vw,110px) 84px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.7);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:clamp(24px,2.4vw,30px);font-weight:700;padding:4px 18px;border-radius:8px;cursor:pointer;transition:.12s;min-width:60px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:40%;}
+.dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.3);}
+/* cover */
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff;}
+.cover .course-tag{font-size:clamp(22px,2.5vw,32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px);}
+.cover h1{font-size:clamp(46px,6.4vw,78px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px);}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px);}
+.cover .author{font-size:clamp(22px,2.2vw,28px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:60px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
+/* reveal button */
+.rbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn:hover{background:var(--blue);color:#fff;}
+.rbtn:disabled{opacity:.35;cursor:default;}
+.rbtn-icon{font-size:16px;color:var(--blue);}
+.sbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn:hover{background:var(--blue);color:#fff;}
+.sbtn:disabled{opacity:.35;cursor:default;}
+/* content */
+.content{width:100%;max-width:clamp(600px,85vw,1100px);display:flex;flex-direction:column;flex:1;}
+h1{font-size:clamp(28px,3.5vw,44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+.sub{font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.course-tag{font-size:clamp(22px,1.8vw,26px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(22px,2.2vw,29px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.6vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}
+.db{color:var(--darkblue);}
+.dr{color:var(--red);}
+.green{color:var(--green);}
+.teal{color:var(--teal);}
+.gray{color:#5b6b7b;}
+/* reveal groups */
+.rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
+.rgrp.show{opacity:1;max-height:1400px;}
+/* note box */
+.note{border-radius:0 10px 10px 0;padding:8px 14px;font-size:clamp(22px,2.1vw,28px);line-height:1.45;}
+.note p{margin:0;}
+/* cards */
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:11px 16px;}
+.card.g{border-color:var(--green);}
+.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}
+.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(24px,2.5vw,31px);margin-bottom:6px;}
+.card p{font-size:clamp(22px,2.1vw,28px);line-height:1.4;color:#445;margin-top:4px;}
+/* compact variants: same >=22px floor, tighter leading so several blocks fit one screen */
+.compact .card{padding:10px 14px;}
+.compact .card h3{font-size:clamp(24px,2vw,28px);margin-bottom:2px;}
+.compact .card p{font-size:clamp(22px,1.8vw,25px);line-height:1.35;margin-top:2px;}
+.compact .note{font-size:clamp(22px,1.8vw,25px);line-height:1.35;padding:10px 14px;}
+.compact .note p{margin-bottom:4px;}
+.compact .sub{font-size:clamp(22px,1.9vw,26px);margin-bottom:4px;}
+.compact .big-btn{padding:6px 18px;font-size:22px;}
+.compact .note p{margin-bottom:2px;}
+.compact h1{font-size:clamp(28px,3.2vw,40px);}
+.compact2 .card{padding:12px 16px;}
+.compact2 .card p{font-size:clamp(22px,2vw,27px);line-height:1.38;}
+.compact2 .note{font-size:clamp(22px,2vw,27px);line-height:1.38;}
+.compact2 .note p{margin-bottom:4px;}
+.ssteps.compact{font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+/* buttons */
+.big-btn{padding:9px 22px;border:none;background:var(--blue);color:#fff;border-radius:12px;font-size:clamp(22px,2.2vw,28px);font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn.on{outline:5px solid #1b5e20;outline-offset:2px;}
+.factor-btn{padding:10px 18px;border-radius:12px;border:2.5px solid rgba(42,90,140,.35);background:#fff;color:#1a3a5c;font-size:clamp(22px,1.9vw,26px);font-weight:700;cursor:pointer;transition:.15s;}
+.factor-btn:hover{border-color:var(--blue);background:#eaf2fb;}
+/* data table */
+.data-table{border-collapse:collapse;width:100%;}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:5px 11px;font-size:clamp(22px,2.1vw,27px);text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table tr.hit td{background:#E8F5E9;font-weight:800;color:#1b5e20;}
+/* blanks */
+.blank{display:inline-block;min-width:clamp(60px,5vw,100px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
+.blank.empty{color:transparent;}
+.blank.filled{color:var(--blue);}
+/* game */
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(10px,1.1vh,16px) clamp(14px,1.8vw,24px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(22px,2.2vw,29px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px,1vw,14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(22px,1.9vw,24px);padding:clamp(6px,.7vh,10px) clamp(12px,1.4vw,18px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(22px,2.2vw,28px);font-weight:700;min-height:30px;margin-top:2px;}
+/* summary steps */
+.ssteps{font-size:clamp(22px,2.2vw,29px);line-height:1.6;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(10px,1.2vh,18px);}
+.sstep.show{opacity:1;}
+/* closing */
+.closing{justify-content:center;text-align:center;align-items:center;}
+.result-box{display:none;text-align:center;padding:20px;}
+.result-box h3{font-size:clamp(28px,3.5vw,38px);color:var(--darkblue);}
+.result-box .big{font-size:clamp(40px,5.5vw,56px);font-weight:800;color:var(--blue);margin:8px 0;}
+/* slider readout */
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+/* formula fraction */
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 8px;}
+.frac .top{border-bottom:3px solid var(--darkblue);padding:0 12px 2px;}
+.frac .bot{padding:2px 12px 0;}
+</style>
+</head>
+<body>
+<div class="view" id="app">
+
+<!-- global reveal button -->
+<div class="rbtn-wrap" id="rbtnWrap">
+  <button class="rbtn" id="rbtn">Reveal more</button>
+  <span class="rbtn-icon">▶</span>
+</div>
+
+<!-- summary / fill-in reveal button -->
+<div class="sbtn-wrap" id="sbtnWrap">
+  <button class="sbtn" id="sbtn">Reveal answers</button>
+</div>
+
+<!-- ───── 1 · COVER ───── -->
+<div class="slide cover" data-i="0">
+  <div class="course-tag">IGCSE ECONOMICS 0455 · UNIT 2</div>
+  <h1>Price elasticity<br>of demand</h1>
+  <div class="sep"></div>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin-bottom:10px;">Syllabus 2.6 · PED</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">When a price moves — how much do buyers move with it?</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ───── 2 · THE PRICE WAR ───── -->
+<div class="slide" data-i="1">
+  <div class="content">
+  <div class="course-tag">THE PRICE WAR · 价格战</div>
+  <h1>Cut the price — get richer?</h1>
+  <div class="sub">Two real price wars, one milk-tea shop, the same ¥10 cut — with opposite results.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="card">
+        <h3 class="blue">Last summer</h3>
+        <p>Price was <b>¥40</b>. A rival opened next door, so the shop <b>cut ¥10</b> → ¥30.</p>
+      </div>
+      <div class="card a">
+        <h3 style="color:#a57d12;">This winter</h3>
+        <p>Business is slow, so the shop <b>cuts ¥10 again</b> → ¥20. Same move as in summer.</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Same shop, same ¥10 cut</b> — but the two cuts did <b>not</b> do the same thing to the shop's money. That gap is what today measures.</p>
+      </div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:10px;">
+        <button class="big-btn" id="waAn">Summer cut ▶</button>
+        <button class="big-btn" id="waBn" style="background:#a57d12;">Winter cut ▶</button>
+      </div>
+      <div id="waA" style="visibility:hidden;">
+        <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+          <p><b>Summer: ¥40 → ¥30.</b> Sales 3 → 5 cups. Money in: <b>¥120 → ¥150. Revenue ROSE ✅</b></p>
+        </div>
+      </div>
+      <div id="waB" style="visibility:hidden;">
+        <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);">
+          <p><b>Winter: ¥30 → ¥20.</b> Sales 5 → 7 cups. Money in: <b>¥150 → ¥140. Revenue FELL ❌</b></p>
+        </div>
+      </div>
+      <p class="gray" style="margin:0;">"Money in" = price × cups sold. Both cuts sold <b>more</b> cups — that alone decides nothing.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 2 · AREAS ON THE DIAGRAM ───── -->
+<div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">AREAS = MONEY · 面积</div>
+  <h1>Look at the AREA, not just the point</h1>
+  <div class="sub">A point on D tells you P and Q. Together they draw a rectangle — and that rectangle is <b>money</b>.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card">
+          <h3 class="blue">One point → one rectangle</h3>
+          <p>Pick a point on D: <b>height = P</b> (¥ per cup), <b>width = Q</b> (cups sold).</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card g">
+          <h3 class="green">Area = P × Q</h3>
+          <p>¥ per cup × cups sold = <b>¥ in total</b> — and that is the area shaded below.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+          <p><b>Area = consumers' total spending = producers' total revenue (TR).</b></p>
+        </div>
+      </div>
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Set the price: <span id="arPv">¥30</span></p>
+        <input type="range" id="arP" min="10" max="45" step="1" value="30" style="width:100%;accent-color:#1E88E5;">
+        <div class="ends"><span>¥10</span><span>¥45</span></div>
+        <p id="arRead" style="margin:4px 0 0;font-weight:700;color:#1a3a5c;min-height:34px;">Reveal all 3 steps first — then drag the price yourself.</p>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="626" y="442" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Q</text>
+        <text x="100" y="30" font-size="32" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <line x1="90" y1="419" x2="382.5" y2="50" stroke="#cbd5e1" stroke-width="3"/>
+        <text x="398" y="58" font-size="28" font-weight="700" fill="#94a3b8">S</text>
+        <rect id="ar-rect" x="90" y="214" width="162.5" height="246" fill="rgba(30,136,229,.18)" opacity="0"/>
+        <line id="ar-gh" x1="90" y1="214" x2="252.5" y2="214" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>
+        <line id="ar-gv" x1="252.5" y1="214" x2="252.5" y2="460" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>
+        <circle id="ar-dot" cx="252.5" cy="214" r="9" fill="#1E88E5"/>
+        <line x1="122.5" y1="50" x2="447.5" y2="460" stroke="#1E88E5" stroke-width="4"/>
+        <text id="ar-dlab" x="418" y="290" font-size="32" font-weight="800" fill="#1E88E5">D</text>
+        <text id="ar-pv" x="82" y="222" text-anchor="end" font-size="28" font-weight="800" fill="#1b5e20">30</text>
+        <text id="ar-qv" x="252.5" y="490" text-anchor="middle" font-size="28" font-weight="800" fill="#1b5e20">5</text>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 3 · MEET PED ───── -->
+<div class="slide" data-i="3">
+  <div class="content">
+  <div class="course-tag">DEFINITION · 定义</div>
+  <h1>Meet PED</h1>
+  <div class="sub">We need a <b>number</b> that says how strongly buyers react to a price change. Here it is.</div><hr>
+  <div class="txt">
+    <div class="sstep">
+      <p><b class="db">1 · The idea</b> — price elasticity of demand (PED) measures how <b>responsive</b> the quantity demanded is when the <b>price</b> changes.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">2 · The formula</b></p>
+      <div style="font-size:clamp(26px,2.5vw,33px);display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap;">
+        <b class="blue">PED</b><span>=</span>
+        <span class="frac"><span class="top">%ΔQd</span><span class="bot">%ΔP</span></span>
+        <span>=</span>
+        <span class="frac"><span class="top">ΔQ ÷ Q</span><span class="bot">ΔP ÷ P</span></span>
+        <span>=</span>
+        <span class="frac"><span class="top">ΔQ</span><span class="bot">ΔP</span></span>
+        <span>×</span>
+        <span class="frac"><span class="top">P</span><span class="bot">Q</span></span>
+      </div>
+    </div>
+    <div class="sstep">
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b class="db">3 · Read the number.</b> PED is <b>negative</b> (price up → Qd down: the law of demand), so economists focus on its <b>size</b>. A PED of −2 means a 1% price rise cuts Qd by <b>2%</b>.</p>
+      </div>
+    </div>
+    <div class="sstep">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">4 · Why bother?</b> Because <b>the same price cut can raise or sink a firm's revenue</b> — you saw it in the price war. PED is the number that predicts which one happens, and it guides <b>firms' pricing</b> and <b>government taxes</b>.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 4 · WORKED CALCULATION ───── -->
+<div class="slide" data-i="4">
+  <div class="content">
+  <div class="course-tag">CALCULATION · 计算</div>
+  <h1>Work out a PED — step by step</h1>
+  <div class="sub">Price falls from <b>$10 to $9</b>, and Qd rises from <b>200 to 240</b>. Four small steps.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">1 · %ΔQd</b> — change ÷ original × 100: <b>(240 − 200) ÷ 200 × 100 = +20%</b></p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">2 · %ΔP</b> — same method: <b>(9 − 10) ÷ 10 × 100 = −10%</b></p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b class="db">3 · Divide</b> — <b>PED = +20% ÷ (−10%) = <span class="dr">−2</span></b></p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b class="db">4 · Read it.</b> The <b>minus sign</b> is just the law of demand. The <b>size 2</b>: a 1% price change moves Qd by <b>2%</b> — buyers react strongly.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 5 · FIVE DEGREES ───── -->
+<div class="slide" data-i="5">
+  <div class="content">
+  <div class="course-tag">FIVE DEGREES · 谱系</div>
+  <h1>Five degrees of elasticity</h1>
+  <div class="sub">Every PED value lands in one of five zones. Click each zone — the curve redraws to match.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <button class="factor-btn" id="sp0">PED = 0 · perfectly inelastic</button>
+        <button class="factor-btn" id="sp1">0 &lt; PED &lt; 1 · inelastic</button>
+        <button class="factor-btn" id="sp2">PED = 1 · unitary</button>
+        <button class="factor-btn" id="sp3">1 &lt; PED &lt; ∞ · elastic</button>
+        <button class="factor-btn" id="sp4">PED = ∞ · perfectly elastic</button>
+      </div>
+      <div class="note" id="spDesc" style="background:#EAF4FF;border-left:6px solid var(--blue);min-height:118px;">
+        <p><b>Inelastic (&lt; 1):</b> Qd changes by a <b>smaller</b> percentage than price. Typical of necessities — salt, petrol, medicine. Price and revenue move in the <b>same</b> direction.</p>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="626" y="442" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Q</text>
+        <text x="100" y="30" font-size="32" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <text x="122" y="430" font-size="30" font-weight="800" fill="#1E88E5">D</text>
+        <g id="sp-v" opacity="0">
+          <line x1="252.5" y1="460" x2="252.5" y2="50" stroke="#1E88E5" stroke-width="4.5"/>
+        </g>
+        <g id="sp-steep" opacity="0">
+          <line x1="220" y1="50" x2="285" y2="378" stroke="#1E88E5" stroke-width="4.5"/>
+        </g>
+        <g id="sp-unit" opacity="0">
+          <polyline points="577.5,378 415,337 285,255 252.5,214 187.5,50" fill="none" stroke="#1E88E5" stroke-width="4.5"/>
+        </g>
+        <g id="sp-shallow" opacity="0">
+          <line x1="155" y1="50" x2="545" y2="378" stroke="#1E88E5" stroke-width="4.5"/>
+        </g>
+        <g id="sp-horz" opacity="0">
+          <line x1="90" y1="255" x2="630" y2="255" stroke="#1E88E5" stroke-width="4.5"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 6 · STEEP vs SHALLOW ───── -->
+<div class="slide" data-i="6">
+  <div class="content">
+  <div class="course-tag">CONTRAST · 对比</div>
+  <h1>Same price rise, two very different curves</h1>
+  <div class="sub">Both demand curves start at ¥30 / 5 cups. Raise the price and watch how differently Qd responds.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card r">
+          <h3 class="dr">Steep curve → inelastic</h3>
+          <p>Buyers barely move: Qd falls by a <b>smaller</b> % than the price rose. |PED| &lt; 1.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <h3 class="blue">Shallow curve → elastic</h3>
+          <p>Buyers flee: Qd falls by a <b>bigger</b> % than the price rose. |PED| &gt; 1.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+          <p><b>Careful:</b> "steep/shallow" only compares curves on the <b>same scale</b>. Always check the axes before judging.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Raise the price to: <span id="tpPv">¥30</span> <span class="gray">(from ¥30)</span></p>
+        <input type="range" id="tpP" min="30" max="45" step="1" value="30" style="width:100%;accent-color:#C62828;">
+        <div class="ends"><span>¥30</span><span>¥45</span></div>
+        <p id="tpRead" style="margin:4px 0 0;font-weight:700;color:#1a3a5c;min-height:34px;">Reveal all 3 steps first — then raise the price yourself.</p>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="626" y="442" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Q</text>
+        <text x="100" y="30" font-size="32" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <line x1="220" y1="50" x2="285" y2="378" stroke="#C62828" stroke-width="4"/>
+        <text x="295" y="95" font-size="30" font-weight="800" fill="#C62828">steep</text>
+        <line x1="415" y1="378" x2="90" y2="50" stroke="#1E88E5" stroke-width="4"/>
+        <text x="472" y="305" font-size="30" font-weight="800" fill="#1E88E5">shallow</text>
+        <circle cx="252.5" cy="214" r="8" fill="none" stroke="#94a3b8" stroke-width="3"/>
+        <line id="tp-gh" x1="90" y1="214" x2="252.5" y2="214" stroke="#1b5e20" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <line id="tp-gs" x1="252.5" y1="214" x2="252.5" y2="460" stroke="#1b5e20" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <circle id="tp-dotS" cx="252.5" cy="214" r="9" fill="#C62828" opacity="0"/>
+        <circle id="tp-dotL" cx="252.5" cy="214" r="9" fill="#1E88E5" opacity="0"/>
+        <line id="tp-gvS" x1="252.5" y1="214" x2="252.5" y2="460" stroke="#C62828" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <line id="tp-gvL" x1="252.5" y1="214" x2="252.5" y2="460" stroke="#1E88E5" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 7 · DETERMINANT 1: SUBSTITUTES (main factor) ───── -->
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">DETERMINANT 1 · 因素</div>
+  <h1>The main factor: availability of substitutes</h1>
+  <div class="sub">Coursebook: the availability of substitutes is the <b>main factor</b>.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:12px;">
+        <div class="card g" style="flex:1;">
+          <h3 class="green">A close substitute exists → elastic</h3>
+          <p>If a product has a close substitute of <b>similar quality and price</b>, demand is likely to be <b>elastic</b>: a price rise makes consumers <b>switch</b>.</p>
+        </div>
+        <div class="card r" style="flex:1;">
+          <h3 class="dr">No close substitute → inelastic</h3>
+          <p>With <b>no close substitute</b>, demand will probably be <b>inelastic</b>: quantity demanded <b>will not fall much</b>, as there is <b>no suitable alternative</b> to switch to.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <table class="data-table" style="width:100%;table-layout:fixed;margin-top:10px;">
+        <tr><th style="width:34%;">Product</th><th style="width:42%;">Are there close substitutes?</th><th style="width:24%;">PED</th></tr>
+        <tr><td style="text-align:left;">One brand of bubble tea</td><td style="text-align:left;">Rival shops sell much the same drink</td><td class="b blue">elastic</td></tr>
+        <tr><td style="text-align:left;">Milk tea as a whole</td><td style="text-align:left;">Few close alternatives to the drink itself</td><td class="b" style="color:#a57d12;">inelastic</td></tr>
+        <tr><td style="text-align:left;">One wheat farmer's crop</td><td style="text-align:left;">Thousands of identical farmers to buy from</td><td class="b teal">perfectly elastic</td></tr>
+      </table>
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:8px;">
+        <p>Ask this first — every other influence works <b>through</b> it: more substitutes = more elastic.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 8 · DETERMINANT 2: PROPORTION OF INCOME ───── -->
+<div class="slide" data-i="8">
+  <div class="content">
+  <div class="course-tag">DETERMINANT 2 · 因素</div>
+  <h1>Second: the proportion of income spent on it</h1>
+  <div class="sub">Coursebook: a <b>small proportion</b> of income → inelastic; a <b>large proportion</b> → elastic.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="card t">
+        <h3 class="teal">Salt — a small share of income</h3>
+        <p><b>¥1 → ¥1.5</b> is a rise of <b>50%</b> — but only <b>¥0.5</b> more. Barely noticed → demand is <b>inelastic</b>.</p>
+      </div>
+      <div class="card">
+        <h3 class="blue">A new car — a large share of income</h3>
+        <p><b>¥1,000,000 → ¥1,500,000</b> is the <b>same 50%</b> — but <b>¥500,000</b> more. Buyers postpone → demand is <b>elastic</b>.</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Same 50%, different money</b> — ¥0.5 vs ¥500,000. What matters is the <b>share of income</b> the rise takes.</p>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;display:flex;gap:10px;">
+      <div style="flex:1;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
+        <svg viewBox="0 0 340 420" style="width:100%;height:100%;display:block;">
+          <line x1="40" y1="360" x2="320" y2="360" stroke="#94a3b8" stroke-width="2"/>
+          <line x1="40" y1="360" x2="40" y2="40" stroke="#94a3b8" stroke-width="2"/>
+          <text x="312" y="344" text-anchor="end" font-size="28" font-weight="700" fill="#5b6b7b">Q</text>
+          <text x="50" y="56" font-size="28" font-weight="700" fill="#5b6b7b">P</text>
+          <text x="180" y="30" text-anchor="middle" font-size="30" font-weight="800" fill="#00838F">salt</text>
+          <line x1="40" y1="180" x2="270" y2="180" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+          <line x1="40" y1="90" x2="270" y2="90" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+          <line x1="70" y1="60" x2="130" y2="330" stroke="#00838F" stroke-width="4.5"/>
+          <line x1="96.7" y1="180" x2="96.7" y2="360" stroke="#00838F" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8"/>
+          <line x1="76.7" y1="90" x2="76.7" y2="360" stroke="#00838F" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8"/>
+          <line x1="288" y1="176" x2="288" y2="100" stroke="#C62828" stroke-width="4"/>
+          <polygon points="288,92 282,104 294,104" fill="#C62828"/>
+          <text x="196" y="140" font-size="28" font-weight="800" fill="#C62828">+50%</text>
+          <line x1="77" y1="372" x2="97" y2="372" stroke="#00838F" stroke-width="6"/>
+          <text x="180" y="406" text-anchor="middle" font-size="28" font-weight="800" fill="#00838F">Q falls a little</text>
+        </svg>
+      </div>
+      <div style="flex:1;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
+        <svg viewBox="0 0 340 420" style="width:100%;height:100%;display:block;">
+          <line x1="40" y1="360" x2="320" y2="360" stroke="#94a3b8" stroke-width="2"/>
+          <line x1="40" y1="360" x2="40" y2="40" stroke="#94a3b8" stroke-width="2"/>
+          <text x="312" y="344" text-anchor="end" font-size="28" font-weight="700" fill="#5b6b7b">Q</text>
+          <text x="50" y="56" font-size="28" font-weight="700" fill="#5b6b7b">P</text>
+          <text x="180" y="30" text-anchor="middle" font-size="30" font-weight="800" fill="#1E88E5">new car</text>
+          <line x1="40" y1="180" x2="270" y2="180" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+          <line x1="40" y1="90" x2="270" y2="90" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+          <line x1="250" y1="300" x2="55" y2="70" stroke="#1E88E5" stroke-width="4.5"/>
+          <line x1="148.3" y1="180" x2="148.3" y2="360" stroke="#1E88E5" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8"/>
+          <line x1="72" y1="90" x2="72" y2="360" stroke="#1E88E5" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8"/>
+          <line x1="288" y1="176" x2="288" y2="100" stroke="#C62828" stroke-width="4"/>
+          <polygon points="288,92 282,104 294,104" fill="#C62828"/>
+          <text x="196" y="140" font-size="28" font-weight="800" fill="#C62828">+50%</text>
+          <line x1="72" y1="372" x2="148" y2="372" stroke="#1E88E5" stroke-width="6"/>
+          <text x="180" y="406" text-anchor="middle" font-size="28" font-weight="800" fill="#1E88E5">Q falls a lot</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 9 · OTHER INFLUENCES (supplementary) ───── -->
+<div class="slide" data-i="9">
+  <div class="content">
+  <div class="course-tag">OTHER INFLUENCES · 因素</div>
+  <h1>Other influences</h1>
+  <div class="sub">Five more influences — each still works through <b>substitutes</b>.</div><hr>
+    <div class="txt">
+      <div class="card" style="flex:1;">
+        <ul style="margin:0;padding-left:28px;display:flex;flex-direction:column;gap:14px;">
+          <li><b>Necessity or luxury?</b> — <b>Luxuries</b> (gold jewellery) can be left unbought → <b>elastic</b>; necessities (soap) cannot be cut back → <b>inelastic</b>.</li>
+          <li><b>Addictive or delayable?</b> — <b>Addictive</b> products (cigarettes) are hard to give up → <b>inelastic</b>; a purchase that can be <b>delayed</b> → <b>elastic</b>.</li>
+          <li><b>Complements</b> — a cheap product used with an expensive one (a <b>phone charger</b> with a smartphone) is a small part of the combined spend → <b>inelastic</b>.</li>
+          <li><b>The time period</b> — given <b>more time</b> to find alternatives, demand becomes <b>more elastic</b> in the long run than in the short run.</li>
+          <li><b>How narrowly the market is defined</b> — the <b>narrower</b> the definition, the more substitutes it has → the <b>more elastic</b> (one <b>brand of tea</b> vs tea in general vs hot drinks in general).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───── 10 · SORTING GAME ───── -->
+<div class="slide" data-i="10">
+  <div class="content">
+  <div class="course-tag">SORTING GAME · 归类</div>
+  <h1>Elastic or inelastic? Decide — then defend it</h1>
+  <div class="sub">Eight products. For each, pick the side and be ready to say which determinant decided it.</div><hr>
+  <div class="g1-box">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+      <span class="b db" id="g2n"></span>
+      <span class="b db">Score: <span id="g2score">0</span></span>
+    </div>
+    <div class="scenario" id="g2q"></div>
+    <div class="qbtns" id="g2btns"></div>
+    <div class="g1-fb" id="g2fb"></div>
+    <div style="margin-top:8px;">
+      <button class="big-btn" id="g2next" style="display:none;">Next ▶</button>
+    </div>
+    <div class="result-box" id="g2result">
+      <h3>Finished!</h3>
+      <div class="big" id="g2final"></div>
+      <button class="big-btn" id="g2again">↺ Play again</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 11 · PED → REVENUE (stacked charts, aligned Q axes) ───── -->
+<div class="slide" data-i="11">
+  <div class="content">
+  <div class="course-tag">PED → REVENUE · 收入</div>
+  <h1>How does TR move when the price falls?</h1>
+  <hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="rgrp show">
+        <div class="card blue" style="padding:8px 12px;">
+          <h3 class="blue">1 · Watch the rectangle</h3>
+          <p>Press <b>Play ▶</b> — the price slides from top to bottom. Watch only the <b>area</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card a" style="padding:8px 12px;">
+          <h3 style="color:#a57d12;">2 · What did the area do?</h3>
+          <p>It <b class="teal">grew</b>, peaked <b>in the middle</b>, then <b class="dr">shrank</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:8px 12px;">
+          <h3 class="green">3 · Turn it into PED</h3>
+          <p>TR <b class="teal">rising</b> → <b>ELASTIC</b> · TR <b class="dr">falling</b> → <b>INELASTIC</b> · peak → <b>PED = 1</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card p" style="padding:8px 12px;">
+          <h3 class="pur">4 · Conclusion</h3>
+          <p>Straight line: PED <b>falls as Q rises</b> — elastic, <b>PED = 1 in the middle</b> (Q = 5.5), then inelastic. <b>Not the slope.</b></p>
+        </div>
+      </div>
+      <div class="panel" style="padding:10px 14px;">
+        <div style="display:flex;gap:10px;">
+          <button class="big-btn" id="trPlay">Play ▶</button>
+          <button class="big-btn" id="trDraw" style="background:#1b5e20;">Draw TR ▶</button>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1.34;min-width:0;display:flex;flex-direction:column;gap:10px;">
+      <div style="font-size:22px;font-weight:800;color:#1E88E5;">P × Q = the rectangle</div>
+      <div id="trTop" style="height:min(32vh,330px);background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;"></div>
+      <div style="font-size:22px;font-weight:800;color:#1b5e20;">Q × TR = the area, as a curve</div>
+      <div id="trBot" style="height:min(32vh,330px);background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 12 · THE REVENUE RULES ───── -->
+<div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">THE RULES · 规则</div>
+  <h1>The revenue rules</h1>
+  <div class="sub">Predict each row out loud, then reveal. This table is the examiner's favourite.</div><hr>
+  <table class="data-table" id="rrT" style="width:100%;table-layout:fixed;">
+    <tr>
+      <th style="width:36%;">The firm…</th><th style="width:32%;">Demand is…</th><th style="width:32%;">Total revenue…</th>
+    </tr>
+    <tr id="rr-r1">
+      <td class="b">raises the price</td>
+      <td class="b blue">elastic</td>
+      <td><span class="blank empty" data-a="FALLS ↓">___</span></td>
+    </tr>
+    <tr id="rr-r2">
+      <td class="b">cuts the price</td>
+      <td class="b blue">elastic</td>
+      <td><span class="blank empty" data-a="RISES ↑">___</span></td>
+    </tr>
+    <tr id="rr-r3">
+      <td class="b">raises the price</td>
+      <td class="b" style="color:#a57d12;">inelastic</td>
+      <td><span class="blank empty" data-a="RISES ↑">___</span></td>
+    </tr>
+    <tr id="rr-r4">
+      <td class="b">cuts the price</td>
+      <td class="b" style="color:#a57d12;">inelastic</td>
+      <td><span class="blank empty" data-a="FALLS ↓">___</span></td>
+    </tr>
+    <tr id="rr-r5">
+      <td class="b">moves the price</td>
+      <td class="b teal">unitary (PED = −1)</td>
+      <td><span class="blank empty" data-a="NO CHANGE">___</span></td>
+    </tr>
+  </table>
+  <div style="display:flex;gap:10px;margin-top:10px;">
+    <button class="big-btn" id="rrNext">Reveal next row ▶</button>
+    <button class="big-btn ghost" id="rrReset">↺ Reset</button>
+  </div>
+  <p class="gray" style="margin:8px 0 0;">One sentence to keep: <b>elastic → price and revenue move apart; inelastic → they move together.</b></p>
+  </div>
+</div>
+
+<!-- ───── 13 · BACK TO THE PRICE WAR ───── -->
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">CASES · 例题</div>
+  <h1>Back to the price war — now you can explain it</h1>
+  <div class="sub">One shop, one curve, two ¥10 cuts. Grey = before, blue = after.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:6px;">
+      <div class="card" style="flex:0 0 auto;">
+        <h3 class="blue">A · Summer: ¥40 → ¥30</h3>
+        <p>On the <b>elastic</b> half of D.</p>
+      </div>
+      <button class="big-btn" id="wcAn" style="align-self:flex-start;">Show case A ▶</button>
+      <div id="wcA" style="visibility:hidden;">
+        <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+          <p><b>¥120 → ¥150 (+¥30).</b> Sales % beat the price % on the <b>ELASTIC</b> half.</p>
+        </div>
+      </div>
+      <div class="card a" style="flex:0 0 auto;">
+        <h3 style="color:#a57d12;">B · Winter: ¥30 → ¥20</h3>
+        <p>On the <b>inelastic</b> half of D.</p>
+      </div>
+      <button class="big-btn" id="wcBn" style="align-self:flex-start;background:#a57d12;">Show case B ▶</button>
+      <div id="wcB" style="visibility:hidden;">
+        <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);">
+          <p><b>¥150 → ¥140 (−¥10).</b> Sales % lost to the price % on the <b>INELASTIC</b> half.</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;max-height:430px;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="626" y="442" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Q</text>
+        <text x="100" y="30" font-size="32" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <rect id="wc-before" x="90" y="132" width="97.5" height="328" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
+        <rect id="wc-after" x="90" y="214" width="162.5" height="246" fill="rgba(30,136,229,.20)" stroke="#1E88E5" stroke-width="2.5" opacity="0"/>
+        <line x1="122.5" y1="50" x2="447.5" y2="460" stroke="#1E88E5" stroke-width="4"/>
+        <text x="418" y="290" font-size="32" font-weight="800" fill="#1E88E5">D</text>
+        <text id="wc-pl" x="82" y="222" text-anchor="end" font-size="30" font-weight="800" fill="#1a3a5c" opacity="0">P</text>
+        <text id="wc-ql" x="252.5" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#1a3a5c" opacity="0">Q</text>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── (significance page moved to the next deck: PRE-DP-3-4) ───── -->
+
+
+<!-- ───── 14 · CHECK YOUR UNDERSTANDING ───── -->
+<div class="slide" data-i="14">
+  <div class="content">
+  <div class="course-tag">CHECK · 检测</div>
+  <h1>Check your understanding</h1>
+  <div class="sub">Six questions — the six things an examiner keeps asking. The last one opens the next lesson.</div><hr>
+  <div class="g1-box">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+      <span class="b db">Question <span id="g1q">1</span> / <span id="g1n">8</span></span>
+      <span class="b db">Score: <span id="g1score">0</span></span>
+    </div>
+    <div class="scenario" id="g1scenario"></div>
+    <div class="qbtns" id="g1btns"></div>
+    <div class="g1-fb" id="g1fb"></div>
+    <div style="margin-top:8px;">
+      <button class="big-btn" id="g1next" style="display:none;">Next ▶</button>
+    </div>
+    <div class="result-box" id="g1result">
+      <h3>Finished!</h3>
+      <div class="big" id="g1final"></div>
+      <button class="big-btn" id="g1again">↺ Play again</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 15 · SUMMARY ───── -->
+<div class="slide" data-i="15">
+  <div class="content">
+  <div class="course-tag">SUMMARY · 总结</div>
+  <h1>PED in seven steps</h1>
+  <div class="sub">Exam-ready version. Fill every gap from memory.</div><hr>
+  <div class="ssteps">
+    <div class="sstep">
+      <p><b class="db">1 · Definition</b> — PED measures how <span class="blank empty" data-a="responsive">______</span> quantity demanded is when <span class="blank empty" data-a="price">______</span> changes.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">2 · Formula</b> — PED = <span class="blank empty" data-a="%ΔQd">______</span> ÷ <span class="blank empty" data-a="%ΔP">______</span>; the sign is always <span class="blank empty" data-a="negative">______</span> (law of demand), so read the size.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">3 · Five values</b> — <span class="blank empty" data-a="0">______</span> perfectly inelastic · &lt;1 inelastic · =<span class="blank empty" data-a="1">______</span> unitary · &gt;1 elastic · ∞ perfectly <span class="blank empty" data-a="elastic">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">4 · Shapes</b> — on the same scale: <span class="blank empty" data-a="steep">______</span> curve = inelastic, <span class="blank empty" data-a="shallow">______</span> curve = elastic.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">5 · Determinants</b> — availability of <span class="blank empty" data-a="substitutes">______</span> (main); share of <span class="blank empty" data-a="income">______</span>; necessity vs luxury; habit; time.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">6 · Revenue</b> — elastic: price and TR move in <span class="blank empty" data-a="opposite">______</span> directions; inelastic: the <span class="blank empty" data-a="same">______</span> direction; unitary: TR <span class="blank empty" data-a="unchanged">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">7 · Who uses it</b> — firms run the <span class="blank empty" data-a="total revenue">______</span> test before moving price; a government raising <span class="blank empty" data-a="tax revenue">______</span> picks goods with <span class="blank empty" data-a="inelastic">______</span> demand — next lesson.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 16 · CLOSING ───── -->
+<div class="slide cover" data-i="16">
+  <div class="course-tag">THANK YOU · 谢谢</div>
+  <h1 style="font-size:clamp(40px,5.5vw,60px);">PED — done ✓</h1>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">Now you can predict the money before the price moves.</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">Elastic: price and revenue part ways. Inelastic: they move together.</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  <div class="botbar"></div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn">◀</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="copy">© 2026 Dr. Jia</span>
+    <span class="page" id="pageNum">1 / 15</span>
+    <button id="nextBtn">▶</button>
+  </div>
+</div>
+
+<script>
+var $ = function(id){ return document.getElementById(id); };
+
+/* ══════════ 0 · SHARED GEOMETRY ══════════
+   One scale for the whole deck family: x = 90 + 32.5q, y = 460 − 8.2P.
+   Same milk-tea market as 2-5 / 3-1 / 3-2: Qd = 11 − 0.2P, crossing at ¥30 / 5 cups. */
+const QPX = 32.5, PPX = 8.2, X0 = 90, Y0 = 460;
+const PLOT = { x1: 90, y1: 50, x2: 630, y2: 460 };
+function XQ(q){ return X0 + QPX * q; }
+function YP(p){ return Y0 - PPX * p; }
+function DEMAND(p){ return 11 - 0.2 * p; }
+function fnum(v){ return (Math.round(v * 2) % 2 === 0) ? String(Math.round(v)) : (Math.round(v * 2) / 2).toFixed(1); }
+/* money can land on quarters (P odd × Q half); one decimal only when needed */
+function fm(v){ const r = Math.round(v * 10) / 10; return (Math.abs(r % 1) < 1e-9) ? String(r) : r.toFixed(1); }
+function setOp(id, v){ const e = $(id); if(e) e.setAttribute('opacity', v); }
+function setSeg(id, x1, y1, x2, y2){
+  const e = $(id); if(!e) return;
+  e.setAttribute('x1', (+x1).toFixed(1));
+  e.setAttribute('y1', (+y1).toFixed(1));
+  e.setAttribute('x2', (+x2).toFixed(1));
+  e.setAttribute('y2', (+y2).toFixed(1));
+}
+
+/* ══════════ 1 · NAVIGATION ══════════ */
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+const globalR = {
+  show(){ $('rbtnWrap').style.display = 'flex'; },
+  hide(){ $('rbtnWrap').style.display = 'none'; },
+  setup(grps){
+    const btn = $('rbtn');
+    btn.textContent = 'Reveal more';
+    btn.disabled = false;
+    this.show();
+    btn.onclick = function(){
+      let curIdx = 0;
+      grps.forEach(function(g, i){ if(g.classList.contains('show')) curIdx = i; });
+      const next = curIdx + 1;
+      if(next < grps.length){
+        grps[next].classList.add('show');
+        if(next >= grps.length - 1) btn.textContent = 'All shown';
+        syncSlideEffects();
+      }
+    };
+  }
+};
+globalR.hide();
+
+function showSlide(i){
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  slides[i].classList.add('active');
+  cur = i;
+  $('prevBtn').disabled = (i === 0);
+  $('nextBtn').disabled = (i === total - 1);
+  $('pageNum').textContent = (i + 1) + ' / ' + total;
+  document.querySelectorAll('.dots span').forEach(function(s, j){ s.classList.toggle('on', j === i); });
+  const grps = slides[i].querySelectorAll('.rgrp');
+  if(grps.length) grps.forEach(function(g, idx){ g.classList.toggle('show', idx === 0); });
+  if(grps.length > 1) globalR.setup(grps); else globalR.hide();
+  const steps = slides[i].querySelectorAll('.sstep');
+  if(steps.length){
+    globalR.hide();
+    $('sbtnWrap').style.display = 'flex';
+    if(!slides[i].dataset.sIdx) slides[i].dataset.sIdx = '0';
+    if(!slides[i].querySelector('.sstep.show')) steps[0].classList.add('show');
+    refreshSumBtn();
+  } else {
+    $('sbtnWrap').style.display = 'none';
+  }
+  syncSlideEffects();
+}
+
+function refreshSumBtn(){
+  const slide = document.querySelector('.slide.active');
+  const btn = $('sbtn');
+  if(!slide || !btn) return;
+  const steps = slide.querySelectorAll('.sstep');
+  if(!steps.length) return;
+  const idx = +(slide.dataset.sIdx || 0);
+  if(idx >= steps.length){ btn.textContent = 'All done ✓'; btn.disabled = true; }
+  else { btn.textContent = 'Reveal answers'; btn.disabled = false; }
+}
+
+/* ══════════ 2 · PAGE EFFECTS ══════════ */
+function syncSlideEffects(){
+  const slide = document.querySelector('.slide.active');
+  if(!slide) return;
+  try { if(slide.querySelector('#arP')) syncArea(); } catch(err){ console.error('area sync', err); }
+  try { if(slide.querySelector('#tpP')) syncTwo(); } catch(err){ console.error('two sync', err); }
+  try { if(slide.querySelector('#trTop')) trReset(); } catch(err){ console.error('tr sync', err); }
+  try { if(slide.querySelector('#spDesc')) syncSpec(+(slide.dataset.sp || 1)); } catch(err){ console.error('spec sync', err); }
+}
+
+/* @@SYNCS@@ */
+/* the area page: the rectangle follows the slider; the slider stays locked until the text is out */
+function syncArea(){
+  const sl = $('arP'); if(!sl) return;
+  const slide = sl.closest('.slide'); if(!slide) return;
+  const grps = slide.querySelectorAll('.rgrp');
+  const shown = [].filter.call(grps, function(g){ return g.classList.contains('show'); }).length;
+  const P = +sl.value, qd = DEMAND(P), y = YP(P), x = XQ(qd);
+  setSeg('ar-gh', X0, y, x, y);
+  setSeg('ar-gv', x, y, x, Y0);
+  const rect = $('ar-rect');
+  rect.setAttribute('x', X0); rect.setAttribute('y', y.toFixed(1));
+  rect.setAttribute('width', (x - X0).toFixed(1)); rect.setAttribute('height', (Y0 - y).toFixed(1));
+  /* the shading appears together with the "Area = P × Q" card (step 2), not before */
+  rect.setAttribute('opacity', shown >= Math.min(2, grps.length) ? 1 : 0);
+  $('ar-dot').setAttribute('cx', x.toFixed(1)); $('ar-dot').setAttribute('cy', y.toFixed(1));
+  $('ar-pv').setAttribute('y', (y + 9).toFixed(1)); $('ar-pv').textContent = fnum(P);
+  $('ar-qv').setAttribute('x', x.toFixed(1)); $('ar-qv').textContent = fnum(qd);
+  $('arPv').textContent = '¥' + fnum(P);
+  const read = $('arRead');
+  sl.disabled = shown < grps.length;
+  if(shown < grps.length){
+    read.textContent = 'Reveal all ' + grps.length + ' steps first — then drag the price yourself.';
+    read.style.color = '#5b6b7b';
+    return;
+  }
+  read.innerHTML = 'P = ¥' + fnum(P) + ', Q = ' + fnum(qd) + ' cups → spending = revenue = <b>TR = ¥' + fm(P * qd) + '</b>';
+  read.style.color = '#1a3a5c';
+}
+
+/* the steep-vs-shallow page: both curves start at E(5 cups, ¥30); the slider raises the price */
+function syncTwo(){
+  const sl = $('tpP'); if(!sl) return;
+  const slide = sl.closest('.slide'); if(!slide) return;
+  const grps = slide.querySelectorAll('.rgrp');
+  const shown = [].filter.call(grps, function(g){ return g.classList.contains('show'); }).length;
+  const P = +sl.value, rise = P - 30;
+  const qS = 5 - 0.05 * rise, qL = 5 - 0.25 * rise;
+  const y = YP(P), xS = XQ(qS), xL = XQ(qL);
+  const on = P > 30 ? 1 : 0;
+  setSeg('tp-gh', X0, y, xS, y);
+  setSeg('tp-gvS', xS, y, xS, Y0);
+  setSeg('tp-gvL', xL, y, xL, Y0);
+  const ds = $('tp-dotS'), dl = $('tp-dotL');
+  ds.setAttribute('cx', xS.toFixed(1)); ds.setAttribute('cy', y.toFixed(1)); ds.setAttribute('opacity', on);
+  dl.setAttribute('cx', xL.toFixed(1)); dl.setAttribute('cy', y.toFixed(1)); dl.setAttribute('opacity', on);
+  setOp('tp-gvS', on); setOp('tp-gvL', on);
+  $('tpPv').textContent = '¥' + fnum(P);
+  const read = $('tpRead');
+  sl.disabled = shown < grps.length;
+  if(shown < grps.length){
+    read.textContent = 'Reveal all ' + grps.length + ' steps first — then raise the price yourself.';
+    read.style.color = '#5b6b7b';
+    return;
+  }
+  if(!on){
+    read.textContent = 'Still at the start: ¥30 and 5 cups on both curves. Raise the price to separate them.';
+    read.style.color = '#5b6b7b';
+    return;
+  }
+  read.innerHTML = 'P <b>+' + Math.round(rise / 30 * 100) + '%</b> → steep Qd <b>−' + Math.round(rise) + '%</b> (inelastic) · shallow Qd <b>−' + Math.round(5 * rise) + '%</b> (elastic)';
+  read.style.color = '#1a3a5c';
+}
+
+/* ══════════ 收入页：上下两图共享同一条 Q 轴（横坐标对齐） ══════════
+   viewBox 700×360：横轴 y=300，竖轴 x=70；x(q) = 70 + 48q（q 0..11.5）
+   上图 P：y(P) = 300 − 4.909P（P 0..55）· 下图 TR：y(TR) = 300 − 1.7315TR（TR 0..156）
+   正文/坐标标签一律放在 y ≤ 62 的标题条或 y ≥ 330 的刻度带，竖直网格自 y=80 起 —— 三处互不相犯 */
+const TRQ_MAX = 11.5, TR_X0 = 70, TR_QX = 48;
+const TR_Y0 = 280, TR_PX = 4.545, TR_TX = 1.603;
+const TR_PMID = 27.5, TR_QMID = 5.5;
+function trX(q){ return TR_X0 + TR_QX * q; }
+function trYTop(p){ return TR_Y0 - TR_PX * p; }
+function trYBot(v){ return TR_Y0 - TR_TX * v; }
+function trP(q){ return 55 - 5 * q; }
+function trTR(q){ return (55 - 5 * q) * q; }
+function trTRMax(){ return trTR(TR_QMID); }
+function trAxis(which){
+  let g = '';
+  /* 竖直网格（y 80..300）与刻度（300..307）—— 两图逐条对齐 */
+  for(let q = 0; q <= 10; q += 2){
+    const x = trX(q);
+    g += '<line x1="' + x + '" y1="84" x2="' + x + '" y2="' + TR_Y0 + '" stroke="#eef3f9" stroke-width="2"/>';
+    g += '<line x1="' + x + '" y1="' + TR_Y0 + '" x2="' + x + '" y2="287" stroke="#94a3b8" stroke-width="2"/>';
+    g += '<text x="' + x + '" y="312" text-anchor="middle" font-size="30" font-weight="700" fill="#7b8794">' + q + '</text>';
+  }
+  g += '<line x1="' + TR_X0 + '" y1="' + TR_Y0 + '" x2="' + trX(TRQ_MAX).toFixed(1) + '" y2="' + TR_Y0 + '" stroke="#94a3b8" stroke-width="2"/>';
+  g += '<line x1="' + TR_X0 + '" y1="' + TR_Y0 + '" x2="' + TR_X0 + '" y2="30" stroke="#94a3b8" stroke-width="2"/>';
+  /* Q 轴名放在图内右下（不与刻度标签同排） */
+  g += '<text x="622" y="246" text-anchor="end" font-size="30" font-weight="700" fill="#7b8794">Q \u2192</text>';
+  return g;
+}
+function trRender(qNow, qDrawn, showRect){
+  const top = $('trTop'), bot = $('trBot');
+  if(!top || !bot) return;
+  const P = trP(qNow), tr = P * qNow;
+  const x = trX(qNow), yT = trYTop(P), yB = trYBot(tr);
+  /* ── 上图：直线 D + 矩形 ── */
+  let g = trAxis('top');
+  g += '<line x1="' + trX(0) + '" y1="' + trYTop(55).toFixed(1) + '" x2="' + trX(11).toFixed(1) + '" y2="' + trYTop(0) + '" stroke="#1E88E5" stroke-width="4"/>';
+  g += '<text x="118" y="108" font-size="30" font-weight="800" fill="#1E88E5">D</text>';
+  if(showRect){
+    g += '<rect id="tr-rect" x="' + trX(0) + '" y="' + yT.toFixed(1) + '" width="' + (x - trX(0)).toFixed(1) + '" height="' + (TR_Y0 - yT).toFixed(1) + '" fill="rgba(30,136,229,.18)"/>';
+    g += '<line id="tr-gh" x1="' + trX(0) + '" y1="' + yT.toFixed(1) + '" x2="' + x.toFixed(1) + '" y2="' + yT.toFixed(1) + '" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<line id="tr-gv" x1="' + x.toFixed(1) + '" y1="' + yT.toFixed(1) + '" x2="' + x.toFixed(1) + '" y2="' + TR_Y0 + '" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<circle id="tr-dot" cx="' + x.toFixed(1) + '" cy="' + yT.toFixed(1) + '" r="9" fill="#1E88E5"/>';
+    g += '<text id="tr-pv" x="62" y="' + (yT + 9).toFixed(1) + '" text-anchor="end" font-size="30" font-weight="800" fill="#1b5e20">' + fnum(P) + '</text>';
+    g += '<text id="tr-qv" x="' + x.toFixed(1) + '" y="342" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">' + fnum(qNow) + '</text>';
+    g += '<text id="tr-tv" x="622" y="58" text-anchor="end" font-size="30" font-weight="800" fill="#1b5e20">TR = \u00A5' + fm(tr) + '</text>';
+  }
+  top.innerHTML = '<svg viewBox="-30 0 730 356" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+  /* ── 下图：TR 曲线（Draw 时从左到右生长） ── */
+  let g2 = trAxis('bot');
+  if(qDrawn > 0.01){
+    const blue = [], red = [];
+    for(let q = 0; q <= qDrawn + 1e-9; q += 0.25){
+      const qq = Math.min(q, qDrawn);
+      (qq <= TR_QMID ? blue : red).push([trX(qq), trYBot(trTR(qq))]);
+      if(qq >= qDrawn) break;
+    }
+    if(blue.length > 1){
+      g2 += '<polyline id="tr2-curve-b" points="' + blue.map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') + '" fill="none" stroke="#1E88E5" stroke-width="4.5"/>';
+    }
+    if(red.length > 1){
+      const head = blue.length ? [[trX(TR_QMID), trYBot(trTRMax())]] : [];
+      g2 += '<polyline id="tr2-curve-r" points="' + head.concat(red).map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') + '" fill="none" stroke="#C62828" stroke-width="4.5"/>';
+    }
+    if(qDrawn >= TR_QMID - 1e-9){
+      g2 += '<line id="tr2-maxv" x1="' + trX(TR_QMID).toFixed(1) + '" y1="' + trYBot(trTRMax()).toFixed(1) + '" x2="' + trX(TR_QMID).toFixed(1) + '" y2="' + TR_Y0 + '" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="7 6"/>';
+      g2 += '<circle id="tr2-max" cx="' + trX(TR_QMID).toFixed(1) + '" cy="' + trYBot(trTRMax()).toFixed(1) + '" r="9" fill="#F0B429" stroke="#fff" stroke-width="2.5"/>';
+      g2 += '<text id="tr2-maxt" x="' + (trX(TR_QMID) + 18).toFixed(1) + '" y="58" font-size="30" font-weight="800" fill="#a57d12">max</text>';
+    }
+    g2 += '<circle id="tr2-dot" cx="' + x.toFixed(1) + '" cy="' + yB.toFixed(1) + '" r="9" fill="#1b5e20" stroke="#fff" stroke-width="2.5"/>';
+    g2 += '<line id="tr2-gh" x1="' + trX(0) + '" y1="' + yB.toFixed(1) + '" x2="' + x.toFixed(1) + '" y2="' + yB.toFixed(1) + '" stroke="#1b5e20" stroke-width="2.5" stroke-dasharray="7 6"/>';
+    g2 += '<text id="tr2-qv" x="' + x.toFixed(1) + '" y="342" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">' + fnum(qNow) + '</text>';
+    g2 += '<text id="tr2-tv" x="622" y="58" text-anchor="end" font-size="30" font-weight="800" fill="#1b5e20">TR = \u00A5' + fm(tr) + '</text>';
+  } else {
+    g2 += '<text x="196" y="58" font-size="30" font-weight="700" fill="#b9c4d0">Press \u201CDraw TR\u201D</text>';
+  }
+  bot.innerHTML = '<svg viewBox="-30 0 730 356" style="width:100%;height:100%;display:block;">' + g2 + '</svg>';
+}
+/* 读数：价格在跌，TR 在升/降/到顶 → 对应弹性 */
+function trVerdict(q){
+  if(q < TR_QMID - 0.02) return { t: 'TR is still RISING as Q rises', v: 'ELASTIC (PED > 1)', c: '#1E88E5' };
+  if(q > TR_QMID + 0.02) return { t: 'TR is FALLING as Q rises', v: 'INELASTIC (PED < 1)', c: '#C62828' };
+  return { t: 'TR is at its MAXIMUM', v: 'UNITARY (PED = 1)', c: '#1b5e20' };
+}
+let trTimer = null;
+function trStop(){ if(trTimer){ clearInterval(trTimer); trTimer = null; } }
+function trReset(){
+  trStop();
+  const pb = $('trPlay'), db = $('trDraw');
+  if(pb) pb.textContent = 'Play \u25B6';
+  if(db) db.textContent = 'Draw TR \u25B6';
+  trRender(5, 0, true);
+}
+function trPlayAnim(){
+  trStop();
+  const pb = $('trPlay'); if(pb) pb.textContent = 'Playing\u2026';
+  let q = 0.4;
+  trRender(q, 0, true);
+  trTimer = setInterval(function(){
+    q += 0.18;
+    if(q >= 10.6){ q = 10.6; trStop(); if(pb) pb.textContent = 'Replay \u21BA'; }
+    trRender(q, 0, true);
+  }, 55);
+}
+function trDrawAnim(){
+  trStop();
+  const db = $('trDraw'); if(db) db.textContent = 'Drawing\u2026';
+  let q = 0;
+  trRender(0, 0, true);
+  trTimer = setInterval(function(){
+    q += 0.16;
+    if(q >= 11){ q = 11; trStop(); if(db) db.textContent = 'Redraw \u21BA'; }
+    trRender(q, q, true);
+  }, 30);
+}
+try {
+  const pb = $('trPlay'), db = $('trDraw');
+  if(pb) pb.onclick = trPlayAnim;
+  if(db) db.onclick = trDrawAnim;
+  trReset();
+} catch(err){ console.error('revenue page bind', err); }
+
+/* the five-degrees page: one figure, redrawn per category chip */
+function syncSpec(cat){
+  const shapes = ['sp-v', 'sp-steep', 'sp-unit', 'sp-shallow', 'sp-horz'];
+  shapes.forEach(function(id, i){ setOp(id, i === cat ? 1 : 0); });
+  ['sp0','sp1','sp2','sp3','sp4'].forEach(function(id, i){
+    $(id).style.borderColor = i === cat ? 'var(--blue)' : 'rgba(42,90,140,.35)';
+    $(id).style.background = i === cat ? '#EAF4FF' : '#fff';
+  });
+  const desc = $('spDesc');
+  const texts = [
+    '<p><b>Perfectly inelastic (= 0):</b> Qd does not change <b>at all</b> when price changes — a vertical demand curve. Rare: a life-saving medicine over some price range.</p>',
+    '<p><b>Inelastic (&lt; 1):</b> Qd changes by a <b>smaller</b> percentage than price. Typical of necessities — salt, petrol, medicine. Price and revenue move in the <b>same</b> direction.</p>',
+    '<p><b>Unitary (= 1):</b> %ΔQd = %ΔP exactly. The P × Q rectangle keeps the <b>same area</b> — total revenue never changes, wherever you are on the curve.</p>',
+    '<p><b>Elastic (&gt; 1):</b> Qd changes by a <b>bigger</b> percentage than price. Typical of luxuries and single brands with close rivals. Price and revenue move in <b>opposite</b> directions.</p>',
+    '<p><b>Perfectly elastic (∞):</b> buyers take any quantity at one price — but nothing above it. A horizontal demand curve: one wheat farmer among thousands of identical ones.</p>'
+  ];
+  desc.innerHTML = texts[cat];
+}
+
+/* the price-war cases page: grey dashed rectangle before, filled rectangle after */
+function syncCase(kase){
+  const SET = {
+    A: { b: [90, 132, 97.5, 328], a: [90, 214, 162.5, 246], pv: '30', qv: '5', py: 223, qx: 252.5 },
+    B: { b: [90, 214, 162.5, 246], a: [90, 296, 227.5, 164], pv: '20', qv: '7', py: 305, qx: 317.5 }
+  };
+  const s = SET[kase];
+  const before = $('wc-before'), after = $('wc-after');
+  before.setAttribute('x', s.b[0]); before.setAttribute('y', s.b[1]);
+  before.setAttribute('width', s.b[2]); before.setAttribute('height', s.b[3]);
+  after.setAttribute('x', s.a[0]); after.setAttribute('y', s.a[1]);
+  after.setAttribute('width', s.a[2]); after.setAttribute('height', s.a[3]);
+  setOp('wc-before', 1); setOp('wc-after', 1);
+  const pl = $('wc-pl'), ql = $('wc-ql');
+  pl.setAttribute('y', s.py); pl.textContent = '¥' + s.pv; setOp('wc-pl', 1);
+  ql.setAttribute('x', s.qx); ql.textContent = s.qv; setOp('wc-ql', 1);
+}
+/* ══════════ 3 · NAV BINDING + DOTS ══════════ */
+try {
+  $('prevBtn').onclick = function(){ if(cur > 0) showSlide(cur - 1); };
+  $('nextBtn').onclick = function(){ if(cur < total - 1) showSlide(cur + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){ e.preventDefault(); if(cur < total - 1) showSlide(cur + 1); }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); if(cur > 0) showSlide(cur - 1); }
+  });
+  const dotBox = $('dots');
+  for(let i = 0; i < total; i++){
+    const s = document.createElement('span');
+    s.onclick = (function(kk){ return function(){ showSlide(kk); }; })(i);
+    dotBox.appendChild(s);
+  }
+  showSlide(0);
+} catch(err){ console.error('nav init', err); }
+
+/* @@PAGES@@ */
+/* ══════════ 4 · S3 PRICE-WAR CASE BUTTONS (mutually exclusive) ══════════ */
+try {
+  const WAR = [
+    { btn: 'waAn', box: 'waA', other: ['waBn', 'waB'], show: 'Summer cut ▶' },
+    { btn: 'waBn', box: 'waB', other: ['waAn', 'waA'], show: 'Winter cut ▶' }
+  ];
+  WAR.forEach(function(c, ci){
+    const btn = $(c.btn), box = $(c.box);
+    btn.onclick = function(){
+      const open = box.style.visibility === 'visible';
+      box.style.visibility = open ? 'hidden' : 'visible';
+      btn.textContent = open ? c.show : 'Hide ▲';
+      const ob = $(c.other[1]), obtn = $(c.other[0]);
+      ob.style.visibility = 'hidden';
+      obtn.textContent = WAR[1 - ci].show;
+    };
+  });
+} catch(err){ console.error('war cases', err); }
+
+/* ══════════ 5 · SLIDERS ══════════ */
+try {
+  ['arP', 'tpP', 'trP'].forEach(function(id){
+    const sl = $(id); if(!sl) return;
+    sl.addEventListener('input', syncSlideEffects);
+  });
+} catch(err){ console.error('slider bind', err); }
+
+/* ══════════ 6 · S8 FIVE-DEGREES CHIPS ══════════ */
+try {
+  ['sp0', 'sp1', 'sp2', 'sp3', 'sp4'].forEach(function(id, i){
+    $(id).onclick = function(){
+      const slide = $(id).closest('.slide');
+      if(slide) slide.dataset.sp = String(i);
+      syncSpec(i);
+    };
+  });
+} catch(err){ console.error('spec chips', err); }
+
+/* ══════════ 7 · ROW-REVEAL TABLES (shared factory) ══════════ */
+try {
+  function makeRowReveal(rows, nextId, resetId){
+    let i = 0;
+    function paint(){
+      rows.forEach(function(id, ri){
+        const tr = $(id), done = ri < i;
+        tr.classList.toggle('hit', done);
+        tr.querySelectorAll('.blank').forEach(function(b){
+          b.textContent = done ? b.getAttribute('data-a') : '___';
+          b.classList.toggle('empty', !done);
+          b.classList.toggle('filled', done);
+        });
+      });
+    }
+    $(nextId).onclick = function(){
+      if(i >= rows.length) return;
+      i++;
+      paint();
+      if(i >= rows.length){ this.textContent = 'All shown ✓'; this.disabled = true; }
+    };
+    $(resetId).onclick = function(){
+      i = 0; paint();
+      $(nextId).textContent = 'Reveal next row ▶';
+      $(nextId).disabled = false;
+    };
+    paint();
+  }
+  makeRowReveal(['rr-r1', 'rr-r2', 'rr-r3', 'rr-r4', 'rr-r5'], 'rrNext', 'rrReset');
+} catch(err){ console.error('row reveal', err); }
+
+/* ══════════ 8 · S11 SORTING GAME (two options) ══════════ */
+try {
+  (function(){
+    const G2Q = [
+      { s: 'Insulin — a medicine a diabetic must have', a: 'inelastic', r: 'Necessity, no substitute, hard to cut back.' },
+      { s: 'One particular brand of bubble tea', a: 'elastic', r: 'Narrow definition — many close substitutes next door.' },
+      { s: 'Salt', a: 'inelastic', r: 'Tiny share of income; no real substitute.' },
+      { s: 'A luxury gold watch', a: 'elastic', r: 'Luxury; the purchase can easily be postponed.' },
+      { s: 'Cigarettes for a heavy smoker', a: 'inelastic', r: 'Addictive — habit wins over price.' },
+      { s: 'Holiday flights, chosen for pleasure', a: 'elastic', r: 'Luxury, postponable, and there are rivals and staycations.' },
+      { s: 'Petrol in the short run', a: 'inelastic', r: 'No quick alternative — people still have to commute.' },
+      { s: "One supermarket's fresh milk", a: 'elastic', r: 'Rival shops sell the same thing — switching is easy.' }
+    ];
+    let qi = 0, score = 0, locked = false;
+    function render(){
+      locked = false;
+      $('g2n').textContent = 'Product ' + (qi + 1) + ' / ' + G2Q.length;
+      $('g2q').textContent = G2Q[qi].s;
+      $('g2fb').textContent = '';
+      $('g2next').style.display = 'none';
+      const box = $('g2btns');
+      box.innerHTML = '';
+      ['elastic', 'inelastic'].forEach(function(opt){
+        const b = document.createElement('button');
+        b.textContent = opt;
+        b.onclick = function(){
+          if(locked) return;
+          locked = true;
+          const right = opt === G2Q[qi].a;
+          if(right) score++;
+          $('g2score').textContent = score;
+          b.classList.add(right ? 'correct' : 'wrong');
+          Array.prototype.slice.call(box.children).forEach(function(x){
+            if(x !== b && x.textContent === G2Q[qi].a) x.classList.add('correct');
+            x.disabled = true;
+          });
+          $('g2fb').textContent = (right ? 'Correct! ' : 'Not this time. ') + G2Q[qi].r;
+          $('g2next').style.display = 'inline-block';
+          $('g2next').textContent = qi >= G2Q.length - 1 ? 'See result ▶' : 'Next ▶';
+        };
+        box.appendChild(b);
+      });
+    }
+    $('g2next').onclick = function(){
+      qi++;
+      if(qi >= G2Q.length){
+        $('g2btns').style.display = 'none';
+        $('g2result').style.display = 'block';
+        $('g2final').textContent = score + ' / ' + G2Q.length;
+      } else render();
+    };
+    $('g2again').onclick = function(){
+      qi = 0; score = 0; $('g2score').textContent = '0';
+      $('g2result').style.display = 'none';
+      $('g2btns').style.display = 'flex';
+      render();
+    };
+    render();
+  })();
+} catch(err){ console.error('sorting game', err); }
+
+/* ══════════ 9 · S14 CASE SWITCH (one diagram, two cases) ══════════ */
+try {
+  const CASES = [
+    { btn: 'wcAn', box: 'wcA', other: ['wcBn', 'wcB'], show: 'Show case A ▶', kase: 'A' },
+    { btn: 'wcBn', box: 'wcB', other: ['wcAn', 'wcA'], show: 'Show case B ▶', kase: 'B' }
+  ];
+  CASES.forEach(function(c, ci){
+    const btn = $(c.btn), box = $(c.box);
+    btn.onclick = function(){
+      const open = box.style.visibility === 'visible';
+      box.style.visibility = open ? 'hidden' : 'visible';
+      btn.textContent = open ? c.show : 'Hide ▲';
+      const ob = $(c.other[1]), obtn = $(c.other[0]);
+      ob.style.visibility = 'hidden';
+      obtn.textContent = CASES[1 - ci].show;
+      if(!open){ syncCase(c.kase); }
+      else { setOp('wc-before', 0); setOp('wc-after', 0); setOp('wc-pl', 0); setOp('wc-ql', 0); }
+    };
+  });
+} catch(err){ console.error('war case switch', err); }
+/* ══════════ 10 · S17 QUIZ (four options) ══════════ */
+try {
+  (function(){
+    const G1Q = [
+      { s: 'PED is calculated as…', o: ['%ΔQd ÷ %ΔP', '%ΔP ÷ %ΔQd', 'P × Q', 'ΔQd × ΔP'], a: '%ΔQd ÷ %ΔP' },
+      { s: '|PED| = 0.5 — demand is…', o: ['elastic', 'inelastic', 'unitary', 'perfectly elastic'], a: 'inelastic' },
+      { s: 'Which is likely the MOST elastic?', o: ['food in general', 'petrol', 'insulin', 'one brand of cola'], a: 'one brand of cola' },
+      { s: 'Demand is elastic. A price CUT makes total revenue…', o: ['fall', 'rise', 'stay unchanged', 'drop to zero'], a: 'rise' },
+      { s: 'PED = −1 (unitary). Price rises 10% → TR…', o: ['rises 10%', 'falls 10%', 'is unchanged', 'doubles'], a: 'is unchanged' },
+      { s: 'A government wants steady tax revenue, so it taxes a good with…', o: ['elastic demand', 'inelastic demand', 'unitary demand', 'zero PED'], a: 'inelastic demand' }
+    ];
+    let qi = 0, score = 0;
+    function render(){
+      $('g1q').textContent = qi + 1;
+      $('g1n').textContent = G1Q.length;
+      $('g1scenario').textContent = G1Q[qi].s;
+      $('g1fb').textContent = '';
+      $('g1next').style.display = 'none';
+      const box = $('g1btns');
+      box.innerHTML = '';
+      G1Q[qi].o.forEach(function(opt){
+        const b = document.createElement('button');
+        b.textContent = opt;
+        b.onclick = function(){
+          Array.prototype.slice.call(box.children).forEach(function(x){ x.disabled = true; });
+          const right = opt === G1Q[qi].a;
+          if(right) score++;
+          $('g1score').textContent = score;
+          Array.prototype.slice.call(box.children).forEach(function(x){
+            if(x.textContent === G1Q[qi].a) x.classList.add('correct');
+            else if(x === b) x.classList.add('wrong');
+          });
+          $('g1fb').textContent = right ? 'Correct!' : 'The right answer is: ' + G1Q[qi].a;
+          $('g1next').style.display = 'inline-block';
+          $('g1next').textContent = qi >= G1Q.length - 1 ? 'See result ▶' : 'Next ▶';
+        };
+        box.appendChild(b);
+      });
+    }
+    $('g1next').onclick = function(){
+      qi++;
+      if(qi >= G1Q.length){
+        $('g1btns').style.display = 'none';
+        $('g1scenario').style.display = 'none';
+        $('g1result').style.display = 'block';
+        $('g1final').textContent = score + ' / ' + G1Q.length;
+      } else render();
+    };
+    $('g1again').onclick = function(){
+      qi = 0; score = 0; $('g1score').textContent = '0';
+      $('g1result').style.display = 'none';
+      $('g1btns').style.display = 'flex';
+      $('g1scenario').style.display = 'block';
+      render();
+    };
+    render();
+  })();
+} catch(err){ console.error('game', err); }
+
+/* fill-in pages (works on the ACTIVE slide's .sstep) */
+try {
+  $('sbtn').onclick = function(){
+    const slide = document.querySelector('.slide.active');
+    if(!slide) return;
+    const steps = slide.querySelectorAll('.sstep');
+    let idx = +(slide.dataset.sIdx || 0);
+    const el = steps[idx];
+    if(!el){ refreshSumBtn(); return; }
+    el.classList.add('show');
+    el.querySelectorAll('.blank.empty').forEach(function(b){
+      b.textContent = b.getAttribute('data-a');
+      b.classList.remove('empty');
+      b.classList.add('filled');
+    });
+    idx++;
+    slide.dataset.sIdx = String(idx);
+    const next = steps[idx];
+    if(next) next.classList.add('show');
+    refreshSumBtn();
+  };
+} catch(err){ console.error('summary', err); }
+</script>
+
+</div>
+</body>
+</html>

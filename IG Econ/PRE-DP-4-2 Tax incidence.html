@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 4-2 - Tax incidence and PED</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;--amber:#F0B429;--teal:#00838F;
+  --purple:#7C3AED;--s:#F0B429;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+/* base size lives on .slide: any paragraph that forgets its own font-size inherits this, not body's 16px */
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,3vh,48px) clamp(60px,7vw,110px) 84px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.7);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:clamp(24px,2.4vw,30px);font-weight:700;padding:4px 18px;border-radius:8px;cursor:pointer;transition:.12s;min-width:60px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:40%;}
+.dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.3);}
+/* cover */
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff;}
+.cover .course-tag{font-size:clamp(22px,2.5vw,32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px);}
+.cover h1{font-size:clamp(40px,5.4vw,68px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px);}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px);}
+.cover .author{font-size:clamp(22px,2.2vw,28px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:60px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
+/* reveal buttons */
+.rbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn:hover{background:var(--blue);color:#fff;}
+.rbtn:disabled{opacity:.35;cursor:default;}
+.rbtn-icon{font-size:16px;color:var(--blue);}
+.sbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn:hover{background:var(--blue);color:#fff;}
+.sbtn:disabled{opacity:.35;cursor:default;}
+/* content */
+.content{width:100%;max-width:clamp(600px,85vw,1100px);display:flex;flex-direction:column;flex:1;}
+h1{font-size:clamp(28px,3.5vw,44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+.sub{font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.course-tag{font-size:clamp(22px,1.8vw,26px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(22px,2.2vw,29px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.6vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}
+.db{color:var(--darkblue);}
+.dr{color:var(--red);}
+.green{color:var(--green);}
+.teal{color:var(--teal);}
+.gray{color:#5b6b7b;}
+.pur{color:var(--purple);}
+/* reveal groups */
+.rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
+.rgrp.show{opacity:1;max-height:1400px;}
+/* note box */
+.note{border-radius:0 10px 10px 0;padding:8px 14px;font-size:clamp(22px,2.1vw,28px);line-height:1.45;}
+.note p{margin:0;}
+/* cards */
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:11px 16px;}
+.card.g{border-color:var(--green);}
+.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}
+.card.a{border-color:var(--amber);}
+.card.p{border-color:var(--purple);}
+.card h3{font-size:clamp(24px,2.5vw,31px);margin-bottom:6px;}
+.card p{font-size:clamp(22px,2.1vw,28px);line-height:1.4;color:#445;margin-top:4px;}
+.compact .card{padding:10px 14px;}
+.compact .card h3{font-size:clamp(24px,2vw,28px);margin-bottom:2px;}
+.compact .card p{font-size:clamp(22px,1.8vw,25px);line-height:1.35;margin-top:2px;}
+.compact .note{font-size:clamp(22px,1.8vw,25px);line-height:1.35;padding:10px 14px;}
+.compact .note p{margin-bottom:2px;}
+.compact .sub{font-size:clamp(22px,1.9vw,26px);margin-bottom:4px;}
+.compact h1{font-size:clamp(28px,3.2vw,40px);}
+/* buttons */
+.big-btn{padding:9px 22px;border:none;background:var(--blue);color:#fff;border-radius:12px;font-size:clamp(22px,2.2vw,28px);font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn.on{outline:5px solid #1b5e20;outline-offset:2px;}
+.chip{padding:8px 16px;border-radius:12px;border:2.5px solid rgba(42,90,140,.35);background:#fff;color:#1a3a5c;font-size:clamp(22px,1.9vw,26px);font-weight:700;cursor:pointer;transition:.15s;}
+.chip:hover{border-color:var(--blue);background:#eaf2fb;}
+.chip.on{border-color:var(--blue);background:#EAF4FF;}
+/* data table */
+.data-table{border-collapse:collapse;width:100%;}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:5px 11px;font-size:clamp(22px,2.1vw,27px);text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table tr.hit td{background:#E8F5E9;font-weight:800;color:#1b5e20;}
+/* blanks */
+.blank{display:inline-block;min-width:clamp(60px,5vw,100px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
+.blank.empty{color:transparent;}
+.blank.filled{color:var(--blue);}
+/* game */
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(10px,1.1vh,16px) clamp(14px,1.8vw,24px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(22px,2.2vw,29px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px,1vw,14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(22px,1.9vw,24px);padding:clamp(6px,.7vh,10px) clamp(12px,1.4vw,18px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(22px,2.2vw,28px);font-weight:700;min-height:30px;margin-top:2px;}
+/* summary steps */
+.ssteps{font-size:clamp(22px,2.2vw,29px);line-height:1.6;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(10px,1.2vh,18px);}
+/* 总结页把 7 行压成一屏：表格收紧行距（正文仍是 22px 下界） */
+#sumT th, #sumT td{padding:5px 10px;font-size:22px;line-height:1.35;}
+.sstep.show{opacity:1;}
+/* closing */
+.result-box{display:none;text-align:center;padding:20px;}
+.result-box h3{font-size:clamp(28px,3.5vw,38px);color:var(--darkblue);}
+.result-box .big{font-size:clamp(40px,5.5vw,56px);font-weight:800;color:var(--blue);margin:8px 0;}
+/* slider readout */
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+/* burden bar */
+.bbar{display:flex;height:46px;border-radius:10px;overflow:hidden;border:2px solid #e6eef7;margin-top:8px;}
+.bseg{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(22px,1.7vw,25px);color:#fff;min-width:0;overflow:hidden;white-space:nowrap;transition:width .4s;}
+.bseg.c{background:var(--purple);}
+.bseg.p{background:var(--teal);}
+/* readout grid */
+.rgrid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.rcell{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:5px 10px;flex:1 1 30%;min-width:120px;}
+.rcell .k{font-size:clamp(22px,1.6vw,24px);color:#5b6b7b;font-weight:700;display:block;}
+.rcell .v{font-size:clamp(22px,2vw,27px);font-weight:800;color:#1a3a5c;}
+.chart{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;}
+</style>
+</head>
+<body>
+<div class="view" id="app">
+
+<!-- shared arrow heads -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ahBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2E4A6B"/></marker>
+  <marker id="ahRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#C62828"/></marker>
+  <marker id="ahGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#2E7D32"/></marker>
+</defs></svg>
+
+<!-- global reveal button -->
+<div class="rbtn-wrap" id="rbtnWrap">
+  <button class="rbtn" id="rbtn">Reveal more</button>
+  <span class="rbtn-icon">▶</span>
+</div>
+<!-- summary / fill-in reveal button -->
+<div class="sbtn-wrap" id="sbtnWrap">
+  <button class="sbtn" id="sbtn">Reveal answers</button>
+</div>
+
+<!-- ───── 1 · COVER ───── -->
+<div class="slide cover" data-i="0">
+  <div class="course-tag">IGCSE ECONOMICS 0455 · UNIT 2</div>
+  <h1>Who really<br>pays the tax?</h1>
+  <div class="sep"></div>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin-bottom:10px;">Syllabus 2.6.5 · PED for government</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">The firm hands the money over. That is not who bears it.</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ───── 2 · INTRO: FROM FIRMS TO GOVERNMENT ───── -->
+<div class="slide" data-i="1">
+  <div class="content">
+  <div class="course-tag">FROM FIRMS TO GOVERNMENT · 引入</div>
+  <h1>The same number, a new decision-maker</h1>
+  <div class="sub">Firms use PED on prices. Governments use it on taxes — and PED decides who really pays.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:12px;">
+        <div class="card" style="flex:1;">
+          <h3 class="blue">Firms — recap 💼</h3>
+          <p>Elastic demand → a price cut pays. Brand loyalty → inelastic → pricing power.</p>
+        </div>
+        <div class="card g" style="flex:1;">
+          <h3 class="green">Government 🏛️</h3>
+          <p>Revenue → tax <b>inelastic</b> goods. Discourage a good → tax it when demand is <b>elastic</b>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div style="margin-top:12px;">
+        <div class="card p">
+          <h3 class="pur">The question of the day</h3>
+          <p>Coursebook: <b>the incidence of taxation refers to the distribution of an indirect tax shared between consumers and firms.</b></p>
+        </div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;">
+        <p><b>Legal</b> incidence: the firm hands the money over. <b>Economic</b> incidence: who is really worse off — <b>shared</b>.</p>
+      </div>
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:10px;">
+        <p>Milk-tea market: <b>¥30 / 5 cups</b>. Tax <b>¥20 a unit</b> — big enough to see every block.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 3 · STEP 1: S SHIFTS, Q FALLS ───── -->
+<div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">STEP 1 · 供给</div>
+  <h1>Start with the market — then add the tax</h1>
+  <div class="sub">Market first, tax second. Watch the curve move — then the quantity.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card">
+          <h3 class="blue">⓪ The market before the tax</h3>
+          <p><b>D</b> and <b>S</b> cross at <b>¥30 / 5 cups</b> — the base every later figure is measured against.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card r">
+          <h3 class="dr">① A cost → supply shifts</h3>
+          <p><b>¥20 more</b> to supply each unit → <b>S up ¥20</b> → <b class="dr">S + tax</b>. (Sideways: 4 cups to the left.)</p>
+        </div>
+        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:8px;">
+          <p>Demand unmoved — tastes unchanged. Only the <b>cost of supplying</b> changed.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <h3 class="blue">② The market shrinks</h3>
+          <p>New equilibrium on <b>S + tax</b>: <b>5 → 3 cups</b> — two cups priced out.</p>
+        </div>
+      </div>
+    </div>
+    <div id="txA" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 4 · STEP 2: ONE PRICE BECOMES TWO ───── -->
+<div class="slide" data-i="3">
+  <div class="content">
+  <div class="course-tag">STEP 2 · 价格</div>
+  <h1>One price becomes two</h1>
+  <div class="sub">Buyers pay more, sellers keep less. The gap between them is the tax.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card p">
+          <h3 class="pur">① Buyers pay: ¥40</h3>
+          <p>Was <b>¥30</b>. Now <b class="pur">¥40</b> → <b>¥10 more</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card t">
+          <h3 class="teal">② Sellers keep: ¥20</h3>
+          <p>Of the ¥40: <b>¥20 to the government</b>, <b class="teal">¥20</b> kept → <b>¥10 less</b>.</p>
+        </div>
+      </div>
+      <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);">
+        <p>The <b>¥20 gap</b> = the tax. Two prices, one market — always say which.</p>
+      </div>
+    </div>
+    <div id="txB" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 5 · STEP 3: GOVERNMENT REVENUE ───── -->
+<div class="slide" data-i="4">
+  <div class="content">
+  <div class="course-tag">STEP 3 · 收入</div>
+  <h1>The government's revenue is a rectangle</h1>
+  <div class="sub">Tax per unit × units still sold. Height = the tax, width = what is left of the market.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card a">
+          <h3 style="color:#a57d12;">① Read the rectangle</h3>
+          <p><b>¥20 × 3 cups = ¥60</b> — all the government collects.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <p><b>Taller tax → narrower market.</b> Past about <b>¥25</b> revenue starts to <b>fall</b>.</p>
+        </div>
+        <div class="panel">
+          <p class="b db" style="margin-bottom:2px;">Tax per unit: <span id="txTv">¥20</span></p>
+          <input type="range" id="txT" min="0" max="30" step="5" value="20" style="width:100%;accent-color:#F0B429;">
+          <div class="ends"><span>¥0</span><span>¥30</span></div>
+          <p id="txRead" style="margin:4px 0 0;font-weight:700;color:#1a3a5c;min-height:34px;">Reveal both steps — then drag the tax.</p>
+        </div>
+      </div>
+    </div>
+    <div id="txC" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 6 · STEP 4: THE SPLIT ───── -->
+<div class="slide" data-i="5">
+  <div class="content">
+  <div class="course-tag">STEP 4 · 分摊</div>
+  <h1>Split the rectangle — who really pays</h1>
+  <div class="sub">Cut the block at the ORIGINAL price. Above → what buyers pay extra. Below → what sellers lose.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card p">
+          <h3 class="pur">① Consumers' share</h3>
+          <p><b>¥10 extra × 3 cups = ¥30</b> → the <b class="pur">top half</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card t">
+          <h3 class="teal">② Producers' share</h3>
+          <p><b>¥10 less × 3 cups = ¥30</b> → the <b class="teal">bottom half</b>.</p>
+        </div>
+      </div>
+      <div class="bbar">
+        <div class="bseg c" id="sp-c" style="width:50%;">Consumers ¥30 · 50%</div>
+        <div class="bseg p" id="sp-p" style="width:50%;">Producers ¥30 · 50%</div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p>D and S <b>equally steep</b> → <b>50 : 50</b>. Change D's steepness and the split moves.</p>
+      </div>
+    </div>
+    <div id="txD" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 7 · DEMO: DRAG THE DEMAND CURVE ───── -->
+<div class="slide" data-i="6">
+  <div class="content">
+  <div class="course-tag">DEMO · 演示</div>
+  <h1>Same tax — drag the demand curve</h1>
+  <div class="sub">Tax stays ¥20. Move only the steepness of D — drag it and watch the split travel.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Demand: <span id="cmBv">steep · inelastic</span></p>
+        <input type="range" id="cmB" min="1" max="20" step="0.5" value="15" style="width:100%;accent-color:#1E88E5;">
+        <div class="ends"><span>elastic<br>(shallow)</span><span>inelastic<br>(steep)</span></div>
+      </div>
+      <div class="rgrid">
+        <div class="rcell"><span class="k">Quantity sold</span><span class="v" id="cm-q">4 cups</span></div>
+        <div class="rcell"><span class="k">Buyers pay</span><span class="v" id="cm-pb">¥45</span></div>
+        <div class="rcell"><span class="k">Sellers keep</span><span class="v" id="cm-ps">¥25</span></div>
+        <div class="rcell"><span class="k">Consumers bear</span><span class="v pur" id="cm-cs">¥60</span></div>
+        <div class="rcell"><span class="k">Producers bear</span><span class="v teal" id="cm-pss">¥20</span></div>
+        <div class="rcell"><span class="k">Gov revenue</span><span class="v" id="cm-rev">¥80</span></div>
+      </div>
+      <div class="bbar">
+        <div class="bseg c" id="cm-c" style="width:75%;">Consumers 75%</div>
+        <div class="bseg p" id="cm-p" style="width:25%;">25%</div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p id="cm-say"><b class="pur">Inelastic:</b> buyers stay → most of the tax lands on them → <b>most</b> revenue.</p>
+      </div>
+    </div>
+    <div id="txCmp" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 8 · THE RULE (结论在演示之后) ───── -->
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">THE RULE · 规律</div>
+  <h1>The side that cannot escape pays more</h1>
+  <div class="sub">What you just watched, in two lines. Supply held still throughout.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:12px;">
+        <div class="card r" style="flex:1;">
+          <h3 class="dr">Demand INELASTIC (steep D)</h3>
+          <p>Buyers cannot walk away → firms <b>pass the tax on</b> → consumers bear <b>most</b>.</p>
+        </div>
+        <div class="card t" style="flex:1;">
+          <h3 class="teal">Demand ELASTIC (shallow D)</h3>
+          <p>Buyers walk away → firms <b>absorb it</b> → producers bear <b>most</b>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#F5F0FF;border-left:6px solid var(--purple);margin-top:12px;">
+        <p><b>Coursebook:</b> "In the case of products with inelastic demand, consumers bear most of the tax… if products have elastic demand, it is the firms who bear most of the tax."</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;">
+        <p><b>One line:</b> the tax lands on whoever has <b>fewer alternatives</b> — the <b>steeper</b> curve. Supply elasticity works the same way (PES — next lesson).</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 9 · REAL MARKETS (replaces the duplicated three-case table) ───── -->
+<div class="slide" data-i="8">
+  <div class="content">
+  <div class="course-tag">REAL MARKETS · 现实</div>
+  <h1>Two taxes that changed the world</h1>
+  <div class="sub">Two governments, one rule. Predict each row, then reveal it.</div><hr>
+  <table class="data-table" id="rmT" style="width:100%;table-layout:fixed;">
+    <tr>
+      <th style="width:26%;">Market</th><th style="width:16%;">Demand</th>
+      <th style="width:26%;">Who bears</th><th style="width:32%;">What the state wanted</th>
+    </tr>
+    <tr id="rm-r1">
+      <td style="text-align:left;"><b>Salt &amp; iron</b> — state monopoly</td>
+      <td><span class="blank empty" data-a="very inelastic">___</span></td>
+      <td><span class="blank empty" data-a="consumers, nearly all">___</span></td>
+      <td style="text-align:left;"><span class="blank empty" data-a="money that never dried up">___</span></td>
+    </tr>
+    <tr id="rm-r2">
+      <td style="text-align:left;"><b>Cigarettes</b> — tobacco tax</td>
+      <td><span class="blank empty" data-a="inelastic">___</span></td>
+      <td><span class="blank empty" data-a="consumers, most">___</span></td>
+      <td style="text-align:left;"><span class="blank empty" data-a="revenue + less smoking">___</span></td>
+    </tr>
+  </table>
+  <div style="display:flex;gap:10px;margin-top:12px;">
+    <button class="big-btn" id="rmNext">Reveal next row ▶</button>
+    <button class="big-btn ghost" id="rmReset">↺ Reset</button>
+  </div>
+  <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:10px;">
+    <p><b>Why they work.</b></p>
+    <p>Salt &amp; iron — no substitute → buyers pay; the money never dried up.</p>
+    <p>Cigarettes — the same, plus a habit → revenue <i>and</i> less smoking.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ───── (WHY page folded into THE RULE — same point, one page) ───── -->
+
+<!-- ───── (TWO JOBS page folded into REAL MARKETS — goal now sits in each row) ───── -->
+
+<!-- ───── 10 · WORKSHOP: THE SUBSIDY (the mirror image) ───── -->
+<div class="slide" data-i="9">
+  <div class="content">
+  <div class="course-tag">WORKSHOP · 补贴</div>
+  <h1>Your turn — draw the mirror image</h1>
+  <div class="sub">Same market (¥30 / 5 cups). Draw each step on your own paper <b>first</b> — the answer comes on the next click.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:6px;">
+      <div class="card" style="padding:8px 14px;">
+        <div class="rgrp show">
+          <p style="margin:2px 0;font-size:22px;"><b class="db">Draw ①</b> — which way does S move?</p>
+        </div>
+        <div class="rgrp">
+          <p style="margin:2px 0;font-size:22px;"><b class="green">✓ S shifts DOWN ¥10 → S − subsidy.</b></p>
+        </div>
+        <div class="rgrp">
+          <p style="margin:2px 0;font-size:22px;"><b class="db">Draw ②</b> — new quantity, two prices?</p>
+        </div>
+        <div class="rgrp">
+          <p style="margin:2px 0;font-size:22px;"><b class="blue">✓ 6 cups; buyers ¥25, sellers ¥35.</b></p>
+        </div>
+        <div class="rgrp">
+          <p style="margin:2px 0;font-size:22px;"><b class="db">Draw ③</b> — shade government spending.</p>
+        </div>
+        <div class="rgrp">
+          <p style="margin:2px 0;font-size:22px;"><b style="color:#a57d12;">✓ ¥10 × 6 = ¥60.</b></p>
+        </div>
+        <div class="rgrp">
+          <p style="margin:2px 0;font-size:22px;"><b class="db">Draw ④</b> — split at ¥30: who gains?</p>
+        </div>
+        <div class="rgrp">
+          <p style="margin:2px 0;font-size:22px;"><b class="pur">✓ Consumers ¥30, producers ¥30 — 50 : 50.</b></p>
+        </div>
+      </div>
+      <div class="rgrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:2px;">
+        <div class="rcell"><span class="k">Quantity</span><span class="v" id="sb-q">___</span></div>
+        <div class="rcell"><span class="k">Buyers pay</span><span class="v" id="sb-pb">___</span></div>
+        <div class="rcell"><span class="k">Sellers receive</span><span class="v" id="sb-ps">___</span></div>
+        <div class="rcell"><span class="k">Gov spends</span><span class="v" id="sb-spend">___</span></div>
+        <div class="rcell"><span class="k">Consumers gain</span><span class="v pur" id="sb-c">___</span></div>
+        <div class="rcell"><span class="k">Producers gain</span><span class="v teal" id="sb-p">___</span></div>
+      </div>
+      <div class="bbar" style="margin-top:4px;">
+        <div class="bseg c" id="sb-bc" style="width:50%;">?</div>
+        <div class="bseg p" id="sb-bp" style="width:50%;">?</div>
+      </div>
+    </div>
+    <div id="sbA" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 11 · DEMO 2: SUBSIDY SPLIT vs PED ───── -->
+<div class="slide" data-i="10">
+  <div class="content">
+  <div class="course-tag">DEMO · 补贴分配</div>
+  <h1>Same subsidy — drag the demand curve</h1>
+  <div class="sub">Subsidy stays ¥10. Move only the steepness of D — watch <b>who keeps the benefit</b>.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Demand: <span id="sdBv">medium</span></p>
+        <input type="range" id="sdB" min="1" max="20" step="0.5" value="5" style="width:100%;accent-color:#1E88E5;">
+        <div class="ends"><span>elastic<br>(shallow)</span><span>inelastic<br>(steep)</span></div>
+      </div>
+      <div class="rgrid">
+        <div class="rcell"><span class="k">Quantity</span><span class="v" id="sd-q">6 cups</span></div>
+        <div class="rcell"><span class="k">Buyers pay</span><span class="v" id="sd-pb">¥25</span></div>
+        <div class="rcell"><span class="k">Sellers receive</span><span class="v" id="sd-ps">¥35</span></div>
+        <div class="rcell"><span class="k">Gov spends</span><span class="v" id="sd-spend">¥60</span></div>
+        <div class="rcell"><span class="k">Consumers gain</span><span class="v pur" id="sd-c">¥30</span></div>
+        <div class="rcell"><span class="k">Producers gain</span><span class="v teal" id="sd-p">¥30</span></div>
+      </div>
+      <div class="bbar">
+        <div class="bseg c" id="sd-bc" style="width:50%;">Consumers 50%</div>
+        <div class="bseg p" id="sd-bp" style="width:50%;">Producers 50%</div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p id="sd-say"><b>Medium:</b> equally steep → benefit shared about 50 : 50.</p>
+      </div>
+    </div>
+    <div id="sdA" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 12 · REAL SUBSIDIES: STAPLES vs CONSUMER GOODS ───── -->
+<div class="slide" data-i="11">
+  <div class="content">
+  <div class="course-tag">TWO SUBSIDIES · 补贴对比</div>
+  <h1>Two subsidies, two very different jobs</h1>
+  <div class="sub">Both shift supply <b>down</b>. What differs is the demand they meet.</div><hr>
+  <table class="data-table" id="skT" style="width:100%;table-layout:fixed;">
+    <tr>
+      <th style="width:30%;">Subsidy</th><th style="width:16%;">Demand</th>
+      <th style="width:24%;">Who keeps it</th><th style="width:30%;">What the state wanted</th>
+    </tr>
+    <tr id="sk-r1">
+      <td style="text-align:left;"><b>Staples &amp; utilities</b> — price subsidy</td>
+      <td><span class="blank empty" data-a="very inelastic">___</span></td>
+      <td><span class="blank empty" data-a="consumers — a lower price">___</span></td>
+      <td style="text-align:left;"><span class="blank empty" data-a="keep essentials affordable">___</span></td>
+    </tr>
+    <tr id="sk-r2">
+      <td style="text-align:left;"><b>Appliances &amp; cars</b> — trade-in subsidy</td>
+      <td><span class="blank empty" data-a="elastic">___</span></td>
+      <td><span class="blank empty" data-a="producers — most of the money">___</span></td>
+      <td style="text-align:left;"><span class="blank empty" data-a="many more units sold">___</span></td>
+    </tr>
+  </table>
+  <div style="display:flex;gap:10px;margin-top:12px;">
+    <button class="big-btn" id="skNext">Reveal next row ▶</button>
+    <button class="big-btn ghost" id="skReset">↺ Reset</button>
+  </div>
+  <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:10px;">
+    <p><b>Same arrow, different target.</b></p>
+    <p>Steep demand → the subsidy shows up as a <b>lower price</b> → the policy is about <b>affordability</b>.</p>
+    <p>Flat demand → it shows up as <b>many more units</b> → the policy is about <b>sales</b>.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 13 · PRACTICE ───── -->
+<div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">PRACTICE · 练习</div>
+  <h1>Your turn — one market, four questions</h1>
+  <div class="sub">Tax ¥20 a unit, demand steep: <b>5 → 4 cups</b>, buyers pay ¥45. Work down the table.</div><hr>
+  <table class="data-table" id="prT" style="width:100%;table-layout:fixed;">
+    <tr>
+      <th style="width:52%;">Question</th><th style="width:24%;">Answer</th><th style="width:24%;">Why</th>
+    </tr>
+    <tr id="pr-r1">
+      <td style="text-align:left;">Sellers keep per unit?</td>
+      <td><span class="blank empty" data-a="¥25">___</span></td>
+      <td><span class="blank empty" data-a="¥45 − ¥20 tax">___</span></td>
+    </tr>
+    <tr id="pr-r2">
+      <td style="text-align:left;">Government collects?</td>
+      <td><span class="blank empty" data-a="¥80">___</span></td>
+      <td><span class="blank empty" data-a="¥20 × 4">___</span></td>
+    </tr>
+    <tr id="pr-r3">
+      <td style="text-align:left;">Consumers' / producers' share?</td>
+      <td><span class="blank empty" data-a="¥60 / ¥20">___</span></td>
+      <td><span class="blank empty" data-a="¥15 × 4 / ¥5 × 4">___</span></td>
+    </tr>
+    <tr id="pr-r4">
+      <td style="text-align:left;">Who bears more? What must PED be?</td>
+      <td><span class="blank empty" data-a="Consumers">___</span></td>
+      <td><span class="blank empty" data-a="inelastic, |PED| &lt; 1">___</span></td>
+    </tr>
+  </table>
+  <div style="display:flex;gap:10px;margin-top:12px;">
+    <button class="big-btn" id="prNext">Reveal next row ▶</button>
+    <button class="big-btn ghost" id="prReset">↺ Reset</button>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 14 · CHECK ───── -->
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">CHECK · 检测</div>
+  <h1>Check your understanding</h1>
+  <div class="sub">Seven questions — what an examiner keeps asking about a tax or a subsidy.</div><hr>
+  <div class="g1-box">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+      <span class="b db">Question <span id="g1q">1</span> / <span id="g1n">7</span></span>
+      <span class="b db">Score: <span id="g1score">0</span></span>
+    </div>
+    <div class="scenario" id="g1scenario"></div>
+    <div class="qbtns" id="g1btns"></div>
+    <div class="g1-fb" id="g1fb"></div>
+    <div style="margin-top:8px;">
+      <button class="big-btn" id="g1next" style="display:none;">Next ▶</button>
+    </div>
+    <div class="result-box" id="g1result">
+      <h3>Finished!</h3>
+      <div class="big" id="g1final"></div>
+      <button class="big-btn" id="g1again">↺ Play again</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 15 · SUMMARY ───── -->
+<div class="slide" data-i="14">
+  <div class="content">
+  <div class="course-tag">SUMMARY · 总结</div>
+  <h1>Tax incidence — the whole lesson in one table</h1>
+  <div class="sub">Seven rows, exam words. Say each row out loud in one sentence.</div><hr>
+  <table class="data-table" id="sumT" style="width:100%;table-layout:fixed;">
+    <tr>
+      <th style="width:20%;">Step</th><th style="width:46%;">What it says</th><th style="width:34%;">In our market</th>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="dr">1 · The tax</b></td>
+      <td style="text-align:left;">Tax = extra <b>cost per unit</b> → S up by the tax</td>
+      <td style="text-align:left;">¥20 → S + tax</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="dr">2 · Two effects</b></td>
+      <td style="text-align:left;">Less traded; one price becomes <b>two</b></td>
+      <td style="text-align:left;">5 → 3 cups; ¥40 / ¥20</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="dr">3 · Revenue</b></td>
+      <td style="text-align:left;">Tax per unit × <b>quantity sold</b> → rectangle</td>
+      <td style="text-align:left;">¥20 × 3 = ¥60</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="pur">4 · Incidence</b></td>
+      <td style="text-align:left;">Burden <b>shared</b>: price rise × Q / price fall × Q</td>
+      <td style="text-align:left;">¥30 / ¥30 → 50 : 50</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="pur">5 · The rule</b></td>
+      <td style="text-align:left;">The <b>steeper (less elastic)</b> side pays more</td>
+      <td style="text-align:left;">steep D → consumers</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="a">6 · Which tax?</b></td>
+      <td style="text-align:left;">Revenue → <b>inelastic</b>; behaviour → <b>elastic</b></td>
+      <td style="text-align:left;">salt, tobacco</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><b class="g">7 · The mirror</b></td>
+      <td style="text-align:left;"><b>Subsidy</b>: S down, government <b>spends</b>, steeper side <b>gains</b> more</td>
+      <td style="text-align:left;">¥10 → 6 cups; ¥60</td>
+    </tr>
+  </table>
+  <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:12px;">
+    <p><b>One line:</b> fewer alternatives (the steeper curve) → bears more of a tax, keeps more of a subsidy.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 16 · CLOSING ───── -->
+<div class="slide cover" data-i="15">
+  <div class="course-tag">THANK YOU · 谢谢</div>
+  <h1 style="font-size:clamp(40px,5.5vw,60px);">Tax incidence — done ✓</h1>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">The firm pays the money. PED decides who bears it.</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">Inelastic buyers cannot walk away — so they pay.</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  <div class="botbar"></div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn">◀</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="copy">© 2026 Dr. Jia</span>
+    <span class="page" id="pageNum">1 / 14</span>
+    <button id="nextBtn">▶</button>
+  </div>
+</div>
+
+<script>
+var $ = function(id){ return document.getElementById(id); };
+
+/* ══════════ 0 · GEOMETRY (same scale as 2-5 / 3-1 / 3-2 / 3-3) ══════════
+   x = 90 + 32.5q ; y = 460 − 8.2P ; plot box x∈[90,630], y∈[50,460]
+   Supply is FIXED all lesson: P = 5Q + 5. Demand varies: P = 30 + b(5 − Q) — every D
+   passes through the same start point E0 = (5 cups, ¥30), only its steepness b changes. */
+const QPX = 32.5, PPX = 8.2, X0 = 90, Y0 = 460;
+const PBOX = { x1: 90, y1: 50, x2: 630, y2: 460 };
+const TAXDEF = 20;
+function XQ(q){ return X0 + QPX * q; }
+function YP(p){ return Y0 - PPX * p; }
+function Pd(b, q){ return 30 + b * (5 - q); }        /* inverse demand */
+function Ps(q){ return 5 * q + 5; }                  /* inverse supply */
+function eqQ(b, t){ return 5 - t / (b + 5); }        /* quantity after a per-unit tax t */
+function eqPb(b, t){ return 30 + b * t / (b + 5); }  /* price buyers pay */
+function eqPs(b, t){ return 30 - 5 * t / (b + 5); }  /* price sellers keep */
+function f1(v){ const r = Math.round(v * 10) / 10; return (Math.abs(r % 1) < 1e-9) ? String(r) : r.toFixed(1); }
+
+/* Liang–Barsky: keep only the part of the segment that is inside the plot box */
+function clipSeg(x1, y1, x2, y2){
+  let t0 = 0, t1 = 1;
+  const dx = x2 - x1, dy = y2 - y1;
+  const p = [-dx, dx, -dy, dy];
+  const q = [x1 - PBOX.x1, PBOX.x2 - x1, y1 - PBOX.y1, PBOX.y2 - y1];
+  for(let i = 0; i < 4; i++){
+    if(p[i] === 0){ if(q[i] < 0) return null; }
+    else {
+      const r = q[i] / p[i];
+      if(p[i] < 0){ if(r > t1) return null; if(r > t0) t0 = r; }
+      else { if(r < t0) return null; if(r < t1) t1 = r; }
+    }
+  }
+  return [x1 + t0 * dx, y1 + t0 * dy, x1 + t1 * dx, y1 + t1 * dy];
+}
+
+/* ── label parking: never hard-code a label again (they kept landing on a curve) ── */
+function inkW(text, size){
+  let w = 0;
+  for(let i = 0; i < text.length; i++){
+    const c = text.charCodeAt(i);
+    w += (c < 128) ? 0.55 * size : 1.0 * size;
+  }
+  return w;
+}
+function boxOf(x, y, text, size, anchor){
+  const w = inkW(text, size);
+  const x1 = (anchor === 'end') ? x - w : (anchor === 'middle') ? x - w / 2 : x;
+  return { x1: x1, y1: y - 0.78 * size, x2: x1 + w, y2: y + 0.22 * size };
+}
+/* 线段 ↔ 矩形相交：**必须**用参数裁剪精确判定，不能采样。
+   2026-09-22 坑：原来沿线段取 61 个采样点，段长 ~350px 时步长 5.8px，
+   一条斜线从墨迹盒的角上斜穿过去，采样点刚好落在盒子外 → 判定"不压线"，
+   标签就停在那条线上（t=10 的 ¥10 压 S 曲线就是这样漏过去的）。 */
+function segInBox(s, b){
+  const dx = s[2] - s[0], dy = s[3] - s[1];
+  let t0 = 0, t1 = 1;
+  const p = [-dx, dx, -dy, dy];
+  const q = [s[0] - b.x1, b.x2 - s[0], s[1] - b.y1, b.y2 - s[1]];
+  for(let i = 0; i < 4; i++){
+    if(p[i] === 0){ if(q[i] < 0) return false; }
+    else {
+      const r = q[i] / p[i];
+      if(p[i] < 0){ if(r > t1) return false; if(r > t0) t0 = r; }
+      else { if(r < t0) return false; if(r < t1) t1 = r; }
+    }
+  }
+  return true;
+}
+function hitBox(a, b){ return !(a.x2 < b.x1 || b.x2 < a.x1 || a.y2 < b.y1 || b.y2 < a.y1); }
+/* cands 是"首选位 → 次选位 …"；全都不行时**不能再退回最后一个候选**（历史坑：最后一个候选
+   往往正好压在曲线上，3-4 首跑 16 条压线全是这么来的）。改成全框网格扫描，
+   取离首选位最近的一个真正空的位置 —— 宁可挪远一点，也绝不压线/压字。 */
+function park(text, size, anchor, cands, segs, placed, margin){
+  const pad = margin ? 2 : 4;
+  const fits = function(px, py){
+    const bx = boxOf(px, py, text, size, anchor);
+    if(bx.x1 < (margin ? 4 : PBOX.x1 + pad)) return null;
+    if(bx.x2 > PBOX.x2 - pad || bx.y1 < PBOX.y1 + pad || bx.y2 > PBOX.y2 - pad) return null;
+    for(let j = 0; j < segs.length; j++){ if(segInBox(segs[j], bx)) return null; }
+    for(let j = 0; j < placed.length; j++){ if(hitBox(bx, placed[j])) return null; }
+    return bx;
+  };
+  for(let i = 0; i < cands.length; i++){
+    const bx = fits(cands[i][0], cands[i][1]);
+    if(bx){ placed.push(bx); return cands[i]; }
+  }
+  const pref = cands[0] || [PBOX.x1 + 20, PBOX.y1 + 40];
+  const pb = boxOf(pref[0], pref[1], text, size, anchor);
+  const pcx = (pb.x1 + pb.x2) / 2, pcy = (pb.y1 + pb.y2) / 2;
+  let best = null, bestD = Infinity;
+  for(let y = PBOX.y1 + 28; y <= PBOX.y2 - 12; y += 8){
+    for(let x = PBOX.x1 + 4; x <= PBOX.x2 - 4; x += 8){
+      const bx = fits(x, y);
+      if(!bx) continue;
+      const d = Math.abs((bx.x1 + bx.x2) / 2 - pcx) + Math.abs((bx.y1 + bx.y2) / 2 - pcy);
+      if(d < bestD){ bestD = d; best = [x, y, bx]; }
+    }
+  }
+  if(best){ placed.push(best[2]); return [best[0], best[1]]; }
+  return cands[cands.length - 1];
+}
+function along(seg, f){ return [seg[0] + (seg[2] - seg[0]) * f, seg[1] + (seg[3] - seg[1]) * f]; }
+
+/* ══════════ 1 · THE TAX FIGURE (one builder, six layers) ══════════
+   1 = S + tax and the ¥20 ruler · 2 = Q falls · 3 = buyers' price · 4 = sellers' price + the wedge
+   5 = government revenue rectangle · 6 = split into consumers' / producers' share */
+function taxSvg(o){
+  /* sub = true → t is a SUBSIDY per unit: the same picture, the tax entered as a negative number.
+     Everything downstream only ever sees `te`, so the geometry is shared. */
+  const sub = !!o.sub;
+  const te = sub ? -o.t : o.t;
+  const b = o.b, t = o.t, lv = o.level || 0;
+  const q1 = eqQ(b, te), PB = eqPb(b, te), PS = eqPs(b, te);
+  const x1 = XQ(q1), yB = YP(PB), yS = YP(PS);
+  const xO = XQ(5), yO = YP(30);
+  const C_SUB = '#2E7D32';                 /* subsidy curve / wedge */
+  const cWedge = sub ? C_SUB : '#C62828';  /* the per-unit gap: tax or subsidy */
+  const cRuler = sub ? C_SUB : '#2E4A6B';
+  const mWedge = sub ? 'ahGreen' : 'ahRed';
+  const segs = [[90, 50, 90, 460], [90, 460, 630, 460]];
+  const placed = [];
+  let g = '';
+
+  const dS = clipSeg(XQ(0), YP(Pd(b, 0)), XQ(16.6), YP(Pd(b, 16.6))) || [90, 460, 90, 460];
+  const sS = clipSeg(XQ(0), YP(Ps(0)), XQ(16.6), YP(Ps(16.6))) || [90, 460, 90, 460];
+  const tS = clipSeg(XQ(0), YP(Ps(0) + te), XQ(16.6), YP(Ps(16.6) + te)) || [90, 460, 90, 460];
+  segs.push(dS, sS);
+  if(lv >= 1) segs.push(tS);
+
+  /* axes + axis titles (short ones: a long title gets crossed by a moved curve) */
+  g += '<line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>'
+     + '<line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>'
+     + '<text x="100" y="30" font-size="30" font-weight="700" fill="#5b6b7b">P (\u00A5) \u2191</text>'
+     + '<text x="626" y="442" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q \u2192</text>';
+
+  /* margin price tags: put their boxes in `placed` first so curve labels keep clear of them.
+     t = 0 是退化解：买价 = 卖价 = 原价 = ¥30，三个标签会叠成一坨 —— 与原价相同的就不画。 */
+  const mtag = function(y, txt, col, on){
+    if(!on) return '';
+    const bx = boxOf(82, y + 9, txt, 30, 'end');
+    placed.push(bx);
+    return '<text x="82" y="' + (y + 9) + '" text-anchor="end" font-size="30" font-weight="800" fill="' + col + '">' + txt + '</text>';
+  };
+  /* 原价 ¥30：税前锚点，从第 0 层就画（旧量/旧价的对照基准）。
+     但买价/卖价离原价很近时（补贴 + 很平的需求 → 买价 ≈ ¥28），左边距三个价签会叠字 → 省掉 ¥30。
+     t = 0 同理：买价 = 卖价 = 原价，只留一个。 */
+  const farOld = Math.abs(PB - 30) * PPX >= 32 && Math.abs(PS - 30) * PPX >= 32;
+  const mOld = mtag(yO, '\u00A530', '#94a3b8', lv <= 2 || farOld);
+  const mBuy = mtag(yB, '\u00A5' + f1(PB), '#7C3AED', lv >= 3 && Math.abs(PB - 30) > 0.05);
+  const mSel = mtag(yS, '\u00A5' + f1(PS), '#00838F', lv >= 4 && Math.abs(PS - 30) > 0.05);
+
+  /* curves */
+  g += '<line x1="' + dS[0].toFixed(1) + '" y1="' + dS[1].toFixed(1) + '" x2="' + dS[2].toFixed(1) + '" y2="' + dS[3].toFixed(1) + '" stroke="#1E88E5" stroke-width="4"/>';
+  g += '<line x1="' + sS[0].toFixed(1) + '" y1="' + sS[1].toFixed(1) + '" x2="' + sS[2].toFixed(1) + '" y2="' + sS[3].toFixed(1) + '" stroke="#F0B429" stroke-width="4"/>';
+  if(lv >= 1) g += '<line x1="' + tS[0].toFixed(1) + '" y1="' + tS[1].toFixed(1) + '" x2="' + tS[2].toFixed(1) + '" y2="' + tS[3].toFixed(1) + '" stroke="' + cWedge + '" stroke-width="4"/>';
+
+  /* L0 · the market BEFORE anything happens: the crossing, the ¥30 price, the 5 cups.
+     (第 3 页现在从"给出市场"起步，加税是第二步才画上去的东西) */
+  if(lv >= 0){
+    const drawP = (lv < 3), drawQ = (lv < 2);
+    if(drawP) segs.push([90, yO, xO, yO]);
+    if(drawQ) segs.push([xO, yO, xO, 460]);
+    if(drawP) g += '<line x1="90" y1="' + yO.toFixed(1) + '" x2="' + xO.toFixed(1) + '" y2="' + yO.toFixed(1) + '" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+    if(drawQ) g += '<line x1="' + xO.toFixed(1) + '" y1="' + yO.toFixed(1) + '" x2="' + xO.toFixed(1) + '" y2="460" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<circle cx="' + xO.toFixed(1) + '" cy="' + yO.toFixed(1) + '" r="7" fill="#1a3a5c"/>';
+    if(drawQ) g += '<text x="' + xO.toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#94a3b8">5</text>';
+  }
+
+  /* L1 · the vertical ruler = the tax (or subsidy) per unit (measured off the drawn S segment, not a formula) */
+  if(lv >= 1 && t > 0.5){
+    const qR = (110 - X0) / QPX, yrS = YP(Ps(qR)), yrT = YP(Ps(qR) + te);
+    segs.push([110, yrS, 110, yrT]);
+    g += '<line x1="110" y1="' + yrS.toFixed(1) + '" x2="110" y2="' + yrT.toFixed(1) + '" stroke="' + cRuler + '" stroke-width="3" marker-start="url(#' + mWedge + ')" marker-end="url(#' + mWedge + ')"/>';
+  }
+
+  /* L2 · the new quantity (grey ghost of the old one for comparison).
+     两个读数挤不下时（如 b=20 → "4.2" 墨迹 50px，两个刻度只隔 26px）改成合成标签 "5 → 4.2"，
+     免得两个数字叠在一起 —— collide 会按墨迹盒判定叠字。 */
+  if(lv >= 2){
+    segs.push([x1, yB, x1, 460], [xO, yO, xO, 460]);
+    g += '<line x1="' + xO.toFixed(1) + '" y1="' + yO.toFixed(1) + '" x2="' + xO.toFixed(1) + '" y2="460" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<line x1="' + x1.toFixed(1) + '" y1="' + yB.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="460" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>';
+    const sameQ = Math.abs(q1 - 5) <= 0.05;
+    const gapX = Math.abs(x1 - xO);
+    const needX = (inkW(f1(q1), 30) + inkW('5', 30)) / 2 + 12;
+    if(sameQ){
+      g += '<text x="' + xO.toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#94a3b8">5</text>';
+    } else if(gapX < needX){
+      g += '<text x="' + ((xO + x1) / 2).toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">5 \u2192 ' + f1(q1) + '</text>';
+    } else {
+      g += '<text x="' + xO.toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#94a3b8">5</text>';
+      g += '<text x="' + x1.toFixed(1) + '" y="490" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">' + f1(q1) + '</text>';
+    }
+  }
+
+  /* L3 / L4 · the two prices and the wedge between them */
+  if(lv >= 3){
+    segs.push([90, yB, x1, yB], [90, yO, xO, yO]);
+    g += '<line x1="90" y1="' + yO.toFixed(1) + '" x2="' + xO.toFixed(1) + '" y2="' + yO.toFixed(1) + '" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+    g += '<line x1="90" y1="' + yB.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="' + yB.toFixed(1) + '" stroke="#7C3AED" stroke-width="3" stroke-dasharray="8 6"/>';
+  }
+  if(lv >= 4){
+    segs.push([90, yS, x1, yS]);
+    g += '<line x1="90" y1="' + yS.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="' + yS.toFixed(1) + '" stroke="#00838F" stroke-width="3" stroke-dasharray="8 6"/>';
+    if(t > 0.5) g += '<line x1="' + x1.toFixed(1) + '" y1="' + yS.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="' + yB.toFixed(1) + '" stroke="' + cWedge + '" stroke-width="5" marker-start="url(#' + mWedge + ')" marker-end="url(#' + mWedge + ')"/>';
+  }
+
+  /* L5 · government revenue (or subsidy spending) rectangle ; L6 · split at the old price.
+     补贴时买价在原价**下方**、卖价在**上方** → 矩形与两块的 y 都要用 min/abs，不能假设谁在上。 */
+  if(lv >= 5 && t > 0.5){
+    const rY = Math.min(yB, yS), rH = Math.abs(yS - yB);
+    const whole = (lv < 6);
+    if(whole){
+      g += '<rect x="90" y="' + rY.toFixed(1) + '" width="' + (x1 - 90).toFixed(1) + '" height="' + rH.toFixed(1) + '" fill="rgba(240,180,41,.22)" stroke="#a57d12" stroke-width="2.5"/>';
+    } else {
+      const cY1 = Math.min(yO, yB), cH = Math.abs(yO - yB);   /* 原价 ↔ 买价 = 消费者那一块 */
+      const pY1 = Math.min(yO, yS), pH = Math.abs(yO - yS);   /* 原价 ↔ 卖价 = 生产者那一块 */
+      g += '<rect x="90" y="' + cY1.toFixed(1) + '" width="' + (x1 - 90).toFixed(1) + '" height="' + cH.toFixed(1) + '" fill="rgba(124,58,237,.20)" stroke="#7C3AED" stroke-width="2.5"/>';
+      g += '<rect x="90" y="' + pY1.toFixed(1) + '" width="' + (x1 - 90).toFixed(1) + '" height="' + pH.toFixed(1) + '" fill="rgba(0,131,143,.20)" stroke="#00838F" stroke-width="2.5"/>';
+      g += '<line x1="90" y1="' + yO.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="' + yO.toFixed(1) + '" stroke="#2E4A6B" stroke-width="3"/>';
+      segs.push([90, yO, x1, yO]);
+    }
+  }
+
+  /* ── labels: park every one against the CURRENTLY drawn lines ── */
+  const dl = along(dS, 0.74), sl = along(sS, 0.30), tl = along(tS, 0.70);
+  const dTxt = 'D', sTxt = 'S', tTxt = sub ? 'S \u2212 subsidy' : 'S + tax';
+  const pD = park(dTxt, 32, 'start',
+    [[dl[0] + 26, dl[1] + 8], [dl[0] + 26, dl[1] + 48], [dl[0] + 26, dl[1] - 34], [dl[0] + 46, dl[1] + 88], [dl[0] + 26, dl[1] + 128]],
+    segs, placed, false);
+  const pS = park(sTxt, 32, 'start',
+    [[sl[0] + 26, sl[1] + 8], [sl[0] + 26, sl[1] + 48], [sl[0] + 48, sl[1] + 8], [sl[0] + 26, sl[1] - 34], [sl[0] + 70, sl[1] + 8]],
+    segs, placed, false);
+  const pT = park(tTxt, 30, 'start',
+    [[tl[0] + 24, tl[1] + 6], [tl[0] - 90, tl[1] + 6], [tl[0] + 24, tl[1] + 46], [tl[0] + 24, tl[1] - 34], [tl[0] + 60, tl[1] + 86]],
+    segs, placed, false);
+  g += '<text x="' + pD[0].toFixed(1) + '" y="' + pD[1].toFixed(1) + '" font-size="32" font-weight="800" fill="#1E88E5">D</text>';
+  g += '<text x="' + pS[0].toFixed(1) + '" y="' + pS[1].toFixed(1) + '" font-size="32" font-weight="800" fill="#a57d12">S</text>';
+  if(lv >= 1) g += '<text x="' + pT[0].toFixed(1) + '" y="' + pT[1].toFixed(1) + '" font-size="30" font-weight="800" fill="' + cWedge + '">' + tTxt + '</text>';
+  if(lv >= 1 && t > 0.5){
+    const pR = park('\u00A5' + f1(t), 30, 'start',
+      [[119, (YP(Ps((110 - X0) / QPX)) + YP(Ps((110 - X0) / QPX) + te)) / 2 + 8], [119, 268], [119, 300], [119, 236], [119, 330]],
+      segs, placed, false);
+    g += '<text x="' + pR[0].toFixed(1) + '" y="' + pR[1].toFixed(1) + '" font-size="30" font-weight="800" fill="' + cRuler + '">\u00A5' + f1(t) + '</text>';
+  }
+  g += mOld + mBuy + mSel;
+
+  /* rectangle price: keep it short ("\u00A560") so it never reaches the dashed price line */
+  if(lv >= 5 && t > 0.5){
+    const rev = f1(t * q1);
+    if(lv < 6){
+      const pRev = park('\u00A5' + rev, 30, 'middle', [[138, 265], [138, 250], [138, 280], [138, 235], [138, 285]], segs, placed, false);
+      g += '<text x="' + pRev[0].toFixed(1) + '" y="' + pRev[1].toFixed(1) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#a57d12">\u00A5' + rev + '</text>';
+    } else {
+      /* 用绝对值：补贴时买价低于原价、(卖价高于原价)，"承担额"变成"受益额" */
+      const cShare = f1(Math.abs(PB - 30) * q1), pShare = f1(Math.abs(PS - 30) * q1);
+      const pC = park('\u00A5' + cShare, 30, 'start', [[95, 160], [95, 175], [95, 150], [95, 190], [95, 145]], segs, placed, false);
+      const pP = park('\u00A5' + pShare, 30, 'middle', [[140, 265], [140, 250], [140, 280], [145, 240], [145, 285]], segs, placed, false);
+      g += '<text x="' + pC[0].toFixed(1) + '" y="' + pC[1].toFixed(1) + '" font-size="30" font-weight="800" fill="#7C3AED">\u00A5' + cShare + '</text>';
+      g += '<text x="' + pP[0].toFixed(1) + '" y="' + pP[1].toFixed(1) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#00838F">\u00A5' + pShare + '</text>';
+    }
+  }
+  /* viewBox 左侧留到 -26：带小数的价格标签（\u00A542.5，墨迹宽 96）右对齐在 x=82 时会捅出画布左边，
+     税额拽到 5 / 15 / 25 时就会出现半价。其余几何（x = 90 + 32.5q、y = 460 − 8.2P）与全课件一致。 */
+  return '<svg viewBox="-26 0 726 520" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+
+/* ══════════ 2 · NAVIGATION ══════════ */
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+const globalR = {
+  show(){ $('rbtnWrap').style.display = 'flex'; },
+  hide(){ $('rbtnWrap').style.display = 'none'; },
+  setup(grps){
+    const btn = $('rbtn');
+    btn.textContent = 'Reveal more';
+    btn.disabled = false;
+    this.show();
+    btn.onclick = function(){
+      let curIdx = 0;
+      grps.forEach(function(g, i){ if(g.classList.contains('show')) curIdx = i; });
+      const next = curIdx + 1;
+      if(next < grps.length){
+        grps[next].classList.add('show');
+        if(next >= grps.length - 1) btn.textContent = 'All shown';
+        syncSlideEffects();
+      }
+    };
+  }
+};
+globalR.hide();
+
+function showSlide(i){
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  slides[i].classList.add('active');
+  cur = i;
+  $('prevBtn').disabled = (i === 0);
+  $('nextBtn').disabled = (i === total - 1);
+  $('pageNum').textContent = (i + 1) + ' / ' + total;
+  document.querySelectorAll('.dots span').forEach(function(s, j){ s.classList.toggle('on', j === i); });
+  const grps = slides[i].querySelectorAll('.rgrp');
+  if(grps.length) grps.forEach(function(g, idx){ g.classList.toggle('show', idx === 0); });
+  if(grps.length > 1) globalR.setup(grps); else globalR.hide();
+  const steps = slides[i].querySelectorAll('.sstep');
+  if(steps.length){
+    globalR.hide();
+    $('sbtnWrap').style.display = 'flex';
+    if(!slides[i].dataset.sIdx) slides[i].dataset.sIdx = '0';
+    if(!slides[i].querySelector('.sstep.show')) steps[0].classList.add('show');
+    refreshSumBtn();
+  } else {
+    $('sbtnWrap').style.display = 'none';
+  }
+  syncSlideEffects();
+}
+
+function refreshSumBtn(){
+  const slide = document.querySelector('.slide.active');
+  const btn = $('sbtn');
+  if(!slide || !btn) return;
+  const steps = slide.querySelectorAll('.sstep');
+  if(!steps.length) return;
+  const idx = +(slide.dataset.sIdx || 0);
+  if(idx >= steps.length){ btn.textContent = 'All done \u2713'; btn.disabled = true; }
+  else { btn.textContent = 'Reveal answers'; btn.disabled = false; }
+}
+
+/* ══════════ 3 · PAGE EFFECTS ══════════ */
+function syncSlideEffects(){
+  const slide = document.querySelector('.slide.active');
+  if(!slide) return;
+  try { if(slide.querySelector('#txA')) syncBuild('txA', -1, 2, null); } catch(err){ console.error('txA', err); }
+  try { if(slide.querySelector('#txB')) syncBuild('txB', 2, 4, null); } catch(err){ console.error('txB', err); }
+  try { if(slide.querySelector('#txC')) syncBuild('txC', 3, 5, 'txT'); } catch(err){ console.error('txC', err); }
+  try { if(slide.querySelector('#txD')) syncBuild('txD', 4, 6, null); } catch(err){ console.error('txD', err); }
+  try { if(slide.querySelector('#txCmp')) syncCmp(); } catch(err){ console.error('cmp', err); }
+  try { if(slide.querySelector('#sdA')) syncSd(); } catch(err){ console.error('sd', err); }
+  try { if(slide.querySelector('#sbA')) syncSub(); } catch(err){ console.error('sub', err); }
+}
+
+/* a build page: the figure grows one layer per revealed step; the slider stays locked
+   until the text is out (same discipline as the tax / subsidy pages of 3-1) */
+function syncBuild(boxId, base, cap, sliderId){
+  const box = $(boxId); if(!box) return;
+  const slide = box.closest('.slide');
+  const grps = slide.querySelectorAll('.rgrp');
+  const shown = [].filter.call(grps, function(g){ return g.classList.contains('show'); }).length;
+  const lv = Math.min(base + shown, cap);
+  let t = TAXDEF;
+  const sl = sliderId ? $(sliderId) : null;
+  if(sl){
+    sl.disabled = (shown < grps.length);
+    t = +sl.value;
+    $('txTv').textContent = '\u00A5' + f1(t);
+    const read = $('txRead');
+    if(shown < grps.length){
+      read.textContent = 'Reveal both steps \u2014 then drag the tax.';
+      read.style.color = '#5b6b7b';
+    } else {
+      const q = eqQ(5, t), rev = t * q;
+      read.innerHTML = 'Tax \u00A5' + f1(t) + ' \u2192 Q = ' + f1(q) + ' cups \u2192 buyers pay \u00A5' + f1(eqPb(5, t))
+        + ', sellers keep \u00A5' + f1(eqPs(5, t)) + ' \u2192 <b>revenue = \u00A5' + f1(rev) + '</b>';
+      read.style.color = '#1a3a5c';
+    }
+  }
+  box.innerHTML = taxSvg({ b: 5, t: t, level: lv });
+}
+
+/* the comparison page: ONE continuous slider over the steepness of D (was three chips) */
+function syncCmp(){
+  const box = $('txCmp'); if(!box) return;
+  const sl = $('cmB'); if(!sl) return;
+  const b = +sl.value, t = TAXDEF;
+  const q1 = eqQ(b, t), PB = eqPb(b, t), PS = eqPs(b, t);
+  const cShare = (PB - 30) * q1, pShare = (30 - PS) * q1, rev = t * q1;
+  const cPct = Math.round(cShare / (cShare + pShare) * 100);
+  $('cm-q').textContent = f1(q1) + ' cups';
+  $('cm-pb').textContent = '\u00A5' + f1(PB);
+  $('cm-ps').textContent = '\u00A5' + f1(PS);
+  $('cm-cs').textContent = '\u00A5' + f1(cShare);
+  $('cm-pss').textContent = '\u00A5' + f1(pShare);
+  $('cm-rev').textContent = '\u00A5' + f1(rev);
+  $('cm-c').style.width = cPct + '%';
+  $('cm-p').style.width = (100 - cPct) + '%';
+  /* 窄于 1/3 的一侧放不下全名（"Producers 25%" 会被 overflow 裁成 "nsumers…"），只留百分数 */
+  $('cm-c').textContent = cPct >= 33 ? ('Consumers ' + cPct + '%') : (cPct + '%');
+  $('cm-p').textContent = (100 - cPct) >= 33 ? ('Producers ' + (100 - cPct) + '%') : ((100 - cPct) + '%');
+  $('cm-say').innerHTML = cmpSay(cPct);
+  $('cmBv').textContent = cmpName(cPct);
+  box.innerHTML = taxSvg({ b: b, t: t, level: 6 });
+}
+/* 连续滑杆没有"第几档"了，判定直接看消费者占比 */
+function cmpName(p){
+  if(p >= 62) return 'steep \u00B7 inelastic';
+  if(p <= 38) return 'shallow \u00B7 elastic';
+  return 'medium';
+}
+function cmpSay(p){
+  if(p >= 62) return '<b class="pur">Inelastic:</b> buyers stay \u2192 most of the tax lands on them \u2192 <b>most</b> revenue.';
+  if(p <= 38) return '<b class="teal">Elastic:</b> buyers walk away \u2192 firms absorb most of it \u2192 <b>least</b> revenue.';
+  return '<b>Medium:</b> equally steep \u2192 shared about 50 : 50.';
+}
+
+/* 补贴版的"拖动需求曲线"：同一 subsid y 下，看 PED 怎样决定补贴落到谁手里。
+   全部走 te = -SUB，与工坊页共用同一个 builder。 */
+function syncSd(){
+  const box = $('sdA'); if(!box) return;
+  const sl = $('sdB'); if(!sl) return;
+  const b = +sl.value, s = SUB;
+  const q1 = eqQ(b, -s), PB = eqPb(b, -s), PS = eqPs(b, -s);
+  const cGain = (30 - PB) * q1, pGain = (PS - 30) * q1, spend = s * q1;
+  const cPct = Math.round(cGain / (cGain + pGain) * 100);
+  $('sd-q').textContent = f1(q1) + ' cups';
+  $('sd-pb').textContent = '\u00A5' + f1(PB);
+  $('sd-ps').textContent = '\u00A5' + f1(PS);
+  $('sd-spend').textContent = '\u00A5' + f1(spend);
+  $('sd-c').textContent = '\u00A5' + f1(cGain);
+  $('sd-p').textContent = '\u00A5' + f1(pGain);
+  $('sd-bc').style.width = cPct + '%';
+  $('sd-bp').style.width = (100 - cPct) + '%';
+  $('sd-bc').textContent = cPct >= 33 ? ('Consumers ' + cPct + '%') : (cPct + '%');
+  $('sd-bp').textContent = (100 - cPct) >= 33 ? ('Producers ' + (100 - cPct) + '%') : ((100 - cPct) + '%');
+  $('sdBv').textContent = cmpName(cPct);
+  $('sd-say').innerHTML = sdSay(cPct);
+  box.innerHTML = taxSvg({ b: b, t: s, level: 6, sub: true });
+}
+function sdSay(p){
+  if(p >= 62) return '<b class="pur">Inelastic:</b> buyers stay \u2192 <b>consumers keep most</b> of the subsidy.';
+  if(p <= 38) return '<b class="teal">Elastic:</b> buyers walk away \u2192 <b>producers keep most</b> of it.';
+  return '<b>Medium:</b> equally steep \u2192 benefit shared about 50 : 50.';
+}
+
+/* ── the subsidy workshop: the same builder, the tax entered as a negative number ──
+   8 组揭晓 = 4 个"要求" + 4 个"答案"：先让学生自己画，点一下才出答案（图层与读数一起给）。
+   答案组落在 shown = 2 / 4 / 6 / 8，所以图层表是 [0,1,1,4,4,5,5,6]。 */
+const SUB = 10;
+const SUB_LV = [0, 1, 1, 4, 4, 5, 5, 6];
+function syncSub(){
+  const box = $('sbA'); if(!box) return;
+  const slide = box.closest('.slide');
+  const grps = slide.querySelectorAll('.rgrp');
+  const shown = [].filter.call(grps, function(g){ return g.classList.contains('show'); }).length;
+  const lv = SUB_LV[Math.max(0, Math.min(shown - 1, SUB_LV.length - 1))];
+  box.innerHTML = taxSvg({ b: 5, t: SUB, level: lv, sub: true });
+
+  const q1 = eqQ(5, -SUB), PB = eqPb(5, -SUB), PS = eqPs(5, -SUB);
+  const cGain = (30 - PB) * q1, pGain = (PS - 30) * q1, spend = SUB * q1;
+  const cPct = Math.round(cGain / (cGain + pGain) * 100);
+  const set = function(id, v, from){ const e = $(id); if(e) e.textContent = (shown >= from) ? v : '___'; };
+  set('sb-q', f1(q1) + ' cups', 4);
+  set('sb-pb', '\u00A5' + f1(PB), 4);
+  set('sb-ps', '\u00A5' + f1(PS), 4);
+  set('sb-spend', '\u00A5' + f1(spend), 6);
+  set('sb-c', '\u00A5' + f1(cGain), 8);
+  set('sb-p', '\u00A5' + f1(pGain), 8);
+  const bc = $('sb-bc'), bp = $('sb-bp');
+  if(bc && bp){
+    if(shown >= 8){
+      bc.style.width = cPct + '%'; bp.style.width = (100 - cPct) + '%';
+      bc.textContent = cPct >= 33 ? ('Consumers ' + cPct + '%') : (cPct + '%');
+      bp.textContent = (100 - cPct) >= 33 ? ('Producers ' + (100 - cPct) + '%') : ((100 - cPct) + '%');
+    } else {
+      bc.style.width = '50%'; bp.style.width = '50%';
+      bc.textContent = '?'; bp.textContent = '?';
+    }
+  }
+}
+
+/* ══════════ 4 · NAV BINDING + DOTS ══════════ */
+try {
+  $('prevBtn').onclick = function(){ if(cur > 0) showSlide(cur - 1); };
+  $('nextBtn').onclick = function(){ if(cur < total - 1) showSlide(cur + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){ e.preventDefault(); if(cur < total - 1) showSlide(cur + 1); }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); if(cur > 0) showSlide(cur - 1); }
+  });
+  const dotBox = $('dots');
+  for(let i = 0; i < total; i++){
+    const s = document.createElement('span');
+    s.onclick = (function(kk){ return function(){ showSlide(kk); }; })(i);
+    dotBox.appendChild(s);
+  }
+  showSlide(0);
+} catch(err){ console.error('nav init', err); }
+
+/* ══════════ 5 · SLIDERS (tax size on STEP 3 · steepness of D on the demo page) ══════════ */
+try {
+  $('txT').addEventListener('input', syncSlideEffects);
+} catch(err){ console.error('slider bind', err); }
+try {
+  $('cmB').addEventListener('input', syncCmp);
+} catch(err){ console.error('cmp slider bind', err); }
+try {
+  $('sdB').addEventListener('input', syncSd);
+} catch(err){ console.error('sd slider bind', err); }
+
+/* ══════════ 7 · ROW-REVEAL TABLES (shared factory) ══════════ */
+try {
+  function makeRowReveal(rows, nextId, resetId){
+    let i = 0;
+    function paint(){
+      rows.forEach(function(id, ri){
+        const tr = $(id), done = ri < i;
+        tr.classList.toggle('hit', done);
+        tr.querySelectorAll('.blank').forEach(function(b){
+          b.textContent = done ? b.getAttribute('data-a') : '___';
+          b.classList.toggle('empty', !done);
+          b.classList.toggle('filled', done);
+        });
+      });
+    }
+    $(nextId).onclick = function(){
+      if(i >= rows.length) return;
+      i++;
+      paint();
+      if(i >= rows.length){ this.textContent = 'All shown \u2713'; this.disabled = true; }
+    };
+    $(resetId).onclick = function(){
+      i = 0; paint();
+      $(nextId).textContent = 'Reveal next row \u25B6';
+      $(nextId).disabled = false;
+    };
+    paint();
+  }
+  makeRowReveal(['rm-r1', 'rm-r2'], 'rmNext', 'rmReset');
+  makeRowReveal(['sk-r1', 'sk-r2'], 'skNext', 'skReset');
+  makeRowReveal(['pr-r1', 'pr-r2', 'pr-r3', 'pr-r4'], 'prNext', 'prReset');
+} catch(err){ console.error('row reveal', err); }
+
+/* (the WHY salt/cola buttons and the TWO-JOBS buttons are gone:
+   both points now live on REAL MARKETS, one row at a time) */
+
+/* ══════════ 10 · QUIZ ══════════ */
+try {
+  (function(){
+    const G1Q = [
+      { s: 'A per-unit indirect tax of \u00A55 on a good will…', o: ['shift the supply curve up by \u00A55', 'shift the demand curve left', 'shift the supply curve down by \u00A55', 'move both curves'], a: 'shift the supply curve up by \u00A55' },
+      { s: 'Buyers pay \u00A542 and the tax is \u00A512 a unit. Sellers keep…', o: ['\u00A512', '\u00A530', '\u00A554', '\u00A542'], a: '\u00A530' },
+      { s: 'Government revenue from a per-unit tax = …', o: ['tax per unit \u00F7 quantity sold', 'tax per unit \u00D7 quantity sold', 'the price buyers pay \u00D7 quantity', 'the fall in quantity \u00D7 the tax'], a: 'tax per unit \u00D7 quantity sold' },
+      { s: 'Demand is inelastic. Who bears MOST of the tax?', o: ['consumers', 'producers', 'the government', 'nobody'], a: 'consumers' },
+      { s: 'Demand becomes MORE elastic. The same tax now raises…', o: ['more revenue', 'less revenue', 'the same revenue', 'no revenue at all'], a: 'less revenue' },
+      { s: 'Salt and iron were monopolised by the state for centuries because demand was…', o: ['elastic', 'very inelastic', 'unitary', 'perfectly elastic'], a: 'very inelastic' },
+      { s: 'A subsidy on appliances and cars raises quantity most when demand is…', o: ['inelastic', 'elastic', 'unitary', 'perfectly inelastic'], a: 'elastic' }
+    ];
+    let qi = 0, score = 0;
+    function render(){
+      $('g1q').textContent = qi + 1;
+      $('g1n').textContent = G1Q.length;
+      $('g1scenario').textContent = G1Q[qi].s;
+      $('g1fb').textContent = '';
+      $('g1next').style.display = 'none';
+      const box = $('g1btns');
+      box.innerHTML = '';
+      G1Q[qi].o.forEach(function(opt){
+        const b = document.createElement('button');
+        b.textContent = opt;
+        b.onclick = function(){
+          Array.prototype.slice.call(box.children).forEach(function(x){ x.disabled = true; });
+          const right = opt === G1Q[qi].a;
+          if(right) score++;
+          $('g1score').textContent = score;
+          Array.prototype.slice.call(box.children).forEach(function(x){
+            if(x.textContent === G1Q[qi].a) x.classList.add('correct');
+            else if(x === b) x.classList.add('wrong');
+          });
+          $('g1fb').textContent = right ? 'Correct!' : 'The right answer is: ' + G1Q[qi].a;
+          $('g1next').style.display = 'inline-block';
+          $('g1next').textContent = qi >= G1Q.length - 1 ? 'See result \u25B6' : 'Next \u25B6';
+        };
+        box.appendChild(b);
+      });
+    }
+    $('g1next').onclick = function(){
+      qi++;
+      if(qi >= G1Q.length){
+        $('g1btns').style.display = 'none';
+        $('g1scenario').style.display = 'none';
+        $('g1result').style.display = 'block';
+        $('g1final').textContent = score + ' / ' + G1Q.length;
+      } else render();
+    };
+    $('g1again').onclick = function(){
+      qi = 0; score = 0; $('g1score').textContent = '0';
+      $('g1result').style.display = 'none';
+      $('g1btns').style.display = 'flex';
+      $('g1scenario').style.display = 'block';
+      render();
+    };
+    render();
+  })();
+} catch(err){ console.error('game', err); }
+
+/* ══════════ 11 · FILL-IN PAGES (works on the ACTIVE slide's .sstep) ══════════ */
+try {
+  $('sbtn').onclick = function(){
+    const slide = document.querySelector('.slide.active');
+    if(!slide) return;
+    const steps = slide.querySelectorAll('.sstep');
+    let idx = +(slide.dataset.sIdx || 0);
+    const el = steps[idx];
+    if(!el){ refreshSumBtn(); return; }
+    el.classList.add('show');
+    el.querySelectorAll('.blank.empty').forEach(function(b){
+      b.textContent = b.getAttribute('data-a');
+      b.classList.remove('empty');
+      b.classList.add('filled');
+    });
+    idx++;
+    slide.dataset.sIdx = String(idx);
+    const next = steps[idx];
+    if(next) next.classList.add('show');
+    refreshSumBtn();
+  };
+} catch(err){ console.error('summary', err); }
+</script>
+
+</div>
+</body>
+</html>
