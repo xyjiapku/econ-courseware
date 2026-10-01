@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Micro 5.1 — Consumer and producer surplus</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;--amber:#F0B429;--teal:#00838F;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+/* The base size lives on .slide on purpose: any paragraph that forgets its own font-size then
+   inherits this 22-25px instead of body's 16px (the 3-1 deck fell into that hole twice). */
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(14px,2.2vh,40px) clamp(60px, min(7vw, 10.19vh), 110px) 74px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;font-size:clamp(22px, min(1.9vw, 2.31vh), 25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.7);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:clamp(24px, min(2.4vw, 2.78vh), 30px);font-weight:700;padding:4px 18px;border-radius:8px;cursor:pointer;transition:.12s;min-width:60px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:40%;}
+.dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.3);}
+/* cover */
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff;}
+.cover .course-tag{font-size:clamp(22px, min(2.5vw, 2.96vh), 32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px);}
+.cover h1{font-size:clamp(46px, min(6.4vw, 7.22vh), 78px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px);}
+.cover .sep{width:clamp(60px, min(8vw, 9.26vh), 100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px);}
+.cover .author{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:60px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
+/* reveal button */
+.rbtn-wrap{position:fixed;right:clamp(6px, min(1.2vw, 1.85vh), 20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(22px, min(1.6vw, 2.22vh), 24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn:hover{background:var(--blue);color:#fff;}
+.rbtn:disabled{opacity:.35;cursor:default;}
+.rbtn-icon{font-size:16px;color:var(--blue);}
+.sbtn-wrap{position:fixed;right:clamp(6px, min(1.2vw, 1.85vh), 20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(22px, min(1.6vw, 2.22vh), 24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn:hover{background:var(--blue);color:#fff;}
+.sbtn:disabled{opacity:.35;cursor:default;}
+/* content */
+.content{width:100%;max-width:clamp(600px, 85vw, 1520px);display:flex;flex-direction:column;flex:1;}
+h1{font-size:clamp(28px, min(3.5vw, 4.07vh), 44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+.sub{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);color:#5b6b7b;margin-bottom:4px;width:100%;line-height:1.4;}
+.course-tag{font-size:clamp(22px, min(1.8vw, 2.41vh), 26px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
+.txt{font-size:clamp(22px, min(2.2vw, 2.69vh), 29px);line-height:1.34;width:100%;}
+.txt p{margin-bottom:clamp(6px,.6vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}
+.db{color:var(--darkblue);}
+.dr{color:var(--red);}
+.green{color:var(--green);}
+.teal{color:var(--teal);}
+.gray{color:#5b6b7b;}
+/* reveal groups */
+.rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
+.rgrp.show{opacity:1;max-height:1400px;}
+/* note box */
+.note{border-radius:0 10px 10px 0;padding:6px 12px;font-size:clamp(22px, min(2.1vw, 2.59vh), 28px);line-height:1.3;}
+.note p{margin:0;}
+/* cards */
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:8px 14px;}
+.card.g{border-color:var(--green);}
+.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}
+.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(24px, min(2.5vw, 2.87vh), 31px);margin-bottom:6px;}
+.card p{font-size:clamp(22px, min(2.1vw, 2.59vh), 28px);line-height:1.3;color:#445;margin-top:4px;}
+/* compact variants: same >=22px floor, tighter leading so several blocks fit one screen */
+.compact .card{padding:8px 12px;}
+.compact .card h3{font-size:clamp(24px, min(2vw, 2.59vh), 28px);margin-bottom:2px;}
+.compact .card p{font-size:clamp(22px, min(1.8vw, 2.31vh), 25px);line-height:1.35;margin-top:2px;}
+.compact .note{font-size:clamp(22px, min(1.8vw, 2.31vh), 25px);line-height:1.28;padding:8px 12px;}
+.compact .note p{margin-bottom:4px;}
+.compact .sub{font-size:clamp(22px, min(1.9vw, 2.41vh), 26px);margin-bottom:4px;}
+.compact .big-btn{padding:6px 18px;font-size:22px;}
+.compact .note p{margin-bottom:2px;}
+.compact h1{font-size:clamp(28px, min(3.2vw, 3.7vh), 40px);}
+.compact2 .card{padding:12px 16px;}
+.compact2 .card p{font-size:clamp(22px, min(2vw, 2.5vh), 27px);line-height:1.38;}
+.compact2 .note{font-size:clamp(22px, min(2vw, 2.5vh), 27px);line-height:1.38;}
+.compact2 .note p{margin-bottom:4px;}
+.ssteps.compact{font-size:clamp(22px, min(1.9vw, 2.31vh), 25px);line-height:1.45;}
+/* buttons */
+.big-btn{padding:9px 22px;border:none;background:var(--blue);color:#fff;border-radius:12px;font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn.on{outline:5px solid #1b5e20;outline-offset:2px;}
+.factor-btn{padding:10px 18px;border-radius:12px;border:2.5px solid rgba(42,90,140,.35);background:#fff;color:#1a3a5c;font-size:clamp(22px, min(1.9vw, 2.41vh), 26px);font-weight:700;cursor:pointer;transition:.15s;}
+.factor-btn:hover{border-color:var(--blue);background:#eaf2fb;}
+/* data table */
+.data-table{border-collapse:collapse;width:100%;}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:5px 11px;font-size:clamp(22px, min(2.1vw, 2.5vh), 27px);text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+/* quick check · 随堂选择题 */
+.qc26row{display:flex;gap:8px;margin-top:6px;}
+.qc26opt{flex:1;text-align:left;font-size:clamp(22px, min(1.55vw, 2.22vh), 24px);line-height:1.25;padding:7px 10px;border:2px solid #b9c7d6;border-radius:10px;background:#fff;color:#33506e;font-weight:700;cursor:pointer;font-family:inherit;}
+.qc26opt:hover{border-color:var(--blue);}
+.qc26opt:disabled{cursor:default;}
+.qc26opt.pick-ok{background:#E8F5E9;border-color:#2E7D32;color:#1b5e20;}
+.qc26opt.pick-no{background:#FDECEA;border-color:#C62828;color:#b71c1c;}
+.qc26fb{display:none;margin-top:6px;font-size:clamp(22px, min(1.6vw, 2.22vh), 24px);line-height:1.35;}
+.data-table tr.hit td{background:#E8F5E9;font-weight:800;color:#1b5e20;}
+/* blanks */
+.blank{display:inline-block;min-width:clamp(60px, min(5vw, 9.26vh), 100px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
+.blank.empty{color:transparent;}
+.blank.filled{color:var(--blue);}
+/* game */
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(10px,1.1vh,16px) clamp(14px, min(1.8vw, 2.22vh), 24px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(22px, min(2.2vw, 2.69vh), 29px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px, min(1vw, 1.3vh), 14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(22px, min(1.9vw, 2.22vh), 24px);padding:clamp(6px,.7vh,10px) clamp(12px, min(1.4vw, 1.67vh), 18px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);font-weight:700;min-height:30px;margin-top:2px;}
+/* summary steps */
+.ssteps{font-size:clamp(22px, min(2.2vw, 2.69vh), 29px);line-height:1.6;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(10px,1.2vh,18px);}
+.sstep.show{opacity:1;}
+/* closing */
+.closing{justify-content:center;text-align:center;align-items:center;}
+.result-box{display:none;text-align:center;padding:20px;}
+.result-box h3{font-size:clamp(28px, min(3.5vw, 3.52vh), 38px);color:var(--darkblue);}
+.result-box .big{font-size:clamp(40px, min(5.5vw, 5.19vh), 56px);font-weight:800;color:var(--blue);margin:8px 0;}
+/* slider readout */
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:6px 10px;}
+/* formula fraction */
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 8px;}
+.frac .top{border-bottom:3px solid var(--darkblue);padding:0 12px 2px;}
+.frac .bot{padding:2px 12px 0;}
+</style>
+</head>
+<body>
+<div class="view" id="app">
+
+<!-- global reveal button -->
+<div class="rbtn-wrap" id="rbtnWrap">
+  <button class="rbtn" id="rbtn">Reveal more</button>
+  <span class="rbtn-icon">▶</span>
+</div>
+
+<!-- summary / fill-in reveal button -->
+<div class="sbtn-wrap" id="sbtnWrap">
+  <button class="sbtn" id="sbtn">Reveal answers</button>
+</div>
+
+<!-- ───── 1 · COVER ───── -->
+<div class="slide cover" data-i="0">
+  <div class="content" style="justify-content:center;text-align:center;">
+  <div class="course-tag" style="text-align:center;">AP MICROECONOMICS · UNIT 2.6</div>
+  <h1 style="font-size:clamp(38px,4.7vw,72px);line-height:1.1;text-align:center;margin-bottom:14px;">Consumer &amp; producer surplus</h1>
+  <div class="sep" style="margin:14px auto;"></div>
+  <div style="font-size:clamp(26px,3vw,40px);color:var(--blue);font-weight:800;margin-bottom:10px;">What the market gives buyers and sellers</div>
+  <div style="font-size:clamp(22px,2.4vw,30px);color:#7b8794;font-weight:700;margin-bottom:14px;">CED 2.6 · MKT-4.A.1–A.5</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">Tickets, milk tea — then one diagram and two triangles.</div>
+  <div class="author" style="margin-top:26px;">DR. JIA · © 2026</div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ───── 2 · BUYERS: WTP → PRICE → SUM ───── -->
+<div class="slide" data-i="1">
+  <div class="content">
+  <div class="course-tag">BUYERS · 买方</div>
+  <h1>Five buyers, five maximums</h1>
+  <div class="sub">① read the values → ② set a price and see who buys → ③ add up what they gain.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <table class="data-table" style="font-size:clamp(22px,1.75vw,25px);table-layout:fixed;">
+        <colgroup><col style="width:22%"><col style="width:30%"><col style="width:16%"><col style="width:32%"></colgroup>
+        <tr><th>Buyer</th><th>Max</th><th>Buy?</th><th>Gain</th></tr>
+        <tr id="byA"><td class="b">A</td><td>$120</td><td class="bpB"></td><td class="bpS"></td></tr>
+        <tr id="byB"><td class="b">B</td><td>$100</td><td class="bpB"></td><td class="bpS"></td></tr>
+        <tr id="byC"><td class="b">C</td><td>$80</td><td class="bpB"></td><td class="bpS"></td></tr>
+        <tr id="byD"><td class="b">D</td><td>$60</td><td class="bpB"></td><td class="bpS"></td></tr>
+        <tr id="byE"><td class="b">E</td><td>$40</td><td class="bpB"></td><td class="bpS"></td></tr>
+      </table>
+      <div style="display:flex;gap:8px;">
+        <button class="big-btn" id="bpS0" style="flex:1;font-weight:800;">① values</button>
+        <button class="big-btn" id="bpS1" style="flex:1;font-weight:800;">② set price</button>
+        <button class="big-btn" id="bpS2" style="flex:1;font-weight:800;">③ add up</button>
+      </div>
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Ticket price: <span id="bsPv">$50</span></p>
+        <input type="range" id="bsP" min="30" max="130" step="10" value="50" style="width:100%;accent-color:#1E88E5;">
+        <div class="ends"><span>$30</span><span>$130</span></div>
+      </div>
+      </div>
+    <div class="compact" style="flex:1.15;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="bsBar" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 3 · MANY BUYERS: DISCRETE → CONTINUOUS ───── -->
+<div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">MANY BUYERS · 推广</div>
+  <h1>More buyers → a smoother staircase → a triangle</h1>
+  <div class="sub"><b>5, 10, 20, 40, 80, 160</b> buyers — the steps get thinner and the outline becomes the curve.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1.05;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="card blue"><h3 class="blue">Every unit still follows the same rule</h3>
+        <p>Gain = <b>willing to pay − price</b>. More buyers → finer steps.</p></div>
+      <div class="card g"><h3 class="green">In the limit it is the triangle</h3>
+        <p>Above the <b>price line</b>, below <b>demand</b>.</p></div>
+      <button class="big-btn" id="mbBtn">more buyers ▶</button>
+      <div id="mbRead" class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);"><p>Start with 5 buyers, then press.</p></div>
+    </div>
+    <div class="compact" style="flex:1.15;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="mbA" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 4 · SELLERS: MC → PRICE → SUM ───── -->
+<div class="slide" data-i="3">
+  <div class="content">
+  <div class="course-tag">SELLERS · 卖方</div>
+  <h1>What does one more cup cost to make?</h1>
+  <div class="sub">That extra cost is the firm’s <b>marginal cost</b>. ① read the costs → ② set a price → ③ add up the gaps.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <table class="data-table" style="font-size:clamp(22px,1.75vw,25px);table-layout:fixed;">
+        <colgroup><col style="width:26%"><col style="width:24%"><col style="width:22%"><col style="width:28%"></colgroup>
+        <tr><th>Cup</th><th>Cost</th><th>Made?</th><th>Gain</th></tr>
+        <tr id="cu1"><td class="b">1st</td><td>$2</td><td class="spB"></td><td class="spS"></td></tr>
+        <tr id="cu2"><td class="b">2nd</td><td>$3</td><td class="spB"></td><td class="spS"></td></tr>
+        <tr id="cu3"><td class="b">3rd</td><td>$4</td><td class="spB"></td><td class="spS"></td></tr>
+        <tr id="cu4"><td class="b">4th</td><td>$5</td><td class="spB"></td><td class="spS"></td></tr>
+        <tr id="cu5"><td class="b">5th</td><td>$6</td><td class="spB"></td><td class="spS"></td></tr>
+      </table>
+      <div style="display:flex;gap:8px;">
+        <button class="big-btn" id="spS0" style="flex:1;">① costs</button>
+        <button class="big-btn" id="spS1" style="flex:1;">② set price</button>
+        <button class="big-btn" id="spS2" style="flex:1;">③ add up</button>
+      </div>
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Cup price: <span id="ssPv">$5</span></p>
+        <input type="range" id="ssP" min="1" max="8" step="1" value="5" style="width:100%;accent-color:#2E7D32;">
+        <div class="ends"><span>$1</span><span>$8</span></div>
+      </div>
+      </div>
+    <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);padding:6px 11px;">
+        <p><b>Why the ladder climbs:</b> the 1st cup uses idle capacity; extra cups need more ice and time. <b>MC = the cost of one more unit</b>, and the stand sells <b>only if price ≥ MC</b> — so this ladder <b>is</b> the supply decision.</p>
+      </div>
+      <div class="compact" style="flex:1.18;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="ssBar" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+      
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 6 · MANY SELLERS: DISCRETE → CONTINUOUS ───── -->
+<div class="slide" data-i="4">
+  <div class="content">
+  <div class="course-tag">MANY SELLERS · 推广</div>
+  <h1>More sellers → a smoother ladder → a triangle</h1>
+  <div class="sub">Same trick as the buyers: each click adds sellers — the cost steps get thinner and the axis slides out.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="card g"><h3 class="green">Gain = <b>price − MC</b></h3>
+        <p>Every seller whose cost is below the price keeps the gap.</p></div>
+      <button class="big-btn" id="ssMore">more sellers ▶</button>
+      <div id="ssMoreRead" class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);"><p>Start with 6 sellers, then press.</p></div>
+    </div>
+    <div class="compact" style="flex:1.2;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="ssMorph" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 7 · TWO SURPLUSES ───── -->
+<div class="slide" data-i="5">
+  <div class="content">
+  <div class="course-tag">TWO SURPLUSES · 一图</div>
+  <h1>One market, two triangles</h1>
+  <div class="sub">A normal market: demand and supply cross at <b>P = $30, Q = 5</b>. Build the picture in three steps.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;">
+      <div id="mkA" style="width:100%;height:100%;"></div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="rgrp show">
+        <div class="card" style="padding:8px 12px;"><p><b class="db">1 · The market</b> — D and S cross at <b>P = $30, Q = 5</b>. Only 5 units get made and sold.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:8px 12px;"><p><b class="db">2 · Consumer surplus</b> — above $30, below D: <b>½ × 5 × 25 = $62.5</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card a" style="padding:8px 12px;"><p><b class="db">3 · Producer surplus</b> — below $30, above S: <b>½ × 5 × 25 = $62.5</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card p" style="padding:8px 12px;"><p><b class="db">Total economic surplus</b> = CS + PS = <b>$125</b>. This is what the market hands to buyers and sellers together.</p></div>
+      </div>
+      <div id="mkRead" class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p>Press the reveal button in the middle of the screen, one step at a time.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 7 · UNDER-PRODUCTION: THE WEDGE THAT IS NEVER MADE (static) ───── -->
+<div class="slide" data-i="6">
+  <div class="content">
+  <div class="course-tag">UNDER-PRODUCTION · 不足</div>
+  <h1>Too little output — the wedge nobody gets</h1>
+  <div class="sub">Output stuck at <b>Q = 3</b> instead of 5: the units between 3 and 5 are worth <b>more</b> than they cost — and they are never made.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;font-size:clamp(22px,1.7vw,23px);">
+      <div class="rgrp show"><div class="card a" style="padding:7px 11px;">
+        <p><b>① Only 3 units are made.</b> Buyers pay <b>$40</b> for the third unit — it costs just <b>$20</b> to make.</p></div></div>
+      <div class="rgrp"><div class="card blue" style="padding:7px 11px;">
+        <p><b>② Both surpluses shrink:</b> CS = <b>$22.5</b>, PS = <b>$82.5</b> → total <b>$105</b>, not $125.</p></div></div>
+      <div class="rgrp"><div class="card r" style="padding:7px 11px;">
+        <p><b>③ The gap:</b> the wedge between <b>D</b> and <b>S</b> from 3 to 5 = <b>½ × 2 × 20 = $20</b> — value nobody receives.</p></div></div>
+    </div>
+    <div class="compact" style="flex:1.12;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;">
+        <svg viewBox="0 0 700 560" style="width:100%;height:100%;display:block;">
+          <line x1="120" y1="460" x2="640" y2="460" stroke="#94a3b8" stroke-width="2.5"/>
+          <line x1="120" y1="460" x2="120" y2="130" stroke="#94a3b8" stroke-width="2.5"/>
+          <line x1="120" y1="460" x2="112" y2="460" stroke="#94a3b8" stroke-width="2"/>
+          <text x="108" y="470" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">0</text>
+          <line x1="120" y1="405" x2="112" y2="405" stroke="#94a3b8" stroke-width="2"/>
+          <text x="108" y="415" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">10</text>
+          <line x1="120" y1="350" x2="112" y2="350" stroke="#94a3b8" stroke-width="2"/>
+          <text x="108" y="360" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">20</text>
+          <line x1="120" y1="295" x2="112" y2="295" stroke="#94a3b8" stroke-width="2"/>
+          <text x="108" y="305" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">30</text>
+          <line x1="120" y1="240" x2="112" y2="240" stroke="#94a3b8" stroke-width="2"/>
+          <text x="108" y="250" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">40</text>
+          <line x1="120" y1="185" x2="112" y2="185" stroke="#94a3b8" stroke-width="2"/>
+          <text x="108" y="195" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">50</text>
+          <line x1="120" y1="130" x2="112" y2="130" stroke="#94a3b8" stroke-width="2"/>
+          <text x="108" y="140" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">60</text>
+          <line x1="120" y1="460" x2="120" y2="468" stroke="#94a3b8" stroke-width="2"/>
+          <text x="120" y="494" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">0</text>
+          <line x1="224" y1="460" x2="224" y2="468" stroke="#94a3b8" stroke-width="2"/>
+          <text x="224" y="494" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">2</text>
+          <line x1="328" y1="460" x2="328" y2="468" stroke="#94a3b8" stroke-width="2"/>
+          <text x="328" y="494" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">4</text>
+          <line x1="432" y1="460" x2="432" y2="468" stroke="#94a3b8" stroke-width="2"/>
+          <text x="432" y="494" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">6</text>
+          <line x1="536" y1="460" x2="536" y2="468" stroke="#94a3b8" stroke-width="2"/>
+          <text x="536" y="494" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">8</text>
+          <line x1="640" y1="460" x2="640" y2="468" stroke="#94a3b8" stroke-width="2"/>
+          <text x="640" y="494" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">10</text>
+          <text x="90" y="104" font-size="30" font-weight="700" fill="#5b6b7b">P ($) ↑</text>
+          <text x="640" y="530" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">Q →</text>
+          <polygon points="120,157.5 276,240 120,240" fill="rgba(30,136,229,.25)" stroke="#1E88E5" stroke-width="2.5"/>
+          <polygon points="120,240 276,240 276,350 120,432.5" fill="rgba(46,125,50,.25)" stroke="#2E7D32" stroke-width="2.5"/>
+          <polygon points="276,240 380,295 276,350" fill="rgba(120,120,120,.35)" stroke="#7b8794" stroke-width="2.5"/>
+          <line x1="120" y1="157.5" x2="640" y2="432.5" stroke="#1E88E5" stroke-width="5"/>
+          <line x1="120" y1="432.5" x2="640" y2="157.5" stroke="#7C3AED" stroke-width="5"/>
+          <text x="146" y="157" font-size="30" font-weight="800" fill="#1E88E5">D</text>
+          <text x="602" y="155" font-size="30" font-weight="800" fill="#7C3AED">S</text>
+          <line x1="120" y1="240" x2="276" y2="240" stroke="#C62828" stroke-width="3.5" stroke-dasharray="9 6"/>
+          <text x="646" y="250" font-size="30" font-weight="800" fill="#C62828">$40</text>
+          <line x1="276" y1="240" x2="276" y2="460" stroke="#6C4BD3" stroke-width="3"/>
+          <text x="276" y="494" text-anchor="middle" font-size="30" font-weight="800" fill="#6C4BD3">3</text>
+          <line x1="380" y1="295" x2="380" y2="460" stroke="#6C4BD3" stroke-width="3" stroke-dasharray="7 6"/>
+          <text x="380" y="494" text-anchor="middle" font-size="30" font-weight="800" fill="#6C4BD3">5</text>
+          <circle cx="380" cy="295" r="8" fill="#6C4BD3" stroke="#fff" stroke-width="2.5"/>
+          <text x="140" y="215" font-size="30" font-weight="800" fill="#1E88E5">CS</text>
+          <text x="170" y="320" font-size="30" font-weight="800" fill="#2E7D32">PS</text>
+          <text x="292" y="392" font-size="30" font-weight="800" fill="#7b8794">DWL</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 8 · OVER-PRODUCTION: THE SAME LOSS, DISSECTED ───── -->
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">OVER-PRODUCTION · 过量</div>
+  <h1>Too much output — where does the loss hide?</h1>
+  <div class="sub">Force output up to <b>Q = 8</b> (best is Q = 5): consumer surplus grows, producer surplus turns <b>negative</b>, and the two cancel down to one triangle.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;font-size:clamp(22px,1.7vw,23px);">
+      <div class="rgrp show"><div class="card a" style="padding:7px 11px;">
+        <p><b>① Output forced to 8.</b> Buyers will only pay <b>D(8) = $15</b>, while the last unit costs <b>S(8) = $45</b>.</p></div></div>
+      <div class="rgrp"><div class="card blue" style="padding:7px 11px;">
+        <p><b>② Consumer surplus grows:</b> the area between D and the price line = <b>$160</b> — far bigger than the efficient $62.5.</p></div></div>
+      <div class="rgrp"><div class="card g" style="padding:7px 11px;">
+        <p><b>③ Producer surplus:</b> squeezed to <b>+$10</b> on the left, and every unit beyond q = 2 loses (MC &gt; price): <b>−$90</b>.</p></div></div>
+      <div class="rgrp"><div class="card r" style="padding:7px 11px;">
+        <p><b>④ Net:</b> 160 + 10 − 90 = <b>$80</b> against the efficient <b>$125</b> → the shortfall <b>$45</b> is exactly the triangle between D and S from 5 to 8.</p></div></div>
+    </div>
+    <div class="compact" style="flex:1.12;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="ovA" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 9 · EFFICIENT Q — the conclusion after both deviations ───── -->
+<div class="slide" data-i="8">
+  <div class="content">
+  <div class="course-tag">EFFICIENCY · 效率</div>
+  <h1>Why Q = 5 is the best the market can do</h1>
+  <div class="sub">Too little output lost the wedge below 5, too much lost it above — drag the quantity and watch total surplus fall in <b>either</b> direction.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;">
+      <div id="mkB" style="width:100%;height:100%;"></div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Quantity traded: <span id="qQv">5</span></p>
+        <input type="range" id="qQ" min="1" max="9" step="1" value="5" style="width:100%;accent-color:#6C4BD3;">
+        <div class="ends"><span>1</span><span>9</span></div>
+      </div>
+      <div class="card g" style="padding:8px 12px;">
+        <h3 class="green">Missing surplus</h3>
+        <p>Below Q = 5: units worth more than they cost are <b>not made</b>. Above Q = 5: units that cost more than they are worth <b>are made</b>. Either way the grey triangle is a loss nobody receives.</p>
+      </div>
+      <div class="note" style="background:#F4F1FF;border-left:6px solid #6C4BD3;">
+        <p><b>CED 2.6:</b> equilibrium <b>maximizes total economic surplus</b> — that is what <i>efficient</i> means here.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 9 · PRICE ONLY REDISTRIBUTES ───── -->
+<div class="slide" data-i="9">
+  <div class="content">
+  <div class="course-tag">REDISTRIBUTION · 再分配</div>
+  <h1>Price only moves surplus around</h1>
+  <div class="sub">Hold Q at the efficient 5 and drag the price: buyers hand sellers <b>ΔP × Q</b>, and the parts that spill outside the triangles <b>cancel</b>.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1.02;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="panel"><p class="b db" style="margin-bottom:2px;">Price (Q held at 5): <span id="rdPv">$30</span></p>
+        <input type="range" id="rdP" min="10" max="50" step="2" value="30" style="width:100%;accent-color:#1E88E5;">
+        <div class="ends"><span>$10</span><span>$50</span></div></div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Allocative efficiency:</b> the quantity where the <b>marginal benefit of the last unit = its marginal cost</b> (MB = MC). At Q = 5 that holds, so total surplus is the largest it can be — <b>no price alone can improve on it</b>.</p></div>
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b>The turn:</b> all of this assumes the quantity stays at 5 — which only a <b>rule</b> can force. Left alone, quantity follows price. So what happens when the government sets the price? →</p></div>
+    </div>
+    <div class="compact" style="flex:1.1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="rdA" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 9 · PRICE CEILING ───── -->
+<div class="slide" data-i="10">
+  <div class="content">
+  <div class="course-tag">PRICE CEILING · 上限</div>
+  <h1>A price ceiling — who gains, who loses?</h1>
+  <div class="sub">A legal <b>maximum</b>. Below $30 the ceiling binds, and the <b>short side rules</b>: sellers only bring what is worth bringing, so fewer units are traded.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;">
+      <div id="pcA" style="width:100%;height:100%;"></div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Ceiling price: <span id="pcPv">$20</span></p>
+        <input type="range" id="pcP" min="10" max="40" step="5" value="20" style="width:100%;accent-color:#C62828;">
+        <div class="ends"><span>$10</span><span>$40</span></div>
+      </div>
+      <table class="data-table" style="font-size:clamp(22px,1.85vw,26px);">
+        <tr><th>Welfare</th><th>At $30</th><th>With the control</th></tr>
+        <tr><td class="b">Consumer surplus</td><td>$62.5</td><td class="b" id="pcCs">$82.5</td></tr>
+        <tr><td class="b">Producer surplus</td><td>$62.5</td><td class="b" id="pcPs">$22.5</td></tr>
+        <tr><td class="b">Total surplus</td><td class="b">$125</td><td class="b" id="pcTs">$105</td></tr>
+        <tr><td class="b">Deadweight loss</td><td>$0</td><td class="b dr" id="pcDwl">$20</td></tr>
+      </table>
+      </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 10 · PRICE FLOOR ───── -->
+<div class="slide" data-i="11">
+  <div class="content">
+  <div class="course-tag">PRICE FLOOR · 下限</div>
+  <h1>A price floor — the mirror image</h1>
+  <div class="sub">A legal <b>minimum</b>. Above $30 the floor binds, and now the short side is <b>demand</b>: buyers are only willing to take a few units.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;">
+      <div id="pfA" style="width:100%;height:100%;"></div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Floor price: <span id="pfPv">$40</span></p>
+        <input type="range" id="pfP" min="20" max="50" step="5" value="40" style="width:100%;accent-color:#2E7D32;">
+        <div class="ends"><span>$20</span><span>$50</span></div>
+      </div>
+      <table class="data-table" style="font-size:clamp(22px,1.85vw,26px);">
+        <tr><th>Welfare</th><th>At $30</th><th>With the control</th></tr>
+        <tr><td class="b">Consumer surplus</td><td>$62.5</td><td class="b" id="pfCs">$82.5</td></tr>
+        <tr><td class="b">Producer surplus</td><td>$62.5</td><td class="b" id="pfPs">$22.5</td></tr>
+        <tr><td class="b">Total surplus</td><td class="b">$125</td><td class="b" id="pfTs">$105</td></tr>
+        <tr><td class="b">Deadweight loss</td><td>$0</td><td class="b dr" id="pfDwl">$20</td></tr>
+      </table>
+      </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 12 · SHIFTS ───── -->
+<div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">SHIFTS · 移动</div>
+  <h1>When D or S moves, who wins and who loses?</h1>
+  <div class="sub">Slide demand <b>or</b> supply — a new price, a new quantity, and both surpluses change. Dashed = before · solid = after.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;">
+      <div id="mkC" style="width:100%;height:100%;"></div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="panel">
+        <p class="b db" style="margin-bottom:2px;">Demand shift: <span id="dsKv">no shift</span></p>
+        <input type="range" id="dsK" min="-4" max="4" step="1" value="0" style="width:100%;accent-color:#1E88E5;">
+        <div class="ends"><span>left</span><span>right</span></div>
+        <p class="b db" style="margin:8px 0 2px;">Supply shift: <span id="ssKv">no shift</span></p>
+        <input type="range" id="ssK" min="-4" max="4" step="1" value="0" style="width:100%;accent-color:#7C3AED;">
+        <div class="ends"><span>left</span><span>right</span></div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:8px;font-size:clamp(22px,1.7vw,25px);">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+            <input type="checkbox" id="shCsChk" checked style="width:24px;height:24px;accent-color:#1E88E5;"><b style="color:#1E88E5;">show CS</b></label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+            <input type="checkbox" id="shPsChk" checked style="width:24px;height:24px;accent-color:#2E7D32;"><b style="color:#2E7D32;">show PS</b></label>
+          <span style="color:#5b6b7b;">— one at a time if you like</span>
+        </div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>CED 2.7:</b> shifts change price, quantity, CS, PS and total surplus — and <b>how much</b> depends on the elasticities from 2.3 and 2.4.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 13 · TWO EFFICIENCIES ───── -->
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">TWO EFFICIENCIES · 两种效率</div>
+  <h1>Allocative vs productive efficiency</h1>
+  <div class="sub">Two different questions: <b>what</b> to make is answered by the market; <b>how</b> to make is answered by the PPC.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="efM" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+      <div class="card blue" style="padding:8px 12px;">
+        <p><b class="db">Allocative · WHAT to make</b> — decided by the <b>market equilibrium</b> (D ∩ S): the last unit's MB = MC, total surplus is max.</p>
+      </div>
+    </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div id="efP" style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;max-height:360px;"></div>
+      <div class="card g" style="padding:8px 12px;">
+        <p><b class="db">Productive · HOW to make</b> — a point <b>on the PPC</b>: no wasted resources; more of one good now costs some of the other.</p>
+      </div>
+    </div>
+  </div>
+  <div class="note" style="background:#F4F1FF;border-left:6px solid #6C4BD3;margin-top:10px;">
+    <p><b>Different jobs:</b> the market <b>picks the point</b> (allocative); the PPC shows it <b>wastes nothing</b> (productive).</p>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 15 · QUICK CHECK · 随堂选择题 ───── -->
+<div class="slide" data-i="14">
+  <div class="content">
+  <div class="course-tag">QUICK CHECK · 随堂练习</div>
+  <h1>Quick check — three questions</h1>
+  <div class="sub">Same market all the way through: <b>D: P = 55 − 5Q</b>, <b>S: P = 5 + 5Q</b> (equilibrium <b>$30, Q = 5</b>). Click an answer, then read why.</div><hr>
+  <div class="compact" style="display:flex;flex-direction:column;gap:9px;width:100%;font-size:clamp(22px,1.75vw,25px);">
+    <div class="card" data-q="q1" style="padding:8px 12px;">
+      <p><b class="db">Q1 ·</b> A price ceiling is set at <b>$40</b>. What happens in this market?</p>
+      <div class="qc26row">
+        <button class="qc26opt" data-ok="0">A · Quantity falls to 3, DWL $20</button>
+        <button class="qc26opt" data-ok="1">B · Nothing changes \u2014 $40 is above $30, so the ceiling does not bind</button>
+        <button class="qc26opt" data-ok="0">C · Quantity rises to 6, total surplus grows</button>
+      </div>
+      <p class="qc26fb"></p>
+    </div>
+    <div class="card" data-q="q2" style="padding:8px 12px;">
+      <p><b class="db">Q2 ·</b> A price floor is set at <b>$45</b>. Quantity traded and deadweight loss?</p>
+      <div class="qc26row">
+        <button class="qc26opt" data-ok="1">A · Q = 2, DWL $45</button>
+        <button class="qc26opt" data-ok="0">B · Q = 8, DWL $45</button>
+        <button class="qc26opt" data-ok="0">C · Q = 2, DWL $20</button>
+      </div>
+      <p class="qc26fb"></p>
+    </div>
+    <div class="card" data-q="q3" style="padding:8px 12px;">
+      <p><b class="db">Q3 ·</b> Which statement describes <b>allocative</b> efficiency?</p>
+      <div class="qc26row">
+        <button class="qc26opt" data-ok="0">A · Output is produced at a point on the PPC</button>
+        <button class="qc26opt" data-ok="1">B · The quantity where the last unit's MB = MC</button>
+        <button class="qc26opt" data-ok="0">C · Every unit priced above average cost is made</button>
+      </div>
+      <p class="qc26fb"></p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 16 · SUMMARY ───── -->
+<div class="slide" data-i="15">
+  <div class="content">
+  <div class="course-tag">SUMMARY · 总结</div>
+  <h1>Eight lines to keep</h1>
+  <div class="sub">CED 2.6 (MKT-4.A.1–A.5). Fill each line, then say it out loud in one sentence.</div><hr>
+  <div class="ssteps" style="font-size:clamp(22px,1.95vw,26px);line-height:1.4;width:100%;">
+    <div class="sstep">
+      <p><b class="db">1 · Consumer surplus</b> — willing to pay − <span class="blank empty" data-a="price">______</span>, added over the units bought.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">2 · Producer surplus</b> — <span class="blank empty" data-a="price">______</span> − the cost of making <span class="blank empty" data-a="that unit">______</span>, added over the units sold.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">3 · On the diagram</b> — CS is the area above the price and below <span class="blank empty" data-a="demand">______</span>; PS is the area below the price and above <span class="blank empty" data-a="supply">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">4 · Total economic surplus</b> = <span class="blank empty" data-a="CS + PS">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">5 · Allocative efficiency</b> — at equilibrium the last unit's <span class="blank empty" data-a="MB">______</span> = its MC, so total surplus is <span class="blank empty" data-a="maximized">______</span>; any other quantity leaves a deadweight loss.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">6 · Productive efficiency</b> — a different question: output is produced <span class="blank empty" data-a="on the PPC">______</span>, so nothing is wasted.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">7 · Price controls</b> — ask first: <span class="blank empty" data-a="is it binding?">______</span> Only a binding control cuts the quantity traded → some surplus is <span class="blank empty" data-a="lost">______</span> (a <span class="blank empty" data-a="deadweight loss">______</span>).</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">8 · Shifts</b> — when D or S moves, price, quantity, CS, PS and total surplus all change; how much depends on the <span class="blank empty" data-a="elasticities">______</span>.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 17 · CLOSING ───── -->
+<div class="slide cover" data-i="16">
+  <div class="content" style="justify-content:center;text-align:center;">
+  <div class="course-tag">THANK YOU · 谢谢</div>
+  <h1 style="font-size:clamp(38px,5.2vw,58px);">Surplus — done ✓</h1>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">A gap for every buyer, a gap for every seller.</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">Add them up and the market's benefit becomes an area.</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn">◀</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="copy">© 2026 DR. JIA</span>
+    <span class="page" id="pageNum">1 / 17</span>
+    <button id="nextBtn">▶</button>
+  </div>
+</div>
+
+<script>
+var $ = function(id){ return document.getElementById(id); };
+
+/* ══════════ 2 · NAVIGATION ══════════ */
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+const globalR = {
+  show(){ $('rbtnWrap').style.display = 'flex'; },
+  hide(){ $('rbtnWrap').style.display = 'none'; },
+  setup(grps){
+    const btn = $('rbtn');
+    btn.textContent = 'Reveal more';
+    btn.disabled = false;
+    this.show();
+    btn.onclick = function(){
+      let curIdx = 0;
+      grps.forEach(function(g, i){ if(g.classList.contains('show')) curIdx = i; });
+      const next = curIdx + 1;
+      if(next < grps.length){
+        grps[next].classList.add('show');
+        if(next >= grps.length - 1) btn.textContent = 'All shown';
+        syncSlideEffects();
+      }
+    };
+  }
+};
+globalR.hide();
+
+function showSlide(i){
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  slides[i].classList.add('active');
+  cur = i;
+  $('prevBtn').disabled = (i === 0);
+  $('nextBtn').disabled = (i === total - 1);
+  $('pageNum').textContent = (i + 1) + ' / ' + total;
+  document.querySelectorAll('.dots span').forEach(function(s, j){ s.classList.toggle('on', j === i); });
+  const grps = slides[i].querySelectorAll('.rgrp');
+  if(grps.length) grps.forEach(function(g, idx){ g.classList.toggle('show', idx === 0); });
+  if(grps.length > 1) globalR.setup(grps); else globalR.hide();
+  const steps = slides[i].querySelectorAll('.sstep');
+  if(steps.length){
+    globalR.hide();
+    $('sbtnWrap').style.display = 'flex';
+    if(!slides[i].dataset.sIdx) slides[i].dataset.sIdx = '0';
+    if(!slides[i].querySelector('.sstep.show')) steps[0].classList.add('show');
+    refreshSumBtn();
+  } else {
+    $('sbtnWrap').style.display = 'none';
+  }
+  syncSlideEffects();
+}
+
+function refreshSumBtn(){
+  const slide = document.querySelector('.slide.active');
+  const btn = $('sbtn');
+  if(!slide || !btn) return;
+  const steps = slide.querySelectorAll('.sstep');
+  if(!steps.length) return;
+  const idx = +(slide.dataset.sIdx || 0);
+  if(idx >= steps.length){ btn.textContent = 'All done ✓'; btn.disabled = true; }
+  else { btn.textContent = 'Reveal answers'; btn.disabled = false; }
+}
+
+/* ══════════ 3 · PAGE EFFECTS ══════════ */
+function syncSlideEffects(){
+  try { const ov = document.querySelector('.slide.active #ovA') || document.querySelector('#ovA'); if(ov){ const sl = ov.closest('.slide'); ovDraw([].filter.call(sl.querySelectorAll('.rgrp'), function(x){ return x.classList.contains('show'); }).length); } } catch(err){ console.error('ov', err); }
+  const slide = document.querySelector('.slide.active');
+  if(!slide) return;
+  try { if(slide.querySelector('#mkA')) mkRender('mkA', 'two'); } catch(e){ console.error('mkA', e); }
+  try { if(slide.querySelector('#mkB')) mkRender('mkB', 'qty'); } catch(e){ console.error('mkB', e); }
+  try { if(slide.querySelector('#mkC')) mkRender('mkC', 'shift'); } catch(e){ console.error('mkC', e); }
+  try { if(slide.querySelector('#pcA')) ctrlRender('pcA', +$('pcP').value, 'ceil'); } catch(e){ console.error('pc', e); }
+  try { if(slide.querySelector('#pfA')) ctrlRender('pfA', +$('pfP').value, 'floor'); } catch(e){ console.error('pf', e); }
+}
+
+/* @@SYNCS@@ */
+/* the area page: the rectangle follows the slider; the slider stays locked until the text is out */
+/* ══════════ 2.6 买方：分步演示（① 估值 → ② 定价 → ③ 求和）══════════ */
+const BPX = { x0: 104, w: 84, gap: 21, y0: 400, y1: 60, pmax: 130 };
+const BPB = [['A', 120], ['B', 100], ['C', 80], ['D', 60], ['E', 40]];
+const bpY = p => BPX.y0 - (BPX.y0 - BPX.y1) * Math.min(p, BPX.pmax) / BPX.pmax;
+let bpStep = 1, bpPrice = 50;
+function bpDraw(){
+  const box = $('bsBar'); if(!box) return;
+  const shown = bpStep >= 2;
+  let g = '';
+  g += '<line x1="80" y1="' + BPX.y0 + '" x2="660" y2="' + BPX.y0 + '" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<line x1="80" y1="' + BPX.y0 + '" x2="80" y2="46" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<text x="86" y="38" font-size="32" font-weight="700" fill="#5b6b7b">Max willingness to pay ($) \u2191</text>';
+  g += '<text x="656" y="484" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Buyers \u2192</text>';
+  let sum = 0;
+  BPB.forEach(function(b, k){
+    const x = BPX.x0 + k * (BPX.w + BPX.gap);
+    const yTop = bpY(b[1]), h = BPX.y0 - yTop, sold = b[1] >= bpPrice;
+    g += '<rect x="' + x + '" y="' + yTop + '" width="' + BPX.w + '" height="' + h + '" rx="4" fill="#eef4fb"/>';
+    if(!shown){
+      g += '<rect x="' + x + '" y="' + yTop + '" width="' + BPX.w + '" height="' + h + '" rx="4" fill="none" stroke="#1E88E5" stroke-width="3"/>';
+      g += '<text x="' + (x + BPX.w / 2) + '" y="' + (yTop - 14) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#1E88E5">$' + b[1] + '</text>';
+    } else if(!sold){
+      g += '<rect x="' + x + '" y="' + yTop + '" width="' + BPX.w + '" height="' + h + '" rx="4" fill="#cbd5e1"/>';
+    } else {
+      const yp = bpY(bpPrice), ch = yp - yTop, gain = b[1] - bpPrice;
+      sum += gain;
+      g += '<rect x="' + x + '" y="' + yTop + '" width="' + BPX.w + '" height="' + Math.max(2, ch) + '" rx="4" fill="#2E7D32" opacity="0.62"/>';
+    }
+    g += '<text x="' + (x + BPX.w / 2) + '" y="' + (BPX.y0 + 36) + '" text-anchor="middle" font-size="30" font-weight="800" fill="' + (shown && !sold ? '#94a3b8' : '#C62828') + '">' + b[0] + '</text>';
+  });
+  if(shown){
+    const yp = bpY(bpPrice);
+    g += '<line x1="80" y1="' + yp + '" x2="660" y2="' + yp + '" stroke="#C62828" stroke-width="3.5" stroke-dasharray="9 6"/>';
+    g += '<text x="650" y="' + (yp - 12) + '" text-anchor="end" font-size="32" font-weight="800" fill="#C62828">price $' + bpPrice + '</text>';
+  }
+  box.innerHTML = '<svg viewBox="0 0 700 525" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+function bpTable(){
+  const showBuy = bpStep >= 2, showSur = bpStep >= 3;
+  ['A', 'B', 'C', 'D', 'E'].forEach(function(nm, k){
+    const row = $('by' + nm); if(!row) return;
+    const td = row.querySelectorAll('td'), wtp = BPB[k][1], sold = wtp >= bpPrice;
+    if(!showBuy){ td[2].textContent = ''; td[3].textContent = ''; return; }
+    td[2].textContent = sold ? '\u2713' : '\u2014';
+    td[2].style.color = sold ? '#1b5e20' : '#94a3b8';
+    td[3].textContent = showSur ? (sold ? '$' + (wtp - bpPrice) : '\u2014') : '';
+    td[3].style.color = (showSur && sold) ? '#1b5e20' : '#94a3b8';
+  });
+}
+function bpSet(step, price){
+  bpStep = step; bpPrice = price;
+  const pv = $('bsPv'); if(pv) pv.textContent = '$' + price;
+  const s = $('bsP'); if(s && +s.value !== price) s.value = price;
+  bpDraw(); bpTable();
+  const buyers = BPB.filter(b => b[1] >= price);
+  const total = buyers.reduce((a, b) => a + (b[1] - price), 0);
+  const rd = $('bsRead');
+  if(rd){
+    if(step === 1) rd.innerHTML = '<p><b>Start here:</b> each bar is one buyer\u2019s <b>maximum</b>. Now <b>set a price</b> (press \u2461 or drag the slider).</p>';
+    else if(step === 2) rd.innerHTML = '<p><b>At $' + price + ':</b> ' + buyers.length + ' buyers buy (' + buyers.map(b => b[0]).join(', ') + '). Each <b>green</b> part is one buyer\u2019s gain; the <b>grey</b> bar is a buyer who walks away.</p>';
+    else rd.innerHTML = '<p><b>Add the green parts:</b> CS = ' + buyers.map(b => (b[1] - price)).join(' + ') + ' = <b>$' + total + '</b>. Move the price and try again.</p>';
+  }
+  [0, 1, 2].forEach(function(k){
+    const b = $('bpS' + k); if(!b) return;
+    const on = (k + 1 === step);
+    b.style.background = on ? '#1E88E5' : '#eef2f7';
+    b.style.color = on ? '#ffffff' : '#33506e';
+    b.style.border = on ? '3px solid #0f5fae' : '2px solid #b9c7d6';
+    b.style.fontWeight = on ? '900' : '700';
+  });
+}
+try {
+  if($('bsBar')){
+    ['bpS0', 'bpS1', 'bpS2'].forEach(function(id, k){ if($(id)) $(id).onclick = function(){ bpSet(k + 1, bpPrice); }; });
+    if($('bsP')) $('bsP').oninput = function(){ bpSet(Math.max(2, bpStep), +this.value); };
+    bpSet(1, 50);
+  }
+} catch(e){ console.error('buyers demo', e); }
+
+/* ══════════ 2.6：离散→连续 渐变 / 过量损失拆解 / 价格只再分配 ══════════ */
+const P6 = { ox: 96, oy: 400, qk: 56, pk: 5.2, qmax: 10 };
+const p6x = q => P6.ox + P6.qk * q;
+const p6y = p => P6.oy - P6.pk * p;
+const p6D = q => 55 - 5 * q;          /* 需求：P = 55 − 5Q（与市场页一致）*/
+const p6S = q => 5 + 5 * q;           /* 供给：P = 5 + 5Q */
+/* ══════════ 统一 DS 模型（所有供需图都用它，元素位置固定不漂）══════════
+   画布 700×520：绘图区 x 120..640（Q: 0..10）、y 460..130（P: 0..60）
+   上留白 0..128 专供"P ($) ↑"轴名与 CS 标注；右留白 640..700 供"Q →"与价格标签 */
+const DS = {
+  x0: 120, x1: 640, y0: 460, y1: 130, qmax: 10, pmax: 60,
+  x: q => DS.x0 + (DS.x1 - DS.x0) * Math.max(0, Math.min(q, DS.qmax)) / DS.qmax,
+  y: p => DS.y0 - (DS.y0 - DS.y1) * Math.max(0, Math.min(p, DS.pmax)) / DS.pmax,
+  D: q => 55 - 5 * q,
+  S: q => 5 + 5 * q,
+  eq: () => ({ q: 5, p: 30 }),
+  frame(g){
+    g += '<line x1="' + DS.x0 + '" y1="' + DS.y0 + '" x2="' + DS.x1 + '" y2="' + DS.y0 + '" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<line x1="' + DS.x0 + '" y1="' + DS.y0 + '" x2="' + DS.x0 + '" y2="' + DS.y1 + '" stroke="#94a3b8" stroke-width="2.5"/>';
+    for(let p = 0; p <= DS.pmax; p += 10){
+      const yy = DS.y(p);
+      g += '<line x1="' + DS.x0 + '" y1="' + yy + '" x2="' + (DS.x0 - 8) + '" y2="' + yy + '" stroke="#94a3b8" stroke-width="2"/>';
+      g += '<text x="' + (DS.x0 - 12) + '" y="' + (yy + 10) + '" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">' + p + '</text>';
+    }
+    for(let q = 0; q <= DS.qmax; q += 2){
+      const xx = DS.x(q);
+      g += '<line x1="' + xx + '" y1="' + DS.y0 + '" x2="' + xx + '" y2="' + (DS.y0 + 8) + '" stroke="#94a3b8" stroke-width="2"/>';
+      g += '<text x="' + xx + '" y="' + (DS.y0 + 34) + '" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">' + q + '</text>';
+    }
+    g += '<text x="' + (DS.x0 - 30) + '" y="104" font-size="30" font-weight="700" fill="#5b6b7b">P ($) \u2191</text>';
+    g += '<text x="' + DS.x1 + '" y="' + (DS.y0 + 70) + '" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">Q \u2192</text>';
+    return g;
+  },
+  curves(g){
+    /* 端点严格取 q=0..10：画出的线 = 模型的线（旧版取 q=11 被 x() 截断 → 线斜率变 5.5，交点偏离均衡点） */
+    g += '<line id="dsD" x1="' + DS.x(0) + '" y1="' + DS.y(DS.D(0)) + '" x2="' + DS.x(10) + '" y2="' + DS.y(DS.D(10)) + '" stroke="#1E88E5" stroke-width="5"/>';
+    g += '<line id="dsS" x1="' + DS.x(0) + '" y1="' + DS.y(DS.S(0)) + '" x2="' + DS.x(10) + '" y2="' + DS.y(DS.S(10)) + '" stroke="#7C3AED" stroke-width="5"/>';
+    /* 字母放顶部安全带：全宽价线（rdP/pcP/pfP、ov 的 $15）会扫过下半区任意位置，
+       只有 y<185（P>50 价线以上）不被扫；D 在线起点上方、S 在线终点上方，均为教材常规位 */
+    g += '<text x="' + DS.x(0.5) + '" y="' + (DS.y(DS.D(0.5)) - 14) + '" font-size="30" font-weight="800" fill="#1E88E5">D</text>';
+    g += '<text x="' + (DS.x(9.35) - 4) + '" y="' + (DS.y(DS.S(9.35)) - 20) + '" font-size="30" font-weight="800" fill="#7C3AED">S</text>';
+    return g;
+  },
+  /* 区域：x∈[a,b]，上边界 fTop(q)（屏幕上更高）、下边界 fBot(q)。
+     沿边界采样 20 段：曲线被 DS.y 截到 0..60 之后已不再是直线，只用 4 个顶点会把
+     "被画布顶/底边切掉的那一段"画成斜线（shifts 页大幅移动后 CS/PS 涂错位置）——
+     采样后多边形的边与真实带的边界一致；对未被截断的直线则形状完全相同。 */
+  region(g, id, a, b, fTop, fBot, fill, stroke){
+    const N = 20, pts = [];
+    for(let i = 0; i <= N; i++){ const q = a + (b - a) * i / N; pts.push([DS.x(q), DS.y(fTop(q))]); }
+    for(let i = N; i >= 0; i--){ const q = a + (b - a) * i / N; pts.push([DS.x(q), DS.y(fBot(q))]); }
+    return g + '<polygon' + (id ? ' id="' + id + '"' : '') + ' points="' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ') + '"'
+      + ' fill="' + fill + '"' + (stroke ? ' stroke="' + stroke + '" stroke-width="2.5"' : '') + '/>';
+  },
+  /* 两条线之间的区域（自动判断上下，按交点切分，避免自交） */
+  band(g, id, a, b, f1, f2, fill, stroke){
+    return DS.region(g, id, a, b, q => Math.max(f1(q), f2(q)), q => Math.min(f1(q), f2(q)), fill, stroke);
+  },
+  priceLine(g, p, col, lab){
+    const yy = DS.y(p);
+    let s = '<line x1="' + DS.x0 + '" y1="' + yy + '" x2="' + DS.x1 + '" y2="' + yy + '" stroke="' + col + '" stroke-width="3.5" stroke-dasharray="9 6"/>';
+    if(lab) s += '<text x="' + (DS.x1 + 6) + '" y="' + (yy + 10) + '" font-size="30" font-weight="800" fill="' + col + '">' + lab + '</text>';
+    return g + s;
+  },
+  guide(g, q, p, col){
+    let s = '<line x1="' + DS.x(q) + '" y1="' + DS.y0 + '" x2="' + DS.x(q) + '" y2="' + DS.y(p) + '" stroke="' + col + '" stroke-width="2.5" stroke-dasharray="7 6"/>';
+    s += '<line x1="' + DS.x0 + '" y1="' + DS.y(p) + '" x2="' + DS.x(q) + '" y2="' + DS.y(p) + '" stroke="' + col + '" stroke-width="2.5" stroke-dasharray="7 6"/>';
+    s += '<circle cx="' + DS.x(q) + '" cy="' + DS.y(p) + '" r="8" fill="' + col + '" stroke="#fff" stroke-width="2.5"/>';
+    s += '<text x="' + (DS.x(q) + 14) + '" y="' + (DS.y0 - 12) + '" font-size="30" font-weight="800" fill="' + col + '">Q = ' + q + '</text>';
+    /* 价格标签放右空白带（左边会与刻度数字相叠） */
+    s += '<text x="' + (DS.x1 + 6) + '" y="' + (DS.y(p) + 10) + '" font-size="30" font-weight="800" fill="' + col + '">$' + p + '</text>';
+    return g + s;
+  }
+};
+
+function p6Axes(g, xlab, ylab){
+  g += '<line x1="' + P6.ox + '" y1="' + P6.oy + '" x2="650" y2="' + P6.oy + '" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<line x1="' + P6.ox + '" y1="' + P6.oy + '" x2="' + P6.ox + '" y2="46" stroke="#94a3b8" stroke-width="2.5"/>';
+  if(ylab) g += '<text x="' + (P6.ox + 6) + '" y="26" font-size="30" font-weight="700" fill="#5b6b7b">' + ylab + '</text>';
+  if(xlab) g += '<text x="646" y="' + (P6.oy + 64) + '" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">' + xlab + '</text>';
+  return g;
+}
+/* —— ① 离散 → 连续（买方）—— */
+const MB_N = [6, 12, 24, 48, 96, 192];
+let mbK = 0, mbNF = MB_N[0], mbTimer = null;
+const MB_PRICE = 40, MB_WTP0 = 120;
+const mbQx = (q, n) => P6.ox + (652 - P6.ox) * q / Math.max(1, n);
+const mbPy = p => P6.oy - (P6.oy - 62) * Math.min(p, MB_WTP0) / MB_WTP0;
+function mbNiceStep(n){
+  const cands = [1, 2, 5, 10, 20, 25, 50, 100, 200];
+  for(let i = 0; i < cands.length; i++){ if((652 - P6.ox) * cands[i] / Math.max(1, n) >= 96) return cands[i]; }
+  return 200;
+}
+function mbDrawF(nF){
+  const box = $('mbA'); if(!box) return;
+  const n = Math.max(1, Math.round(nF));
+  let g = '';
+  g += '<line x1="' + P6.ox + '" y1="' + P6.oy + '" x2="660" y2="' + P6.oy + '" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<line x1="' + P6.ox + '" y1="' + P6.oy + '" x2="' + P6.ox + '" y2="62" stroke="#94a3b8" stroke-width="2.5"/>';
+  const yp = mbPy(MB_PRICE);
+  g += '<line x1="' + P6.ox + '" y1="' + yp + '" x2="' + mbQx(n, n) + '" y2="' + yp + '" stroke="#C62828" stroke-width="3.5" stroke-dasharray="9 6"/>';
+  const unit = (652 - P6.ox) / n;
+  for(let k = 0; k < n; k++){
+    const wtp = MB_WTP0 * (1 - (k + 0.5) / n);
+    if(wtp < MB_PRICE) break;
+    const x = mbQx(k, n);
+    g += '<rect x="' + x.toFixed(1) + '" y="' + mbPy(wtp).toFixed(1) + '" width="' + Math.max(0.8, unit).toFixed(2) + '" height="' + (yp - mbPy(wtp)).toFixed(1) + '" fill="#2E7D32" opacity="0.6"/>';
+  }
+  g += '<line x1="' + mbQx(0, n) + '" y1="' + mbPy(MB_WTP0) + '" x2="' + mbQx(n, n) + '" y2="' + mbPy(0) + '" stroke="#1E88E5" stroke-width="5"/>';
+  const qi = 2 * n / 3;
+  g += '<line x1="' + mbQx(qi, n) + '" y1="' + yp + '" x2="' + mbQx(qi, n) + '" y2="' + P6.oy + '" stroke="#C62828" stroke-width="3" stroke-dasharray="8 6"/>';
+  g += '<circle cx="' + mbQx(qi, n) + '" cy="' + yp + '" r="9" fill="#C62828"/>';
+  const st = mbNiceStep(n);
+  for(let qv = 0; qv <= n + 0.001; qv += st){
+    const x = mbQx(qv, n);
+    g += '<line x1="' + x + '" y1="' + P6.oy + '" x2="' + x + '" y2="' + (P6.oy + 8) + '" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<text x="' + x + '" y="' + (P6.oy + 32) + '" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">' + Math.round(qv) + '</text>';
+  }
+  [0, 40, 80, 120].forEach(function(pv){
+    const y = mbPy(pv);
+    g += '<line x1="' + P6.ox + '" y1="' + y + '" x2="' + (P6.ox - 8) + '" y2="' + y + '" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<text x="' + (P6.ox - 12) + '" y="' + (y + 10) + '" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">' + pv + '</text>';
+  });
+  g += '<text x="' + (P6.ox + 18) + '" y="30" font-size="30" font-weight="700" fill="#5b6b7b">Price ($) \u2191</text>';
+  g += '<text x="656" y="' + (P6.oy + 64) + '" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Quantity \u2192</text>';
+  g += '<text x="' + (mbQx(n, n) - 4) + '" y="' + (yp - 12) + '" text-anchor="end" font-size="30" font-weight="800" fill="#C62828">P = $' + MB_PRICE + '</text>';
+  g += '<text x="' + (mbQx(qi, n) + 14) + '" y="' + (P6.oy - 16) + '" font-size="30" font-weight="800" fill="#C62828">Q = ' + (qi % 1 === 0 ? qi : qi.toFixed(1)) + '</text>';
+  g += '<text x="' + (mbQx(n, n) - 26) + '" y="' + (mbPy(0) - 52) + '" text-anchor="end" font-size="32" font-weight="800" fill="#1E88E5">D</text>';
+  g += '<text x="' + mbQx(qi * 0.28, n) + '" y="' + (mbPy(MB_PRICE + (MB_WTP0 - MB_PRICE) * 0.28) + 6) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">CS</text>';
+  box.setAttribute('data-n', n);
+  box.style.height = '100%';
+  box.innerHTML = '<svg viewBox="0 0 700 470" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+  return n;
+}
+function mbTween(to){
+  const from = mbNF;
+  if(mbTimer){ clearInterval(mbTimer); mbTimer = null; }
+  const t0 = Date.now(), dur = 700;
+  mbTimer = setInterval(function(){
+    const k = Math.min(1, (Date.now() - t0) / dur);
+    const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    mbNF = from + (to - from) * e;
+    mbDrawF(mbNF);
+    if(k >= 1){ clearInterval(mbTimer); mbTimer = null; mbNF = to; mbDrawF(to); }
+  }, 30);
+}
+function mbNext(){
+  mbK = (mbK + 1) % MB_N.length;
+  const n = MB_N[mbK];
+  mbTween(n);
+  const rd = $('mbRead');
+  if(rd){
+    rd.innerHTML = (n === 6)
+      ? '<p><b>6 buyers:</b> six units. Press again \u2014 more buyers means a bigger Q.</p>'
+      : (n >= 192
+        ? '<p><b>192 buyers:</b> the steps are the <b>curve</b>; CS is the area above the price line, below D.</p>'
+        : '<p><b>' + n + ' buyers:</b> the quantity axis has slid out to Q = ' + n + ' and the steps are thinning.</p>');
+  }
+}
+
+/* —— ② 过量生产的损失拆解 —— */
+function ovDraw(step){
+  const box = $('ovA'); if(!box) return;
+  const Qh = 8, Ph = DS.D(Qh);            /* 价格线 = D(8) = 15 */
+  const qc = (Ph - DS.S(0)) / 5;          /* S 与价格线交点 q = 2 */
+  let g = DS.frame('');
+  /* 区域：CS / PS 正 / 亏损 / DWL */
+  if(step >= 2) g = DS.band(g, 'ovCs', 0, Qh, q => DS.D(q), q => Ph, 'rgba(30,136,229,.22)', '#1E88E5');
+  if(step >= 3){
+    g = DS.band(g, 'ovPs', 0, qc, q => Ph, q => DS.S(q), 'rgba(46,125,50,.22)', '#2E7D32');
+    g = DS.band(g, 'ovLoss', qc, Qh, q => DS.S(q), q => Ph, 'rgba(198,40,40,.16)', '#C62828');
+  }
+  if(step >= 4) g = DS.band(g, 'ovDwl', 5, Qh, q => DS.S(q), q => DS.D(q), 'rgba(240,180,41,.45)', '#a57d12');
+  g = DS.curves(g);
+  if(step >= 1) g = DS.priceLine(g, Ph, '#C62828', '$' + Ph);
+  g = DS.guide(g, 5, 30, '#6C4BD3');
+  /* 数值全部在左侧卡片（颜色与填充一一对应），图内不再放浮字，避免压线 */
+  box.innerHTML = '<svg viewBox="0 0 700 560" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+function rdDraw(P){
+  const box = $('rdA'); if(!box) return;
+  const Q = 5, cs = (55 - P) * Q - 62.5, ps = (P - 5) * Q - 62.5;
+  const qc = (55 - P) / 5, qs = (P - 5) / 5;            /* 价格线与 D / S 的交点 */
+  let g = DS.frame('');
+  g += '<defs><pattern id="rdHatch" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">'
+     + '<line x1="0" y1="0" x2="0" y2="10" stroke="#94a3b8" stroke-width="4"/></pattern></defs>';
+  /* 转移条（30 → P，宽度 Q） */
+  if(Math.abs(P - 30) > 0.5){
+    g = DS.band(g, 'rdStrip', 0, Q, q => 30, q => P, 'none', '#C62828');
+  }
+  /* CS：正区（蓝）与负区（斜纹） */
+  g = DS.band(g, 'rdCs', 0, Math.max(0, Math.min(qc, Q)), q => DS.D(q), q => P, 'rgba(30,136,229,.22)', '#1E88E5');
+  if(qc < Q) g = DS.band(g, 'rdCsNeg', Math.max(0, qc), Q, q => P, q => DS.D(q), 'url(#rdHatch)', '#94a3b8');
+  /* PS：正区（绿）与负区（斜纹） */
+  g = DS.band(g, 'rdPs', 0, Math.max(0, Math.min(qs, Q)), q => P, q => DS.S(q), 'rgba(46,125,50,.22)', '#2E7D32');
+  if(qs < Q) g = DS.band(g, 'rdPsNeg', Math.max(0, qs), Q, q => DS.S(q), q => P, 'url(#rdHatch)', '#94a3b8');
+  g = DS.curves(g);
+  g = DS.priceLine(g, P, '#C62828', '$' + P);
+  g += '<line x1="' + DS.x(Q) + '" y1="' + DS.y0 + '" x2="' + DS.x(Q) + '" y2="' + DS.y(30) + '" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 6"/>';
+  g += '<circle cx="' + DS.x(5) + '" cy="' + DS.y(30) + '" r="8" fill="#6C4BD3" stroke="#fff" stroke-width="2.5"/>';
+  g += '<text x="' + (DS.x(5) + 12) + '" y="' + (DS.y0 - 12) + '" font-size="30" font-weight="800" fill="#6C4BD3">Q = 5 fixed</text>';
+  /* 越界部分只用斜纹表示，"cancelled"的说明放在左侧卡片，图内不放浮字 */
+  box.innerHTML = '<svg viewBox="0 0 700 560" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+  const rd = $('rdRead');
+  if(rd){
+    const d = P - 30, transfer = Math.abs(d) * Q;
+    rd.innerHTML = '<p><b>At $' + P + ':</b> CS = <b>$' + cs.toFixed(1) + '</b> \u00b7 PS = <b>$' + ps.toFixed(1) + '</b> \u2192 total = <b>$' + (cs + ps).toFixed(1) + '</b>'
+      + (d === 0 ? ' (the efficient split).' : ' \u2014 buyers hand over <b>\u0394P \u00d7 Q = $' + transfer + '</b>; every part that spills outside the two triangles is cancelled (hatched).')
+      + '</p>';
+  }
+}
+try {
+  if($('mbA')){ mbDrawF(mbNF); if($('mbBtn')) $('mbBtn').onclick = mbNext; }
+  if($('rdA')){
+    rdDraw(30);
+    if($('rdP')) $('rdP').oninput = function(){ if($('rdPv')) $('rdPv').textContent = '$' + this.value; rdDraw(+this.value); };
+  }
+} catch(e){ console.error('2.6 demo', e); }
+
+/* ══════════ 2.6 卖方：三步演示（① 成本 → ② 定价 → ③ 求和）══════════ */
+const S6C = [[1, 2], [2, 3], [3, 4], [4, 5], [5, 6]];      /* 第 k 杯的边际成本 */
+const S6X = { x0: 104, w: 84, gap: 21, y0: 400, y1: 60, pmax: 8 };
+const s6Y = p => S6X.y0 - (S6X.y0 - S6X.y1) * Math.min(p, S6X.pmax) / S6X.pmax;
+let s6Step = 1, s6Price = 5;
+function s6Draw(){
+  const box = $('ssBar'); if(!box) return;
+  const shown = s6Step >= 2;
+  let g = '';
+  g += '<line x1="80" y1="' + S6X.y0 + '" x2="660" y2="' + S6X.y0 + '" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<line x1="80" y1="' + S6X.y0 + '" x2="80" y2="46" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<text x="86" y="38" font-size="30" font-weight="700" fill="#5b6b7b">Cost of that unit ($) \u2191</text>';
+  g += '<text x="656" y="502" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Cups \u2192</text>';
+  /* 价格线（第 2 步起） */
+  if(shown){
+    const yp = s6Y(s6Price);
+    g += '<line x1="80" y1="' + yp + '" x2="660" y2="' + yp + '" stroke="#2E7D32" stroke-width="3.5" stroke-dasharray="9 6"/>';
+    g += '<text x="652" y="' + (yp - 12) + '" text-anchor="end" font-size="30" font-weight="800" fill="#2E7D32">price $' + s6Price + '</text>';
+  }
+  S6C.forEach(function(c, k){
+    const x = S6X.x0 + k * (S6X.w + S6X.gap), yTop = s6Y(c[1]), h = S6X.y0 - yTop, made = c[1] <= s6Price;
+    g += '<rect x="' + x + '" y="' + yTop + '" width="' + S6X.w + '" height="' + h + '" rx="4" fill="#eef4fb"/>';
+    if(!shown){
+      g += '<rect x="' + x + '" y="' + yTop + '" width="' + S6X.w + '" height="' + h + '" rx="4" fill="none" stroke="#2E7D32" stroke-width="3"/>';
+      g += '<text x="' + (x + S6X.w / 2) + '" y="' + (yTop - 14) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#2E7D32">$' + c[1] + '</text>';
+    } else if(!made){
+      g += '<rect x="' + x + '" y="' + yTop + '" width="' + S6X.w + '" height="' + h + '" rx="4" fill="#cbd5e1"/>';
+    } else {
+      const yp = s6Y(s6Price), ch = yTop - yp;      /* 成本在价格之下 → 这段是 PS */
+      if(ch > 1) g += '<rect x="' + x + '" y="' + (yTop - ch) + '" width="' + S6X.w + '" height="' + ch + '" rx="4" fill="#2E7D32" opacity="0.55"/>';
+    }
+    g += '<text x="' + (x + S6X.w / 2) + '" y="' + (S6X.y0 + 36) + '" text-anchor="middle" font-size="30" font-weight="800" fill="' + (shown && !made ? '#94a3b8' : '#2E7D32') + '">' + c[0] + '</text>';
+  });
+  box.innerHTML = '<svg viewBox="0 0 700 525" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+function s6Table(){
+  const showMade = s6Step >= 2, showGain = s6Step >= 3;
+  let run = 0;
+  S6C.forEach(function(c, k){
+    const row = $('cu' + c[0]); if(!row) return;
+    const td = row.querySelectorAll('td'), made = c[1] <= s6Price;
+    if(!showMade){ td[2].textContent = ''; td[3].textContent = ''; return; }
+    td[2].textContent = made ? '\u2713' : '\u2014';
+    td[2].style.color = made ? '#1b5e20' : '#94a3b8';
+    if(!showGain){ td[3].textContent = ''; return; }
+    if(made){ const gain = s6Price - c[1]; run += gain; td[3].textContent = '$' + gain; td[3].style.color = '#1b5e20'; }
+    else { td[3].textContent = '\u2014'; td[3].style.color = '#94a3b8'; }
+  });
+}
+function s6Set(step, price){
+  s6Step = step; s6Price = price;
+  const pv = $('ssPv'); if(pv) pv.textContent = '$' + price;
+  const sl = $('ssP'); if(sl && +sl.value !== price) sl.value = price;
+  s6Draw(); s6Table();
+  const made = S6C.filter(c => c[1] <= price);
+  const total = made.reduce((a, c) => a + (price - c[1]), 0);
+  const rd = $('ssRead');
+  if(rd){
+    if(step === 1) rd.innerHTML = '<p><b>Start here:</b> each bar is the <b>extra cost</b> of making one more cup \u2014 that is the firm\u2019s <b>MC</b>. Now set a price.</p>';
+    else if(step === 2) rd.innerHTML = '<p><b>At $' + price + ':</b> the stand makes ' + made.length + ' cup(s) \u2014 only those whose <b>MC \u2264 price</b>. Each <b>green</b> gap above the cost is the seller\u2019s gain.</p>';
+    else rd.innerHTML = '<p><b>Add the gaps:</b> PS = ' + made.map(c => (price - c[1])).join(' + ') + ' = <b>$' + total + '</b> at a price of $' + price + '.</p>';
+  }
+  [0, 1, 2].forEach(function(k){
+    const b = $('spS' + k); if(!b) return;
+    const on = (k + 1 === step);
+    b.style.background = on ? '#2E7D32' : '#eef2f7';
+    b.style.color = on ? '#ffffff' : '#33506e';
+    b.style.border = on ? '3px solid #1b5e20' : '2px solid #b9c7d6';
+  });
+}
+/* —— PS 渐变（与买方同款：Q 随卖家数增长 + 轴标签丝滑缩放）—— */
+const SS_N = [6, 12, 24, 48, 96, 192], SS_P = 6, SS_MC0 = 2, SS_MC1 = 8;
+let ssK = 0, ssNF = SS_N[0], ssTimer = null;
+const ssQx = (q, n) => P6.ox + (652 - P6.ox) * q / Math.max(1, n);
+const ssPy = p => P6.oy - (P6.oy - 62) * Math.min(p, SS_MC1) / SS_MC1;
+function ssStep(n){ const cands = [1, 2, 5, 10, 20, 25, 50, 100, 200];
+  for(let i = 0; i < cands.length; i++){ if((652 - P6.ox) * cands[i] / Math.max(1, n) >= 96) return cands[i]; } return 200; }
+function ssDrawF(nF){
+  const box = $('ssMorph'); if(!box) return;
+  const n = Math.max(1, Math.round(nF));
+  let g = '';
+  g += '<line x1="' + P6.ox + '" y1="' + P6.oy + '" x2="660" y2="' + P6.oy + '" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<line x1="' + P6.ox + '" y1="' + P6.oy + '" x2="' + P6.ox + '" y2="62" stroke="#94a3b8" stroke-width="2.5"/>';
+  const yp = ssPy(SS_P);
+  g += '<line x1="' + P6.ox + '" y1="' + yp + '" x2="' + ssQx(n, n) + '" y2="' + yp + '" stroke="#2E7D32" stroke-width="3.5" stroke-dasharray="9 6"/>';
+  const unit = (652 - P6.ox) / n;
+  for(let k = 0; k < n; k++){
+    const mc = SS_MC0 + (SS_MC1 - SS_MC0) * (k + 0.5) / n;
+    if(mc > SS_P) break;
+    g += '<rect x="' + ssQx(k, n).toFixed(1) + '" y="' + yp.toFixed(1) + '" width="' + Math.max(0.8, unit).toFixed(2) + '" height="' + Math.max(0.8, ssPy(mc) - yp).toFixed(1) + '" fill="#2E7D32" opacity="0.6"/>';
+  }
+  g += '<line x1="' + ssQx(0, n) + '" y1="' + ssPy(SS_MC0) + '" x2="' + ssQx(n, n) + '" y2="' + ssPy(SS_MC1) + '" stroke="#7C3AED" stroke-width="5"/>';
+  const qi = n * (SS_P - SS_MC0) / (SS_MC1 - SS_MC0);
+  g += '<line x1="' + ssQx(qi, n) + '" y1="' + yp + '" x2="' + ssQx(qi, n) + '" y2="' + P6.oy + '" stroke="#2E7D32" stroke-width="3" stroke-dasharray="8 6"/>';
+  g += '<circle cx="' + ssQx(qi, n) + '" cy="' + yp + '" r="9" fill="#2E7D32"/>';
+  const st = ssStep(n);
+  for(let qv = 0; qv <= n + 0.001; qv += st){
+    g += '<line x1="' + ssQx(qv, n) + '" y1="' + P6.oy + '" x2="' + ssQx(qv, n) + '" y2="' + (P6.oy + 8) + '" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<text x="' + ssQx(qv, n) + '" y="' + (P6.oy + 32) + '" text-anchor="middle" font-size="30" font-weight="700" fill="#5b6b7b">' + Math.round(qv) + '</text>';
+  }
+  [0, 2, 4, 6, 8].forEach(function(pv){
+    g += '<line x1="' + P6.ox + '" y1="' + ssPy(pv) + '" x2="' + (P6.ox - 8) + '" y2="' + ssPy(pv) + '" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<text x="' + (P6.ox - 12) + '" y="' + (ssPy(pv) + 10) + '" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">' + pv + '</text>';
+  });
+  g += '<text x="' + (P6.ox + 18) + '" y="30" font-size="30" font-weight="700" fill="#5b6b7b">Price ($) \u2191</text>';
+  g += '<text x="656" y="' + (P6.oy + 64) + '" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Quantity \u2192</text>';
+  g += '<text x="' + (ssQx(n, n) - 4) + '" y="' + (yp + 34) + '" text-anchor="end" font-size="30" font-weight="800" fill="#2E7D32">P = $' + SS_P + '</text>';
+  g += '<text x="' + (ssQx(qi, n) + 14) + '" y="' + (P6.oy - 16) + '" font-size="30" font-weight="800" fill="#2E7D32">Q = ' + (qi % 1 === 0 ? qi : qi.toFixed(1)) + '</text>';
+  g += '<text x="' + (ssQx(n, n) - 26) + '" y="' + (ssPy(SS_MC1) - 30) + '" text-anchor="end" font-size="32" font-weight="800" fill="#7C3AED">S</text>';
+  g += '<text x="' + ssQx(qi * 0.3, n) + '" y="' + (ssPy((ssQx(qi * 0.3, n) - P6.ox) / (652 - P6.ox) * n / (2 * n) * 0 + (SS_MC0 + (SS_P - SS_MC0) * 0.3 + SS_P) / 2) + 6) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">PS</text>';
+  box.setAttribute('data-n', n);
+  box.innerHTML = '<svg viewBox="0 0 700 470" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+function ssTween(to){
+  const from = ssNF;
+  if(ssTimer){ clearInterval(ssTimer); ssTimer = null; }
+  const t0 = Date.now(), dur = 700;
+  ssTimer = setInterval(function(){
+    const k = Math.min(1, (Date.now() - t0) / dur);
+    const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    ssNF = from + (to - from) * e;
+    ssDrawF(ssNF);
+    if(k >= 1){ clearInterval(ssTimer); ssTimer = null; ssNF = to; ssDrawF(to); }
+  }, 30);
+}
+try {
+  if($('ssBar')){
+    ['spS0', 'spS1', 'spS2'].forEach(function(id, k){ if($(id)) $(id).onclick = function(){ s6Set(k + 1, s6Price); }; });
+    if($('ssP')) $('ssP').oninput = function(){ s6Set(Math.max(2, s6Step), +this.value); };
+    s6Set(1, 5);
+  }
+  if($('ssMorph')){
+    ssDrawF(ssNF);
+    if($('ssMore')) $('ssMore').onclick = function(){
+      ssK = (ssK + 1) % SS_N.length;
+      const n = SS_N[ssK];
+      ssTween(n);
+      const rd = $('ssMoreRead');
+      if(rd) rd.innerHTML = (n === 6)
+        ? '<p><b>6 sellers:</b> six cost steps. Press again \u2014 more sellers means a bigger Q.</p>'
+        : (n >= 192
+          ? '<p><b>192 sellers:</b> the steps are the <b>supply curve</b>; PS is the area below the price line, above S.</p>'
+          : '<p><b>' + n + ' sellers:</b> the quantity axis has slid out to Q = ' + n + ' and the cost steps are thinning.</p>');
+    };
+  }
+} catch(e){ console.error('sellers demo', e); }
+
+/* ══════════ 4 · NAV BINDING + DOTS ══════════ */
+try {
+  $('prevBtn').onclick = function(){ if(cur > 0) showSlide(cur - 1); };
+  $('nextBtn').onclick = function(){ if(cur < total - 1) showSlide(cur + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){ e.preventDefault(); if(cur < total - 1) showSlide(cur + 1); }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); if(cur > 0) showSlide(cur - 1); }
+  });
+  const dotBox = $('dots');
+  for(let i = 0; i < total; i++){
+    const s = document.createElement('span');
+    s.onclick = (function(kk){ return function(){ showSlide(kk); }; })(i);
+    dotBox.appendChild(s);
+  }
+  showSlide(0);
+} catch(err){ console.error('nav init', err); }
+
+/* @@PAGES@@ */
+
+/* 填空页（作用于当前 active 页的 .sstep） */
+try {
+  $('sbtn').onclick = function(){
+    const slide = document.querySelector('.slide.active');
+    if(!slide) return;
+    const steps = slide.querySelectorAll('.sstep');
+    let idx = +(slide.dataset.sIdx || 0);
+    const el = steps[idx];
+    if(!el){ refreshSumBtn(); return; }
+    el.classList.add('show');
+    el.querySelectorAll('.blank.empty').forEach(function(b){
+      b.textContent = b.getAttribute('data-a');
+      b.classList.remove('empty');
+      b.classList.add('filled');
+    });
+    idx++;
+    slide.dataset.sIdx = String(idx);
+    const next = steps[idx];
+    if(next) next.classList.add('show');
+    refreshSumBtn();
+  };
+} catch(err){ console.error('summary', err); }
+
+/* ══════════ 40 · 2.6 DISCRETE BUYERS / SELLERS + MARKET DIAGRAMS ══════════ */
+/* 买方：愿付价阶梯；卖方：多做一件的成本阶梯；市场：D/S 与两个剩余三角 */
+const MC  = [2, 3, 4, 5, 6], CU = ['cu1','cu2','cu3','cu4','cu5'];
+const BK = { x0: 40, dx: 92, w: 72, y0: 380, k: 2.6 };
+const col = (x, bw, yTop, yBot, fill, stroke) =>
+  '<rect x="' + x + '" y="' + yTop.toFixed(1) + '" width="' + bw + '" height="' + Math.max(0, yBot - yTop).toFixed(1) + '" fill="' + fill + '" stroke="' + stroke + '" stroke-width="3"/>';
+const lbl = (x, y, s, size, fill, anchor) =>
+  '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + (anchor || 'middle') + '" font-size="' + size + '" font-weight="800" fill="' + fill + '">' + s + '</text>';
+function barFrame(){
+  let g = '';
+  g += '<line x1="' + BK.x0 + '" y1="' + BK.y0 + '" x2="530" y2="' + BK.y0 + '" stroke="#94a3b8" stroke-width="2"/>';
+  g += '<line x1="' + BK.x0 + '" y1="' + BK.y0 + '" x2="' + BK.x0 + '" y2="30" stroke="#94a3b8" stroke-width="2"/>';
+  g += '<text x="46" y="26" font-size="28" font-weight="700" fill="#5b6b7b">P ($) \u2191</text>';
+  return g;
+}
+
+
+
+/* —— 市场图（统一用 DS 模型：线、点、三角形全部由同一套几何推出，画出的线 = 模型的线） —— */
+function mkGuides(g, q, p, col, priceId, qtyId, dotId){
+  g += '<line x1="' + DS.x0 + '" y1="' + DS.y(p) + '" x2="' + DS.x(q) + '" y2="' + DS.y(p) + '" stroke="' + col + '" stroke-width="3" stroke-dasharray="9 6"/>';
+  g += '<line x1="' + DS.x(q) + '" y1="' + DS.y(p) + '" x2="' + DS.x(q) + '" y2="' + DS.y0 + '" stroke="' + col + '" stroke-width="3" stroke-dasharray="9 6"/>';
+  g += '<text' + (priceId ? ' id="' + priceId + '"' : '') + ' x="' + (DS.x1 + 6) + '" y="' + (DS.y(p) + 10) + '" font-size="30" font-weight="800" fill="' + col + '">$' + p + '</text>';
+  g += '<text' + (qtyId ? ' id="' + qtyId + '"' : '') + ' x="' + DS.x(q).toFixed(1) + '" y="' + (DS.y0 + 64) + '" text-anchor="middle" font-size="30" font-weight="800" fill="' + col + '">' + q + '</text>';
+  g += '<circle' + (dotId ? ' id="' + dotId + '"' : '') + ' cx="' + DS.x(q).toFixed(1) + '" cy="' + DS.y(p).toFixed(1) + '" r="9" fill="' + col + '" stroke="#fff" stroke-width="2.5"/>';
+  return g;
+}
+function mkRender(id, mode){
+  const box = $(id); if(!box) return;
+  /* 勾选框：是否显示 CS / PS（含移动前的描边）—— 对比变化前后时可以只留一个 */
+  const showCs = !$('shCsChk') || $('shCsChk').checked;
+  const showPs = !$('shPsChk') || $('shPsChk').checked;
+  /* 滑杆一格 = SH_AMP 美元的纵向平移（旧版一格只挪 $1，肉眼几乎看不出移动——老师反馈幅度太小）。
+     供给方向修正：kS > 0 = 供给增加 = 曲线右/下移，故 Sq = S − kS；
+     旧版写 S + kS 会把供给线抬高＝左移，与滑杆上的 "right" 标签正好相反。 */
+  const SH_AMP = 4;
+  window.__dShift = mode === 'shift' ? SH_AMP * +((($('dsK') || {}).value) || 0) : 0;
+  window.__sShift = mode === 'shift' ? SH_AMP * +((($('ssK') || {}).value) || 0) : 0;
+  const kD = window.__dShift, kS = window.__sShift;
+  const Dq = q => DS.D(q) + kD, Sq = q => DS.S(q) - kS;
+  const qs = (50 + kD + kS) / 10, ps = (60 + kD - kS) / 2;
+  const csV = 0.5 * qs * (Dq(0) - ps), psV = 0.5 * qs * (ps - Sq(0));
+  let g = DS.frame('');
+  if(mode === 'shift'){
+    /* 移动前的旧曲线（虚线幽灵，两条都常驻，方便和"移动前"的福利区对照） */
+    g += '<line x1="' + DS.x(0) + '" y1="' + DS.y(55) + '" x2="' + DS.x(10) + '" y2="' + DS.y(5) + '" stroke="#a9c9ee" stroke-width="4" stroke-dasharray="10 7"/>';
+    g += '<line x1="' + DS.x(0) + '" y1="' + DS.y(5) + '" x2="' + DS.x(10) + '" y2="' + DS.y(55) + '" stroke="#d7c6f4" stroke-width="4" stroke-dasharray="10 7"/>';
+    /* 移动前的 CS / PS：只描虚线边、不填充 —— 变化前后一眼可比（老师要求保留初始标记） */
+    const pt = (q, p) => DS.x(q).toFixed(1) + ',' + DS.y(p).toFixed(1);
+    if(showCs) g += '<polygon id="shCs0" points="' + [pt(0, 55), pt(5, 30), pt(0, 30)].join(' ') + '" fill="none" stroke="#1E88E5" stroke-width="2.5" stroke-dasharray="7 6" opacity="0.8"/>';
+    if(showPs) g += '<polygon id="shPs0" points="' + [pt(0, 30), pt(5, 30), pt(0, 5)].join(' ') + '" fill="none" stroke="#2E7D32" stroke-width="2.5" stroke-dasharray="7 6" opacity="0.8"/>';
+    g += '<line x1="' + DS.x0 + '" y1="' + DS.y(30) + '" x2="' + DS.x(5) + '" y2="' + DS.y(30) + '" stroke="#6C4BD3" stroke-width="2.5" stroke-dasharray="7 6"/>';
+    g += '<circle cx="' + DS.x(5) + '" cy="' + DS.y(30) + '" r="7" fill="#fff" stroke="#6C4BD3" stroke-width="3"/>';
+  }
+  if(mode === 'shift'){
+    /* 福利常驻图上：CS = 新 D 与价格线之间，PS = 价格线与新 S 之间（可被勾选框关掉） */
+    if(showCs) g = DS.region(g, 'shCsA', 0, qs, Dq, q => ps, 'rgba(30,136,229,.20)', '#1E88E5');
+    if(showPs) g = DS.region(g, 'shPsA', 0, qs, q => ps, Sq, 'rgba(46,125,50,.20)', '#2E7D32');
+  }
+  /* 新曲线：端点价格可能被截到 0..60，必须按"直线与画布边界的真实交点"取端点（clipSeg）。
+     旧写法直接连 (0,夹取后的价格) → (10,夹取后的价格)，画出来的是截断后的弦而不是模型直线，
+     于是两条线的视觉交点 ≠ 标记出的均衡点（老师：拖动后均衡点标记不准）。
+     夹取后按真实交点画 = 画出来的线就是模型的线，交点自然重合。 */
+  const clipSeg = f => {
+    const p0 = f(0), p1 = f(10);
+    let qa = 0, qb = 10;
+    if(p1 > p0){ if(p0 < 0) qa = (0 - p0) / (p1 - p0) * 10; if(p1 > 60) qb = (60 - p0) / (p1 - p0) * 10; }
+    else if(p1 < p0){ if(p0 > 60) qa = (60 - p0) / (p1 - p0) * 10; if(p1 < 0) qb = (0 - p0) / (p1 - p0) * 10; }
+    return [[qa, f(qa)], [qb, f(qb)]];
+  };
+  const sD = clipSeg(Dq), sS = clipSeg(Sq);
+  g += '<line id="mkD" x1="' + DS.x(sD[0][0]).toFixed(1) + '" y1="' + DS.y(sD[0][1]).toFixed(1) + '" x2="' + DS.x(sD[1][0]).toFixed(1) + '" y2="' + DS.y(sD[1][1]).toFixed(1) + '" stroke="#1E88E5" stroke-width="5"/>';
+  g += '<line id="mkS" x1="' + DS.x(sS[0][0]).toFixed(1) + '" y1="' + DS.y(sS[0][1]).toFixed(1) + '" x2="' + DS.x(sS[1][0]).toFixed(1) + '" y2="' + DS.y(sS[1][1]).toFixed(1) + '" stroke="#7C3AED" stroke-width="5"/>';
+  /* 字母用右边距标签：随曲线右端高度走，边距区（x>640）无任何线可扫；
+     幽灵虚线会在 kD=-4 / kS=+4 时穿过图内字母，故 shifts 页不用图内位。
+     y 夹在 160..430：幅度放大后曲线会跑出画布（价格被截到 0 或 60），字母跟着掉到 Q 轴刻度行（y=494）压住 "10"。 */
+  const clampY = v => Math.max(160, Math.min(430, v));
+  g += '<text x="' + (DS.x1 + 6) + '" y="' + clampY(DS.y(Dq(9.35)) + 10).toFixed(1) + '" font-size="30" font-weight="800" fill="#1E88E5">D</text>';
+  g += '<text x="' + (DS.x1 + 6) + '" y="' + clampY(DS.y(Sq(9.35)) + 10).toFixed(1) + '" font-size="30" font-weight="800" fill="#7C3AED">S</text>';
+  if(mode === 'shift'){
+    /* CS/PS 标签放在新福利带的中部，并主动避开旧 D、旧 S、旧的 $30 线（幽灵线会斜穿新带）。
+       ① 页面上的曲线是"端点连线"（端点价格被截到 0..60 后再连），定位必须用同一条弦 lineAt，
+          用模型的原函数算会和画出来的线差出 30px（shift-u4 实测标签压线）；
+       ② 文字有横向宽度（"CS"/"PS" ≈ 0.7 个 Q 单位），按 [qx, qx+0.7] 区间取最窄处；
+       ③ 试 4 个横向位置，都放不下就干脆不画这个字母 —— 宁缺一个标签，也不要压线。 */
+    /* 曲线已按真实交点画（clipSeg），画出来的线就是模型直线 → 定位直接用 DS.y(f(q))（自带夹取） */
+    const tryPlace = (qx, fTop, fBot) => {
+      const qe = Math.min(9.2, qx + 0.7);
+      const yT = Math.max(DS.y(fTop(qx)), DS.y(fTop(qe)));
+      const yB = Math.min(DS.y(fBot(qx)), DS.y(fBot(qe)));
+      let y = Math.max(yT + 30, Math.min(yB - 10, (yT + yB) / 2 + 10));
+      const ghosts = [[DS.y(DS.D(qx)), DS.y(DS.D(qe))], [DS.y(DS.S(qx)), DS.y(DS.S(qe))]];
+      if(qx <= 5.2) ghosts.push([DS.y(30), DS.y(30)]);   /* 移动前的 $30 价线只画到 Q = 5 */
+      ghosts.forEach(function(g){
+        const gL = Math.min(g[0], g[1]) - 8, gR = Math.max(g[0], g[1]) + 8;
+        if(gR < yT || gL > yB) return;                   /* 幽灵线整段不在带内 */
+        if(y + 7 < gL || y - 24 > gR) return;            /* 文字盒已避开 */
+        const canUp = gL - 35 >= yT, canDn = gR + 35 <= yB;
+        if(canUp && (!canDn || Math.abs(gL - 11 - y) <= Math.abs(gR + 28 - y))) y = gL - 11;
+        else if(canDn) y = gR + 28;
+        y = Math.max(yT + 30, Math.min(yB - 10, y));
+      });
+      let clean = (y - 24 >= yT) && (y + 7 <= yB);
+      ghosts.forEach(function(g){
+        const a = Math.min(g[0], g[1]), b = Math.max(g[0], g[1]);
+        if(!(y + 7 < a || y - 24 > b)) clean = false;
+      });
+      return { y: y, x: DS.x(qx), clean: clean };
+    };
+    const placeLbl = (fTop, fBot) => {
+      const cands = [0.25 * qs, 0.45 * qs, 0.65 * qs, 0.12 * qs].map(v => Math.max(0.5, Math.min(v, 8.6)));
+      for(let i = 0; i < cands.length; i++){
+        const r = tryPlace(cands[i], fTop, fBot);
+        if(r.clean) return r;
+      }
+      return null;
+    };
+    const lc = placeLbl(Dq, q => ps), lp = placeLbl(q => ps, Sq);
+    if(showCs && lc) g += '<text id="shCs" x="' + lc.x.toFixed(1) + '" y="' + lc.y.toFixed(1) + '" font-size="30" font-weight="800" fill="#1E88E5">CS</text>';
+    if(showPs && lp) g += '<text id="shPs" x="' + lp.x.toFixed(1) + '" y="' + lp.y.toFixed(1) + '" font-size="30" font-weight="800" fill="#2E7D32">PS</text>';
+  }
+  g = mkGuides(g, qs, ps, '#6C4BD3', mode === 'two' ? 'mkPt' : '', mode === 'two' ? 'mkQt' : '', mode === 'two' ? 'mkDot' : '');
+  if(mode === 'two'){
+    const n = box.closest('.slide').querySelectorAll('.rgrp.show').length;
+    if(n >= 2){
+      g = DS.region(g, 'mkCs', 0, 5, DS.D, q => 30, 'rgba(30,136,229,.25)', '#1E88E5');
+      g += '<text id="mkCst" x="' + DS.x(1.0) + '" y="' + ((DS.y(30) + DS.y(DS.D(1.35))) / 2 + 10).toFixed(1) + '" font-size="30" font-weight="800" fill="#1E88E5">CS</text>';
+    }
+    if(n >= 3){
+      g = DS.region(g, 'mkPs', 0, 5, q => 30, DS.S, 'rgba(46,125,50,.25)', '#2E7D32');
+      g += '<text id="mkPst" x="' + DS.x(1.0) + '" y="' + ((DS.y(30) + DS.y(DS.S(1.35))) / 2 + 10).toFixed(1) + '" font-size="30" font-weight="800" fill="#2E7D32">PS</text>';
+    }
+    const rd = $('mkRead');
+    if(rd) rd.innerHTML = n >= 4 ? 'At the equilibrium: CS $62.5 + PS $62.5 = <b>total surplus $125</b> \u2014 the most this market can hand out.'
+      : (n === 3 ? 'Now add producer surplus below the price line.' : (n === 2 ? 'Add consumer surplus above the price line.' : 'Start with the market itself.'));
+  }
+  if(mode === 'qty'){
+    const qq = +((($('qQ') || {}).value) || 5);
+    const pd = Dq(qq), pw = Sq(qq);
+    g += '<line x1="' + DS.x(qq) + '" y1="' + DS.y0 + '" x2="' + DS.x(qq) + '" y2="' + Math.min(DS.y(pd), DS.y(pw)).toFixed(1) + '" stroke="#6C4BD3" stroke-width="3"/>';
+    if(Math.abs(qq - 5) > 0.01){
+      const pts = qq < 5
+        ? [[DS.x(qq), DS.y(Dq(qq))], [DS.x(5), DS.y(30)], [DS.x(qq), DS.y(Sq(qq))]]
+        : [[DS.x(5), DS.y(30)], [DS.x(qq), DS.y(Sq(qq))], [DS.x(qq), DS.y(Dq(qq))]];
+      g += '<polygon id="mkDwl" points="' + pts.map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ')
+        + '" fill="rgba(120,120,120,.35)" stroke="#7b8794" stroke-width="2.5"/>';
+      g += '<text x="' + DS.x(qq).toFixed(1) + '" y="' + (DS.y0 + 64) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#6C4BD3">' + qq + '</text>';
+    }
+    const ts = 50 * qq - 5 * qq * qq;
+    if($('qQv')) $('qQv').textContent = String(qq);
+    const rd = $('qRead');
+    if(rd) rd.innerHTML = 'Q = <b>' + qq + '</b> \u00b7 total surplus = <b>$' + ts.toFixed(1) + '</b> of a possible <b>$125</b>'
+      + (Math.abs(qq - 5) < 0.01 ? ' \u2014 the maximum \u2713'
+         : ' \u2014 lost <b>$' + (125 - ts).toFixed(1) + '</b> in the grey triangle, gone for good');
+  }
+  if(mode === 'shift'){
+    const rawD = kD / SH_AMP, rawS = kS / SH_AMP;
+    const tag = k => k === 0 ? 'no shift' : (k > 0 ? '+' + k + ' right' : k + ' left');
+    const step2 = (a, b) => a.toFixed(1) + ' \u2192 <b>' + b.toFixed(1) + '</b>';
+    const rd = $('dsRead');
+    if(rd) rd.innerHTML = 'D ' + tag(rawD) + ' \u00b7 S ' + tag(rawS)
+      + ' \u00b7 P $' + step2(30, ps) + ' \u00b7 Q ' + step2(5, qs)
+      + '<br>CS $' + step2(62.5, csV) + ' \u00b7 PS $' + step2(62.5, psV)
+      + ' \u00b7 total $' + step2(125, csV + psV);
+    const kv = $('dsKv'); if(kv) kv.textContent = tag(rawD);
+    const sv = $('ssKv'); if(sv) sv.textContent = tag(rawS);
+  }
+  box.innerHTML = '<svg viewBox="0 0 700 560" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+
+/* old morph binding removed (page rebuilt) */
+try {
+  ['qQ','dsK','ssK'].forEach(function(id){
+    const sl = $(id); if(!sl) return;
+    sl.oninput = function(){
+      if(id === 'qQ') mkRender('mkB', 'qty');
+      else mkRender('mkC', 'shift');
+    };
+  });
+  /* CS / PS 显示开关（shifts 页）：勾掉一个，前后对照更清楚 */
+  ['shCsChk','shPsChk'].forEach(function(id){
+    const el = $(id); if(!el) return;
+    el.onchange = function(){ mkRender('mkC', 'shift'); };
+  });
+} catch(e){ console.error('2.6 sliders', e); }
+
+
+/* ── 40b · 价格上限 / 下限的福利（共用引擎：短边决定成交量） ── */
+function ctrlRender(id, Pc, side){
+  const box = $(id); if(!box) return;
+  const px = (id === 'pcA') ? 'pc' : 'pf';
+  const binds = side === 'ceil' ? (Pc < 30) : (Pc > 30);
+  let Q, note;
+  if(!binds){ Q = 5; note = side === 'ceil'
+      ? 'The ceiling at <b>$' + Pc + '</b> sits at or above the market price of $30 \u2014 it <b>does not bind</b>. The line is still drawn, but nothing moves.'
+      : 'The floor at <b>$' + Pc + '</b> sits at or below the market price of $30 \u2014 it <b>does not bind</b>. The line is still drawn, but nothing moves.'; }
+  else if(side === 'ceil'){ Q = (Pc - 5) / 5; note = 'Sellers will only supply <b>' + Q + (Q === 1 ? ' unit' : ' units') + '</b> at $' + Pc + ' \u2014 the short side rules.'; }
+  else { Q = (55 - Pc) / 5; note = 'Buyers will only take <b>' + Q + (Q === 1 ? ' unit' : ' units') + '</b> at $' + Pc + ' \u2014 the short side rules.'; }
+  /* 不绑定时市场仍在 $30 出清，价格取 30 */
+  const Pe = binds ? Pc : 30;
+  const cs = (55 - Pe) * Q - 2.5 * Q * Q;          /* ∫(D − Pe) */
+  const psV = (Pe - 5) * Q - 2.5 * Q * Q;           /* ∫(Pe − S) */
+  const ts = 50 * Q - 5 * Q * Q;
+  const dwl = Math.max(0, 125 - ts);
+  const mx5 = DS.x(5), xq = DS.x(Q), yc = DS.y(Pc), y30 = DS.y(30);
+  const colC = side === 'ceil' ? '#C62828' : '#2E7D32';
+  let g = DS.frame('');
+  /* 面积：CS（D 与价格线之间）、PS（价格线与 S 之间）、DWL（Q 与 5 之间的三角） */
+  if(binds){
+    g = DS.band(g, px + 'AreaCs', 0, Q, q => DS.D(q), q => Pc, 'rgba(30,136,229,.22)', '#1E88E5');
+    g = DS.band(g, px + 'AreaPs', 0, Q, q => Pc, q => DS.S(q), 'rgba(46,125,50,.22)', '#2E7D32');
+    g = DS.band(g, px + 'AreaDwl', Q, 5, q => DS.S(q), q => DS.D(q), 'rgba(120,120,120,.35)', '#7b8794');
+  }
+  g = DS.curves(g);
+  /* 控制价线：binding 与否一律画出来（不绑定时半透明），学生能直观看到它在均衡之上还是之下。
+     价线画到两曲线交点中较远者 + 0.35 即止：不满宽 —— 全宽线会扫过 $30 标注（floor-35 实测命中） */
+  const qFar = Math.max((55 - Pc) / 5, (Pc - 5) / 5);
+  const xEnd = DS.x(Math.min(qFar + 0.35, 9.5));
+  g += '<line id="' + px + 'Line" x1="' + DS.x0 + '" y1="' + yc + '" x2="' + xEnd.toFixed(1) + '" y2="' + yc + '" stroke="' + colC + '" stroke-width="3.5" stroke-dasharray="9 6"' + (binds ? '' : ' opacity="0.5"') + '/>';
+  g += '<text id="' + px + 'Tag" x="' + (DS.x1 + 6) + '" y="' + (yc + 10) + '" font-size="30" font-weight="800" fill="' + colC + '">$' + Pc + '</text>';
+  /* 均衡价线（紫）—— 不绑定时市场仍在这里出清 */
+  g += '<line x1="' + DS.x0 + '" y1="' + y30 + '" x2="' + mx5 + '" y2="' + y30 + '" stroke="#6C4BD3" stroke-width="2.5" stroke-dasharray="7 6"/>';
+  g += '<text id="' + px + 'Eq" x="' + (DS.x(7)) + '" y="' + (y30 - 14) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#6C4BD3">$30</text>';
+  /* 成交量竖线 + 读数 */
+  if(binds) g += '<line x1="' + xq + '" y1="' + yc + '" x2="' + xq + '" y2="' + DS.y0 + '" stroke="#C62828" stroke-width="2.5"/>';
+  /* 成交量读数放 Q 轴刻度行（xq+14 错开刻度数字；刻度短竖线止于 y0+8）：图内任意点都会被曲线或价线扫过 */
+  g += '<text id="' + px + 'Qt" x="' + (xq + 14).toFixed(1) + '" y="' + (DS.y0 + 34) + '" font-size="30" font-weight="800" fill="#C62828">' + (binds ? Q : 5) + '</text>';
+  if(binds && (mx5 - xq) > 46) g += '<text id="' + px + 'Q5" x="' + mx5 + '" y="' + (DS.y0 + 34) + '" text-anchor="middle" font-size="30" font-weight="800" fill="#6C4BD3">5</text>';
+  g += '<circle id="' + px + 'Dot" cx="' + mx5 + '" cy="' + DS.y(30) + '" r="8" fill="#6C4BD3" stroke="#fff" stroke-width="2.5"/>';
+  box.innerHTML = '<svg viewBox="0 0 700 560" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+  $(px + 'Cs').textContent = '$' + cs.toFixed(1);
+  $(px + 'Ps').textContent = '$' + psV.toFixed(1);
+  $(px + 'Ts').textContent = '$' + ts.toFixed(1);
+  $(px + 'Dwl').textContent = '$' + dwl.toFixed(1);
+  $(px + 'Dwl').className = dwl > 0.05 ? 'b dr' : 'b';
+  ($(px + 'Read') || {}).innerHTML =   /* 报告框已删，防止空指针 */ note + ' Consumer surplus <b>$' + cs.toFixed(1) + '</b> \u00b7 producer surplus <b>$' + psV.toFixed(1)
+    + '</b> \u00b7 total <b>$' + ts.toFixed(1) + '</b> \u00b7 deadweight loss <b>$' + dwl.toFixed(1) + '</b>.';
+  $(px + 'Pv').textContent = '$' + Pc;
+}
+try {
+  ['pcP','pfP'].forEach(function(id){
+    const sl = $(id); if(!sl) return;
+    sl.oninput = function(){
+      if(id === 'pcP') ctrlRender('pcA', +sl.value, 'ceil');
+      else ctrlRender('pfA', +sl.value, 'floor');
+    };
+  });
+  if($('pcP')) ctrlRender('pcA', +$('pcP').value, 'ceil');
+  if($('pfP')) ctrlRender('pfA', +$('pfP').value, 'floor');
+} catch(e){ console.error('controls', e); }
+
+/* ══════════ 41 · 两种效率对比（市场均衡 = 配置效率 · PPC 线上 = 生产效率）══════════ */
+function efDraw(){
+  const m = $('efM'), p = $('efP');
+  if(m){
+    let g = '';
+    g += '<line x1="90" y1="430" x2="590" y2="430" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<line x1="90" y1="430" x2="90" y2="60" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<polygon points="90,250 315,250 90,100" fill="rgba(30,136,229,.22)" stroke="#1E88E5" stroke-width="2.5"/>';
+    g += '<polygon points="90,250 315,250 90,400" fill="rgba(46,125,50,.22)" stroke="#2E7D32" stroke-width="2.5"/>';
+    g += '<line x1="90" y1="100" x2="540" y2="400" stroke="#1E88E5" stroke-width="5"/>';
+    g += '<line x1="90" y1="400" x2="540" y2="100" stroke="#7C3AED" stroke-width="5"/>';
+    g += '<line x1="90" y1="250" x2="315" y2="250" stroke="#6C4BD3" stroke-width="3" stroke-dasharray="9 6"/>';
+    g += '<line x1="315" y1="250" x2="315" y2="430" stroke="#6C4BD3" stroke-width="3" stroke-dasharray="9 6"/>';
+    g += '<circle cx="315" cy="250" r="9" fill="#6C4BD3" stroke="#fff" stroke-width="2.5"/>';
+    g += '<text x="82" y="257" text-anchor="end" font-size="30" font-weight="800" fill="#6C4BD3">$30</text>';
+    g += '<text x="315" y="458" text-anchor="middle" font-size="30" font-weight="800" fill="#6C4BD3">5</text>';
+    g += '<text x="175" y="212" text-anchor="middle" font-size="30" font-weight="800" fill="#1E88E5">CS</text>';
+    g += '<text x="175" y="300" text-anchor="middle" font-size="30" font-weight="800" fill="#2E7D32">PS</text>';
+    g += '<text x="430" y="248" text-anchor="middle" font-size="30" font-weight="800" fill="#6C4BD3">MB = MC</text>';
+    g += '<text x="96" y="38" font-size="30" font-weight="700" fill="#5b6b7b">P ($) \u2191</text>';
+    g += '<text x="560" y="468" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q \u2192</text>';
+    m.innerHTML = '<svg viewBox="0 0 640 500" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+  }
+  if(p){
+    let g = '';
+    g += '<line x1="90" y1="430" x2="570" y2="430" stroke="#94a3b8" stroke-width="2.5"/>';
+    g += '<line x1="90" y1="430" x2="90" y2="60" stroke="#94a3b8" stroke-width="2.5"/>';
+    /* PPC 必须两端都落在坐标轴上：θ=0 → 纵轴 (90,110)，θ=π/2 → 横轴 (540,430)，
+       弧线向外弓（远离原点）—— 旧版终点 (550,410) 悬在半空，没有和横轴相交，画法是错的。 */
+    let d = '';
+    for(let i = 0; i <= 24; i++){
+      const th = Math.PI / 2 * i / 24, x = 90 + 450 * Math.sin(th), y = 430 - 320 * Math.cos(th);
+      d += (i ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+    }
+    g += '<path d="' + d + '" fill="none" stroke="#7C3AED" stroke-width="5"/>';
+    g += '<text x="120" y="90" font-size="30" font-weight="800" fill="#7C3AED">PPC</text>';
+    g += '<circle cx="240" cy="330" r="9" fill="#C62828" stroke="#fff" stroke-width="2.5"/>';
+    g += '<circle cx="325" cy="157" r="9" fill="#2E7D32" stroke="#fff" stroke-width="2.5"/>';
+    g += '<text x="252" y="340" font-size="30" font-weight="800" fill="#C62828">U</text>';
+    g += '<text x="345" y="132" font-size="30" font-weight="800" fill="#2E7D32">E</text>';
+    g += '<text x="150" y="405" font-size="28" font-weight="800" fill="#C62828">inside = waste</text>';
+    g += '<text x="370" y="105" font-size="28" font-weight="800" fill="#2E7D32">on the PPC \u2713</text>';
+    g += '<text x="100" y="40" font-size="30" font-weight="700" fill="#5b6b7b">Good Y \u2191</text>';
+    g += '<text x="560" y="468" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Good X \u2192</text>';
+    p.innerHTML = '<svg viewBox="0 0 640 500" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+  }
+}
+try { efDraw(); } catch(e){ console.error('ef', e); }
+
+/* ══════════ 42 · QUICK CHECK（随堂选择题）：点选项 → 判对错 + 讲理由 ══════════ */
+const QC26 = {
+  q1: { ok: '\u2713 <b>B.</b> A ceiling binds only <b>below</b> the equilibrium price. $40 &gt; $30 \u2192 <b>not binding</b> \u2192 Q = 5, total surplus $125, DWL $0.',
+        no: '\u2717 Compare the ceiling with the equilibrium price <b>first</b>: at or above $30 it does not bind, so nothing changes.' },
+  q2: { ok: '\u2713 <b>A.</b> With a floor the short side is <b>demand</b>: Q = (55 \u2212 45) \u00f7 5 = <b>2</b>. Total surplus = 50\u00d72 \u2212 5\u00d72\u00b2 = $80 against $125 \u2192 <b>DWL $45</b>.',
+        no: '\u2717 With a floor the short side is <b>demand</b>: Q = (55 \u2212 P) \u00f7 5, then compare total surplus with $125.' },
+  q3: { ok: '\u2713 <b>B.</b> <b>Allocative</b> = the right <b>quantity</b>: D \u2229 S, where MB = MC and total surplus is maximized. <b>Productive</b> = no waste, a point on the PPC.',
+        no: '\u2717 Producing on the PPC is <b>productive</b> efficiency. Allocative efficiency is about the <b>quantity</b>: MB = MC.' }
+};
+try {
+  document.querySelectorAll('.qc26opt').forEach(function(btn){
+    btn.onclick = function(){
+      const card = btn.closest('.card');
+      if(!card || card.dataset.done) return;
+      card.dataset.done = '1';
+      const ok = btn.getAttribute('data-ok') === '1';
+      card.querySelectorAll('.qc26opt').forEach(function(b){ b.disabled = true; });
+      card.querySelectorAll('.qc26opt[data-ok="1"]').forEach(function(b){ b.classList.add('pick-ok'); });
+      if(!ok) btn.classList.add('pick-no');
+      const fb = card.querySelector('.qc26fb');
+      const qk = card.getAttribute('data-q');
+      if(fb && QC26[qk]){ fb.innerHTML = ok ? QC26[qk].ok : QC26[qk].no; fb.style.display = 'block'; }
+    };
+  });
+} catch(e){ console.error('qc26', e); }
+
+</script>
+
+</div>
+</body>
+</html>

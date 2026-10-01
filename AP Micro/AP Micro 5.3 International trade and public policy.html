@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Micro 5.3 — International trade and public policy</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;--amber:#F0B429;--teal:#00838F;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+/* The base size lives on .slide on purpose: any paragraph that forgets its own font-size then
+   inherits this 22-25px instead of body's 16px (the 3-1 deck fell into that hole twice). */
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(14px,2.2vh,40px) clamp(60px, min(7vw, 10.19vh), 110px) 74px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;font-size:clamp(22px, min(1.9vw, 2.31vh), 25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.7);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:clamp(24px, min(2.4vw, 2.78vh), 30px);font-weight:700;padding:4px 18px;border-radius:8px;cursor:pointer;transition:.12s;min-width:60px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:40%;}
+.dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.3);}
+/* cover */
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff;}
+.cover .course-tag{font-size:clamp(22px, min(2.5vw, 2.96vh), 32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px);}
+.cover h1{font-size:clamp(46px, min(6.4vw, 7.22vh), 78px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px);}
+.cover .sep{width:clamp(60px, min(8vw, 9.26vh), 100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px);}
+.cover .author{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:60px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
+/* reveal button */
+.rbtn-wrap{position:fixed;right:clamp(6px, min(1.2vw, 1.85vh), 20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(22px, min(1.6vw, 2.22vh), 24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn:hover{background:var(--blue);color:#fff;}
+.rbtn:disabled{opacity:.35;cursor:default;}
+.rbtn-icon{font-size:16px;color:var(--blue);}
+.sbtn-wrap{position:fixed;right:clamp(6px, min(1.2vw, 1.85vh), 20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(22px, min(1.6vw, 2.22vh), 24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn:hover{background:var(--blue);color:#fff;}
+.sbtn:disabled{opacity:.35;cursor:default;}
+/* content */
+.content{width:100%;max-width:clamp(600px, 85vw, 1520px);display:flex;flex-direction:column;flex:1;}
+h1{font-size:clamp(28px, min(3.5vw, 4.07vh), 44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+.sub{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.course-tag{font-size:clamp(22px, min(1.8vw, 2.41vh), 26px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(22px, min(2.2vw, 2.69vh), 29px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.6vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}
+.db{color:var(--darkblue);}
+.dr{color:var(--red);}
+.green{color:var(--green);}
+.teal{color:var(--teal);}
+.gray{color:#5b6b7b;}
+/* reveal groups */
+.rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
+.rgrp.show{opacity:1;max-height:1400px;}
+/* note box */
+.note{border-radius:0 10px 10px 0;padding:8px 14px;font-size:clamp(22px, min(2.1vw, 2.59vh), 28px);line-height:1.45;}
+.note p{margin:0;}
+/* cards */
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:11px 16px;}
+.card.g{border-color:var(--green);}
+.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}
+.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(24px, min(2.5vw, 2.87vh), 31px);margin-bottom:6px;}
+.card p{font-size:clamp(22px, min(2.1vw, 2.59vh), 28px);line-height:1.4;color:#445;margin-top:4px;}
+/* compact variants: same >=22px floor, tighter leading so several blocks fit one screen */
+.compact .card{padding:10px 14px;}
+.compact .card h3{font-size:clamp(24px, min(2vw, 2.59vh), 28px);margin-bottom:2px;}
+.compact .card p{font-size:clamp(22px, min(1.8vw, 2.31vh), 25px);line-height:1.35;margin-top:2px;}
+.compact .note{font-size:clamp(22px, min(1.8vw, 2.31vh), 25px);line-height:1.35;padding:10px 14px;}
+.compact .note p{margin-bottom:4px;}
+.compact .sub{font-size:clamp(22px, min(1.9vw, 2.41vh), 26px);margin-bottom:4px;}
+.compact .big-btn{padding:6px 18px;font-size:22px;}
+.compact .note p{margin-bottom:2px;}
+.compact h1{font-size:clamp(28px, min(3.2vw, 3.7vh), 40px);}
+.compact2 .card{padding:12px 16px;}
+.compact2 .card p{font-size:clamp(22px, min(2vw, 2.5vh), 27px);line-height:1.38;}
+.compact2 .note{font-size:clamp(22px, min(2vw, 2.5vh), 27px);line-height:1.38;}
+.compact2 .note p{margin-bottom:4px;}
+.ssteps.compact{font-size:clamp(22px, min(1.9vw, 2.31vh), 25px);line-height:1.45;}
+/* buttons */
+.big-btn{padding:9px 22px;border:none;background:var(--blue);color:#fff;border-radius:12px;font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn.on{outline:5px solid #1b5e20;outline-offset:2px;}
+.factor-btn{padding:10px 18px;border-radius:12px;border:2.5px solid rgba(42,90,140,.35);background:#fff;color:#1a3a5c;font-size:clamp(22px, min(1.9vw, 2.41vh), 26px);font-weight:700;cursor:pointer;transition:.15s;}
+.factor-btn:hover{border-color:var(--blue);background:#eaf2fb;}
+/* data table */
+.data-table{border-collapse:collapse;width:100%;}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:5px 11px;font-size:clamp(22px, min(2.1vw, 2.5vh), 27px);text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table tr.hit td{background:#E8F5E9;font-weight:800;color:#1b5e20;}
+/* blanks */
+.blank{display:inline-block;min-width:clamp(60px, min(5vw, 9.26vh), 100px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
+.blank.empty{color:transparent;}
+.blank.filled{color:var(--blue);}
+/* game */
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(10px,1.1vh,16px) clamp(14px, min(1.8vw, 2.22vh), 24px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(22px, min(2.2vw, 2.69vh), 29px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px, min(1vw, 1.3vh), 14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(22px, min(1.9vw, 2.22vh), 24px);padding:clamp(6px,.7vh,10px) clamp(12px, min(1.4vw, 1.67vh), 18px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);font-weight:700;min-height:30px;margin-top:2px;}
+/* summary steps */
+.ssteps{font-size:clamp(22px, min(2.2vw, 2.69vh), 29px);line-height:1.6;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(10px,1.2vh,18px);}
+.sstep.show{opacity:1;}
+/* closing */
+.closing{justify-content:center;text-align:center;align-items:center;}
+.result-box{display:none;text-align:center;padding:20px;}
+.result-box h3{font-size:clamp(28px, min(3.5vw, 3.52vh), 38px);color:var(--darkblue);}
+.result-box .big{font-size:clamp(40px, min(5.5vw, 5.19vh), 56px);font-weight:800;color:var(--blue);margin:8px 0;}
+/* slider readout */
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.bbar{display:flex;height:44px;border-radius:10px;overflow:hidden;border:2px solid #e6eef7;margin-top:6px;background:#fff;}
+.bseg{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(22px, min(1.6vw, 2.22vh), 24px);color:#fff;min-width:0;overflow:hidden;white-space:nowrap;transition:width .4s;}
+.bseg.cs{background:#1E88E5;}
+.bseg.ps{background:#2E7D32;}
+.bseg.gov{background:#6C4BD3;}
+.bseg.base{background:#cfdcea;color:#1a3a5c;}
+.bseg.gain{background:var(--green);}
+.bseg.loss{background:#8b98a8;}
+.bar-cap{margin:2px 0 0;font-size:clamp(22px, min(1.6vw, 2.22vh), 24px);line-height:1.3;font-weight:700;color:#1a3a5c;}
+.bar-cap span.dr{color:var(--red);}
+/* policy lab：四个色块开关（点一下隐藏对应区域，仿小程序图例） */
+.labchip{border:2px solid var(--blue);background:rgba(30,136,229,.16);color:#1a3a5c;border-radius:8px;
+  font-family:inherit;font-size:clamp(22px, min(1.3vw, 2.13vh), 23px);font-weight:800;padding:3px 10px;cursor:pointer;}
+.labchip[data-a="ps"]{border-color:var(--green);background:rgba(46,125,50,.16);}
+.labchip[data-a="rev"]{border-color:#6C4BD3;background:rgba(108,75,211,.16);}
+.labchip[data-a="dwl"]{border-color:#7b8794;background:rgba(120,120,120,.18);}
+.labchip.off{opacity:.3;text-decoration:line-through;}
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(10px,1.1vh,16px) clamp(14px, min(1.8vw, 2.22vh), 24px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(22px, min(2.2vw, 2.69vh), 29px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px, min(1vw, 1.3vh), 14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(22px, min(1.9vw, 2.22vh), 24px);padding:clamp(6px,.7vh,10px) clamp(12px, min(1.4vw, 1.67vh), 18px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);font-weight:700;min-height:30px;margin-top:2px;}
+/* formula fraction */
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 8px;}
+.frac .top{border-bottom:3px solid var(--darkblue);padding:0 12px 2px;}
+.frac .bot{padding:2px 12px 0;}
+.ssteps sub{font-size:1em;}
+.led th,.led td{font-size:clamp(22px, min(1.55vw, 2.13vh), 23px);padding:2px 8px;}
+  #fourBeats > p { border-bottom:1px solid rgba(240,180,41,.35); }
+  #fourBeats > p:nth-last-child(-n+2) { border-bottom:none; }
+</style>
+</head>
+<body>
+<div class="view" id="app">
+
+<!-- global reveal button -->
+<div class="rbtn-wrap" id="rbtnWrap">
+  <button class="rbtn" id="rbtn">Reveal more</button>
+  <span class="rbtn-icon">▶</span>
+</div>
+
+<!-- summary / fill-in reveal button -->
+<div class="sbtn-wrap" id="sbtnWrap">
+  <button class="sbtn" id="sbtn">Reveal answers</button>
+</div>
+
+<!-- ───── 1 · COVER ───── -->
+<div class="slide cover" data-i="0">
+  <div class="content" style="justify-content:center;text-align:center;">
+  <div class="course-tag" style="text-align:center;">AP MICROECONOMICS · UNIT 2.9</div>
+  <h1 style="font-size:clamp(36px,4.4vw,68px);line-height:1.1;text-align:center;margin-bottom:14px;">International trade &amp; public policy</h1>
+  <div class="sep" style="margin:14px auto;"></div>
+  <div style="font-size:clamp(24px,2.8vw,38px);color:var(--blue);font-weight:800;margin-bottom:10px;">Free trade · tariffs · quotas</div>
+  <div style="font-size:clamp(22px,2.4vw,30px);color:#7b8794;font-weight:700;margin-bottom:14px;">CED 2.9 · POL-1.B.1–B.3</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">Opening a market changes who gains — and protection changes it back.</div>
+  <div class="author" style="margin-top:26px;">DR. JIA · © 2026</div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ───── DEFINITIONS ───── -->
+<div class="slide" data-i="1">
+  <div class="content">
+  <div class="course-tag">DEFINITIONS · 定义</div>
+  <h1>Four words you must keep apart</h1>
+  <div class="sub">Two describe the <b>state of the border</b>; two name the <b>tools</b> that change it.</div><hr>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:0;">
+    <div class="card g" style="padding:9px 14px;">
+      <h3 class="green">Free trade</h3>
+      <p>Nothing at the border. The home price settles at the <b>world price</b>; the gap is filled by <b>imports</b> — or sold abroad as <b>exports</b>.</p>
+    </div>
+    <div class="card" style="padding:9px 14px;">
+      <h3 class="blue">Protection</h3>
+      <p>Any policy that <b>holds the home price away from the world price</b> — up, in the import case.</p>
+    </div>
+    <div class="card r" style="padding:9px 14px;">
+      <h3 class="dr">Tariff</h3>
+      <p>A <b>tax per unit</b> on imports. The rectangle <b>tariff × imports</b> goes to the <b>government</b>.</p>
+    </div>
+    <div class="card p" style="padding:9px 14px;">
+      <h3 style="color:var(--purple);">Quota</h3>
+      <p>A <b>legal cap on the quantity</b> allowed across. The same rectangle goes to whoever holds the <b>licence</b>, as rent.</p>
+    </div>
+  </div>
+  <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:8px;flex:0 0 auto;">
+    <p><b>What separates them:</b> a tariff raises <b>revenue for the state</b>; a quota creates <b>rent for a licence holder</b>. The price and quantity effects can be identical.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 3 · IMPORTS ───── -->
+<div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">IMPORTS · 进口</div>
+  <h1>World price below $30 — five steps</h1>
+  <div class="sub">One market, five steps: <b>home price → world price → CS → PS → the net gain.</b></div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;">
+      <div class="rgrp show">
+        <div class="card" style="padding:8px 12px;"><p><b class="db">1 · Start closed.</b> D meets S at <b>5 units, $30</b> — CS <b>$62.5</b> + PS <b>$62.5</b> = total <b>$125</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card" style="padding:8px 12px;"><p><b class="db">2 · The world price.</b> Pw = <b>$20</b>, below our $30 → buyers want <b>7</b>, sellers offer <b>3</b>, imports <b>4</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card blue" style="padding:8px 12px;"><p><b class="db">3 · Consumer surplus.</b> 62.5 → <b>122.5</b> — the outlined block is <b>+$60</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card a" style="padding:8px 12px;"><p><b class="db">4 · Producer surplus.</b> 62.5 → <b>22.5</b> — the hatched block is <b>−$40</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:8px 12px;"><p><b class="db">5 · The net gain.</b> +60 − 40 = <b>+$20</b>, the trade triangle. Total 125 → <b>145</b>.</p></div>
+      </div>
+      </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;">
+      <div id="imA" style="width:100%;height:100%;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 4 · EXPORTS ───── -->
+<div class="slide" data-i="3">
+  <div class="content">
+  <div class="course-tag">EXPORTS · 出口</div>
+  <h1>World price above $30 — the same five steps</h1>
+  <div class="sub">Now Pw sits <b>above</b> $30. Same market, same steps — the winners simply swap places.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;">
+      <div class="rgrp show">
+        <div class="card" style="padding:8px 12px;"><p><b class="db">1 · Start closed.</b> D meets S at <b>5 units, $30</b> — CS <b>$62.5</b> + PS <b>$62.5</b> = total <b>$125</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card" style="padding:8px 12px;"><p><b class="db">2 · The world price.</b> Pw = <b>$40</b>, above our $30 → sellers offer <b>7</b>, buyers want <b>3</b>, exports <b>4</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card a" style="padding:8px 12px;"><p><b class="db">3 · Consumer surplus.</b> 62.5 → <b>22.5</b> — the hatched block is <b>−$40</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:8px 12px;"><p><b class="db">4 · Producer surplus.</b> 62.5 → <b>122.5</b> — the outlined block is <b>+$60</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:8px 12px;"><p><b class="db">5 · The net gain.</b> −40 + 60 = <b>+$20</b>, the same triangle. Total 125 → <b>145</b>.</p></div>
+      </div>
+      </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;">
+      <div id="exA" style="width:100%;height:100%;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 5 · POLICY LAB（关税 / 配额合一） ───── -->
+<div class="slide" data-i="4">
+  <div class="content">
+  <div class="course-tag">POLICY LAB · 关税/配额</div>
+  <h1>One lab — tariff or quota</h1>
+  <div class="sub">Pick a policy and its size. <b>Pw below $30 → imports; above $30 → exports.</b></div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;">
+      <div class="panel" style="padding:7px 12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <span class="b db" id="labName">Tariff</span>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+            <input type="checkbox" id="labMode" style="width:22px;height:22px;accent-color:#6C4BD3;">
+            <span class="b" style="font-size:clamp(22px,1.4vw,23px);">Quota</span>
+          </label>
+        </div>
+        <p class="b db" style="margin:3px 0 2px;"><span id="labMagLab">Tariff per unit</span>: <span id="labMagv">$5</span></p>
+        <input type="range" id="labMag" min="0" max="20" step="1" value="5" style="width:100%;accent-color:#C62828;">
+        <div class="ends"><span id="labEnd1">$0</span><span id="labEnd2">$20</span></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="labchip" id="labCs" data-a="cs">CS</button>
+        <button class="labchip" id="labPs" data-a="ps">PS</button>
+        <button class="labchip" id="labGov" data-a="rev">Revenue</button>
+        <button class="labchip" id="labDwl" data-a="dwl">DWL</button>
+      </div>
+      <div style="margin-top:2px;">
+        <div class="bbar">
+          <div class="bseg cs" id="labBcs" style="width:60%;">CS</div>
+          <div class="bseg ps" id="labBps" style="width:40%;">PS</div>
+          <div class="bseg gov" id="labBgov" style="width:0%;display:none;"></div>
+        </div>
+        <p class="bar-cap" id="labBCap">Who holds the surplus</p>
+        <div class="bbar" style="height:34px;">
+          <div class="bseg base" id="labC1" style="width:100%;">free trade</div>
+          <div class="bseg gain" id="labC2" style="width:0%;display:none;"></div>
+        </div>
+        <p class="bar-cap" id="labCmpCap">Total surplus</p>
+      </div>
+      
+    </div>
+    <div style="flex:1.2;min-width:0;min-height:0;overflow:hidden;display:flex;gap:6px;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:34px;min-height:0;overflow:hidden;">
+        <input type="range" id="labPw" min="5" max="55" step="1" value="20"
+               style="-webkit-appearance:slider-vertical;writing-mode:vertical-lr;direction:rtl;flex:1 1 0;min-height:0;max-height:100%;width:30px;accent-color:#1b5e20;">
+        <span style="font-size:clamp(22px,1.2vw,23px);font-weight:800;color:#1b5e20;">Pw</span>
+      </div>
+      <div id="labA" style="flex:1;min-width:0;min-height:0;overflow:hidden;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 6 · ECONOMIC RENT ───── -->
+<div class="slide" data-i="5">
+  <div class="content">
+  <div class="course-tag">ECONOMIC RENT · 经济租</div>
+  <h1>Economic rent — paid above the alternative</h1>
+  <div class="sub">The quota handed its licence holders <b>$10 for producing nothing</b>. Where does a payment like that come from — and what is it called?</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:7px;min-width:0;">
+      <div class="rgrp show">
+        <div class="card p" style="padding:8px 12px;">
+          <p><b class="db">1 · The quota rent.</b> Imports held at <b>2</b> while the home price sat <b>$5 above</b> the world price: <b>2 × $5 = $10</b> to the licence holder, for nothing.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card" style="padding:8px 12px;">
+          <p><b class="db">2 · Split any payment in two.</b> The least an owner would accept = <b>transfer earnings</b>. Anything on top = <b>economic rent</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:8px 12px;">
+          <p><b class="db">3 · So producer surplus is rent</b> — the area <b>above S</b>. The area <b>below S</b> is transfer earnings. Under the $5 tariff that is <b>$40</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card blue" style="padding:8px 12px;">
+          <p><b class="db">4 · Fixed supply ⇒ all of it is rent.</b> Stadium, superstar, rare-earth licence: transfer earnings ≈ 0, so the <b>whole</b> payment is rent. <i>(Not</i> the rent a landlord collects — same word, different thing.)</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;">
+      <svg viewBox="0 0 700 430" style="width:100%;height:100%;display:block;">
+        <!-- 轴 -->
+        <line x1="90" y1="370" x2="640" y2="370" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="370" x2="90" y2="45" stroke="#94a3b8" stroke-width="2"/>
+        <polygon points="90,31 83,47 97,47" fill="#94a3b8"/>
+        <text x="80" y="38" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">P ($)</text>
+        <text x="606" y="352" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q →</text>
+
+        <!-- 转付收入（供给曲线以下） / 经济租（供给曲线与价格线之间） -->
+        <polygon points="90,300 393,201 393,370 90,370" fill="rgba(120,140,170,.28)"/>
+        <polygon points="90,201 393,201 90,300" fill="rgba(108,75,211,.32)"/>
+
+        <!-- 固定供给：垂直的 S'（唯一投入品） -->
+        <line x1="393" y1="370" x2="393" y2="90" stroke="#2E7D32" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <text x="405" y="108" font-size="26" font-weight="700" fill="#1b5e20">S′ — fixed input</text>
+
+        <!-- 两条曲线 -->
+        <line x1="90" y1="70" x2="610" y2="295" stroke="#1E88E5" stroke-width="4"/>
+        <line x1="90" y1="300" x2="610" y2="130" stroke="#2E7D32" stroke-width="4"/>
+        <text x="618" y="122" font-size="30" font-weight="800" fill="#2E7D32">S</text>
+        <text x="620" y="298" font-size="30" font-weight="800" fill="#1E88E5">D</text>
+
+        <!-- 价格线 / 均衡 -->
+        <line x1="86" y1="201" x2="393" y2="201" stroke="#C62828" stroke-width="2.5" stroke-dasharray="9 6"/>
+        <text x="78" y="209" text-anchor="end" font-size="28" font-weight="800" fill="#C62828">P*</text>
+        <circle cx="393" cy="201" r="7" fill="#2E7D32" stroke="#fff" stroke-width="3"/>
+        <text x="393" y="400" text-anchor="middle" font-size="28" font-weight="800" fill="#5b6b7b">Q*</text>
+
+        <!-- 区域标注：这次位置按几何算过 -->
+        <text x="112" y="240" font-size="30" font-weight="800" fill="#5b3fa8">economic</text>
+        <text x="112" y="276" font-size="30" font-weight="800" fill="#5b3fa8">rent</text>
+        <text x="122" y="352" font-size="27" font-weight="800" fill="#455a75">transfer earnings</text>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── WINNERS（进口 / 出口可切换） ───── -->
+<div class="slide" data-i="6">
+  <div class="content">
+  <div class="course-tag">WINNERS · 输赢</div>
+  <h1>Who gains, who loses</h1>
+  <div class="sub">The direction depends on whether the country <b>imports</b> or <b>exports</b> — switch and watch the signs flip.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div style="flex:0.95;min-width:0;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="big-btn on" id="whoImBtn" onclick="trWhoTab('imp')">IMPORTS · 进口</button>
+        <button class="big-btn ghost" id="whoExBtn" onclick="trWhoTab('exp')">EXPORTS · 出口</button>
+      </div>
+      <div style="flex:1 1 0;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;">
+        <div id="whoChart" style="width:100%;height:100%;"></div>
+      </div>
+    </div>
+    <div class="compact" style="flex:1.2;display:flex;flex-direction:column;gap:7px;min-width:0;">
+      <div id="whoImpPane" style="display:flex;flex-direction:column;gap:8px;">
+        <div class="card g" style="padding:8px 12px;"><p style="margin:0;"><b class="db">Consumers win.</b> The home price falls to the world price, so households pay less: CS <b>62.5 → 122.5</b>.</p></div>
+        <div class="card r" style="padding:8px 12px;"><p style="margin:0;"><b class="db">Producers lose — and so do their towns.</b> The <b>US Rust Belt</b>: steel, autos, and the communities built around them. PS <b>62.5 → 22.5</b>.</p></div>
+        <div class="card" style="padding:8px 12px;"><p style="margin:0;"><b class="db">Why it becomes politics.</b> Millions gain a little; a few hundred thousand lose a lot. <b>Concentrated losses organise; diffuse gains do not.</b></p></div>
+      </div>
+      <div id="whoExPane" style="display:none;flex-direction:column;gap:8px;">
+        <div class="card g" style="padding:8px 12px;"><p style="margin:0;"><b class="db">Producers win.</b> The home price rises to the world price: PS <b>62.5 → 122.5</b>.</p></div>
+        <div class="card r" style="padding:8px 12px;"><p style="margin:0;"><b class="db">Consumers lose.</b> They now pay the world price at home: CS <b>62.5 → 22.5</b>. Exporting is not automatically good news for everyone.</p></div>
+        <div class="card p" style="padding:8px 12px;"><p style="margin:0;"><b class="db">Case · India.</b> The largest rice exporter, over <b>40%</b> of world trade, <b>banned</b> non-basmati exports on <b>20 July 2023</b> — exporting had pushed retail prices up <b>11.5%</b>.</p></div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Both directions raise the total — but the winners swap places.</b> Protection throws part away: free <b>145</b> &gt; protected <b>140</b> &gt; closed <b>125</b>.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 10 · POLICY ───── -->
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">POLICY · 政策</div>
+  <h1>The case for and against protection</h1>
+  <div class="sub">Know both sides — and know what test settles it.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1.15;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="card" style="padding:8px 12px;">
+        <h3 class="blue">Arguments for protection</h3>
+        <p>Infant industry · national security (food, fuel, chips) · jobs · anti-dumping.</p>
+      </div>
+      <div class="card r" style="padding:8px 12px;">
+        <h3 class="dr">What it costs</h3>
+        <p>Higher prices at home, an industry that never grows up, a deadweight loss — and usually retaliation.</p>
+      </div>
+      <div class="card g" style="padding:8px 12px;">
+        <h3 class="green">The economist's test</h3>
+        <p>Does it <b>fix a market failure</b>, or merely <b>move surplus</b>? Only the first raises the total.</p>
+      </div>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
+      <img src="generated-images/port-cranes.jpg" alt="" style="width:100%;flex:1 1 auto;min-height:0;object-fit:cover;display:block;border-radius:12px;border:2px solid #e6eef7;">
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
+        <p><b>Trade is not zero-sum.</b> Two countries can both gain — but not every <i>group</i> inside them does. <b>Protect jobs</b> is about <i>who</i>; <b>the total falls</b> is about <i>how much</i>.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── CASE 1 · TARIFF ───── -->
+<div class="slide" data-i="8">
+  <div class="content">
+  <div class="course-tag">CASE 1 · 关税</div>
+  <h1>The Trump tariffs (2018–)</h1>
+  <div class="sub">The textbook import tariff — and the textbook result.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1.1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="card a" style="padding:8px 12px;"><p><b class="db">The policy.</b> 2018: <b>25%</b> on steel, <b>10%</b> on aluminium — then tariffs on hundreds of billions of dollars of Chinese goods. China hit back with <b>25% on US soybeans</b>.</p></div>
+      <div class="card g" style="padding:8px 12px;"><p><b class="db">Read it with the model.</b> The home price rises above the world price. Domestic producers gain, the treasury collects <b>tariff × imports</b> — households and steel-using firms pay more.</p></div>
+      <div class="card r" style="padding:8px 12px;"><p><b class="db">The mirror.</b> Chinese soybean farmers lost as the US price <b>fell</b>. A tariff does not only tax foreigners.</p></div>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
+      <img src="generated-images/trump-tariff-cartoon.jpg" alt="" style="width:100%;flex:1 1 auto;min-height:0;object-fit:cover;display:block;border-radius:12px;border:2px solid #e6eef7;">
+      <div class="note" style="background:#F4F1FF;border-left:6px solid #6C4BD3;">
+        <p><b>Where it lands:</b> P<sub>d</sub> above P<sub>w</sub>, imports shrunk, the revenue rectangle to the treasury — and two triangles of <b>deadweight loss</b>.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── CASE 2 · QUOTA ───── -->
+<div class="slide" data-i="9">
+  <div class="content">
+  <div class="course-tag">CASE 2 · 配额</div>
+  <h1>The beef import quota (2026–2028)</h1>
+  <div class="sub">The same protection — delivered by a cap instead of a tax.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1.1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="card a" style="padding:8px 12px;"><p><b class="db">The safeguard.</b> Opened Dec 2024; on <b>31 Dec 2025</b> MOFCOM found surging imports had injured home producers and set <b>country quotas</b> — <b>55%</b> above them — for 2026–2028.</p></div>
+      <div class="card " style="padding:8px 12px;"><p><b class="db">Why it bites.</b> Beef imports <b>+73%</b> (vs 2019); the 2026 cap of <b>2.688 Mt</b> sits just under actual imports, so it <b>binds</b>.</p></div>
+      <div class="card p" style="padding:8px 12px;"><p><b class="db">Read it.</b> The cap lifts the <b>home price</b> just like a tariff — but the rectangle becomes <b>rent for licence holders</b>, not revenue for the state.</p></div>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
+      <img src="generated-images/beef-cattle.jpg" alt="" style="width:100%;flex:1 1 auto;min-height:0;object-fit:cover;display:block;border-radius:12px;border:2px solid #e6eef7;">
+      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
+        <p><b>Tariff or quota?</b> Same price, same imports, same deadweight loss. What changes is <b>who gets the rectangle</b>.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── HISTORY ───── -->
+<div class="slide" data-i="10">
+  <div class="content">
+  <div class="course-tag">HISTORY · 历史</div>
+  <h1>Protection: then and now</h1>
+  <div class="sub">Same tool, different motive — and the motive changed.</div><hr>
+  <div style="display:flex;gap:14px;flex:0 0 auto;">
+    <div class="card" style="flex:1;padding:10px 14px;">
+      <h3 class="blue">Then — the money motive</h3>
+      <p>Mercantilism counted bullion, and customs duties were the <b>easiest tax to collect</b>. Tariffs were <b>fiscal</b> long before they were protective.</p>
+    </div>
+    <div class="card" style="flex:1;padding:10px 14px;">
+      <h3 class="blue">Now — the jobs motive</h3>
+      <p>Tariff revenue is a rounding error now. The argument is <b>industry and jobs</b> — and lately <b>security</b>.</p>
+    </div>
+  </div>
+  <div class="card a" style="flex:1 1 0;min-height:0;margin-top:12px;padding:12px 18px;display:flex;flex-direction:column;">
+    <h3 style="color:#a57d12;">Four beats</h3>
+    <div style="display:grid;grid-template-columns:216px 1fr;grid-template-rows:repeat(4,1fr);gap:0 20px;margin-top:4px;flex:1 1 0;min-height:0;">
+      <p style="margin:0;display:flex;align-items:center;"><b class="db">1500s–1700s</b></p>
+      <p style="margin:0;display:flex;align-items:center;">Mercantilism: pile up bullion; customs is the revenue.</p>
+      <p style="margin:0;display:flex;align-items:center;"><b class="db">1846</b></p>
+      <p style="margin:0;display:flex;align-items:center;">Corn Laws repealed — Britain goes free trade.</p>
+      <p style="margin:0;display:flex;align-items:center;"><b class="db">1930</b></p>
+      <p style="margin:0;display:flex;align-items:center;">Smoot–Hawley: retaliation, then trade collapses.</p>
+      <p style="margin:0;display:flex;align-items:center;"><b class="db">Today</b></p>
+      <p style="margin:0;display:flex;align-items:center;">Revenue is trivial; the case is jobs and security.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── REFLECTION ───── -->
+<div class="slide" data-i="11">
+  <div class="content">
+  <div class="course-tag">REFLECTION · 反思</div>
+  <h1>What comparative advantage assumes away</h1>
+  <div class="sub">Ricardo proves that trade raises the <b>total</b>. These four are the price of the proof.</div><hr>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0;">
+    <div class="card a" style="padding:10px 16px;">
+      <h3 style="color:#a57d12;">Costless adjustment</h3>
+      <p>The proof moves labour and capital between industries <b>free of charge</b>. Real people cannot retrain at zero cost.</p>
+    </div>
+    <div class="card" style="padding:10px 16px;">
+      <h3 class="blue">Given technology</h3>
+      <p>Productivity is taken as fixed. But specialising today can <b>lock a country into a low-productivity path</b> — the infant-industry case.</p>
+    </div>
+    <div class="card p" style="padding:10px 16px;">
+      <h3 style="color:var(--purple);">Safe dependence</h3>
+      <p>A foreign supplier is treated as a price, never as a <b>risk</b>. Food, fuel and chips can be cut off — no price carries that.</p>
+    </div>
+    <div class="card g" style="padding:10px 16px;">
+      <h3 class="green">Diffuse gains</h3>
+      <p>The theorem says the <b>country</b> gains, not that every group does. Millions gain a little; a few hundred thousand lose a lot.</p>
+    </div>
+  </div>
+  <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;flex:0 0 auto;">
+    <p><b>Free trade raises the total — that is the whole claim.</b> The political fight is over <b>who pays for the adjustment</b>.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 14 · GRAPH ───── -->
+<div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">GRAPH · 作图</div>
+  <h1>What the trade graph must show</h1>
+  <div class="sub">Four marks decide whether the graph carries the argument. <b>Reveal them one at a time</b> — the graph draws itself alongside.</div><hr>
+  <div style="display:flex;gap:14px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;">
+      <div class="rgrp show">
+        <div class="card" style="padding:7px 12px;"><p><b class="db">1 · Two price lines.</b> <b>P<sub>w</sub></b> and <b>P<sub>d</sub> = P<sub>w</sub> + tariff</b> — the gap between them <i>is</i> the tariff per unit.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card blue" style="padding:7px 12px;"><p><b class="db">2 · Both quantities.</b> <b>Q<sub>s</sub></b> and <b>Q<sub>d</sub></b> at the domestic price — the horizontal gap between them <i>is</i> the trade volume.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card a" style="padding:7px 12px;"><p><b class="db">3 · Shade the areas.</b> Tariff × imports = the <b>revenue rectangle</b>; the two triangles between the curves are the <b>DWL</b>.</p></div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:7px 12px;"><p><b class="db">4 · Who pays it.</b> A small country takes <b>P<sub>w</sub></b> as given, so the whole tariff lands on <b>home buyers</b>.</p></div>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:auto;">
+        <p><b>Before you move on:</b> every line labelled · every asked-for area shaded · the Q<sub>d</sub>–Q<sub>s</sub> gap marked.</p>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;">
+      <div id="gphA" style="width:100%;height:100%;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 16 · QUICK CHECK ───── -->
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">QUICK CHECK · 检测</div>
+  <h1>Four questions on free trade and protection</h1>
+  <div class="sub">Same market: closed at $30 / 5, world price $20, tariff $5, quota 2. Pick an answer — it is marked at once.</div><hr>
+  <div class="g1-box">
+    <p class="scenario" id="kcscenario">Loading…</p>
+    <div class="qbtns" id="kcbtns"></div>
+    <p class="g1-fb" id="kcfb"></p>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;" id="kchead">
+      <span style="font-weight:800;color:#5b6b7b;font-size:clamp(22px,1.6vw,25px);">Question <b id="kcq">1</b> / <b id="kcn">4</b> &nbsp;·&nbsp; Score <b id="kcscore">0</b></span>
+      <button class="big-btn" id="kcnext" style="display:none;">Next ▶</button>
+    </div>
+    <div id="kcresult" style="display:none;text-align:center;margin-top:10px;">
+      <p style="font-weight:800;font-size:clamp(24px,2.2vw,32px);">You scored <b id="kcfinal">0 / 4</b></p>
+      <button class="big-btn ghost" id="kcagain">↺ Try again</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 17 · SUMMARY ───── -->
+<div class="slide" data-i="14">
+  <div class="content">
+  <div class="course-tag">SUMMARY · 总结</div>
+  <h1>Trade and protection, in six lines</h1>
+  <div class="sub">CED 2.9 (POL-1.B.1–B.3). Fill each line, then say it out loud in one sentence.</div><hr>
+  <div class="ssteps" style="font-size:clamp(22px,1.95vw,26px);line-height:1.4;width:100%;">
+    <div class="sstep">
+      <p><b class="db">1 · Open to trade</b> — the price becomes the <span class="blank empty" data-a="world price">______</span>; the Qd–Qs gap is filled by <span class="blank empty" data-a="trade">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">2 · Who trades</b> — world price below autarky → <span class="blank empty" data-a="imports">______</span>; above it → exports.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">3 · The gain</b> — total surplus <span class="blank empty" data-a="rises">______</span> (125 → 145 in our market).</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">4 · A tariff</b> — raises the domestic price to P<sub>w</sub> + t, cuts imports to <span class="blank empty" data-a="2">______</span>, and gives the government <span class="blank empty" data-a="revenue">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">5 · The loss</b> — two triangles (production + consumption distortion) → <span class="blank empty" data-a="deadweight loss">______</span> = $5.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">6 · A quota</b> — same price and quantity as the equivalent tariff, but the rectangle becomes <span class="blank empty" data-a="quota rent">______</span> for licence holders.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 18 · CLOSING ───── -->
+<div class="slide cover" data-i="15">
+  <div class="content" style="justify-content:center;text-align:center;">
+  <div class="course-tag">THANK YOU · 谢谢</div>
+  <h1 style="font-size:clamp(36px,5vw,56px);">Trade — done ✓</h1>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">Trade grows the pie. Protection moves the slices.</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">And the two triangles are always the bill.</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn">◀</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="copy">© 2026 DR. JIA</span>
+    <span class="page" id="pageNum">1 / 16</span>
+    <button id="nextBtn">▶</button>
+  </div>
+</div>
+
+<script>
+var $ = function(id){ return document.getElementById(id); };
+
+/* ══════════ 2 · NAVIGATION ══════════ */
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+const globalR = {
+  show(){ $('rbtnWrap').style.display = 'flex'; },
+  hide(){ $('rbtnWrap').style.display = 'none'; },
+  setup(grps){
+    const btn = $('rbtn');
+    btn.textContent = 'Reveal more';
+    btn.disabled = false;
+    this.show();
+    btn.onclick = function(){
+      let curIdx = 0;
+      grps.forEach(function(g, i){ if(g.classList.contains('show')) curIdx = i; });
+      const next = curIdx + 1;
+      if(next < grps.length){
+        grps[next].classList.add('show');
+        if(next >= grps.length - 1) btn.textContent = 'All shown';
+        syncSlideEffects();
+      }
+    };
+  }
+};
+globalR.hide();
+
+function showSlide(i){
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  slides[i].classList.add('active');
+  cur = i;
+  $('prevBtn').disabled = (i === 0);
+  $('nextBtn').disabled = (i === total - 1);
+  $('pageNum').textContent = (i + 1) + ' / ' + total;
+  document.querySelectorAll('.dots span').forEach(function(s, j){ s.classList.toggle('on', j === i); });
+  const grps = slides[i].querySelectorAll('.rgrp');
+  if(grps.length) grps.forEach(function(g, idx){ g.classList.toggle('show', idx === 0); });
+  if(grps.length > 1) globalR.setup(grps); else globalR.hide();
+  const steps = slides[i].querySelectorAll('.sstep');
+  if(steps.length){
+    globalR.hide();
+    $('sbtnWrap').style.display = 'flex';
+    if(!slides[i].dataset.sIdx) slides[i].dataset.sIdx = '0';
+    if(!slides[i].querySelector('.sstep.show')) steps[0].classList.add('show');
+    refreshSumBtn();
+  } else {
+    $('sbtnWrap').style.display = 'none';
+  }
+  syncSlideEffects();
+}
+
+function refreshSumBtn(){
+  const slide = document.querySelector('.slide.active');
+  const btn = $('sbtn');
+  if(!slide || !btn) return;
+  const steps = slide.querySelectorAll('.sstep');
+  if(!steps.length) return;
+  const idx = +(slide.dataset.sIdx || 0);
+  if(idx >= steps.length){ btn.textContent = 'All done ✓'; btn.disabled = true; }
+  else { btn.textContent = 'Reveal answers'; btn.disabled = false; }
+}
+
+/* ══════════ 3 · PAGE EFFECTS ══════════ */
+function syncSlideEffects(){
+  const slide = document.querySelector('.slide.active');
+  if(!slide) return;
+  try { if(slide.querySelector('#imA')) trPage('im'); } catch(e){ console.error('im', e); }
+  try { if(slide.querySelector('#exA')) trPage('ex'); } catch(e){ console.error('ex', e); }
+  try { if(slide.querySelector('#labA')) trPage('lab'); } catch(e){ console.error('lab', e); }
+  try { if(slide.querySelector('#cmpBar')) trCmpBar(); } catch(e){ console.error('cmp', e); }
+  try { if(slide.querySelector('#whoChart')) trWhoTab(whoDir); } catch(e){ console.error('who', e); }
+  try { if(slide.querySelector('#gphA')) trGraph(); } catch(e){ console.error('gph', e); }
+};
+globalR.hide();
+
+/* @@SYNCS@@ */
+/* the area page: the rectangle follows the slider; the slider stays locked until the text is out */
+/* ══════════ 4 · NAV BINDING + DOTS ══════════ */
+try {
+  $('prevBtn').onclick = function(){ if(cur > 0) showSlide(cur - 1); };
+  $('nextBtn').onclick = function(){ if(cur < total - 1) showSlide(cur + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){ e.preventDefault(); if(cur < total - 1) showSlide(cur + 1); }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); if(cur > 0) showSlide(cur - 1); }
+  });
+  const dotBox = $('dots');
+  for(let i = 0; i < total; i++){
+    const s = document.createElement('span');
+    s.onclick = (function(kk){ return function(){ showSlide(kk); }; })(i);
+    dotBox.appendChild(s);
+  }
+  showSlide(0);
+} catch(err){ console.error('nav init', err); }
+
+/* @@PAGES@@ */
+
+/* 对比页：8 行数据逐行揭晓（沿用 2.8 的 row-reveal 写法） */
+
+/* 填空页（作用于当前 active 页的 .sstep） */
+try {
+  $('sbtn').onclick = function(){
+    const slide = document.querySelector('.slide.active');
+    if(!slide) return;
+    const steps = slide.querySelectorAll('.sstep');
+    let idx = +(slide.dataset.sIdx || 0);
+    const el = steps[idx];
+    if(!el){ refreshSumBtn(); return; }
+    el.classList.add('show');
+    el.querySelectorAll('.blank.empty').forEach(function(b){
+      b.textContent = b.getAttribute('data-a');
+      b.classList.remove('empty');
+      b.classList.add('filled');
+    });
+    idx++;
+    slide.dataset.sIdx = String(idx);
+    const next = steps[idx];
+    if(next) next.classList.add('show');
+    refreshSumBtn();
+  };
+} catch(err){ console.error('summary', err); }
+
+
+/* ══════════ 45 · 2.9 INTERNATIONAL TRADE（世界价 / 关税 / 配额 + 福利账本） ══════════ */
+const TX0 = 90, TQPX = 32.5, TY0 = 460, TPPX = 8.2, TAUT = 30;
+const tX = q => TX0 + TQPX * q, tY = p => TY0 - TPPX * p;
+const tQs = p => Math.max(0, (p - 5) / 5);          /* domestic supply  P = 5q + 5 */
+const tQd = p => Math.max(0, (55 - p) / 5);         /* domestic demand  P = 55 - 5q */
+const tCs = p => 0.5 * (55 - p) * tQd(p);
+const tPs = p => 0.5 * (p - 5) * tQs(p);
+function trF1(v){ const r = Math.round(v * 10) / 10; return (Math.abs(r % 1) < 1e-9) ? String(r) : r.toFixed(1); }
+const money = v => '$' + trF1(Math.abs(v));
+function trState(o){
+  /* o = {pw, mode:'free'|'tariff'|'quota', t, cap}
+     pw < $30（自给自足价）→ 本国进口；pw > $30 → 本国出口。政策把国内价推的方向正好相反。 */
+  const pw = o.pw;
+  const isExp = (pw > TAUT + 1e-9);
+  let pd = pw, kind = 'free';
+  if(o.mode === 'tariff'){
+    /* 进口关税把国内价抬到世界价之上；出口关税把国内价压到世界价之下 */
+    pd = isExp ? Math.max(pw - o.t, TAUT) : Math.min(pw + o.t, TAUT);
+    kind = 'tariff';
+  }
+  if(o.mode === 'quota'){
+    /* 进口配额：Qd(pd)−Qs(pd)=cap → pd=(60−5cap)/2；出口配额：Qs(pd)−Qd(pd)=cap → pd=(60+5cap)/2 */
+    const target = isExp ? (60 + 5 * o.cap) / 2 : (60 - 5 * o.cap) / 2;
+    pd = isExp ? Math.max(Math.min(target, pw), TAUT) : Math.min(Math.max(target, pw), TAUT);
+    kind = 'quota';
+  }
+  const qs = tQs(pd), qd = tQd(pd), trade = qd - qs;      /* 正 = 进口，负 = 出口 */
+  const qsf = tQs(pw), qdf = tQd(pw);
+  const t = (kind === 'free') ? 0 : Math.abs(pd - pw);
+  const real = Math.abs(trade);
+  /* 租金/税收都按"实际过境的贸易量"算，不是按配额额度算 */
+  const rev = (kind === 'free') ? 0 : t * ((kind === 'quota') ? Math.min(o.cap, real) : real);
+  const dqs = Math.abs(qs - qsf), dqd = Math.abs(qd - qdf);
+  const dwl = 0.5 * t * (dqs + dqd);
+  return { pw: pw, pd: pd, qs: qs, qd: qd, qsf: qsf, qdf: qdf, trade: trade, t: t, rev: rev, dwl: dwl,
+           kind: kind, isExp: isExp,
+           cs: tCs(pd), ps: tPs(pd), tot: tCs(pd) + tPs(pd) + rev, csA: tCs(TAUT), psA: tPs(TAUT) };
+}
+
+function trAxes(){
+  let g = '';
+  g += '<line x1="' + TX0 + '" y1="' + TY0 + '" x2="630" y2="' + TY0 + '" stroke="#94a3b8" stroke-width="2"/>';
+  g += '<line x1="' + TX0 + '" y1="' + TY0 + '" x2="' + TX0 + '" y2="40" stroke="#94a3b8" stroke-width="2"/>';
+  /* 轴名贴着自己的轴：P 在纵轴顶端外侧、Q 在横轴右端外侧（不再浮在图内右上角） */
+  /* 箭头画在轴上（线不会与文字碰撞），轴名贴轴：P 在纵轴顶端左侧、Q 在横轴右端上方 */
+  g += '<polygon points="' + TX0 + ',26 ' + (TX0 - 7) + ',42 ' + (TX0 + 7) + ',42" fill="#94a3b8"/>';
+  g += '<text x="' + (TX0 - 10) + '" y="30" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">P ($)</text>';
+  g += '<text x="626" y="' + (TY0 - 18) + '" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Q \u2192</text>';
+  return g;
+}
+function trCurves(){
+  let g = '';
+  g += '<line x1="' + tX(0) + '" y1="' + tY(55).toFixed(1) + '" x2="' + tX(11).toFixed(1) + '" y2="' + tY(0).toFixed(1) + '" stroke="#1E88E5" stroke-width="4"/>';
+  g += '<line x1="' + tX(0) + '" y1="' + tY(5).toFixed(1) + '" x2="' + tX(10).toFixed(1) + '" y2="' + tY(55).toFixed(1) + '" stroke="#2E7D32" stroke-width="4"/>';
+  g += '<text x="' + tX(7.2).toFixed(1) + '" y="' + (tY(55 - 5 * 7.2) - 16).toFixed(1) + '" font-size="32" font-weight="800" fill="#1E88E5">D</text>';
+  g += '<text x="' + tX(1.1).toFixed(1) + '" y="' + (tY(5 * 1.1 + 5) + 40).toFixed(1) + '" font-size="32" font-weight="800" fill="#2E7D32">S</text>';
+  return g;
+}
+function trRender(boxId, o){
+  const box = $(boxId); if(!box) return;
+  const P = boxId;
+  const w = trState(o);
+  const xq = tX(w.qs), xd = tX(w.qd), yp = tY(w.pd), yw = tY(w.pw);
+  let g = trAxes() + trCurves();
+  /* 自给自足参考（淡） */
+  if(o.ref !== false && Math.abs(w.pd - TAUT) > 0.5){
+    g += '<line x1="' + TX0 + '" y1="' + tY(TAUT).toFixed(1) + '" x2="' + tX(5).toFixed(1) + '" y2="' + tY(TAUT).toFixed(1) + '" stroke="#cbd5e1" stroke-width="2.5" stroke-dasharray="7 6"/>';
+    /* 世界价或国内价正好等于 $30 时，$30 这个参照标签会和价签叠在同一个位置 → 不画 */
+    if(Math.abs(w.pw - TAUT) > 0.5 && Math.abs(w.pd - TAUT) > 0.5) g += '<text x="' + (TX0 - 8) + '" y="' + (tY(TAUT) + 10).toFixed(1) + '" text-anchor="end" font-size="32" font-weight="800" fill="#94a3b8">$30</text>';
+  }
+  /* 世界价与国内价 */
+  if(Math.abs(w.pd - w.pw) > 0.05){
+    g += '<line x1="' + TX0 + '" y1="' + yp.toFixed(1) + '" x2="' + xd.toFixed(1) + '" y2="' + yp.toFixed(1) + '" stroke="#C62828" stroke-width="3" stroke-dasharray="9 6"/>';
+    g += '<line x1="' + TX0 + '" y1="' + yw.toFixed(1) + '" x2="630" y2="' + yw.toFixed(1) + '" stroke="#1b5e20" stroke-width="3" stroke-dasharray="9 6"/>';
+    /* 世界价线顶到画布上沿时（Pw = $50）左侧放不下 → 标签挪到线上方右端 */
+    if(yw + 10 < 78){
+      g += '<text x="626" y="' + (yw - 10).toFixed(1) + '" text-anchor="end" font-size="32" font-weight="800" fill="#1b5e20">Pw ' + money(w.pw) + '</text>';
+    } else {
+      g += '<text x="' + (TX0 - 8) + '" y="' + (yw + 10).toFixed(1) + '" text-anchor="end" font-size="32" font-weight="800" fill="#1b5e20">Pw ' + money(w.pw) + '</text>';
+    }
+    /* 两条价线挨太近时（如配额 3）左侧放不下两个标签 → Pd 挪到价线右端上方 */
+    if(Math.abs(yp - yw) >= 34){
+      g += '<text x="' + (TX0 - 8) + '" y="' + (yp + 10).toFixed(1) + '" text-anchor="end" font-size="32" font-weight="800" fill="#C62828">Pd ' + money(w.pd) + '</text>';
+    } else {
+      g += '<text x="' + (xd + 12).toFixed(1) + '" y="' + (yp - 10).toFixed(1) + '" text-anchor="start" font-size="32" font-weight="800" fill="#C62828">Pd ' + money(w.pd) + '</text>';
+    }
+  } else {
+    g += '<line x1="' + TX0 + '" y1="' + yp.toFixed(1) + '" x2="630" y2="' + yp.toFixed(1) + '" stroke="#1b5e20" stroke-width="3" stroke-dasharray="9 6"/>';
+    g += '<text x="' + (TX0 - 8) + '" y="' + (yp + 10).toFixed(1) + '" text-anchor="end" font-size="32" font-weight="800" fill="#1b5e20">Pw ' + money(w.pw) + '</text>';
+  }
+  /* 产量与需求量竖线 */
+  g += '<line x1="' + xq.toFixed(1) + '" y1="' + yp.toFixed(1) + '" x2="' + xq.toFixed(1) + '" y2="' + TY0 + '" stroke="#2E7D32" stroke-width="2.5" stroke-dasharray="6 5"/>';
+  g += '<line x1="' + xd.toFixed(1) + '" y1="' + yp.toFixed(1) + '" x2="' + xd.toFixed(1) + '" y2="' + TY0 + '" stroke="#1E88E5" stroke-width="2.5" stroke-dasharray="6 5"/>';
+  /* 数量刻度：两个都标。挨太近（<46px）就上下错开，不再只画一个 */
+  if(Math.abs(xd - xq) < 46){
+    g += '<text x="' + xq.toFixed(1) + '" y="' + (TY0 + 30) + '" text-anchor="middle" font-size="34" font-weight="800" fill="#2E7D32">' + trF1(w.qs) + '</text>';
+    g += '<text x="' + xd.toFixed(1) + '" y="' + (TY0 + 66) + '" text-anchor="middle" font-size="34" font-weight="800" fill="#1E88E5">' + trF1(w.qd) + '</text>';
+  } else {
+    g += '<text x="' + xq.toFixed(1) + '" y="' + (TY0 + 30) + '" text-anchor="middle" font-size="34" font-weight="800" fill="#2E7D32">' + trF1(w.qs) + '</text>';
+    g += '<text x="' + xd.toFixed(1) + '" y="' + (TY0 + 30) + '" text-anchor="middle" font-size="34" font-weight="800" fill="#1E88E5">' + trF1(w.qd) + '</text>';
+  }
+  /* 贸易量：横轴下方的双箭头区间（数量区间贴在 Q 轴上）+ 文字放区间右端外侧
+     —— 放在轴下方才不会被 Qs / Qd 的竖虚线穿过 */
+  if(Math.abs(w.trade) > 0.05 && Math.abs(xd - xq) > 46){
+    const xa = Math.min(xq, xd), xb = Math.max(xq, xd), ay = TY0 + 58;
+    g += '<line x1="' + (xa + 10).toFixed(1) + '" y1="' + ay + '" x2="' + (xb - 10).toFixed(1) + '" y2="' + ay + '" stroke="#6C4BD3" stroke-width="3"/>';
+    g += '<polygon points="' + (xa + 2).toFixed(1) + ',' + ay + ' ' + (xa + 12).toFixed(1) + ',' + (ay - 6) + ' ' + (xa + 12).toFixed(1) + ',' + (ay + 6) + '" fill="#6C4BD3"/>';
+    g += '<polygon points="' + (xb - 2).toFixed(1) + ',' + ay + ' ' + (xb - 12).toFixed(1) + ',' + (ay - 6) + ' ' + (xb - 12).toFixed(1) + ',' + (ay + 6) + '" fill="#6C4BD3"/>';
+    g += '<text x="' + (xb + 16).toFixed(1) + '" y="' + (ay + 10) + '" text-anchor="start" font-size="32" font-weight="800" fill="#6C4BD3">' + (w.trade > 0 ? 'imports ' : 'exports ') + trF1(Math.abs(w.trade)) + '</text>';
+  }
+  /* 关税/配额矩形 + 两个损失三角 */
+  if(w.kind !== 'free' && w.t > 0.05){
+    /* 出口时 xd < xq，直接写 width="xd-xq" 会变成负宽度 —— SVG 负宽度矩形不渲染（显示为空白）。
+       所以左上角取两者较小值，宽度取绝对值。 */
+    if(o.showRev) g += '<rect id="' + P + 'Rev" x="' + Math.min(xq, xd).toFixed(1) + '" y="' + Math.min(yp, yw).toFixed(1) + '" width="' + Math.abs(xd - xq).toFixed(1) + '" height="' + Math.abs(yw - yp).toFixed(1) + '" fill="rgba(108,75,211,.28)" stroke="#6C4BD3" stroke-width="2.5"/>';
+    if(o.showDwl){
+      g += '<polygon id="' + P + 'Dwl1" points="' + tX(w.qsf).toFixed(1) + ',' + yw.toFixed(1) + ' ' + xq.toFixed(1) + ',' + yp.toFixed(1) + ' ' + xq.toFixed(1) + ',' + yw.toFixed(1) + '" fill="rgba(120,120,120,.35)" stroke="#7b8794" stroke-width="2.5"/>';
+      g += '<polygon id="' + P + 'Dwl2" points="' + xd.toFixed(1) + ',' + yp.toFixed(1) + ' ' + xd.toFixed(1) + ',' + yw.toFixed(1) + ' ' + tX(w.qdf).toFixed(1) + ',' + yw.toFixed(1) + '" fill="rgba(120,120,120,.35)" stroke="#7b8794" stroke-width="2.5"/>';
+    }
+  }
+  /* 贸易增益三角：底边 = 世界价线上 Qs→Qd 那段，顶点 = 封闭均衡点 (5, $30)
+     面积 ½·|Qd−Qs|·|Pw−30| 恰好等于总剩余的增量（进口 Pw$20 → $20、出口 Pw$40 → $20、Pw$10 → $80） */
+  if(o.showGain && Math.abs(w.trade) > 0.05){
+    g += '<polygon id="' + P + 'Gain" points="' + tX(w.qdf).toFixed(1) + ',' + tY(w.pw).toFixed(1)
+       + ' ' + tX(5).toFixed(1) + ',' + tY(TAUT).toFixed(1)
+       + ' ' + tX(w.qsf).toFixed(1) + ',' + tY(w.pw).toFixed(1) + '" fill="rgba(27,94,32,.20)" stroke="#1b5e20" stroke-width="2.5"/>';
+  }
+  /* CS / PS 可分别开关（lab 页的四个色块）；不传则沿用 showAreas */
+  const scs = (o.showCs !== undefined) ? o.showCs : !!o.showAreas;
+  const sps = (o.showPs !== undefined) ? o.showPs : !!o.showAreas;
+  if(scs) g += '<polygon id="' + P + 'Cs" points="' + TX0 + ',' + yp.toFixed(1) + ' ' + xd.toFixed(1) + ',' + yp.toFixed(1) + ' ' + xd.toFixed(1) + ',' + tY(55 - 5 * w.qd).toFixed(1) + ' ' + TX0 + ',' + tY(55).toFixed(1) + '" fill="rgba(30,136,229,.22)" stroke="#1E88E5" stroke-width="2"/>';
+  if(sps) g += '<polygon id="' + P + 'Ps" points="' + TX0 + ',' + yp.toFixed(1) + ' ' + xq.toFixed(1) + ',' + yp.toFixed(1) + ' ' + xq.toFixed(1) + ',' + tY(5 * w.qs + 5).toFixed(1) + ' ' + TX0 + ',' + tY(5).toFixed(1) + '" fill="rgba(46,125,50,.22)" stroke="#2E7D32" stroke-width="2"/>';
+  box.innerHTML = '<svg viewBox="-30 0 730 545" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+/* ══════════ 45b · 分步拆解页（进口 / 出口）：图跟着 Reveal more 的层级走 ══════════ */
+function trLv(boxId){
+  /* 当前页已揭晓到第几组 .rgrp（0..4）→ 就是拆解进行到第几步 */
+  const box = $(boxId); if(!box) return 0;
+  const slide = box.closest('.slide'); if(!slide) return 0;
+  const grps = [].slice.call(slide.querySelectorAll('.rgrp'));
+  let lv = 0;
+  grps.forEach(function(g, i){ if(g.classList.contains('show')) lv = i; });
+  return lv;
+}
+const ptS = a => a.map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+function trStep(boxId, pw, lv){
+  /* lv 0 封闭均衡 · 1 世界价 · 2 CS 变化 · 3 PS 变化 · 4 净增三角
+     变化块：增益 = 描粗边高亮；损失 = 红斜纹（进口 CS+ / PS−，出口 CS− / PS+） */
+  const box = $(boxId); if(!box) return;
+  const w = trState({ pw: pw, mode: 'free' });
+  const p1 = Math.min(pw, TAUT), p2 = Math.max(pw, TAUT);
+  const qd1 = tQd(p1), qd2 = tQd(p2), qs1 = tQs(p1), qs2 = tQs(p2);
+  const csA = 0.5 * (55 - TAUT) * tQd(TAUT), psA = 0.5 * (TAUT - 5) * tQs(TAUT);
+  const dCs = w.cs - csA, dPs = w.ps - psA;
+  const pRef = (lv < 2) ? TAUT : pw;
+  const yA = tY(TAUT), yw = tY(pw);
+  const fade = lv >= 4;   /* 最后一步：变化块淡化，让三角说话 */
+  let g = trAxes() + trCurves();
+  g += '<defs><pattern id="' + boxId + 'H" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
+     + '<line x1="0" y1="0" x2="0" y2="10" stroke="#C62828" stroke-width="3" opacity=".5"/></pattern></defs>';
+  /* CS / PS 区域（价格界线随步骤切换：先 $30，后 Pw） */
+  g += '<polygon points="' + ptS([[tX(0), tY(55)], [tX(0), tY(pRef)], [tX(tQd(pRef)), tY(pRef)]]) + '" fill="rgba(30,136,229,.22)" stroke="#1E88E5" stroke-width="2"/>';
+  g += '<polygon points="' + ptS([[tX(0), tY(5)], [tX(0), tY(pRef)], [tX(tQs(pRef)), tY(pRef)]]) + '" fill="rgba(46,125,50,.22)" stroke="#2E7D32" stroke-width="2"/>';
+  /* CS / PS 字母：贴纵轴放（图的左侧空），避开 Qs / Qd 的竖虚线与 D / S 曲线 */
+  g += '<text x="' + tX(0.4).toFixed(1) + '" y="' + tY(43).toFixed(1) + '" font-size="32" font-weight="800" fill="#1E88E5">CS</text>';
+  g += '<text x="' + tX(0.5).toFixed(1) + '" y="' + tY(16).toFixed(1) + '" font-size="32" font-weight="800" fill="#2E7D32">PS</text>';
+  /* 封闭价参照 + 世界价 */
+  g += '<line x1="' + TX0 + '" y1="' + yA.toFixed(1) + '" x2="' + tX(5).toFixed(1) + '" y2="' + yA.toFixed(1) + '" stroke="#cbd5e1" stroke-width="2.5" stroke-dasharray="7 6"/>';
+  g += '<text x="' + (TX0 - 8) + '" y="' + (yA + 10).toFixed(1) + '" text-anchor="end" font-size="32" font-weight="800" fill="#94a3b8">$30</text>';
+  if(lv >= 1){
+    g += '<line x1="' + TX0 + '" y1="' + yw.toFixed(1) + '" x2="630" y2="' + yw.toFixed(1) + '" stroke="#1b5e20" stroke-width="3" stroke-dasharray="9 6"/>';
+    g += '<text x="' + (TX0 - 8) + '" y="' + (yw + 10).toFixed(1) + '" text-anchor="end" font-size="32" font-weight="800" fill="#1b5e20">Pw ' + money(pw) + '</text>';
+  }
+  /* 数量与贸易区间 */
+  if(lv >= 1){
+    const xq = tX(w.qs), xd = tX(w.qd);
+    g += '<line x1="' + xq.toFixed(1) + '" y1="' + yw.toFixed(1) + '" x2="' + xq.toFixed(1) + '" y2="' + TY0 + '" stroke="#2E7D32" stroke-width="2.5" stroke-dasharray="6 5"/>';
+    g += '<line x1="' + xd.toFixed(1) + '" y1="' + yw.toFixed(1) + '" x2="' + xd.toFixed(1) + '" y2="' + TY0 + '" stroke="#1E88E5" stroke-width="2.5" stroke-dasharray="6 5"/>';
+    g += '<text x="' + xq.toFixed(1) + '" y="' + (TY0 + 30) + '" text-anchor="middle" font-size="34" font-weight="800" fill="#2E7D32">' + trF1(w.qs) + '</text>';
+    g += '<text x="' + xd.toFixed(1) + '" y="' + (TY0 + 30) + '" text-anchor="middle" font-size="34" font-weight="800" fill="#1E88E5">' + trF1(w.qd) + '</text>';
+    if(Math.abs(xd - xq) > 46){
+      const xa = Math.min(xq, xd), xb = Math.max(xq, xd), ay = TY0 + 58;
+      g += '<line x1="' + (xa + 10).toFixed(1) + '" y1="' + ay + '" x2="' + (xb - 10).toFixed(1) + '" y2="' + ay + '" stroke="#6C4BD3" stroke-width="3"/>';
+      g += '<polygon points="' + (xa + 2).toFixed(1) + ',' + ay + ' ' + (xa + 12).toFixed(1) + ',' + (ay - 6) + ' ' + (xa + 12).toFixed(1) + ',' + (ay + 6) + '" fill="#6C4BD3"/>';
+      g += '<polygon points="' + (xb - 2).toFixed(1) + ',' + ay + ' ' + (xb - 12).toFixed(1) + ',' + (ay - 6) + ' ' + (xb - 12).toFixed(1) + ',' + (ay + 6) + '" fill="#6C4BD3"/>';
+      g += '<text x="' + (xb + 16).toFixed(1) + '" y="' + (ay + 10) + '" text-anchor="start" font-size="32" font-weight="800" fill="#6C4BD3">' + (w.trade > 0 ? 'imports ' : 'exports ') + trF1(Math.abs(w.trade)) + '</text>';
+    }
+  }
+  /* CS 变化块 */
+  if(lv >= 2 && Math.abs(dCs) > 0.05){
+    const up = dCs > 0;
+    g += '<polygon points="' + ptS([[tX(0), tY(p2)], [tX(qd2), tY(p2)], [tX(qd1), tY(p1)], [tX(0), tY(p1)]]) + '"'
+       + (fade ? ' opacity=".4"' : '') + ' fill="' + (up ? 'rgba(30,136,229,.12)' : 'url(#' + boxId + 'H)')
+       + '" stroke="' + (up ? '#1E88E5' : '#C62828') + '" stroke-width="' + (up ? 4 : 2.5) + '"/>';
+    if(!fade) g += '<text x="' + tX(0.3).toFixed(1) + '" y="' + (tY(p2) + 30).toFixed(1)
+       + '" font-size="32" font-weight="800" fill="' + (up ? '#1E88E5' : '#C62828') + '">' + (up ? '+' : '\u2212') + money(dCs) + '</text>';
+  }
+  /* PS 变化块 */
+  if(lv >= 3 && Math.abs(dPs) > 0.05){
+    const up = dPs > 0;
+    g += '<polygon points="' + ptS([[tX(0), tY(p1)], [tX(qs1), tY(p1)], [tX(qs2), tY(p2)], [tX(0), tY(p2)]]) + '"'
+       + (fade ? ' opacity=".4"' : '') + ' fill="' + (up ? 'rgba(46,125,50,.12)' : 'url(#' + boxId + 'H)')
+       + '" stroke="' + (up ? '#2E7D32' : '#C62828') + '" stroke-width="' + (up ? 4 : 2.5) + '"/>';
+    if(!fade) g += '<text x="' + tX(0.3).toFixed(1) + '" y="' + (tY(p1) - 20).toFixed(1)
+       + '" font-size="32" font-weight="800" fill="' + (up ? '#2E7D32' : '#C62828') + '">' + (up ? '+' : '\u2212') + money(dPs) + '</text>';
+  }
+  /* 净增三角 */
+  if(lv >= 4){
+    const tri = [[tX(w.qdf), tY(pw)], [tX(5), tY(TAUT)], [tX(w.qsf), tY(pw)]];
+    g += '<polygon id="' + boxId + 'Gain" points="' + ptS(tri) + '" fill="rgba(27,94,32,.28)" stroke="#1b5e20" stroke-width="4"/>';
+    /* 三角的两条斜边就是 D / S 曲线 → 标签放到三角外侧（世界价线下方），不压边 */
+    /* 三角两条斜边就是 D / S 曲线：标签要短（不带 $，宽度收进两曲线之间）才不会压边 */
+    g += '<text x="' + tX(5).toFixed(1) + '" y="' + (tY(pw) + 34).toFixed(1) + '" text-anchor="middle" font-size="32"'
+       + ' font-weight="800" fill="#1b5e20">+' + trF1(w.tot - 125) + '</text>';
+  }
+  box.innerHTML = '<svg viewBox="-30 0 730 545" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+function trStepRead(id, pw, lv){
+  const el = $(id); if(!el) return;
+  const w = trState({ pw: pw, mode: 'free' });
+  const csA = 0.5 * (55 - TAUT) * tQd(TAUT), psA = 0.5 * (TAUT - 5) * tQs(TAUT);
+  const dCs = w.cs - csA, dPs = w.ps - psA;
+  const word = w.trade > 0 ? 'imports' : 'exports';
+  const sgn = v => (v >= 0 ? '+' : '\u2212') + money(v);
+  if(lv <= 0) el.innerHTML = 'Step 1 · closed market: CS <b>' + money(csA) + '</b> + PS <b>' + money(psA) + '</b> = total <b>' + money(125) + '</b>.';
+  else if(lv === 1) el.innerHTML = 'Step 2 · Pw <b>' + money(pw) + '</b> → Qd <b>' + trF1(w.qd) + '</b>, Qs <b>' + trF1(w.qs) + '</b> → ' + word + ' <b>' + trF1(Math.abs(w.trade)) + '</b>.';
+  else if(lv === 2) el.innerHTML = 'Step 3 · CS <b>' + money(csA) + ' → ' + money(w.cs) + '</b> (' + sgn(dCs) + ').';
+  else if(lv === 3) el.innerHTML = 'Step 4 · PS <b>' + money(psA) + ' → ' + money(w.ps) + '</b> (' + sgn(dPs) + ').';
+  else el.innerHTML = 'Step 5 · ' + sgn(dCs) + ' and ' + sgn(dPs) + ' → net <b>+' + money(w.tot - 125) + '</b>: total <b>' + money(125) + ' → ' + money(w.tot) + '</b>.';
+}
+function trBars(px, o, refV, refLab, govLab, baseCap){
+  /* 金额条：上条 = 剩余的归属（CS / PS / 政府或配额租金）；下条 = 总剩余相对基准的增减
+     窄段（<26%）放不下整段文字 → 文字搬进下方 caption，避免被裁成半个字（同 2.8 窄段短标的做法） */
+  const w = trState(o);
+  const wf = trState({ pw: o.pw, mode: 'free' });
+  const pie = w.cs + w.ps + w.rev;
+  const extras = [];
+  [[px + 'Bcs', w.cs, 'CS '], [px + 'Bps', w.ps, 'PS '], [px + 'Bgov', w.rev, govLab || 'gov ']].forEach(function(p){
+    const seg = $(p[0]); if(!seg) return;
+    if(p[1] < 0.05){ seg.style.width = '0%'; seg.style.display = 'none'; seg.textContent = ''; return; }
+    const pct = p[1] / pie * 100;
+    seg.style.display = '';
+    seg.style.width = pct.toFixed(1) + '%';
+    if(pct < 26){ seg.textContent = ''; extras.push(p[2].trim() + '\u00A0' + money(p[1])); }
+    else seg.textContent = p[2] + money(p[1]);
+  });
+  const bcap = $(px + 'BCap');
+  if(bcap) bcap.textContent = baseCap + (extras.length ? ' \u00b7 ' + extras.join(' \u00b7 ') : '');
+  const cur = w.tot, gap = Math.abs(refV - cur), mx = Math.max(refV, cur);
+  const s1 = $(px + 'C1'), s2 = $(px + 'C2');
+  if(s1){
+    s1.style.width = (Math.min(refV, cur) / mx * 100).toFixed(1) + '%';
+    s1.textContent = money(Math.min(refV, cur));
+  }
+  if(s2){
+    /* 方向决定颜色：比参照系多是绿（增益），少是灰（损失）——
+       沿用一个写死的 .gain 会把"损失"画成绿色 */
+    s2.className = 'bseg ' + (cur >= refV ? 'gain' : 'loss');
+    if(gap < 0.05){ s2.style.width = '0%'; s2.style.display = 'none'; s2.textContent = ''; }
+    else {
+      s2.style.display = ''; s2.style.width = (gap / mx * 100).toFixed(1) + '%';
+      s2.textContent = (gap / mx * 100 < 12) ? '' : (cur >= refV ? '+' : '\u2212') + money(gap);
+    }
+  }
+  const cap = $(px + 'CmpCap');
+  if(cap){
+    cap.innerHTML = gap < 0.05
+      ? 'Total surplus <b>' + money(cur) + '</b> — the same as ' + refLab
+      : (cur >= refV
+        ? 'Total surplus <b>' + money(cur) + '</b> · <b>' + money(gap) + '</b> more than ' + refLab
+        : 'Total surplus <b>' + money(cur) + '</b> · <b>' + money(gap) + '</b> of deadweight\u00A0loss');
+  }
+  return { w: w, wf: wf };
+}
+function trPage(id){
+  if(id === 'im'){
+    const lv = trLv('imA');
+    trStep('imA', 20, lv);
+    trStepRead('imRead', 20, lv);
+  }
+  if(id === 'ex'){
+    const lv = trLv('exA');
+    trStep('exA', 40, lv);
+    trStepRead('exRead', 40, lv);
+  }
+  if(id === 'lab'){
+    const pw = +$('labPw').value, isQ = $('labMode').checked, mag = +$('labMag').value;
+    const on = i => !$(i).classList.contains('off');
+    const show = { cs: on('labCs'), ps: on('labPs'), rev: on('labGov'), dwl: on('labDwl') };
+    const o = isQ
+      ? { pw: pw, mode: 'quota', cap: mag, showCs: show.cs, showPs: show.ps, showRev: show.rev, showDwl: show.dwl }
+      : { pw: pw, mode: 'tariff', t: mag, showCs: show.cs, showPs: show.ps, showRev: show.rev, showDwl: show.dwl };
+    trRender('labA', o);
+    /* 参照系 = 同一 Pw 下的自由贸易：条形图于是直接读出这项政策的代价 */
+    trBars('lab', o, trState({ pw: pw, mode: 'free' }).tot, 'free trade at the same P\u1d21',
+           isQ ? 'rent ' : 'revenue ', 'Who holds the surplus');
+    const w = trState(o), wf = trState({ pw: pw, mode: 'free' });
+    const exp = w.isExp;                       /* 世界价高于自给自足价 → 本国是出口国 */
+    const side = exp ? 'exports' : 'imports';
+    const bound = Math.abs(w.pd - w.pw) > 0.05;   /* 政策是否真的起了作用 */
+    $('labName').textContent = isQ ? 'Quota' : (exp ? 'Export tariff' : 'Import tariff');
+    $('labMagLab').textContent = isQ ? (exp ? 'Exports allowed' : 'Imports allowed')
+                                     : (exp ? 'Export tax per unit' : 'Tariff per unit');
+    $('labMagv').textContent = isQ ? mag + (mag === 1 ? ' unit' : ' units') : money(mag);
+    let msg;
+    if(mag === 0){
+      msg = 'Nothing at the border — this is <b>free trade</b>: ' + side + ' <b>' + trF1(Math.abs(wf.trade))
+          + '</b>, total <b>' + money(wf.tot) + '</b>.';
+    } else if(!bound){
+      msg = (isQ ? 'Quota <b>' + mag + '</b>' : 'Tariff <b>' + money(mag) + '</b>')
+          + ' does not bind — still free trade, no rent, no loss.';
+    } else {
+      msg = (isQ ? 'Quota <b>' + mag + (mag === 1 ? ' unit' : ' units') + '</b>'
+                 : (exp ? 'Export tax ' : 'Tariff ') + '<b>' + money(mag) + '</b>')
+          + ' \u2192 home price <b>' + money(w.pd) + '</b> ' + (exp ? '<b>below</b>' : '<b>above</b>')
+          + ' the world price, ' + side + ' <b>' + trF1(Math.abs(w.trade)) + '</b>'
+          + ' \u00b7 the <b>' + money(w.rev) + '</b> rectangle goes to '
+          + (isQ ? '<b>licence holders</b> as rent' : '<b>the treasury</b>')
+          + ', DWL <b>' + money(w.dwl) + '</b>.';
+    }
+    msg += ' Qs ' + trF1(wf.qs) + '\u2192' + trF1(w.qs) + ', Qd ' + trF1(wf.qd) + '\u2192' + trF1(w.qd) + '.';
+    if(exp && bound) msg += ' Home producers get less than the world price.';
+    if(!bound && mag > 0) msg += '';
+    const rd = $('labRead'); if(rd) rd.innerHTML = msg;   /* 报告框已删，留个保护 */
+  }
+  if(id === 'cmp') trCmpBar();
+}
+/* lab 页的 Δ 对照表：Free trade vs Policy */
+/* 三态总剩余条形图 */
+/* 三态总剩余条形图：每段都带数字，再画一条「自给自足 $125」参考线，
+   于是 "+20" 和 "−5" 一眼可见 —— 学生不用去猜格子里的数 */
+/* 「谁赚谁亏」：以 0 为轴的双向条形 —— 消费者 +60、生产者 −40、净 +20 一眼可见 */
+let whoDir = 'imp';
+/* 输赢页的进口/出口切换：图和右侧文字一起换，避免两个方向挤在一屏里看不清 */
+function trWhoTab(dir){
+  whoDir = (dir === 'exp') ? 'exp' : 'imp';
+  const imp = (whoDir === 'imp');
+  const setBtn = function(id, on){ const b = $(id); if(b) b.className = 'big-btn' + (on ? ' on' : ' ghost'); };
+  setBtn('whoImBtn', imp); setBtn('whoExBtn', !imp);
+  const a = $('whoImpPane'), c = $('whoExPane');
+  if(a) a.style.display = imp ? 'flex' : 'none';
+  if(c) c.style.display = imp ? 'none' : 'flex';
+  trWho('whoChart', whoDir);
+}
+
+function trWho(boxId, dir){
+  const box = $(boxId); if(!box) return;
+  /* 出口是进口的镜像：消费者/生产者互换符号。压紧凑一点，别把页面撑虚 */
+  const ex = (dir === 'exp');
+  const X0 = 190, K = 2.75, H = 46, Y0 = 80, DY = 118;
+  const rows = [
+    { lab: 'Consumers', v: ex ? -40 :  60, c: '#1E88E5', fill: 'rgba(30,136,229,.30)' },
+    { lab: 'Producers', v: ex ?  60 : -40, c: '#5b6b7b', fill: 'rgba(120,140,170,.45)' },
+    { lab: 'Net',       v:  20, c: '#1a3a5c', fill: 'rgba(46,74,107,.30)' }
+  ];
+  let g = '';
+  g += '<line x1="' + X0 + '" y1="44" x2="' + X0 + '" y2="' + (Y0 + 2 * DY + H + 14) + '" stroke="#94a3b8" stroke-width="2.5"/>';
+  g += '<text x="' + X0 + '" y="30" text-anchor="middle" font-size="26" font-weight="700" fill="#5b6b7b">0</text>';
+  rows.forEach(function(r, i){
+    const y = Y0 + i * DY, w = Math.abs(r.v) * K;
+    const x = r.v >= 0 ? X0 : X0 - w;
+    g += '<rect x="' + x.toFixed(1) + '" y="' + y + '" width="' + w.toFixed(1) + '" height="' + H +
+         '" fill="' + r.fill + '" stroke="' + r.c + '" stroke-width="2.5"/>';
+    g += '<text x="' + x.toFixed(1) + '" y="' + (y - 13) + '" font-size="24" font-weight="800" fill="' + r.c + '">' +
+         r.lab + ' ' + (r.v > 0 ? '+' : '\u2212') + '$' + Math.abs(r.v) + '</text>';
+  });
+  g += '<text x="' + X0 + '" y="' + (Y0 + 2 * DY + H + 40) + '" text-anchor="middle" font-size="26" font-weight="700" fill="#5b6b7b">'
+     + 'free trade vs closed</text>';
+  box.innerHTML = '<svg viewBox="0 0 400 430" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+
+/* 作图页：左边每揭晓一条注意事项，右边就多画一层 —— 用同一套 trAxes/trCurves 坐标，
+   和进口/出口/实验台那几页的图完全一致。层数 = 当前展开的 .rgrp 个数。 */
+function trGraph(){
+  const box = $('gphA'); if(!box) return;
+  const slide = document.querySelector('.slide.active');
+  const grps = slide ? slide.querySelectorAll('.rgrp') : [];
+  let lvl = 0; for(let i = 0; i < grps.length; i++) if(grps[i].classList.contains('show')) lvl++;
+  const pw = 20, t = 5, pd = pw + t;
+  const qs = tQs(pd), qd = tQd(pd);          /* 4 / 6 */
+  const qsf = tQs(pw), qdf = tQd(pw);        /* 3 / 7 */
+  const DL = function(x1,y1,x2,y2,c,w){ return '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + c + '" stroke-width="' + (w || 2.5) + '" stroke-dasharray="9 6"/>'; };
+  const TT = function(x,y,s,c,sz,an){ return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + (an || 'start') + '" font-size="' + (sz || 28) + '" font-weight="800" fill="' + c + '">' + s + '</text>'; };
+  let g = trAxes() + trCurves();
+
+  /* ① 两条价格线 + 右侧的关税缺口 */
+  if(lvl >= 1){
+    g += DL(90, tY(pd), 630, tY(pd), '#C62828');
+    g += DL(90, tY(pw), 630, tY(pw), '#2E7D32');
+    g += TT(84, tY(pd) + 10, 'Pd $' + trF1(pd), '#C62828', 28, 'end');
+    g += TT(84, tY(pw) + 10, 'Pw $' + trF1(pw), '#2E7D32', 28, 'end');
+    const gx = 566, y1 = tY(pd), y2 = tY(pw);
+    g += '<line x1="' + gx + '" y1="' + y1.toFixed(1) + '" x2="' + gx + '" y2="' + y2.toFixed(1) + '" stroke="#C62828" stroke-width="3"/>';
+    g += '<polygon points="' + gx + ',' + (y1 - 9).toFixed(1) + ' ' + (gx - 7) + ',' + (y1 + 4).toFixed(1) + ' ' + (gx + 7) + ',' + (y1 + 4).toFixed(1) + '" fill="#C62828"/>';
+    g += '<polygon points="' + gx + ',' + (y2 + 9).toFixed(1) + ' ' + (gx - 7) + ',' + (y2 - 4).toFixed(1) + ' ' + (gx + 7) + ',' + (y2 - 4).toFixed(1) + '" fill="#C62828"/>';
+    g += TT(gx + 15, (y1 + y2) / 2 + 10, 'tariff $5', '#C62828', 27);
+  }
+  /* ② 两个数量 + 进口缺口 */
+  if(lvl >= 2){
+    g += DL(tX(qs), tY(pd), tX(qs), 460, '#6C4BD3');
+    g += DL(tX(qd), tY(pd), tX(qd), 460, '#6C4BD3');
+    g += TT(tX(qs) - 5, 486, 'Qs ' + trF1(qs), '#6C4BD3', 27, 'end');
+    g += TT(tX(qd) + 5, 486, 'Qd ' + trF1(qd), '#6C4BD3', 27, 'start');
+    const y = 514;
+    g += '<line x1="' + tX(qs).toFixed(1) + '" y1="' + y + '" x2="' + tX(qd).toFixed(1) + '" y2="' + y + '" stroke="#1a3a5c" stroke-width="3"/>';
+    g += '<polygon points="' + tX(qs).toFixed(1) + ',' + y + ' ' + (tX(qs) + 11).toFixed(1) + ',' + (y - 6) + ' ' + (tX(qs) + 11).toFixed(1) + ',' + (y + 6) + '" fill="#1a3a5c"/>';
+    g += '<polygon points="' + tX(qd).toFixed(1) + ',' + y + ' ' + (tX(qd) - 11).toFixed(1) + ',' + (y - 6) + ' ' + (tX(qd) - 11).toFixed(1) + ',' + (y + 6) + '" fill="#1a3a5c"/>';
+    g += TT((tX(qs) + tX(qd)) / 2, y + 30, 'imports ' + trF1(qd - qs), '#1a3a5c', 28, 'middle');
+  }
+  /* ③ 关税收入矩形 + 两块无谓损失三角 */
+  if(lvl >= 3){
+    g += '<rect x="' + tX(qs).toFixed(1) + '" y="' + tY(pd).toFixed(1) + '" width="' + (tX(qd) - tX(qs)).toFixed(1)
+       + '" height="' + (tY(pw) - tY(pd)).toFixed(1) + '" fill="rgba(108,75,211,.30)" stroke="#6C4BD3" stroke-width="2.5"/>';
+    g += '<polygon points="' + tX(qsf).toFixed(1) + ',' + tY(pw).toFixed(1) + ' ' + tX(qs).toFixed(1) + ',' + tY(pd).toFixed(1)
+       + ' ' + tX(qs).toFixed(1) + ',' + tY(pw).toFixed(1) + '" fill="rgba(120,120,120,.38)" stroke="#7b8794" stroke-width="2.5" stroke-dasharray="7 5"/>';
+    g += '<polygon points="' + tX(qd).toFixed(1) + ',' + tY(pd).toFixed(1) + ' ' + tX(qdf).toFixed(1) + ',' + tY(pw).toFixed(1)
+       + ' ' + tX(qd).toFixed(1) + ',' + tY(pw).toFixed(1) + '" fill="rgba(120,120,120,.38)" stroke="#7b8794" stroke-width="2.5" stroke-dasharray="7 5"/>';
+  }
+  /* ④ 谁来承担 */
+  if(lvl >= 4){
+    g += TT(624, 62, 'small country: Pw is given,', '#5b6b7b', 27, 'end');
+    g += TT(624, 94, 'so home buyers pay the whole $5', '#5b6b7b', 27, 'end');
+  }
+  box.innerHTML = '<svg viewBox="-30 0 730 545" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+
+function trCmpBar(){
+  const box = $('cmpBar'); if(!box) return;
+  const K = 3.6, X = 74, H = 64, Y0 = 96, DY = 140;
+  const rows = [
+    { lab: 'Autarky',          cs: 62.5,  ps: 62.5, gov: 0,  dwl: 0 },
+    { lab: 'Free trade',       cs: 122.5, ps: 22.5, gov: 0,  dwl: 0 },
+    { lab: 'Tariff = quota',   cs: 90,    ps: 40,   gov: 10, dwl: 5 }
+  ];
+  const REF = 125, xr = X + REF * K;
+  let g = '';
+  g += '<line x1="' + xr.toFixed(1) + '" y1="54" x2="' + xr.toFixed(1) + '" y2="452" stroke="#C62828" stroke-width="2.5" stroke-dasharray="9 7"/>';
+  g += '<text x="' + xr.toFixed(1) + '" y="42" text-anchor="middle" font-size="28" font-weight="800" fill="#C62828">closed market $125</text>';
+  rows.forEach(function(r, i){
+    const y = Y0 + i * DY, tot = r.cs + r.ps + r.gov;
+    let x = X;
+    g += '<text x="' + X + '" y="' + (y - 16) + '" font-size="33" font-weight="800" fill="#1a3a5c">' + r.lab + ' \u2014 $' + trF1(tot) + '</text>';
+    const below = [];
+    const put = function(v, fill, stroke, name){
+      if(v <= 0) return;
+      const w = v * K;
+      g += '<rect x="' + x.toFixed(1) + '" y="' + y + '" width="' + w.toFixed(1) + '" height="' + H + '" fill="' + fill + '" stroke="' + stroke + '" stroke-width="2.5"/>';
+      const txt = name + ' $' + trF1(v);
+      if(w >= 100) g += '<text x="' + (x + w / 2).toFixed(1) + '" y="' + (y + H / 2 + 10) + '" text-anchor="middle" font-size="30" font-weight="800" fill="' + stroke + '">' + txt + '</text>';
+      else below.push({ c: x + w / 2, txt: txt, col: stroke });
+      x += w;
+    };
+    put(r.cs, 'rgba(30,136,229,.30)', '#1E88E5', 'CS');
+    put(r.ps, 'rgba(46,125,50,.30)', '#2E7D32', 'PS');
+    put(r.gov, 'rgba(108,75,211,.25)', '#6C4BD3', 'Gov');
+    put(r.dwl, 'rgba(120,120,120,.35)', '#5b6b7b', 'lost');
+    /* 段太窄写不下 → 数字挪到条下方，用弧线指回去 */
+    if(below.length){
+      const c0 = below[0].c, c1 = below[below.length - 1].c, yb = y + H + 27, mid = (c0 + c1) / 2;
+      g += '<path d="M' + c0.toFixed(1) + ',' + (y + H + 3) + ' Q' + mid.toFixed(1) + ',' + (yb - 16) + ' ' + c1.toFixed(1) + ',' + (y + H + 3) + '" fill="none" stroke="#9aa7b2" stroke-width="1.6"/>';
+      g += '<text x="' + mid.toFixed(1) + '" y="' + yb + '" text-anchor="middle" font-size="28" font-weight="800" fill="' + below[0].col + '">'
+         + below.map(function(b){ return b.txt; }).join('  \u00b7  ') + '</text>';
+    }
+  });
+  box.innerHTML = '<svg viewBox="0 0 700 512" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+}
+
+try {
+  if($('labPw')) $('labPw').oninput = function(){ trPage('lab'); };
+  if($('labMag')) $('labMag').oninput = function(){ trPage('lab'); };
+  if($('labMode')) $('labMode').onchange = function(){
+    const m = $('labMag');
+    /* 步长一律 1：原来的 5 太粗，拖起来一跳一跳的 */
+    if(this.checked){ m.min = 0; m.max = 8; m.step = 1; m.value = 2; }    /* 配额：0–8 单位 */
+    else { m.min = 0; m.max = 20; m.step = 1; m.value = 5; }              /* 关税：$0–$20 */
+    trPage('lab');
+  };
+  ['labCs', 'labPs', 'labGov', 'labDwl'].forEach(function(id){
+    const b = $(id);
+    if(b) b.onclick = function(){ b.classList.toggle('off'); trPage('lab'); };
+  });
+  if($('labA')) trPage('lab');
+  if($('cmpBar')) trCmpBar();
+} catch(e){ console.error('trade', e); }
+
+/* ══════════ 46 · QUICK CHECK（4 题，与 2.8 的 BANKS 引擎同构） ══════════ */
+try {
+  (function(){
+    const gid = 'kc';
+    const QS = [
+      { s: 'Home autarky price is $30 and the world price is $20. Opening to trade makes this country…', o: ['import', 'export', 'trade nothing', 'raise its own price'], a: 'import' },
+      { s: 'Free trade at Pw = $20 gives imports of 4. A $5 tariff leaves imports of 2. Government revenue is…', o: ['$5', '$10', '$20', '$0'], a: '$10' },
+      { s: 'A quota set at 2 units gives the same price and quantity as a $5 tariff. What changes?', o: ['the DWL is larger under the quota', 'the rectangle becomes quota rent', 'nothing at all', 'the tariff revenue grows'], a: 'the rectangle becomes quota rent' },
+      { s: 'Closed $125 · free trade $145 · protected $140. Protection…', o: ['adds $5 of surplus', 'restores the whole gain', 'loses $5 of the gain', 'leaves total surplus unchanged'], a: 'loses $5 of the gain' }
+    ];
+    if(!$(gid + 'next')) return;
+    let qi = 0, score = 0;
+    function render(){
+      $(gid + 'q').textContent = qi + 1;
+      $(gid + 'n').textContent = QS.length;
+      $(gid + 'scenario').textContent = QS[qi].s;
+      $(gid + 'fb').textContent = '';
+      $(gid + 'next').style.display = 'none';
+      const box = $(gid + 'btns');
+      box.innerHTML = '';
+      QS[qi].o.forEach(function(opt){
+        const b = document.createElement('button');
+        b.textContent = opt;
+        b.onclick = function(){
+          Array.prototype.slice.call(box.children).forEach(function(x){ x.disabled = true; });
+          const right = opt === QS[qi].a;
+          if(right) score++;
+          $(gid + 'score').textContent = score;
+          Array.prototype.slice.call(box.children).forEach(function(x){
+            if(x.textContent === QS[qi].a) x.classList.add('correct');
+            else if(x === b) x.classList.add('wrong');
+          });
+          $(gid + 'fb').textContent = right ? 'Correct!' : 'The right answer is: ' + QS[qi].a;
+          $(gid + 'next').style.display = 'inline-block';
+          $(gid + 'next').textContent = qi >= QS.length - 1 ? 'See result ▶' : 'Next ▶';
+        };
+        box.appendChild(b);
+      });
+    }
+    $(gid + 'next').onclick = function(){
+      qi++;
+      if(qi >= QS.length){
+        $(gid + 'btns').style.display = 'none';
+        $(gid + 'scenario').style.display = 'none';
+        if($(gid + 'head')) $(gid + 'head').style.display = 'none';   /* 结果态：题号行与 Next 一起收起，避免和成绩块叠加 */
+        if($(gid + 'fb')) $(gid + 'fb').style.display = 'none';
+        $(gid + 'result').style.display = 'block';
+        $(gid + 'final').textContent = score + ' / ' + QS.length;
+      } else render();
+    };
+    $(gid + 'again').onclick = function(){
+      qi = 0; score = 0; $(gid + 'score').textContent = '0';
+      $(gid + 'result').style.display = 'none';
+      $(gid + 'btns').style.display = 'flex';
+      $(gid + 'scenario').style.display = 'block';
+      if($(gid + 'head')) $(gid + 'head').style.display = 'flex';
+      if($(gid + 'fb')) $(gid + 'fb').style.display = '';
+      render();
+    };
+    render();
+  })();
+} catch(err){ console.error('quick check', err); }
+
+</script>
+
+</div>
+</body>
+</html>
