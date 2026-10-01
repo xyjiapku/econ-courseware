@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Micro 3.4 — Supply</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,3vh,48px) clamp(60px,7vw,110px) 84px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;overflow-x:hidden;}
+.slide.active{opacity:1;pointer-events:auto;}
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.7);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:clamp(24px,2.4vw,30px);font-weight:700;padding:4px 18px;border-radius:8px;cursor:pointer;transition:.12s;min-width:60px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:40%;}
+.dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.3);}
+/* cover */
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff;}
+.cover .course-tag{font-size:clamp(22px,2.5vw,32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px);}
+.cover h1{font-size:clamp(48px,7vw,84px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px);}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px);}
+.cover .author{font-size:clamp(22px,2.2vw,28px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:60px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
+/* reveal button */
+.rbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn:hover{background:var(--blue);color:#fff;}
+.rbtn:disabled{opacity:.35;cursor:default;}
+.rbtn-icon{font-size:16px;color:var(--blue);}
+.sbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn:hover{background:var(--blue);color:#fff;}
+.sbtn:disabled{opacity:.35;cursor:default;}
+/* content */
+.content{width:100%;max-width:clamp(600px,85vw,1100px);display:flex;flex-direction:column;flex:1;}
+h1{font-size:clamp(28px,3.5vw,44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+.sub{font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;margin-bottom:8px;width:100%;line-height:1.4;}
+.course-tag{font-size:clamp(22px,1.8vw,26px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(22px,2.2vw,29px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.6vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}
+.db{color:var(--darkblue);}
+.dr{color:var(--red);}
+.green{color:var(--green);}
+.gray{color:#5b6b7b;}
+/* reveal groups */
+.rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
+.rgrp.show{opacity:1;max-height:1400px;}
+/* note box */
+.note{border-radius:0 10px 10px 0;padding:10px 16px;font-size:clamp(22px,2.1vw,28px);line-height:1.45;}
+.note p{margin:0;}
+/* cards */
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:14px 18px;}
+.card.g{border-color:var(--green);}
+.card.r{border-color:var(--red);}
+.card h3{font-size:clamp(24px,2.5vw,31px);margin-bottom:6px;}
+.card p{font-size:clamp(22px,2.1vw,28px);line-height:1.4;color:#445;margin-top:4px;}
+/* compact variant (recap page + tax/subsidy pages): same ≥22px floor, tighter leading so 3 blocks fit one screen */
+.compact .card{padding:10px 14px;}
+.compact .card h3{font-size:clamp(24px,2vw,28px);margin-bottom:2px;}
+.compact .card p{font-size:clamp(22px,1.8vw,25px);line-height:1.35;margin-top:2px;}
+.compact .note{font-size:clamp(22px,1.8vw,25px);line-height:1.35;padding:10px 14px;}
+.compact .note p{margin-bottom:4px;}
+.compact .sub{font-size:clamp(22px,1.9vw,26px);margin-bottom:4px;}
+.compact h1{font-size:clamp(28px,3.2vw,40px);}
+/* .compact2: one notch denser than the default, for the recap page (two columns need the room) */
+.compact2 .card{padding:12px 16px;}
+.compact2 .card p{font-size:clamp(22px,2vw,27px);line-height:1.38;}
+.compact2 .note{font-size:clamp(22px,2vw,27px);line-height:1.38;}
+.compact2 .note p{margin-bottom:4px;}
+/* summary page: many steps, so it runs one notch denser as well */
+.ssteps.compact{font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+/* buttons */
+.big-btn{padding:12px 26px;border:none;background:var(--blue);color:#fff;border-radius:12px;font-size:clamp(22px,2.2vw,28px);font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.factor-btn{padding:10px 18px;border-radius:12px;border:2.5px solid rgba(42,90,140,.35);background:#fff;color:#1a3a5c;font-size:clamp(22px,1.9vw,26px);font-weight:700;cursor:pointer;transition:.15s;}
+.factor-btn:hover{border-color:var(--blue);background:#eaf2fb;}
+/* data table */
+.data-table{border-collapse:collapse;width:100%;}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:10px 14px;font-size:clamp(22px,2.2vw,28px);text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table.compact th, .data-table.compact td{font-size:clamp(22px,1.7vw,25px);padding:6px 10px;}
+/* blanks */
+.blank{display:inline-block;min-width:clamp(60px,5vw,100px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
+.blank.empty{color:transparent;}
+.blank.filled{color:var(--blue);}
+/* game */
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(12px,1.5vh,22px) clamp(16px,2vw,28px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(22px,2.2vw,29px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px,1vw,14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(22px,2.2vw,28px);padding:clamp(8px,1vh,14px) clamp(16px,2vw,28px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(22px,2.2vw,28px);font-weight:700;min-height:30px;margin-top:2px;}
+/* summary steps */
+.ssteps{font-size:clamp(22px,2.2vw,27px);line-height:1.55;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(10px,1.2vh,18px);}
+.sstep.show{opacity:1;}
+/* closing */
+.closing{justify-content:center;text-align:center;align-items:center;}
+.result-box{display:none;text-align:center;padding:20px;}
+.result-box h3{font-size:clamp(28px,3.5vw,38px);color:var(--darkblue);}
+.result-box .big{font-size:clamp(40px,5.5vw,56px);font-weight:800;color:var(--blue);margin:8px 0;}
+.result-box .btn{font-size:clamp(22px,2.2vw,28px);padding:clamp(8px,1vh,14px) clamp(24px,3vw,40px);border:none;border-radius:10px;background:var(--blue);color:#fff;cursor:pointer;font-weight:700;}
+/* image + lightbox (kept so the deck family stays consistent) */
+.img-wrap{max-width:clamp(320px,38vw,540px);margin:2px 0 10px clamp(18px,2.8vw,36px);border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1);float:right;clear:right;}
+.img-wrap.zoomable img{cursor:zoom-in;}
+.img-wrap img{width:100%;display:block;}
+.lbox{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.88);z-index:2000;display:none;justify-content:center;align-items:center;cursor:pointer;}
+.lbox.show{display:flex;}
+.lbox img{max-width:92vw;max-height:92vh;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+/* slider endpoint hints */
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+/* SVG animation helpers */
+@keyframes dashmove{to{stroke-dashoffset:-42;}}
+.flowline{stroke-dasharray:13 9;animation:dashmove .7s linear infinite;}
+@media(max-width:900px){
+  .slide{padding:16px 12px 76px;}
+  h1{font-size:26px;}
+  .txt{font-size:22px;}
+  .rbtn-wrap{right:4px;}
+  .rbtn{font-size:20px;padding:10px 4px;}
+}
+</style>
+</head>
+<body>
+<div class="view" id="app">
+
+<!-- lightbox -->
+<div class="lbox" id="lbox"><img id="lboxImg" src="" alt=""></div>
+
+<!-- global reveal button -->
+<div class="rbtn-wrap" id="rbtnWrap">
+  <button class="rbtn" id="rbtn">Reveal more</button>
+  <span class="rbtn-icon">▶</span>
+</div>
+
+<!-- summary reveal button -->
+<div class="sbtn-wrap" id="sbtnWrap">
+  <button class="sbtn" id="sbtn">Reveal answers</button>
+</div>
+
+<!-- ───── S1 · COVER ───── -->
+<div class="slide cover active" data-i="0">
+  <div class="course-tag">AP MICROECONOMICS · UNIT 2 · TOPIC 2.2</div>
+  <h1>Supply</h1>
+  <div class="sep"></div>
+  <div style="font-size:clamp(22px,2.4vw,30px);color:#5b6b7b;font-weight:600;">The seller's side of the market · 供给</div>
+  <div class="author">DR. JIA</div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ───── S2 · FROM DEMAND TO SUPPLY ───── -->
+<div class="slide" data-i="1">
+  <div class="content">
+  <div class="course-tag">FROM DEMAND TO SUPPLY · 回顾</div>
+  <h1>From demand to supply — you complete it</h1>
+  <div class="sub">Change <b>buyers</b> into <b>sellers</b>, then fill in the gaps.</div><hr>
+  <div class="txt compact2">
+    <div style="display:flex;gap:16px;align-items:flex-start;">
+      <div class="card" style="flex:1;">
+        <h3 class="blue">Last lesson — DEMAND</h3>
+        <p><b>Definition:</b> the willingness and ability of <b>consumers</b> to buy a good at a given <b>price</b>, over a period of <b>time</b>.</p>
+        <p><b>Law:</b> as price rises, quantity demanded <b>falls</b> — the curve slopes <b>downward</b>.</p>
+        <p class="gray">Reward = <b>satisfaction</b>.</p>
+      </div>
+      <div class="sstep" id="fd0" style="flex:1;">
+        <div class="card g">
+          <h3 class="green">Today — SUPPLY (fill in the gaps)</h3>
+          <p><b>Definition:</b> the willingness and <span class="blank empty" data-a="ability">___</span> of <span class="blank empty" data-a="sellers">___</span> to offer a good at a given <span class="blank empty" data-a="price">___</span>, over a period of <span class="blank empty" data-a="time">___</span>.</p>
+          <p><b>Law:</b> as price rises, quantity supplied <span class="blank empty" data-a="rises">___</span> — the curve slopes <span class="blank empty" data-a="upward">___</span>.</p>
+          <p class="gray">Reward = <span class="blank empty" data-a="profit">___</span>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="sstep" id="fd1" style="margin-top:10px;">
+      <div class="note" style="background:#FFF8E1;border-left:6px solid #F0B429;">
+        <p style="font-weight:800;">Both definitions carry a hidden third line — <b>ceteris paribus</b> ("other things being <span class="blank empty" data-a="equal">___</span>").</p>
+        <p>Only a change in the good's own <span class="blank empty" data-a="price">___</span> slides us <b>along</b> the curve. Change anything else — costs, technology, taxes, the weather — and the <span class="blank empty" data-a="whole curve">___</span> moves.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S3 · LAW OF SUPPLY ───── -->
+<div class="slide" data-i="2">
+  <div class="content">
+  <div class="course-tag">THE LAW OF SUPPLY · 供给</div>
+  <h1>The Law of Supply — the seller's numbers</h1>
+  <div class="sub">Now we ask the <b>shop</b>, not the buyer. Same table, same method — <b>only the price changes</b>.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div id="sl-schlab" style="display:none;background:#1a5276;color:#fff;border-radius:10px;padding:8px 14px;font-weight:800;font-size:clamp(22px,2.2vw,28px);text-align:center;">This TABLE = the <b>SUPPLY SCHEDULE</b></div>
+      <table class="data-table" style="width:100%;">
+        <tr><th>P (¥)</th><th>Qs (cups)</th></tr>
+        <tr id="sl-r1" style="opacity:.25"><td>10</td><td>1</td></tr>
+        <tr id="sl-r2" style="opacity:.25"><td>20</td><td>3</td></tr>
+        <tr id="sl-r3" style="opacity:.25"><td>30</td><td>5</td></tr>
+        <tr id="sl-r4" style="opacity:.25"><td>40</td><td>7</td></tr>
+      </table>
+      <div class="note" style="background:#F8FBFF;border-left:5px solid var(--blue);">
+        <p><b>Control</b> everything else (costs, technology, rivals…), <b>change</b> only the price, <b>record</b> how many cups the shop is willing to make each week.</p>
+      </div>
+      <div id="sl-law" style="display:none;background:#E8F5E9;border-left:5px solid var(--green);padding:12px 16px;border-radius:0 10px 10px 0;">
+        <p style="margin:0;font-size:clamp(24px,2.6vw,34px);font-weight:800;color:#1b5e20;">Qs = 0.2P − 1</p>
+        <p style="margin:6px 0 0;">As <b>P rises, Qs rises</b> — a <b>positive</b> relationship. That is the <b class="blue">LAW OF SUPPLY</b> — provided everything else is held constant.</p>
+      </div>
+    </div>
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Qs (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="122" y="490" text-anchor="middle">1</text>
+          <text x="188" y="490" text-anchor="middle">3</text>
+          <text x="252" y="490" text-anchor="middle">5</text>
+          <text x="318" y="490" text-anchor="middle">7</text>
+          <text x="78" y="387" text-anchor="end">10</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+          <text x="78" y="141" text-anchor="end">40</text>
+        </g>
+        <g id="sl-pts" opacity="0">
+          <circle cx="122" cy="378" r="10" fill="#1E88E5"/><circle cx="188" cy="296" r="10" fill="#1E88E5"/>
+          <circle cx="252" cy="214" r="10" fill="#1E88E5"/><circle cx="318" cy="132" r="10" fill="#1E88E5"/>
+        </g>
+        <line id="sl-line" x1="90" y1="419" x2="382" y2="50" stroke="#2E7D32" stroke-width="4" opacity="0"/>
+        <text id="sl-eq" x="410" y="400" font-size="32" font-weight="800" fill="#1b5e20" opacity="0">Qs = 0.2P − 1</text>
+      </svg>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:8px;">
+    <button class="big-btn" id="slNext">Next step ▶</button>
+    <button class="big-btn ghost" id="slReset">↺ Reset</button>
+  </div>
+  </div>
+</div>
+
+<!-- (the physics-vs-economics slide was removed on request: the Demand lesson already used Hooke's law for that analogy, so this lesson goes straight into supply itself) -->
+
+<!-- ───── S4 · DRAWING THE SUPPLY CURVE ───── -->
+<div class="slide" data-i="3">
+  <div class="content">
+  <div class="course-tag">THE SUPPLY CURVE · 画曲线</div>
+  <h1>Drawing the supply curve</h1>
+  <div class="sub">Step 1: plot the points. Step 2: join them. Step 3: slide the price and watch the dot ride the curve.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="78" y="387" text-anchor="end">10</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+          <text x="78" y="141" text-anchor="end">40</text>
+        </g>
+        <g id="sc-grid" opacity="0">
+          <circle cx="122" cy="378" r="10" fill="#1E88E5"/><circle cx="188" cy="296" r="10" fill="#1E88E5"/>
+          <circle cx="252" cy="214" r="10" fill="#1E88E5"/><circle cx="318" cy="132" r="10" fill="#1E88E5"/>
+        </g>
+        <line id="sc-line" x1="90" y1="419" x2="382" y2="50" stroke="#1a5276" stroke-width="4" opacity="0"/>
+        <text id="sc-label" x="348" y="122" font-size="32" font-weight="800" fill="#1a5276" opacity="0">S</text>
+        <line id="sc-gv" x1="220" y1="255" x2="220" y2="460" stroke="#F0B429" stroke-width="3" stroke-dasharray="7 6" opacity="0"/>
+        <line id="sc-gh" x1="220" y1="255" x2="90" y2="255" stroke="#F0B429" stroke-width="3" stroke-dasharray="7 6" opacity="0"/>
+        <text id="sc-pv" x="40" y="264" text-anchor="end" font-size="28" font-weight="800" fill="#E74C3C" opacity="0">25</text>
+        <text id="sc-qv" x="220" y="487" text-anchor="middle" font-size="28" font-weight="800" fill="#E74C3C" opacity="0">4</text>
+        <circle id="sc-dot" cx="220" cy="255" r="12" fill="#E74C3C" stroke="#fff" stroke-width="3" opacity="0"/>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
+        <p class="b db" style="margin-bottom:6px;">Price slider</p>
+        <input type="range" id="scP" min="10" max="40" step="1" value="25" style="width:100%;accent-color:var(--blue);">
+        <p style="margin:8px 0 0;font-family:Consolas,monospace;font-size:clamp(22px,2.4vw,30px);color:#1a3a5c;font-weight:700;" id="scRead">P = ¥25 → Qs = 4 cups</p>
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:12px 16px;">
+        <p class="b db" style="margin-bottom:6px;">What the curve tells us:</p>
+        <p style="margin:0;">Every point = <b>one price</b> and the <b>quantity sellers are willing to supply</b> at that price.</p>
+        <p style="margin:10px 0 0;">Price ↑ → slide <b>up</b>: an <b style="color:#1e8449;">increase in quantity supplied</b><br>Price ↓ → slide <b>down</b>: a <b style="color:#b03a2e;">decrease in quantity supplied</b></p>
+        <p style="margin:10px 0 0;" class="gray">Both are movements <b>along</b> the curve — the curve itself does not move. Only the price changed.</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="big-btn" id="scPlot">1 · Plot the points</button>
+        <button class="big-btn ghost" id="scJoin">2 · Join them</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S5 · FIRM → MARKET ───── -->
+<div class="slide" data-i="4">
+  <div class="content">
+  <div class="course-tag">FROM INDIVIDUAL TO MARKET · 加总</div>
+  <h1>Individual supply → market supply</h1>
+  <div class="sub">The <b>market supply curve</b> is the horizontal sum of every firm's curve. At each price, add the quantities.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <table class="data-table" style="width:100%;">
+        <tr><th>P (¥)</th><th>Firm A</th><th>Firm B</th><th>Market</th></tr>
+        <tr><td>10</td><td>1</td><td>0</td><td id="mk1" style="opacity:.2;font-weight:800;">1</td></tr>
+        <tr><td>20</td><td>3</td><td>1</td><td id="mk2" style="opacity:.2;font-weight:800;">4</td></tr>
+        <tr><td>30</td><td>5</td><td>2</td><td id="mk3" style="opacity:.2;font-weight:800;">7</td></tr>
+        <tr><td>40</td><td>7</td><td>3</td><td id="mk4" style="opacity:.2;font-weight:800;">10</td></tr>
+      </table>
+      <div class="rgrp show">
+        <p style="margin:0;">Two milk-tea shops in the same market: <b>A</b> expands fast when the price rises, <b>B</b> responds slowly (it already runs one machine flat out).</p>
+      </div>
+      <div class="rgrp">
+        <p style="margin:0;">Market supply at each price = <b>A + B</b> — add the quantities <b>horizontally</b> (side by side, at the <b>same price</b>).</p>
+      </div>
+    </div>
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="164" y="490" text-anchor="middle">2</text>
+          <text x="239" y="490" text-anchor="middle">4</text>
+          <text x="313" y="490" text-anchor="middle">6</text>
+          <text x="387" y="490" text-anchor="middle">8</text>
+          <text x="461" y="490" text-anchor="middle">10</text>
+          <text x="78" y="387" text-anchor="end">10</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+          <text x="78" y="141" text-anchor="end">40</text>
+        </g>
+        <line x1="90" y1="378" x2="239" y2="50" stroke="#F0B429" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="239" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#a57d12">B</text>
+        <line x1="90" y1="419" x2="424" y2="50" stroke="#1E88E5" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="424" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#1E88E5">A</text>
+        <g id="mk-grp" opacity="0">
+          <line x1="90" y1="405" x2="573" y2="50" stroke="#1b5e20" stroke-width="5"/>
+          <text x="573" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">MARKET</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:8px;">
+    <button class="big-btn" id="mkShow">Add them up ▶</button>
+    <button class="big-btn ghost" id="mkHide">↺ Hide</button>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S6 · PRACTICE: THREE FIRMS ───── -->
+<div class="slide" data-i="5">
+  <div class="content">
+  <div class="course-tag">YOUR TURN · 练习</div>
+  <h1>Now aggregate THREE firms</h1>
+  <div class="sub">Add the quantities at each price. Work it out first, then reveal.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <table class="data-table" style="width:100%;">
+        <tr><th>P (¥)</th><th>X</th><th>Y</th><th>Z</th><th>Market</th></tr>
+        <tr><td>10</td><td>1</td><td>3</td><td>0</td><td id="pk1" class="blank empty" data-a="4">___</td></tr>
+        <tr><td>20</td><td>4</td><td>3</td><td>1</td><td id="pk2" class="blank empty" data-a="8">___</td></tr>
+        <tr><td>30</td><td>7</td><td>3</td><td>2</td><td id="pk3" class="blank empty" data-a="12">___</td></tr>
+      </table>
+      <div style="display:flex;gap:10px;">
+        <button class="big-btn" id="pkReveal">Reveal answers</button>
+        <button class="big-btn ghost" id="pkHide">↺ Hide</button>
+      </div>
+      <p style="margin:4px 0 0;" class="gray">Firm <b>Y</b> is at full capacity — <b>3 cups at any price</b> (a <b>vertical</b> curve). Firm <b>Z</b> is one small new entrant. Market supply = <b>X + Y + Z</b> at every price.</p>
+    </div>
+    <div style="flex:1.1;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="198" y="490" text-anchor="middle">5</text>
+          <text x="307" y="490" text-anchor="middle">10</text>
+          <text x="415" y="490" text-anchor="middle">15</text>
+          <text x="523" y="490" text-anchor="middle">20</text>
+          <text x="78" y="387" text-anchor="end">10</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+          <text x="78" y="141" text-anchor="end">40</text>
+        </g>
+        <line x1="155" y1="460" x2="155" y2="58" stroke="#F0B429" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="143" y="86" text-anchor="end" font-size="30" font-weight="800" fill="#a57d12">Y</text>
+        <line x1="90" y1="405" x2="372" y2="50" stroke="#1E88E5" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="372" y="42" text-anchor="middle" font-size="30" font-weight="800" fill="#1E88E5">X</text>
+        <line x1="90" y1="387" x2="176" y2="60" stroke="#8E44AD" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="135" y="255" font-size="30" font-weight="800" fill="#6C3483">Z</text>
+        <g id="pk-mkt" opacity="0">
+          <line x1="99" y1="460" x2="533" y2="50" stroke="#1b5e20" stroke-width="5"/>
+          <text x="545" y="96" font-size="30" font-weight="800" fill="#1b5e20">MARKET</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S7 · WHY ↑ ① PROFIT ───── -->
+<div class="slide" data-i="6">
+  <div class="content">
+  <div class="course-tag">WHY ↑ REASON ① · 利润动机</div>
+  <h1>Reason ① Profit — the price must cover the cost</h1>
+  <div class="sub">Suppose one cup costs <b>¥8</b> to make. Sell it for less than that and the firm loses money on every cup.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table compact" style="width:100%;">
+        <tr><th>Price (¥)</th><th>Cost per cup (¥)</th><th>Profit per cup (¥)</th><th>Cups offered</th></tr>
+        <tr><td>10</td><td>8</td><td style="color:#1e8449;font-weight:700;">+2</td><td>1</td></tr>
+        <tr><td>20</td><td>8</td><td style="color:#1e8449;font-weight:700;">+12</td><td>3</td></tr>
+        <tr><td>30</td><td>8</td><td style="color:#1e8449;font-weight:700;">+22</td><td>5</td></tr>
+      </table>
+      <p class="gray" style="margin-top:6px;">Same cost, higher price → a bigger profit on every cup → the firm wants to supply more. That is the schedule you met earlier: 1 / 3 / 5 cups.</p>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+        <p><b>Key idea:</b> a firm supplies a cup only if the price <b>covers the cost</b> of producing it. Price ↑ → profit per unit ↑ → quantity supplied ↑.</p>
+      </div>
+    </div>
+    <div class="rgrp">
+      <p class="b" style="color:var(--red);">Watch the difference</p>
+      <p>Profit per cup = <b>price − cost</b>. If the <b>cost</b> rises, the same price buys less profit → the firm offers fewer cups <b>at every price</b>. That is a <b>shift of the whole curve</b>, not a movement along it.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S8 · WHY ↑ ② RISING COSTS ───── -->
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">WHY ↑ REASON ② · 成本递增</div>
+  <h1>Reason ② Rising costs at higher output</h1>
+  <div class="sub">Producing more is not “more of the same”: overtime pay, an extra shift, older machines kept running. The <b>extra</b> cost of each additional cup rises.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table compact" style="width:100%;">
+        <tr><th>Cup</th><th>1st</th><th>2nd</th><th>3rd</th><th>4th</th><th>5th</th><th>6th</th></tr>
+        <tr><td><b>Extra cost of that cup (¥)</b></td><td>8</td><td>12</td><td>18</td><td>24</td><td>30</td><td>36</td></tr>
+      </table>
+      <p class="gray" style="margin-top:6px;">A firm offers a cup only while the price covers the <b>extra</b> cost of making it: at ¥20 it stops after the 3rd cup; at ¥30 it goes on to the 5th.</p>
+    </div>
+    <div class="rgrp">
+      <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+        <p><b>Key idea:</b> because each extra unit costs more to make, a <b>higher price is needed</b> to make more output worth producing — this is why the supply curve slopes <b>upward</b>.</p>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ───── S9 · FACTOR ① COST OF PRODUCTION ───── -->
+<div class="slide" data-i="8">
+  <div class="content">
+  <div class="course-tag">DETERMINANT ① RESOURCE COSTS · 成本</div>
+  <h1>Resource costs — the biggest determinant</h1>
+  <div class="sub">Anything that changes what it costs to make the good shifts the <b>whole</b> supply curve.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <div style="display:flex;gap:16px;">
+        <div class="card g" style="flex:1;">
+          <h3 class="green">Costs FALL → shift RIGHT</h3>
+          <p class="b" style="color:var(--green);">= an INCREASE in supply</p>
+          <p>At every price, firms are willing to offer <b>more</b>.</p>
+          <p class="gray">e.g. cheaper tea leaves, lower rent, cheaper electricity, a new low-wage workforce</p>
+        </div>
+        <div class="card r" style="flex:1;">
+          <h3 class="dr">Costs RISE → shift LEFT</h3>
+          <p class="b dr">= a DECREASE in supply</p>
+          <p>At every price, firms are willing to offer <b>less</b>.</p>
+          <p class="gray">e.g. higher wages, dearer packaging, higher rent, more expensive energy</p>
+        </div>
+      </div>
+    </div>
+    <div class="rgrp">
+      <p style="margin-top:10px;" class="b blue">Why? Profit per cup = <b>price − cost per cup</b>. If costs rise and the price stays the same, the profit on every cup shrinks — so the shop makes fewer.</p>
+    </div>
+    <div class="rgrp">
+      <p style="margin-top:10px;" class="b blue">Careful with the words: <b>“increase in supply”</b> = the whole curve shifts. An <b>“increase in quantity supplied”</b> is only a movement along it.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S10 · FACTOR ② INDIRECT TAX ───── -->
+<div class="slide" data-i="9">
+  <div class="content">
+  <div class="course-tag">DETERMINANT ② INDIRECT TAX · 间接税</div>
+  <h1>A per-unit (excise) tax — how far does the curve move?</h1>
+  <div class="sub">An <b>indirect tax</b> is an extra cost on every unit sold — so it moves the supply curve.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="txt compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card r">
+          <h3 class="dr">Step 1 — an extra cost</h3>
+          <p>A tax raises the firm's <b>cost per cup</b> by the amount of the tax.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <h3 class="blue">Step 2 — the whole curve moves</h3>
+          <p>Sellers need a <b>higher price by the tax</b> at every quantity → curve <b>UP</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);">
+          <p><b>How far?</b> The gap between the two curves = the tax <b>per unit</b> — not the total tax bill.</p>
+        </div>
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;">
+        <p class="b db" style="margin-bottom:2px;font-size:clamp(22px,1.8vw,25px);">Tax per cup (¥)</p>
+        <input type="range" id="txS" min="0" max="8" step="1" value="5" disabled style="width:100%;accent-color:var(--red);">
+        <div class="ends"><span>no tax</span><span>¥8 per cup</span></div>
+        <p id="txRead" style="margin:6px 0 0;font-weight:700;color:#1a3a5c;font-size:clamp(22px,1.8vw,25px);"></p>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <defs>
+          <marker id="ahR" markerUnits="userSpaceOnUse" markerWidth="18" markerHeight="18" refX="18" refY="9" orient="auto">
+            <path d="M0,0 L18,9 L0,18 z" fill="#2E4A6B"/>
+          </marker>
+          <clipPath id="clipTax"><rect x="90" y="50" width="540" height="410"/></clipPath>
+        </defs>
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="78" y="387" text-anchor="end">10</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+          <text x="78" y="141" text-anchor="end">40</text>
+        </g>
+        <line x1="90" y1="419" x2="382" y2="50" stroke="#94a3b8" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="370" y="42" text-anchor="end" font-size="30" font-weight="800" fill="#94a3b8">S</text>
+        <!-- S+tax shares the exact geometry of S and is slid out by a group translateY (−8.2 × tax).
+             The clipPath must sit on an UNtransformed outer group, otherwise it would travel with the curve. -->
+        <g clip-path="url(#clipTax)">
+          <g id="tx-move" opacity="0" style="transition:transform .7s ease, opacity .35s ease;">
+            <line x1="90" y1="419" x2="382" y2="50" stroke="#C62828" stroke-width="5"/>
+          </g>
+        </g>
+        <text id="tx-lab" x="334" y="42" text-anchor="end" font-size="30" font-weight="800" fill="#C62828" opacity="0">S+tax</text>
+        <g id="tx-grp" opacity="0" style="transition:opacity .3s;">
+          <line id="tx-gapline" x1="252.5" y1="214" x2="252.5" y2="173" stroke="#2E4A6B" stroke-width="3" marker-start="url(#ahR)" marker-end="url(#ahR)"/>
+          <text id="tx-gaplab" x="308" y="200" font-size="28" font-weight="800" fill="#C62828">¥5</text>
+        </g>
+        <g id="tx-hd" opacity="0" style="transition:opacity .3s;">
+          <line id="tx-hline" x1="285" y1="132" x2="317.5" y2="132" stroke="#C62828" stroke-width="3" stroke-dasharray="7 6"/>
+          <circle id="tx-d1" cx="285" cy="132" r="7" fill="#C62828"/>
+          <circle id="tx-d2" cx="317.5" cy="132" r="7" fill="#C62828"/>
+          <text id="tx-hlab" x="352" y="160" font-size="28" font-weight="800" fill="#C62828">7 → 6</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S11 · DIRECT vs INDIRECT TAX ───── -->
+<div class="slide" data-i="10">
+  <div class="content">
+  <div class="course-tag">TYPES OF TAX · 直接税与间接税</div>
+  <h1>Direct or indirect? — only one of them moves supply</h1>
+  <div class="sub">Told apart by <b>what is taxed</b> — and that decides <b>which curve moves</b>.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table compact" style="width:100%;">
+        <tr><th style="width:20%;"> </th><th style="width:40%;">Direct tax</th><th style="width:40%;">Indirect tax</th></tr>
+        <tr><td><b>Taxed on</b></td><td><b>income &amp; wealth</b></td><td><b>goods &amp; services</b></td></tr>
+        <tr><td><b>Who pays</b></td><td>the person or firm it is levied on — it cannot be <b>passed on</b></td><td>collected by the <b>seller</b>, who passes it on in the price</td></tr>
+        <tr><td><b>Examples</b></td><td>income tax, corporation tax, inheritance tax</td><td>excise duty (fuel, alcohol, cigarettes), VAT, sales tax</td></tr>
+        <tr><td><b>Effect on supply</b></td><td>not a per-unit cost → supply does <b>not</b> shift</td><td>a cost of production → supply shifts <b>left</b></td></tr>
+      </table>
+    </div>
+    <div class="rgrp">
+      <p class="b blue">Quick check — which kind is each one?</p>
+      <p style="margin-top:4px;">A tax on a packet of cigarettes → <b>indirect</b> (shifts supply). A tax on a teacher's salary → <b>direct</b> (no shift of supply).<br>
+      A rise in <b>corporation tax</b> → <b>direct</b>: it cuts the firm's profit, but it is not a per-unit cost, so the supply curve stays where it is.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S12 · FACTOR ② SUBSIDY ───── -->
+<div class="slide" data-i="11">
+  <div class="content">
+  <div class="course-tag">DETERMINANT ② SUBSIDY · 补贴</div>
+  <h1>A subsidy — the same logic, the other way</h1>
+  <div class="sub">A subsidy is money the government pays towards the cost of each unit.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="txt compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card g">
+          <h3 class="green">Step 1 — the cost goes down</h3>
+          <p>A subsidy cuts the firm's <b>cost per cup</b> by the amount of the subsidy.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card">
+          <h3 class="blue">Step 2 — the curve moves down</h3>
+          <p>Sellers accept a <b>lower price by the subsidy</b> at every quantity → curve <b>DOWN</b>.</p>
+          <p class="gray">Tax: up/left · subsidy: down/right.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+          <p><b>How far?</b> The gap = the subsidy <b>per unit</b> — same rule, opposite direction.</p>
+        </div>
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;">
+        <p class="b db" style="margin-bottom:2px;font-size:clamp(22px,1.8vw,25px);">Subsidy per cup (¥)</p>
+        <input type="range" id="sbS" min="0" max="8" step="1" value="5" disabled style="width:100%;accent-color:var(--green);">
+        <div class="ends"><span>no subsidy</span><span>¥8 per cup</span></div>
+        <p id="sbRead" style="margin:6px 0 0;font-weight:700;color:#1a3a5c;font-size:clamp(22px,1.8vw,25px);"></p>
+      </div>
+    </div>
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <defs>
+          <marker id="ahG" markerUnits="userSpaceOnUse" markerWidth="18" markerHeight="18" refX="18" refY="9" orient="auto">
+            <path d="M0,0 L18,9 L0,18 z" fill="#2E4A6B"/>
+          </marker>
+          <clipPath id="clipSub"><rect x="90" y="50" width="540" height="410"/></clipPath>
+        </defs>
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="78" y="387" text-anchor="end">10</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+          <text x="78" y="141" text-anchor="end">40</text>
+        </g>
+        <line x1="90" y1="419" x2="382" y2="50" stroke="#94a3b8" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="370" y="42" text-anchor="end" font-size="30" font-weight="800" fill="#94a3b8">S</text>
+        <!-- S−sub: same geometry as S, slid down by a group translateY (+8.2 × subsidy).
+             Clip first, transform inside — the clip must NOT move with the curve. -->
+        <g clip-path="url(#clipSub)">
+          <g id="sb-move" opacity="0" style="transition:transform .7s ease, opacity .35s ease;">
+            <line x1="90" y1="419" x2="382" y2="50" stroke="#2E7D32" stroke-width="5"/>
+          </g>
+        </g>
+        <text id="sb-lab" x="429" y="42" font-size="30" font-weight="800" fill="#2E7D32" opacity="0">S−sub</text>
+        <g id="sb-grp" opacity="0" style="transition:opacity .3s;">
+          <line id="sb-gapline" x1="252.5" y1="214" x2="252.5" y2="255" stroke="#2E4A6B" stroke-width="3" marker-start="url(#ahG)" marker-end="url(#ahG)"/>
+          <text id="sb-gaplab" x="308" y="240" font-size="28" font-weight="800" fill="#2E7D32">¥5</text>
+        </g>
+        <g id="sb-hd" opacity="0" style="transition:opacity .3s;">
+          <line id="sb-hline" x1="187.5" y1="296" x2="220" y2="296" stroke="#2E7D32" stroke-width="3" stroke-dasharray="7 6"/>
+          <circle id="sb-d1" cx="187.5" cy="296" r="7" fill="#2E7D32"/>
+          <circle id="sb-d2" cx="220" cy="296" r="7" fill="#2E7D32"/>
+          <text id="sb-hlab" x="250" y="322" font-size="28" font-weight="800" fill="#2E7D32">3 → 4</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S13 · FACTOR ③ THE REST ───── -->
+<div class="slide" data-i="12">
+  <div class="content">
+  <div class="course-tag">DETERMINANT ③ THE REST · 其余</div>
+  <h1>Technology, other goods, rivals — and more</h1>
+  <div class="sub">Smaller determinants, all examinable — and each one shifts the <b>whole</b> curve.</div><hr>
+  <div class="txt">
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 30%;">
+        <h3 class="blue">🔧 Technology</h3>
+        <p>Better machines or methods cut the cost per cup → shift <b>RIGHT</b>. Broken-down equipment → shift <b>LEFT</b>.</p>
+      </div>
+      <div class="card" style="flex:1 1 30%;">
+        <h3 class="blue">🌦 Weather</h3>
+        <p>It works through <b>costs</b>: a good harvest means cheaper materials → <b>RIGHT</b>; a storm destroys the crop → <b>LEFT</b>.</p>
+      </div>
+      <div class="card" style="flex:1 1 30%;">
+        <h3 class="blue">🏪 Number of sellers</h3>
+        <p>New shops open in the market → market supply shifts <b>RIGHT</b>. A shop closes → <b>LEFT</b>.</p>
+      </div>
+      <div class="card g" style="flex:1 1 100%;">
+        <h3 class="green">…and more</h3>
+        <p><b>Price of other goods the firm could produce</b> — a better-paying product pulls resources away → <b>LEFT</b>. <b>Expectations</b> — firms expecting a higher price hold stock back now → <b>LEFT</b>.</p>
+      </div>
+    </div>
+    <div class="rgrp" style="margin-top:10px;">
+      <p class="b blue">All of these move the WHOLE curve. Only a change in the price of the good itself takes us <b>along</b> it.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S14 · AP SKILL ① · ALONG THE CURVE ───── -->
+<div class="slide" data-i="13">
+  <div class="content">
+  <div class="course-tag">AP SKILL ① · 沿线</div>
+  <h1>Move <span style="color:#1e8449;">along</span> the curve</h1>
+  <div class="sub">The canteen puts the price <b>up by ¥10</b>. Nothing else changes — not the cost of tea, not the machines, not the number of shops.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="187" y="490" text-anchor="middle">3</text>
+          <text x="252" y="490" text-anchor="middle">5</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+        </g>
+        <line x1="90" y1="419" x2="382" y2="50" stroke="#2a5a8c" stroke-width="6" stroke-linecap="round"/>
+        <text x="396" y="62" font-size="30" font-weight="800" fill="#2a5a8c">S</text>
+        <line x1="187" y1="296" x2="187" y2="460" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <line x1="90" y1="296" x2="187" y2="296" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <circle cx="187" cy="296" r="11" fill="#94a3b8"/>
+        <line x1="252" y1="214" x2="252" y2="460" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <line x1="90" y1="214" x2="252" y2="214" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <circle cx="252" cy="214" r="11" fill="#1e8449"/>
+        <path d="M200 288 L240 222" stroke="#1e8449" stroke-width="6" fill="none"/>
+        <path d="M228 226 L244 216 L246 234 Z" fill="#1e8449"/>
+        <text x="340" y="150" font-size="28" font-weight="800" fill="#1e8449">price ↑ → Qs ↑</text>
+      </svg>
+    </div>
+    <div class="txt" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card">
+          <h3 class="blue">What happened?</h3>
+          <p>Only the <b>price</b> changed. The shop moved from 3 cups to 5 cups — <b>up along the same curve</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+          <p><b>Say it precisely:</b> <b>quantity supplied</b> rose from 3 to 5 cups — the supply curve did <b>not</b> move.</p>
+          <p style="margin-top:6px;">“The price rose, so <b>supply</b> increased” is <b style="color:var(--red);">wrong</b>. The price changed, so only <b>quantity supplied</b> changed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S15 · AP SKILL ② · SHIFT ───── -->
+<div class="slide" data-i="14">
+  <div class="content">
+  <div class="course-tag">AP SKILL ② · 平移</div>
+  <h1><span style="color:#b03a2e;">Supply</span> — the whole curve shifts</h1>
+  <div class="sub">Now the price stays at <b>¥30</b>, but the shop's rent rises by ¥5 a cup. At <b>every</b> price the shop offers fewer cups — so the whole curve moves.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+        </g>
+        <line x1="90" y1="419" x2="382" y2="50" stroke="#94a3b8" stroke-width="4" stroke-dasharray="10 9"/>
+        <text x="370" y="42" text-anchor="end" font-size="30" font-weight="800" fill="#94a3b8">S</text>
+        <line x1="90" y1="378" x2="350" y2="50" stroke="#b03a2e" stroke-width="6" stroke-linecap="round"/>
+        <text x="334" y="42" text-anchor="end" font-size="30" font-weight="800" fill="#b03a2e">S′</text>
+        <line x1="90" y1="214" x2="252" y2="214" stroke="#b03a2e" stroke-width="2.5" stroke-dasharray="7 7"/>
+        <circle cx="252" cy="214" r="10" fill="#94a3b8"/>
+        <circle cx="220" cy="214" r="10" fill="#b03a2e"/>
+        <path d="M244 214 L228 214" stroke="#b03a2e" stroke-width="6"/>
+        <path d="M230 205 L216 214 L230 223 Z" fill="#b03a2e"/>
+        <text x="285" y="240" font-size="28" font-weight="800" fill="#b03a2e">at ¥30: 5 → 4 cups</text>
+      </svg>
+    </div>
+    <div class="txt" style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div class="rgrp show">
+        <div class="card">
+          <h3 class="blue">What happened?</h3>
+          <p>A <b>determinant</b> changed (the rent). At every price the shop now offers fewer cups, so the curve moved <b>up / to the left</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);">
+          <p><b>Key idea:</b> the sentence does <b>not</b> mention the good's own price → the whole curve shifts. Here you say “<b>supply</b> fell”, not “quantity supplied fell”.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S16 · DETERMINANTS ───── -->
+<div class="slide" data-i="15">
+  <div class="content">
+  <div class="course-tag">DETERMINANTS · 供给的决定因素</div>
+  <h1>What shifts the curve — and which way?</h1>
+  <div class="sub">The good's own price is <b>not</b> on this list. Each factor below appears once, with the direction it is usually met in.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <p class="b dr" style="font-size:clamp(24px,2.2vw,28px);">⬅ SHIFT LEFT — a decrease in supply</p>
+      <table class="data-table compact" style="width:100%;">
+        <tr><td>Resource costs <b>rise</b> — wages, materials, rent, energy</td></tr>
+        <tr><td>An <b>excise (indirect) tax</b> is imposed on the good</td></tr>
+        <tr><td>Firms <b>expect a higher price</b> later, so they hold stock back</td></tr>
+        <tr><td>The price of <b>other goods</b> the firm could produce <b>rises</b></td></tr>
+      </table>
+    </div>
+    <div class="rgrp">
+      <p class="b" style="color:#1e8449;font-size:clamp(24px,2.2vw,28px);">➡ SHIFT RIGHT — an increase in supply</p>
+      <table class="data-table compact" style="width:100%;">
+        <tr><td><b>Better technology</b> / higher productivity</td></tr>
+        <tr><td>A <b>subsidy</b> is paid on every unit</td></tr>
+        <tr><td>More <b>sellers</b> enter the market</td></tr>
+      </table>
+      <p class="gray" style="margin-top:8px;">Flip any arrow: the same factor working the other way moves the curve the other way.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S17 · WORDING ───── -->
+<div class="slide" data-i="16">
+  <div class="content">
+  <div class="course-tag">WORDING · 术语对照</div>
+  <h1>Wording — move along, or shift?</h1>
+  <div class="sub">One pair of words moves <b>along</b> the curve; the other moves the <b>whole curve</b>. AP is strict about this.</div><hr>
+  <div class="txt">
+    <div class="rgrp show">
+      <table class="data-table compact" style="width:100%;">
+        <tr><th style="width:44%;">Wording</th><th style="width:20%;">Cause</th><th style="width:36%;">On the graph</th></tr>
+        <tr><td><b>Increase in quantity supplied</b> <span class="gray">— also called an extension of supply</span></td><td>price ↑</td><td>slide <b>up along</b> the same S</td></tr>
+        <tr><td><b>Decrease in quantity supplied</b> <span class="gray">— also called a contraction of supply</span></td><td>price ↓</td><td>slide <b>down along</b> the same S</td></tr>
+        <tr><td><b>Increase / decrease in supply</b></td><td>a determinant changes</td><td>the whole curve shifts <b>S → S′</b></td></tr>
+      </table>
+    </div>
+    <div class="rgrp">
+      <p class="b blue">Three traps, one page</p>
+      <p style="margin-top:4px;"><b style="color:var(--red);">①</b> “The price rose, so supply increased.” — wrong words: nothing shifted, only <b>quantity supplied</b> changed.<br>
+      <b style="color:var(--red);">②</b> A tax pushes costs up → supply <b>shifts</b> left; the higher price that follows is only a movement <b>along</b> the new curve. The shift came first.<br>
+      <b style="color:var(--red);">③</b> Supply is <b>not</b> the stock on the shelf — it is what sellers would offer <b>at each price</b>, so it is drawn as a whole curve.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S18 · CETERIS PARIBUS SLIDERS ───── -->
+<div class="slide" data-i="17">
+  <div class="content">
+  <div class="course-tag">CETERIS PARIBUS · 控制变量</div>
+  <h1>Four sliders — which one moves the curve?</h1>
+  <div class="sub">Only the <b>price</b> slides the dot along S1. The other three move the whole curve.</div><hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;">
+      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
+        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
+        <text x="628" y="448" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q (cups) →</text>
+        <text x="100" y="46" font-size="30" font-weight="700" fill="#5b6b7b">P (¥) ↑</text>
+        <g font-size="28" fill="#94a3b8">
+          <text x="78" y="387" text-anchor="end">10</text>
+          <text x="78" y="305" text-anchor="end">20</text>
+          <text x="78" y="223" text-anchor="end">30</text>
+          <text x="78" y="141" text-anchor="end">40</text>
+        </g>
+        <line x1="90" y1="419" x2="382" y2="50" stroke="#94a3b8" stroke-width="3" stroke-dasharray="9 7"/>
+        <text x="398" y="210" font-size="30" font-weight="800" fill="#94a3b8">S1</text>
+        <g id="cvD" style="transition:transform .5s ease;">
+          <line x1="90" y1="419" x2="382" y2="50" stroke="#1a5276" stroke-width="5"/>
+          <text x="398" y="105" font-size="30" font-weight="800" fill="#1a5276">S (now)</text>
+        </g>
+        <circle id="cv-dot" cx="188" cy="296" r="12" fill="#E74C3C" stroke="#fff" stroke-width="3" style="transition:opacity .3s;"/>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:4px;">① Price (movement ALONG)</p>
+        <input type="range" id="cvP" min="10" max="40" step="1" value="20" style="width:100%;accent-color:#E74C3C;">
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:4px;">② Cost of production (SHIFT)</p>
+        <input type="range" id="cvCost" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#2E7D32;">
+        <div class="ends"><span>cheaper</span><span>dearer</span></div>
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:4px;">③ Government: tax ↔ subsidy (SHIFT)</p>
+        <input type="range" id="cvGov" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#C62828;">
+        <div class="ends"><span>more tax</span><span>more subsidy</span></div>
+      </div>
+      <div style="background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:10px 14px;">
+        <p class="b db" style="margin-bottom:4px;">④ Technology (SHIFT)</p>
+        <input type="range" id="cvTech" min="0" max="10" step="1" value="5" style="width:100%;accent-color:#1E88E5;">
+        <div class="ends"><span>worse</span><span>better</span></div>
+      </div>
+      <div id="cvCap" class="note" style="font-weight:800;min-height:64px;background:#FFF8E1;border-left:6px solid #F0B429;">Slide any slider — one of them does NOT move the curve.</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S19 · CHECK YOUR UNDERSTANDING ───── -->
+<div class="slide" data-i="18">
+  <div class="content">
+  <div class="course-tag">CHECK YOUR UNDERSTANDING · 小测</div>
+  <h1>Quantity supplied, or supply?</h1>
+  <div class="sub">Is this a change in <b>quantity supplied</b> (the price changed → move <b>along</b> the curve) or a change in <b>supply</b> (a determinant changed → the curve <b>shifts</b>)?<br>Qs = quantity supplied · S = supply</div><hr>
+  <div style="width:100%;background:#EAF4FF;border-left:6px solid var(--blue);border-radius:0 10px 10px 0;padding:6px 14px;margin-bottom:6px;font-size:clamp(22px,1.9vw,25px);line-height:1.3;">
+    <b>Qs ↑ / Qs ↓</b> = movement <b>ALONG</b> S (the price changed) &nbsp;·&nbsp; <b>S ↑ / S ↓</b> = the <b>whole curve</b> shifts (a determinant changed)
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;width:100%;">
+    <span style="font-size:clamp(22px,2.2vw,28px);font-weight:700;color:var(--darkblue);">Score: <span id="g1score">0</span></span>
+    <span style="font-size:clamp(22px,1.8vw,26px);color:#5b6b7b;">Q <span id="g1q">1</span> / <span id="g1n">8</span></span>
+  </div>
+  <div class="g1-box" id="g1box">
+    <div class="scenario" id="g1scenario">…</div>
+    <div class="qbtns" id="g1btns"></div>
+    <div class="g1-fb" id="g1fb"></div>
+    <button class="big-btn" id="g1next" style="display:none;margin-top:6px;">Next ➜</button>
+  </div>
+  <div class="result-box" id="g1result">
+    <h3>Game Complete</h3>
+    <div class="big" id="g1final"></div>
+    <button class="big-btn" id="g1again">Play Again</button>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S20 · SUMMARY ───── -->
+<div class="slide" data-i="19">
+  <div class="content">
+  <div class="course-tag">SUMMARY · 总结</div>
+  <h1>Summary</h1>
+  <div class="sub">Click <b>Reveal answers</b> to fill in each blank.</div><hr>
+  <div class="ssteps" id="ssteps">
+    <div class="sstep" id="ss0">
+      <b class="blue">1 · Supply</b> — the willingness and <span class="blank empty" data-a="ability">___</span> of <span class="blank empty" data-a="sellers">___</span> to offer a good at a given <span class="blank empty" data-a="price">___</span>, over a period of time.
+    </div>
+    <div class="sstep" id="ss1">
+      <b class="blue">2 · Law of supply</b> — price ↑ → quantity supplied <span class="blank empty" data-a="rises">___</span> → the curve slopes <span class="blank empty" data-a="upward">___</span>; the reason: the price must cover the <span class="blank empty" data-a="cost">___</span> of the extra unit.
+    </div>
+    <div class="sstep" id="ss2">
+      <b class="blue">3 · Wording</b> — a change in <b>price</b> → movement <span class="blank empty" data-a="along">___</span> the curve = a change in <span class="blank empty" data-a="quantity supplied">___</span>; a <b>determinant</b> change → the curve <span class="blank empty" data-a="shifts">___</span> = a change in <span class="blank empty" data-a="supply">___</span>.
+    </div>
+    <div class="sstep" id="ss3">
+      <b class="blue">4 · Market supply</b> — the horizontal <span class="blank empty" data-a="sum">___</span> of individual firms' supply, added at each price.
+    </div>
+    <div class="sstep" id="ss4">
+      <b class="blue">5 · What shifts supply</b> — <span class="blank empty" data-a="resource costs">___</span>, the price of <span class="blank empty" data-a="other goods">___</span>, <span class="blank empty" data-a="taxes">___</span> and subsidies, better <span class="blank empty" data-a="technology">___</span>, expectations of future prices, and the number of <span class="blank empty" data-a="sellers">___</span>.
+    </div>
+    <div class="sstep" id="ss5">
+      <b class="blue">6 · Tax / subsidy</b> — an <b>indirect</b> (excise) <span class="blank empty" data-a="tax">___</span> = extra cost → shift <span class="blank empty" data-a="left">___</span>; a <span class="blank empty" data-a="subsidy">___</span> → shift right. A <b>direct</b> tax is not a per-unit cost, so it does <b>not</b> shift supply.
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── S21 · CLOSING ───── -->
+<div class="slide cover" data-i="20">
+  <div class="course-tag">THANK YOU · 谢谢</div>
+  <h1 style="font-size:clamp(40px,5.5vw,60px);">Supply — done ✓</h1>
+  <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">You can now draw it, slide it, shift it.</div>
+  <div style="font-size:clamp(22px,2.2vw,28px);color:#5b6b7b;">Buyers and sellers are both on the diagram now — together they set the price at the counter.</div>
+  <div class="author" style="margin-top:24px;">DR. JIA · © 2026</div>
+  <div class="botbar"></div>
+</div>
+
+</div><!-- /view -->
+
+<!-- NAV -->
+<div class="nav">
+  <button id="prevBtn">◀</button>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="copy">© 2026 Dr. Jia</span>
+    <span class="page" id="pageNum">1 / 21</span>
+    <button id="nextBtn">▶</button>
+  </div>
+</div>
+
+<script>
+var $ = function(id){ return document.getElementById(id); };
+
+/* ══════════ 1 · NAVIGATION ══════════ */
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+const globalR = {
+  show(){ $('rbtnWrap').style.display = 'flex'; },
+  hide(){ $('rbtnWrap').style.display = 'none'; },
+  setup(grps){
+    const btn = $('rbtn');
+    btn.textContent = 'Reveal more';
+    btn.disabled = false;
+    this.show();
+    btn.onclick = function(){
+      let curIdx = 0;
+      grps.forEach(function(g,i){ if(g.classList.contains('show')) curIdx = i; });
+      const next = curIdx + 1;
+      if(next < grps.length){
+        grps[next].classList.add('show');
+        if(next >= grps.length - 1) btn.textContent = 'All shown';
+        syncSlideEffects();          // slide the curve out as the text is revealed / unlock the slider when all is shown
+      }
+    };
+  }
+};
+globalR.hide();
+
+function showSlide(i){
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  slides[i].classList.add('active');
+  cur = i;
+  $('prevBtn').disabled = (i === 0);
+  $('nextBtn').disabled = (i === total - 1);
+  $('pageNum').textContent = (i + 1) + ' / ' + total;
+  document.querySelectorAll('.dots span').forEach(function(s,j){ s.classList.toggle('on', j === i); });
+  const grps = slides[i].querySelectorAll('.rgrp');
+  if(grps.length) grps.forEach(function(g,idx){ g.classList.toggle('show', idx === 0); });
+  if(grps.length > 1) globalR.setup(grps); else globalR.hide();
+  /* pages that carry .sstep (the "complete the definition" page and the summary page) get the
+     dedicated Reveal answers button; progress is stored per slide in dataset.sIdx, so
+     leaving the page and coming back does not lose it */
+  const steps = slides[i].querySelectorAll('.sstep');
+  if(steps.length){
+    globalR.hide();
+    $('sbtnWrap').style.display = 'flex';
+    if(!slides[i].dataset.sIdx) slides[i].dataset.sIdx = '0';
+    if(!slides[i].querySelector('.sstep.show')) steps[0].classList.add('show');
+    refreshSumBtn();
+  } else {
+    $('sbtnWrap').style.display = 'none';
+  }
+  syncSlideEffects();          // tax/subsidy pages: reset the curve position + slider lock to match the reveal state
+}
+
+function refreshSumBtn(){
+  const slide = document.querySelector('.slide.active');
+  const btn = $('sbtn');
+  if(!slide || !btn) return;
+  const steps = slide.querySelectorAll('.sstep');
+  if(!steps.length) return;
+  const idx = +(slide.dataset.sIdx || 0);
+  if(idx >= steps.length){ btn.textContent = 'All done ✓'; btn.disabled = true; }
+  else { btn.textContent = 'Reveal answers'; btn.disabled = false; }
+}
+try {
+  $('prevBtn').onclick = function(){ if(cur > 0) showSlide(cur - 1); };
+  $('nextBtn').onclick = function(){ if(cur < total - 1) showSlide(cur + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){ e.preventDefault(); if(cur < total - 1) showSlide(cur + 1); }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); if(cur > 0) showSlide(cur - 1); }
+  });
+  const dotBox = $('dots');
+  for(let i = 0; i < total; i++){
+    const s = document.createElement('span');
+    s.onclick = (function(k){ return function(){ showSlide(k); }; })(i);
+    dotBox.appendChild(s);
+  }
+  showSlide(0);
+} catch(err){ console.error('nav init', err); }
+
+/* lightbox (kept from the deck family template) */
+try {
+  document.querySelectorAll('.img-wrap.zoomable img').forEach(function(img){
+    img.onclick = function(){
+      $('lboxImg').src = this.src;
+      $('lbox').classList.add('show');
+    };
+  });
+  $('lbox').onclick = function(){ this.classList.remove('show'); };
+} catch(err){ console.error('lbox', err); }
+
+/* ══════════ 2 · S9/S10 TAX & SUBSIDY (reveal-driven shift + gap ruler) ══════════
+   Geometry: S is the line (90,419)→(382,50), i.e. P = 5Q + 5; 1 cup = 32.5px, ¥1 = 8.2px
+   tax t     → the curve group translates UP by 8.2t px  (the gap at Q=5 is exactly ¥t)
+   subsidy s → the same group translates DOWN by 8.2s px
+   Both groups are clipped to the plot rect, so a big shift never leaves the canvas.
+   Reveal gating: step 1 shows S only · step 2 slides the shifted curve out · step 3 adds the
+   measuring ruler + the same-price read. The slider stays locked until every step is revealed. */
+const SHIFT = {
+  tx: { dir: -1, readP: 40, name: 'Tax',     words: 'UP'   },   // read the quantity change at ¥40
+  sb: { dir:  1, readP: 20, name: 'Subsidy', words: 'DOWN' }    // ... and at ¥20 for a subsidy
+};
+
+function syncShift(p, sl, shown, steps){
+  const cfg = SHIFT[p], v = +sl.value, qBase = (cfg.readP - 5) / 5;
+  const curveOn = shown >= 2 && v > 0;                 // appears when step 2 is revealed
+  const measureOn = shown >= steps && v > 0;           // ruler + read appear when all steps are shown
+  const move = $(p + '-move');
+  move.style.transform = 'translateY(' + (curveOn ? cfg.dir * 8.2 * v : 0) + 'px)';
+  move.setAttribute('opacity', curveOn ? 1 : 0);
+  $(p + '-lab').setAttribute('opacity', curveOn ? 1 : 0);
+  $(p + '-grp').setAttribute('opacity', measureOn ? 1 : 0);
+  $(p + '-hd').setAttribute('opacity', measureOn ? 1 : 0);
+
+  /* Everything below is derived from the DRAWN S segment (90,419)→(382,50), not from the
+     "P = 5Q + 5" formula — the drawn line is what students see, so the ruler ends sit exactly on it. */
+  const SL = (50 - 419) / (382 - 90);                  // slope of the drawn S segment
+  const yOnS = x => 419 + SL * (x - 90);
+  const xOnS = y => 90 + (y - 419) / SL;
+
+  /* gap ruler: measure vertically between the two curves at Q = 5 (x = 252.5).
+     The shifted curve is S translated by cfg.dir × 8.2v, so its y at that x is yS + dir·8.2v
+     (tax: dir = −1 → the end goes UP; subsidy: dir = +1 → DOWN). */
+  const XG = 252.5, yS = yOnS(XG), yNew = yS + cfg.dir * 8.2 * v;
+  $(p + '-gapline').setAttribute('x1', XG);
+  $(p + '-gapline').setAttribute('x2', XG);
+  $(p + '-gapline').setAttribute('y1', yS);
+  $(p + '-gapline').setAttribute('y2', yNew);
+  $(p + '-gaplab').setAttribute('y', (yS + yNew) / 2 + 6);
+  $(p + '-gaplab').textContent = '¥' + v;
+
+  /* same-price read: horizontally at the read price; the shifted curve reads xOnS(y − dir·8.2v) */
+  const yRead = 460 - 8.2 * cfg.readP;
+  const xBase = xOnS(yRead), xNew = xOnS(yRead - cfg.dir * 8.2 * v);
+  const qNew = Math.round(((xNew - 90) / 32.5) * 10) / 10;
+  const hl = $(p + '-hline');
+  hl.setAttribute('x1', cfg.dir < 0 ? xNew : xBase);
+  hl.setAttribute('x2', cfg.dir < 0 ? xBase : xNew);
+  hl.setAttribute('y1', yRead); hl.setAttribute('y2', yRead);
+  $(p + '-d1').setAttribute('cx', cfg.dir < 0 ? xNew : xBase);
+  $(p + '-d1').setAttribute('cy', yRead);
+  $(p + '-d2').setAttribute('cx', cfg.dir < 0 ? xBase : xNew);
+  $(p + '-d2').setAttribute('cy', yRead);
+  $(p + '-hlab').textContent = qBase + ' → ' + qNew;
+
+  /* the slider unlocks only after the whole text is revealed */
+  const unlocked = shown >= steps;
+  sl.disabled = !unlocked;
+  const read = $(p + 'Read');
+  read.textContent = unlocked
+    ? cfg.name + ' ¥' + v + '/cup → curve ' + cfg.words + ' by ¥' + v +
+      ' · at ¥' + cfg.readP + ': ' + qNew + ' cups (was ' + qBase + ').'
+    : 'Reveal all ' + steps + ' steps first — then you can change the ' + cfg.name.toLowerCase() + ' yourself.';
+}
+
+function syncSlideEffects(){
+  const slide = document.querySelector('.slide.active');
+  if(!slide) return;
+  const grps = slide.querySelectorAll('.rgrp');
+  const shown = [].filter.call(grps, function(g){ return g.classList.contains('show'); }).length;
+  try {
+    const tx = slide.querySelector('#txS'); if(tx) syncShift('tx', tx, shown, grps.length);
+    const sb = slide.querySelector('#sbS'); if(sb) syncShift('sb', sb, shown, grps.length);
+  } catch(err){ console.error('shift sync', err); }
+}
+
+try {
+  ['txS', 'sbS'].forEach(function(id){
+    const sl = $(id);
+    if(sl) sl.addEventListener('input', syncSlideEffects);
+  });
+} catch(err){ console.error('shift bind', err); }
+
+/* ══════════ 3 · S4 LAW OF SUPPLY STEPPER ══════════ */
+try {
+  (function(){
+    let i = 0;
+    const rows = ['sl-r1','sl-r2','sl-r3','sl-r4'];
+    const btn = $('slNext');
+    btn.onclick = function(){
+      i++;
+      if(i === 1){ $('sl-r1').style.opacity = 1; $('sl-pts').setAttribute('opacity', 1); }
+      else if(i === 2){ ['sl-r2','sl-r3','sl-r4'].forEach(function(k){ $(k).style.opacity = 1; }); }
+      else if(i === 3){ $('sl-line').setAttribute('opacity', 1); }
+      else if(i === 4){
+        $('sl-eq').setAttribute('opacity', 1);
+        $('sl-law').style.display = 'block';
+        $('sl-schlab').style.display = 'block';
+        btn.textContent = 'All shown ✓';
+        btn.disabled = true;
+      }
+    };
+    $('slReset').onclick = function(){
+      i = 0;
+      rows.forEach(function(k){ $(k).style.opacity = .25; });
+      $('sl-pts').setAttribute('opacity', 0);
+      $('sl-line').setAttribute('opacity', 0);
+      $('sl-eq').setAttribute('opacity', 0);
+      $('sl-law').style.display = 'none';
+      $('sl-schlab').style.display = 'none';
+      btn.textContent = 'Next step ▶';
+      btn.disabled = false;
+    };
+  })();
+} catch(err){ console.error('law', err); }
+
+/* ══════════ 4 · S6 DRAWING THE CURVE ══════════ */
+try {
+  (function(){
+    let plotted = false, joined = false;
+    $('scPlot').onclick = function(){
+      $('sc-grid').setAttribute('opacity', 1);
+      plotted = true;
+      this.disabled = true;
+    };
+    $('scJoin').onclick = function(){
+      if(!plotted) return;
+      $('sc-line').setAttribute('opacity', 1);
+      $('sc-label').setAttribute('opacity', 1);
+      $('sc-dot').setAttribute('opacity', 1);
+      $('sc-pv').setAttribute('opacity', 1);
+      $('sc-qv').setAttribute('opacity', 1);
+      $('sc-gv').setAttribute('opacity', 1);
+      $('sc-gh').setAttribute('opacity', 1);
+      joined = true;
+      this.disabled = true;
+    };
+    $('scP').addEventListener('input', function(){
+      const p = +this.value, q = 0.2 * p - 1;
+      const x = 90 + q / 16 * 520, y = 460 - 8.2 * p;
+      $('sc-dot').setAttribute('cx', x);
+      $('sc-dot').setAttribute('cy', y);
+      if(joined){
+        /* gv: drop straight down from the point to the x-axis; gh: run left to the y-axis
+           (x1 follows the dot, x2 stays fixed on the y-axis at x = 90) */
+        $('sc-gv').setAttribute('x1', x); $('sc-gv').setAttribute('x2', x); $('sc-gv').setAttribute('y1', y);
+        $('sc-gh').setAttribute('x1', x); $('sc-gh').setAttribute('x2', 90);
+        $('sc-gh').setAttribute('y1', y); $('sc-gh').setAttribute('y2', y);
+        $('sc-pv').setAttribute('y', y + 9); $('sc-pv').textContent = p;
+        $('sc-qv').setAttribute('x', x); $('sc-qv').textContent = (Math.round(q * 10) / 10);
+      }
+      $('scRead').textContent = 'P = ¥' + p + ' → Qs = ' + (Math.round(q * 10) / 10) + ' cups';
+    });
+  })();
+} catch(err){ console.error('draw', err); }
+
+/* ══════════ 5 · S7 FIRM → MARKET ══════════ */
+try {
+  (function(){
+    $('mkShow').onclick = function(){
+      ['mk1','mk2','mk3','mk4'].forEach(function(k){ $(k).style.opacity = 1; });
+      $('mk-grp').setAttribute('opacity', 1);
+    };
+    $('mkHide').onclick = function(){
+      ['mk1','mk2','mk3','mk4'].forEach(function(k){ $(k).style.opacity = .2; });
+      $('mk-grp').setAttribute('opacity', 0);
+    };
+  })();
+} catch(err){ console.error('market', err); }
+
+/* ══════════ 6 · S8 PRACTICE: THREE FIRMS ══════════ */
+try {
+  (function(){
+    $('pkReveal').onclick = function(){
+      ['pk1','pk2','pk3'].forEach(function(k){
+        const el = $(k);
+        el.textContent = el.getAttribute('data-a');
+        el.classList.remove('empty'); el.classList.add('filled');
+      });
+      $('pk-mkt').setAttribute('opacity', 1);
+    };
+    $('pkHide').onclick = function(){
+      ['pk1','pk2','pk3'].forEach(function(k){
+        const el = $(k);
+        el.textContent = '___'; el.classList.add('empty'); el.classList.remove('filled');
+      });
+      $('pk-mkt').setAttribute('opacity', 0);
+    };
+  })();
+} catch(err){ console.error('practice', err); }
+
+/* ══════════ 7 · S12 CETERIS PARIBUS SLIDERS ══════════ */
+try {
+  (function(){
+    const cvD = $('cvD'), dot = $('cv-dot'), cap = $('cvCap');
+    function setCap(txt, color){
+      cap.innerHTML = txt;
+      cap.style.borderLeftColor = color || '#F0B429';
+      cap.style.background = (color === '#1e8449') ? '#f2faf5' : (color === '#b03a2e' ? '#fdedec' : '#FFF8E1');
+    }
+    function shiftSlidersNeutral(){
+      $('cvCost').value = 5; $('cvGov').value = 5; $('cvTech').value = 5;
+    }
+    function applyShift(){
+      const c = (+$('cvCost').value - 5) / 5;
+      const g = (+$('cvGov').value - 5) / 5;
+      const t = (+$('cvTech').value - 5) / 5;
+      const raw = (-c + g + t) * 50;          /* each slider shifts at most ±50px, total capped at ±100px so the curve stays inside the canvas */
+      const px = Math.max(-100, Math.min(100, raw));
+      cvD.style.transform = 'translateX(' + px + 'px)';
+      dot.style.opacity = (px === 0) ? 1 : .25;
+      const parts = [];
+      if(c > 0) parts.push('Costs RISE → shift LEFT (a decrease in supply)');
+      if(c < 0) parts.push('Costs FALL → shift RIGHT (an increase in supply)');
+      if(g > 0) parts.push('More subsidy → shift RIGHT (an increase in supply)');
+      if(g < 0) parts.push('More tax → shift LEFT (a decrease in supply)');
+      if(t > 0) parts.push('Better technology → shift RIGHT');
+      if(t < 0) parts.push('Worse technology → shift LEFT');
+      if(!parts.length) setCap('Costs, tax / subsidy and technology are all unchanged — S1 stays exactly where it is.', '#F0B429');
+      else setCap(parts.join(' · '), px > 0 ? '#1e8449' : '#b03a2e');
+    }
+    $('cvP').addEventListener('input', function(){
+      const p = +this.value, q = 0.2 * p - 1;
+      shiftSlidersNeutral();
+      cvD.style.transform = 'translateX(0)';
+      dot.style.opacity = 1;
+      dot.setAttribute('cx', 90 + q / 16 * 520);
+      dot.setAttribute('cy', 460 - 8.2 * p);
+      if(p > 20) setCap('Price ↑ → an increase in quantity supplied (movement along S1)', '#1e8449');
+      else if(p < 20) setCap('Price ↓ → a decrease in quantity supplied (movement along S1)', '#b03a2e');
+      else setCap('Price back at ¥20 — and S1 never moved.', '#F0B429');
+    });
+    ['cvCost','cvGov','cvTech'].forEach(function(id){
+      $(id).addEventListener('input', applyShift);
+    });
+  })();
+} catch(err){ console.error('ceteris', err); }
+
+/* ══════════ 8 · S13 GAME ══════════ */
+try {
+  (function(){
+    const G1Q = [
+      {s:'The price of milk tea rises — the shop is willing to make more cups.', a:'Qs ↑ (along S)'},
+      {s:'The price of milk tea falls — the shop offers fewer cups.', a:'Qs ↓ (along S)'},
+      {s:'Wages for the shop\u2019s staff go up.', a:'S ↓ (shift left)'},
+      {s:'A new machine cooks the pearls twice as fast.', a:'S ↑ (shift right)'},
+      {s:'The government pays a subsidy on every cup sold.', a:'S ↑ (shift right)'},
+      {s:'The government adds an excise tax on every cup sold.', a:'S ↓ (shift left)'},
+      {s:'Three new milk-tea shops open near the school.', a:'S ↑ (shift right)'},
+      {s:'A storm destroys the tea harvest.', a:'S ↓ (shift left)'},
+      {s:'Sellers expect the price to be higher next month, so they hold stock back.', a:'S ↓ (shift left)'}
+    ];
+    const OPTS = ['Qs ↑ (along S)','Qs ↓ (along S)','S ↑ (shift right)','S ↓ (shift left)'];
+    let qi = 0, score = 0, answered = false;
+
+    function render(){
+      const q = G1Q[qi];
+      $('g1q').textContent = qi + 1;
+      $('g1n').textContent = G1Q.length;
+      $('g1scenario').textContent = q.s;
+      answered = false;
+      const box = $('g1btns');
+      box.innerHTML = '';
+      OPTS.forEach(function(c){
+        const b = document.createElement('button');
+        b.textContent = c;
+        b.onclick = function(){ pick(c, b); };
+        box.appendChild(b);
+      });
+      $('g1fb').textContent = '';
+      $('g1next').style.display = 'none';
+      $('g1box').style.display = 'block';
+      $('g1result').style.display = 'none';
+    }
+    function pick(sel, btn){
+      if(answered) return;
+      answered = true;
+      const q = G1Q[qi];
+      document.querySelectorAll('#g1btns button').forEach(function(b){
+        b.disabled = true;
+        if(b.textContent === q.a) b.classList.add('correct'); else b.classList.add('wrong');
+      });
+      const fb = $('g1fb');
+      if(sel === q.a){ score++; fb.textContent = 'Correct!'; fb.style.color = 'var(--green)'; }
+      else { fb.textContent = 'Answer: ' + q.a + '.'; fb.style.color = 'var(--red)'; }
+      $('g1score').textContent = score;
+      const n = $('g1next');
+      n.style.display = 'inline-block';
+      n.textContent = (qi + 1 < G1Q.length) ? 'Next ➜' : 'Finish ✔';
+    }
+    $('g1next').onclick = function(){
+      if(qi + 1 < G1Q.length){ qi++; render(); }
+      else {
+        $('g1box').style.display = 'none';
+        $('g1result').style.display = 'block';
+        $('g1final').textContent = score + ' / ' + G1Q.length;
+      }
+    };
+    $('g1again').onclick = function(){ qi = 0; score = 0; $('g1score').textContent = 0; render(); };
+    render();
+  })();
+} catch(err){ console.error('game', err); }
+
+/* ══════════ 9 · fill-in-the-blanks pages (works on the ACTIVE slide's .sstep) ══════════ */
+try {
+  (function(){
+    $('sbtn').onclick = function(){
+      const slide = document.querySelector('.slide.active');
+      if(!slide) return;
+      const steps = slide.querySelectorAll('.sstep');
+      let idx = +(slide.dataset.sIdx || 0);
+      const el = steps[idx];
+      if(!el){ refreshSumBtn(); return; }
+      el.classList.add('show');
+      el.querySelectorAll('.blank.empty').forEach(function(b){
+        b.textContent = b.getAttribute('data-a');
+        b.classList.remove('empty');
+        b.classList.add('filled');
+      });
+      idx++;
+      slide.dataset.sIdx = String(idx);
+      const next = steps[idx];
+      if(next) next.classList.add('show');
+      refreshSumBtn();
+    };
+  })();
+} catch(err){ console.error('summary', err); }
+</script>
+</body>
+</html>

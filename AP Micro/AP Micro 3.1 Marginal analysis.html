@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Micro 3.1 — Marginal Analysis</title>
+<!--
+  ═══════════════════════════════════════════════════════════════
+  EDIT GUIDE
+  ═══════════════════════════════════════════════════════════════
+  1. LANGUAGE: courseware text is ENGLISH. The only Chinese on a page
+     is the 2–6 character gloss in .s-head .en (母版惯例). Never add
+     Chinese sentences to cards, buttons, captions or charts.
+  2. MINIMUM FONT SIZE 22px (classroom board rule). SVG on-screen size =
+     font-size × (rendered width ÷ viewBox width); all SVGs are sized by
+     height in vh so the scale stays predictable.
+  3. DATA LIVES IN ONE PLACE (top of the script):
+       MU_UTIL → cola marginal utility in utils (TU_UTIL = running sum)
+       PRICE / MB_CASH → the cost page (NET, TNB = running sums)
+       TBf/TCf/MBf/MCf/NBf → the chase animation + the embedded demo
+     Charts, the coke game and the demo all read from that block.
+  4. Paging: bottom ‹ Prev / Next ›, dots, keyboard/presenter
+     (← → / space / PageUp / PageDown). Touch SWIPE paging is
+     deliberately NOT implemented — it made sliders flip the page on the
+     classroom touch screen. Do not add it back.
+  5. The chase animation is a requestAnimationFrame loop; it runs only
+     while its slide is active (started/stopped from updateNav) and can be
+     stepped deterministically with chaseStep(seconds) for verification.
+  6. Every canvas draw is null-guarded: a canvas failure must never break
+     navigation.
+  ═══════════════════════════════════════════════════════════════
+-->
+<style>
+  :root {
+    --primary: #1CADE4; --primary-dark: #1599cc; --primary-deep: #2683C6;
+    --accent-green: #42BA97; --accent-orange: #F5A623; --accent-red: #E25C5C;
+    --gold: #D4AF37;
+    --bg: #f2f8fd; --card: #ffffff; --line: #d8e8f5; --text: #25324b;
+    --text-sub: #5b7288; --grid: #e3edf7; --shadow: rgba(28,173,228,.16);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; }
+  body { font-family:"Segoe UI","Microsoft YaHei",Arial,sans-serif; background:var(--bg);
+         color:var(--text); overflow:hidden; }
+  #progressBar { position:fixed; top:0; left:0; height:6px; background:var(--primary);
+                 width:10%; transition:width .35s ease; z-index:50; }
+  .deck { position:fixed; inset:0; }
+  .slide { position:absolute; inset:0; display:none; flex-direction:column;
+           padding:3.5vh 4vw 8vh; background:var(--bg); overflow:hidden; }
+  .slide.active { display:flex; animation:pageIn .45s ease; }
+  @keyframes pageIn { from { opacity:0; transform:translateX(28px);} to { opacity:1; transform:none;} }
+
+  .s-head { display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; padding-bottom:1.4vh;
+            border-bottom:2px solid var(--line); }
+  .s-head .tag { background:var(--primary); color:#fff; font-weight:700;
+                 font-size:clamp(22px,2.6vh,28px); padding:.3em .9em; border-radius:8px; white-space:nowrap; }
+  .s-head h2 { font-size:clamp(28px,4.2vh,42px); color:var(--primary-deep); }
+  .s-head .en { color:var(--text-sub); font-size:clamp(22px,2.4vh,26px); }
+
+  .s-body { flex:1 1 0; min-height:0; display:flex; flex-direction:column; gap:1.4vh; padding-top:1.4vh; }
+  .row { display:flex; gap:2vw; flex:1 1 0; min-height:0; align-items:stretch; }
+  .col { flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:1.2vh; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px;
+          padding:1.5vh 1.4vw; box-shadow:0 4px 18px var(--shadow); display:flex;
+          flex-direction:column; justify-content:center; }
+  .card h3 { font-size:clamp(25px,3vh,34px); color:var(--primary-deep); margin-bottom:.7vh; }
+  .card p, .card li { font-size:clamp(23px,2.7vh,32px); line-height:1.5; color:var(--text); }
+  .def { background:#e8f6fd; border-left:6px solid var(--primary); border-radius:8px;
+         padding:1.1vh 1.2vw; font-size:clamp(23px,2.7vh,33px); line-height:1.45; }
+  .def b { color:var(--primary-deep); }
+  .hl { background:#e8f6fd; border-left:5px solid var(--primary); padding:1vh 1.2vw;
+        border-radius:6px; margin-top:.7vh; font-size:clamp(22px,2.5vh,30px); line-height:1.5; }
+  .hl b { color:var(--primary-deep); }
+  .hl.warn { background:#fdf3e3; border-left-color:var(--accent-orange); }
+  .hl.warn b { color:#a06a12; }
+  .hl.gold { background:#fdf8e8; border-left-color:var(--gold); }
+  .hl.gold b { color:#9a7d1f; }
+  .pulse { animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(28,173,228,.35);} 50%{box-shadow:0 0 0 12px rgba(28,173,228,0);} }
+
+  table { border-collapse:collapse; width:100%; font-size:clamp(22px,2.4vh,28px); }
+  th,td { border:1.5px solid var(--line); padding:.6vh .8vw; text-align:center; }
+  th { background:#eaf4fb; color:var(--primary-deep); }
+  tr.best td { background:#e8f8f2; font-weight:700; }
+  tr.neg td { background:#fdeaea; }
+  .scroll { overflow-y:auto; overflow-x:hidden; min-height:0; }
+
+  .graph { flex:1 1 0; min-height:0; display:flex; align-items:center; justify-content:center; }
+  .graph svg { width:auto; height:100%; max-width:100%; }
+  .gline { stroke:var(--primary); stroke-width:5; stroke-linecap:round; fill:none; }
+  .gline.red { stroke:var(--accent-red); }
+  .gline.orange { stroke:var(--accent-orange); }
+  .gdash { fill:none; stroke-width:5; stroke-linecap:round; stroke-dasharray:12 9; }
+  .gpoint { fill:var(--primary); stroke:#fff; stroke-width:2.5; }
+  .gpoint.green { fill:var(--accent-green); } .gpoint.orange { fill:var(--accent-orange); }
+  .gpoint.red { fill:var(--accent-red); }
+  .glabel { font-size:27px; font-weight:700; fill:var(--text); font-family:"Segoe UI","Microsoft YaHei"; }
+  .glabel.sub { font-size:24px; fill:var(--text-sub); font-weight:400; }
+  .glabel.blue { fill:var(--primary-dark); } .glabel.red { fill:var(--accent-red); }
+  .glabel.green { fill:#2e7d5b; } .glabel.gold { fill:#9a7d1f; }
+  .glabel.orange { fill:#c47f0a; }
+  .gaxis { stroke:#7a93ad; stroke-width:5; }
+  .ggrid { stroke:var(--grid); stroke-width:1.6; }
+  .gzero { stroke:#9db2c8; stroke-width:3; stroke-dasharray:9 7; }
+  .gtick { font-size:24px; fill:var(--text-sub); }
+  .gbar { fill:var(--primary); } .gbar.zero { fill:#c3d4e4; } .gbar.neg { fill:var(--accent-red); }
+
+  .reveal { opacity:0; transition:opacity .5s ease, transform .5s ease; transform:translateY(6px); }
+  .reveal.show { opacity:1; transform:none; }
+
+  .btn { border:none; border-radius:12px; padding:1.2vh 1.7vw; font-size:clamp(22px,2.5vh,29px);
+         font-weight:700; color:#fff; background:var(--primary); cursor:pointer; transition:.18s; }
+  .btn:hover { background:var(--primary-dark); transform:translateY(-1px); }
+  .btn.ghost { background:#e7f2fa; color:var(--text); }
+  .btn.ghost:hover { background:#d8e9f6; }
+  .btn:disabled { background:#b9c9d6; cursor:not-allowed; transform:none; }
+
+  .s-foot { margin-top:1.1vh; display:flex; gap:1vw; align-items:center; justify-content:flex-end; }
+  .s-foot .note { margin-right:auto; font-size:clamp(22px,2.3vh,27px); color:var(--text-sub); }
+  .blank { display:inline-block; min-width:8ch; border-bottom:3px dashed var(--primary);
+           transition:color .25s ease, border-color .25s ease; }
+  .blank.filled { border-bottom-color:transparent; color:var(--primary-deep); font-weight:800; }
+
+  .cover { justify-content:space-around; text-align:center; }
+  .cover .big { font-size:clamp(44px,8vh,72px); font-weight:800; color:var(--primary-deep); letter-spacing:.5px; }
+  .cover .q { font-size:clamp(28px,4.4vh,44px); color:var(--text); margin-top:2.5vh; font-weight:600; }
+  .cover .meta { font-size:clamp(22px,3vh,32px); color:var(--text-sub); line-height:2.1; }
+  .cover .go { font-size:clamp(22px,3vh,32px); color:var(--primary-dark); font-weight:600; }
+
+  .nav { position:fixed; left:0; right:0; bottom:0; height:7.5vh; background:#fff;
+         border-top:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+         gap:2vw; z-index:40; }
+  .nav button { border:none; background:none; cursor:pointer; color:var(--primary-deep);
+                font-size:clamp(22px,2.6vh,30px); font-weight:700; padding:.4em 1em; border-radius:8px; }
+  .nav button:hover { background:#eef6fc; }
+  .nav button:disabled { color:#c3d4e4; cursor:default; }
+  .nav .dots { display:flex; gap:8px; align-items:center; }
+  .nav .dot { width:11px; height:11px; border-radius:50%; background:#c9d9e8; transition:.2s; }
+  .nav .dot.on { background:var(--primary); width:24px; border-radius:6px; }
+  .nav .page { font-size:clamp(22px,2.4vh,28px); color:var(--text-sub); }
+  .copy { font-size:clamp(22px,2vh,24px); font-weight:700; color:var(--text-sub);
+          opacity:.72; white-space:nowrap; }
+
+  .s-banner { background:#e8f6fd; border-left:6px solid var(--primary); border-radius:6px;
+    padding:.7vh 1.2vw; font-size:clamp(22px,2.1vh,26px); font-weight:700;
+    color:var(--text); flex:0 0 auto; line-height:1.35; }
+  .s-banner b { color:var(--primary-deep); }
+
+  /* ── Coke click page ── */
+  .coke-stage { display:flex; gap:2vw; flex:1; min-height:0; align-items:stretch; }
+  .face-box { flex:0 0 33%; background:var(--card); border:1px solid var(--line); border-radius:14px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    box-shadow:0 4px 18px var(--shadow); padding:1vh 1vw; gap:1vh; }
+  .face-box svg { width:auto; height:30vh; max-width:100%; }
+  .face-status { font-size:clamp(24px,2.8vh,32px); font-weight:700; text-align:center; color:var(--primary-deep); }
+  .coke-right { flex:1; display:flex; flex-direction:column; gap:1.1vh; min-height:0; }
+  .can-slots { display:grid; grid-template-columns:repeat(8,1fr); gap:.8vw; }
+  .can-slot { display:flex; align-items:flex-end; justify-content:center; }
+  .can-slot svg { width:auto; height:11vh; opacity:.13; transition:opacity .3s ease; }
+  .can-slot.on svg { opacity:1; animation:pop .35s ease; }
+  .counter { font-size:clamp(26px,3.2vh,38px); font-weight:800; color:var(--primary-deep); }
+  .counter span { font-size:clamp(30px,4vh,46px); color:var(--accent-red); }
+  .meter { height:2.2vh; background:#eaf4fb; border-radius:6px; overflow:hidden; }
+  .meter i { display:block; height:100%; width:0; background:var(--accent-green);
+             transition:width .4s ease, background .4s ease; }
+  .meter-label { font-size:clamp(22px,2.3vh,26px); color:var(--text-sub); font-weight:700; }
+  @keyframes pop { from { transform:scale(.6) translateY(14px); opacity:.3; } to { transform:none; opacity:1; } }
+
+  /* ── chase animation ── */
+  .chase-wrap { background:var(--card); border:3px solid var(--primary); border-radius:14px;
+                padding:1vh 1.2vw; flex:1; min-height:0; display:flex; flex-direction:column; gap:.6vh; }
+  .chase-stage { flex:1; min-height:0; position:relative; }
+  .chase-stage canvas { width:100%; height:100%; display:block; }
+  .chase-caption { font-size:clamp(24px,2.8vh,34px); font-weight:800; text-align:center; color:var(--primary-deep); }
+  .chase-sub { font-size:clamp(22px,2.3vh,27px); color:var(--text-sub); text-align:center; font-weight:700; }
+
+  /* ── embedded demo (graph part of economics_mini_lab) ── */
+  .lab { background:var(--card); border:3px solid var(--primary); border-radius:14px;
+         padding:1.2vh 1.2vw; flex:1; min-height:0; display:flex; flex-direction:column; }
+  .lab-grid { display:flex; gap:1vw; flex:1; min-height:0; }
+  .lab-graph { flex:1; background:#fff; border:1px solid var(--line); border-radius:10px;
+               min-height:24vh; position:relative; }
+  .lab-graph canvas { width:100%; height:100%; display:block; }
+  .lab-ctrl { display:flex; align-items:center; gap:1vw; margin-top:.7vh; flex-wrap:wrap; }
+  .lab-ctrl label { font-size:clamp(22px,2.2vh,26px); font-weight:700; white-space:nowrap; }
+  .lab-ctrl input[type=range] { flex:1; min-width:170px; cursor:pointer; height:8px; }
+  .lab-val { font-weight:800; color:var(--primary-dark); font-size:clamp(22px,2.2vh,26px); }
+  .readout { display:flex; gap:1.2vw; flex-wrap:wrap; font-size:clamp(22px,2.2vh,27px); font-weight:700; }
+  .readout b { color:var(--primary-deep); }
+  .opt-flag { padding:.2em .8em; border-radius:8px; background:#eef7fe; color:var(--text-sub); }
+  .opt-flag.on { background:#e8f8f2; color:#2e7d5b; }
+  .chk { display:flex; align-items:center; gap:.5vw; font-weight:700; }
+  .chk input { width:24px; height:24px; }
+  .radios { display:flex; gap:.5vw; }
+  .radios label { background:#edf2f7; padding:.35em .8em; border-radius:8px; cursor:pointer;
+                  border:2px solid transparent; }
+  .radios input { display:none; }
+  .radios label:has(input:checked) { background:#e8f6fd; border-color:var(--primary); color:var(--primary-deep); }
+
+  .endpage { justify-content:center; align-items:center; text-align:center; }
+  .endpage .big { font-size:clamp(40px,7vh,64px); font-weight:800; color:var(--primary-deep); }
+  .endpage .sub { font-size:clamp(24px,3vh,34px); color:var(--text-sub); margin-top:2vh; line-height:1.85; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- ════ P1 COVER ════ -->
+  <section class="slide cover" data-title="Cover">
+    <div>
+      <div class="big">Marginal Analysis</div>
+      <div class="q">Why is the first can of Coke so good — and the eighth one unbearable?</div>
+    </div>
+    <div class="meta">
+      AP Microeconomics · Unit 1: Basic Economic Concepts<br>
+      AP Micro 3.1 · Interactive courseware · 40 min<br>
+      CBS · International Economics
+    </div>
+    <div class="go">👉 Press ← / → to flip pages · buttons drive the content</div>
+  </section>
+
+  <!-- ════ P2 COKE GAME ════ -->
+  <section class="slide" data-title="One can at a time">
+    <div class="s-head">
+      <span class="tag">Step 1</span><h2>One Can at a Time</h2><span class="en">逐罐喝下去</span>
+    </div>
+    <div class="s-body">
+      <div class="coke-stage">
+        <div class="face-box">
+          <svg id="faceSvg" viewBox="0 0 200 200">
+            <circle id="faceHead" cx="100" cy="100" r="76" fill="#ffd9a8" stroke="#e0a86a" stroke-width="4"/>
+            <g id="faceEyes">
+              <circle cx="74" cy="84" r="9" fill="#3a2c1f"/>
+              <circle cx="126" cy="84" r="9" fill="#3a2c1f"/>
+            </g>
+            <g id="faceSweat" style="opacity:0">
+              <path d="M40 60 q7 12 0 18 q-7 -6 0 -18" fill="#8fd0f0"/>
+              <path d="M162 52 q7 12 0 18 q-7 -6 0 -18" fill="#8fd0f0"/>
+            </g>
+            <path id="faceMouth" d="M78 130 L122 130" stroke="#8a4a35" stroke-width="7" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div class="face-status" id="faceStatus">Nobody has had a Coke yet.</div>
+        </div>
+        <div class="coke-right">
+          <div class="can-slots" id="canSlots"></div>
+          <div class="counter">Cans finished: <span id="canCount">0</span></div>
+          <div class="meter-label">How good the LAST can felt</div>
+          <div class="meter"><i id="lastBar"></i></div>
+          <div class="meter-label">How good the whole morning felt</div>
+          <div class="meter"><i id="totalBar" style="background:var(--primary)"></i></div>
+          <div class="hl" id="cokeHint">Click <b>[Add a can]</b> and watch his face. Keep going — all the way to can 8.</div>
+        </div>
+      </div>
+      <div class="s-foot">
+        <span class="note" id="cokeNote">0 / 8</span>
+        <button class="btn ghost" onclick="resetCoke()">↺ Reset</button>
+        <button class="btn" id="cokeBtn" onclick="addCan()">➕ Add a can</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P3 UTILITY + MARGINAL UTILITY (merged, no table) ════ -->
+  <section class="slide" data-title="Utility and MU">
+    <div class="s-head">
+      <span class="tag">Step 2</span><h2>Utility and Marginal Utility</h2><span class="en">效用与边际效用</span>
+    </div>
+    <div class="s-body">
+      <div class="row">
+        <div class="col" style="flex:.95;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
+          <div class="card reveal s1" style="border-left:6px solid var(--primary);">
+            <h3>Total utility (TU)</h3>
+            <div class="def"><b>Utility</b> = the satisfaction a person gets from a good.<br>
+              <b>Total utility</b> = the satisfaction from everything consumed so far.</div>
+            <p style="margin-top:.7vh;">Measured in <b>utils</b>. From the Coke game: the early cans add
+              a lot, and TU climbs all the way to <b>60 utils</b>.</p>
+          </div>
+          <div class="card reveal s2" style="border-left:6px solid var(--accent-orange);">
+            <h3>Marginal utility (MU)</h3>
+            <div class="def" style="border-left-color:var(--accent-orange);background:#fdf6ea;">
+              <b>Marginal utility</b> = the <b>extra</b> satisfaction from consuming <b>one more</b>
+              unit.<br>MU = change in TU ÷ change in quantity</div>
+            <p style="margin-top:.7vh;">Marginal always asks: <b>what does one more unit change?</b>
+              Can 5 → 4 utils · can 6 → 0 · can 7 → <b>−4</b>.</p>
+          </div>
+          <div class="hl reveal s3">TU is the <b>total</b>; MU is the <b>step</b>. The blue curve is the
+            running total, the orange bars are the steps that build it.</div>
+        </div>
+        <div class="col" style="flex:1.15;min-height:0;">
+          <div class="graph">
+            <svg id="umSvg" viewBox="0 0 700 500" style="height:46vh;">
+              <g id="umStatic"></g><g id="umTU"></g><g id="umMU"></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="s-foot">
+        <span class="note" id="umNote">Step ① — the total: how happy is he altogether?</span>
+        <button class="btn" id="umBtn" onclick="umNext()">① Show total utility</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P4 DMU + both curves on one chart ════ -->
+  <section class="slide" data-title="Diminishing MU">
+    <div class="s-head">
+      <span class="tag">Step 3</span><h2>The Law of Diminishing Marginal Utility</h2><span class="en">边际效用递减</span>
+    </div>
+    <div class="s-body">
+      <div class="s-banner">As a person consumes <b>more units</b> of a good, the <b>marginal utility</b> of each
+        additional unit <b>falls</b> — while total utility keeps rising until MU turns negative. Both are measured in <b>utils</b>, so they share <b>one axis</b> and are directly comparable.</div>
+      <div class="row" style="min-height:0;">
+        <div class="col" style="flex:1.45;min-height:0;">
+          <div class="graph">
+            <svg id="dmSvg" viewBox="0 0 700 510" style="height:56vh;">
+              <g id="dmStatic"></g><g id="dmTU"></g><g id="dmMU"></g><g id="dmMark"></g>
+            </svg>
+          </div>
+        </div>
+        <div class="col" style="flex:.72;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
+          <div class="card reveal s1" style="border-left:6px solid var(--primary);padding:1vh 1.1vw;">
+            <h3 style="color:var(--primary-dark);font-size:clamp(22px,2.3vh,27px);">Blue = total utility</h3>
+            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">Rises to 60 utils at can 6, then falls.
+              It starts at the origin, because 0 cans = 0 utils.</p>
+          </div>
+          <div class="card reveal s2" style="border-left:6px solid var(--accent-orange);padding:1vh 1.1vw;">
+            <h3 style="color:#c47f0a;font-size:clamp(22px,2.3vh,27px);">Orange = marginal utility</h3>
+            <p style="font-size:clamp(22px,2.1vh,26px);margin:.2vh 0 0;">A falling line: 20, 16, 12, 8, 4, 0, −4, −8.
+              Same axis, so you can compare its height with TU directly.</p>
+          </div>
+          <div class="hl warn reveal s3" style="font-size:clamp(22px,2.1vh,26px);">
+            <b>Careful:</b> "MU is falling" does <b>not</b> mean "TU is falling" — TU falls only after MU
+            goes below zero. The two green dots mark the turning point: MU = 0 and TU at its maximum.</div>
+        </div>
+      </div>
+      <div class="s-foot">
+        <span class="note" id="dmNote">Step ① — reveal total utility.</span>
+        <button class="btn" id="dmBtn" onclick="dmNext()">① Show TU</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P5 COST SIDE: MC → TC → TB → MB ════ -->
+  <section class="slide" data-title="The cost side">
+    <div class="s-head">
+      <span class="tag">Step 4</span><h2>The Cost of a Can</h2><span class="en">成本与收益</span>
+    </div>
+    <div class="s-body">
+      <div class="s-banner">One can costs <b>¥3</b> — the price never changes, so <b>MC is a flat line</b>
+        and <b>TC is a straight line</b>. On the benefit side <b>TB rises</b>, but <b>MB falls</b>.</div>
+      <div class="row" style="min-height:0;">
+        <div class="col" style="flex:1.5;min-height:0;">
+          <div class="graph">
+            <svg id="coSvg" viewBox="0 0 700 480" style="height:60vh;">
+              <g id="coStatic"></g><g id="coMC"></g><g id="coTC"></g><g id="coTB"></g><g id="coMB"></g>
+            </svg>
+          </div>
+        </div>
+        <div class="col" style="flex:.95;min-height:0;overflow-y:auto;overflow-x:hidden;">
+          <div class="card" style="justify-content:flex-start;padding:1.1vh 1vw;">
+            <h3 style="font-size:clamp(23px,2.6vh,30px);">¥ per can</h3>
+            <p style="font-size:clamp(22px,2.1vh,25px);color:var(--text-sub);margin-bottom:.5vh;">
+              Net = MB − MC · TNB = running total</p>
+            <table id="coTable" style="table-layout:fixed;">
+              <tr><th>Can</th><th>MB</th><th>MC</th><th>Net</th><th>TNB</th></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="s-foot">
+        <span class="note" id="coNote">Step ① — the cheapest thing to see first: what one more can costs.</span>
+        <button class="btn" id="coBtn" onclick="coNext()">① Show MC</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P6 CHASE ANIMATION (looping) ════ -->
+  <section class="slide" id="chaseLab" data-title="The chase">
+    <div class="s-head">
+      <span class="tag">Step 5</span><h2>The Chase — Looping</h2><span class="en">追车动画 · 循环播放</span>
+    </div>
+    <div class="s-body">
+      <div class="chase-wrap">
+        <div class="chase-caption" id="chaseCaption">Loading the race…</div>
+        <div class="chase-stage"><canvas id="chaseCanvas"></canvas></div>
+        <div class="chase-sub" id="chaseSub">Car B carries total benefit · car C carries total cost ·
+          the gap between them is the net benefit</div>
+        <div class="lab-ctrl" style="margin-top:.3vh;">
+          <button class="btn ghost" id="chaseBtn" onclick="toggleChase()">⏸ Pause</button>
+          <span class="lab-val" id="chaseQ">Q = 0.2</span>
+          <span class="lab-val" id="chaseSpeeds">MB = – · MC = – · net benefit = –</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P7 EMBEDDED DEMO ════ -->
+  <section class="slide" id="demoLab" data-title="Live model">
+    <div class="s-head">
+      <span class="tag">Step 6</span><h2>Watch the Race</h2><span class="en">动手试</span>
+    </div>
+    <div class="s-body">
+      <div class="lab">
+        <div class="lab-grid">
+          <div class="lab-graph"><canvas id="tbCanvas"></canvas></div>
+          <div class="lab-graph"><canvas id="mmCanvas"></canvas></div>
+        </div>
+        <div class="lab-ctrl">
+          <label>Q: <span class="lab-val" id="qVal">3.8</span></label>
+          <input type="range" id="qSlider" min="0.1" max="9.9" step="0.1" value="3.8">
+          <label class="chk"><input type="checkbox" id="tanToggle" checked> Slopes = MB / MC</label>
+          <div class="radios">
+            <label><input type="radio" name="viewMode" value="marginal" checked> MB / MC</label>
+            <label><input type="radio" name="viewMode" value="net"> Net benefit</label>
+            <label><input type="radio" name="viewMode" value="total"> Total</label>
+          </div>
+        </div>
+        <div class="readout" style="margin-top:.5vh;">
+          <span>MB = <b id="roMB">—</b></span>
+          <span>MC = <b id="roMC">—</b></span>
+          <span>Net benefit = <b id="roNB">—</b></span>
+          <span class="opt-flag" id="roFlag">—</span>
+        </div>
+      </div>
+      <div class="s-foot" style="margin-top:.5vh;">
+        <span class="note">The slope of the blue curve is MB, the slope of the red curve is MC.
+          Move Q and find the biggest gap.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P8 EXTENSION: two theories of value ════ -->
+  <section class="slide" data-title="Two theories of value">
+    <div class="s-head">
+      <span class="tag">Extension</span><h2>From Labour to Marginal Utility</h2><span class="en">劳动价值论 → 边际效用价值论</span>
+    </div>
+    <div class="s-body">
+      <div class="s-banner">For a century economists asked: <b>where does value come from?</b>
+        Two answers — and the second one is the answer AP expects.</div>
+      <div class="row" style="min-height:0;">
+        <div class="col" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
+          <div class="card reveal s1" style="border-left:6px solid #8e9aab;">
+            <h3 style="color:#5b7288;">1 · Labour theory of value</h3>
+            <ul style="font-size:clamp(22px,2.3vh,27px);line-height:1.45;">
+              <li>Assumes value is <b>objective and fixed</b> — inside the good, same for everyone.</li>
+              <li>If it is fixed, something must <b>measure</b> it.</li>
+              <li>The measure ≈ the good's <b>labour cost</b> (Smith, Ricardo, Marx).</li>
+              <li>Equal labour → equal value.</li>
+              <li>❌ Fails: the <b>paradox of value</b> — water essential &amp; <b>cheap</b>, diamonds useless &amp; <b>dear</b>.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
+          <div class="card reveal s2" style="border-left:6px solid var(--gold);">
+            <h3 style="color:#9a7d1f;">2 · Marginal utility theory of value</h3>
+            <ul style="font-size:clamp(22px,2.3vh,27px);line-height:1.45;">
+              <li>Rejects it: value is <b>subjective</b> — in the <b>buyer's mind</b>, not in the good.</li>
+              <li>So it is <b>not fixed</b>: it differs by person, and falls as you consume more.</li>
+              <li>✅ Labour alone proves nothing — heavy labour can still be worth <b>nothing</b>.</li>
+              <li>Water abundant → low MU → cheap. Diamonds scarce → high MU → dear.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="hl gold reveal s3"><b>Objective &amp; fixed</b> ↔ <b>subjective &amp; changeable</b> —
+        only the second solves the water–diamond puzzle.<br>
+        <b>AP link:</b> willingness to pay = <b>marginal utility</b> → demand slopes down.</div>
+      <div class="s-foot">
+        <span class="note" id="extNote">Step ① — the old answer: value = labour.</span>
+        <button class="btn" id="extBtn" onclick="extNext()">① Labour theory</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ P9 SUMMARY (stepwise fill in the blanks) ════ -->
+  <section class="slide" data-title="Summary">
+    <div class="s-head">
+      <span class="tag">Summary</span><h2>Key Ideas</h2><span class="en">总结 · 分步填空</span>
+    </div>
+    <div class="s-body" style="flex-direction:column; gap:.9vh; overflow-y:auto; overflow-x:hidden; padding-right:.6vw;">
+      <div class="card" style="padding:1vh 1.2vw;">
+        <h3>1 · What "marginal" means</h3>
+        <p>Marginal = the <span class="blank" data-step="1" data-ans="next" style="min-width:6ch"></span> unit —
+          "one more or one less", never all-or-nothing.</p>
+      </div>
+      <div class="card" style="padding:1vh 1.2vw;">
+        <h3>2 · Diminishing marginal utility</h3>
+        <p>More units → smaller MU. TU rises while MU &gt; 0, peaks where MU =
+          <span class="blank" data-step="2" data-ans="0" style="min-width:4ch"></span>, and falls once MU &lt;
+          <span class="blank" data-step="2" data-ans="0" style="min-width:4ch"></span>.</p>
+      </div>
+      <div class="card" style="padding:1vh 1.2vw;">
+        <h3>3 · The principle behind everything</h3>
+        <p>Rational people think at the <span class="blank" data-step="3" data-ans="margin" style="min-width:8ch"></span> —
+          they weigh the <b>extra</b> benefit against the <b>extra</b> cost of one more unit.</p>
+      </div>
+      <div class="card" style="padding:1vh 1.2vw;">
+        <h3>4 · What AP tests here</h3>
+        <p>A consumer's <b>willingness to pay</b> depends on the
+          <span class="blank" data-step="4" data-ans="marginal utility" style="min-width:17ch"></span> the good
+          gives — not on its total usefulness. (Why water is cheap and diamonds are dear.)</p>
+      </div>
+      <div class="card" style="padding:1vh 1.2vw;">
+        <h3>5 · The decision rule</h3>
+        <p>MB usually <span class="blank" data-step="5" data-ans="falls" style="min-width:7ch"></span>,
+          MC usually <span class="blank" data-step="5" data-ans="rises" style="min-width:7ch"></span>.
+          Keep going while MB <span class="blank" data-step="5" data-ans="&gt;" style="min-width:4ch"></span> MC,
+          and stop where MB = MC — there total net benefit is at its maximum (in the Coke story: can
+          <span class="blank" data-step="5" data-ans="5" style="min-width:4ch"></span>).</p>
+      </div>
+      <div class="card" style="padding:1vh 1.2vw;">
+        <h3>6 · Why it is useful in real life</h3>
+        <p>The same rule answers: how many hours to <b>study</b>, whether to take one more hour of
+          <b>overtime</b>, how many units a <b>firm</b> should produce, whether one more kilometre of
+          <b>road</b> is worth building. In every case ask: is the extra benefit
+          <span class="blank" data-step="6" data-ans="greater" style="min-width:10ch"></span> than the extra cost?</p>
+      </div>
+    </div>
+    <div class="s-foot" style="padding-top:.8vh;">
+      <span class="note" id="sumNote">Try the blanks yourself first — then reveal them one card at a time.</span>
+      <button class="btn ghost" onclick="sumReset()">↺ Hide answers</button>
+      <button class="btn" id="sumBtn" onclick="sumNext()">Reveal ①</button>
+    </div>
+  </section>
+
+  <!-- ════ P10 END ════ -->
+  <section class="slide endpage" data-title="Thank you">
+    <div class="big">Thank you!</div>
+    <div class="sub">Any questions?<br><br>
+      <b>Preview for next class:</b> Consumer choice — indifference curves and the budget line<br>
+      <span style="font-size:clamp(22px,2.4vh,26px);">Homework: MB = 25, 21, 17, 13, 9 · MC = 4, 8, 12, 16, 20.
+      Find the quantity that maximises total net benefit.</span>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="navPrev" onclick="go(-1)">‹ Prev</button>
+  <div style="display:flex;align-items:center;gap:1vw;">
+    <div class="dots" id="dots"></div>
+    <div class="page" id="pageNum">1 / 10</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:.9vw;margin-left:auto;">
+    <span class="copy">© 2026 Dr. Jia · CBS</span>
+    <button id="navNext" onclick="go(1)">Next ›</button>
+  </div>
+</div>
+<div id="progressBar"></div>
+
+<script>
+"use strict";
+
+/* ═══════════════ DATA (single source of truth) ═══════════════ */
+const MU_UTIL = [20, 16, 12, 8, 4, 0, -4, -8];
+const TU_UTIL = (() => { let s = 0; return MU_UTIL.map(m => (s += m)); })();   /* peak 60 at can 6 */
+const PRICE   = 3;
+const MB_CASH = [20, 16, 12, 8, 4, 0];
+const TBCASH  = (() => { let s = 0; return MB_CASH.map(v => (s += v)); })();  /* 20,36,48,56,60,60 */
+const NET     = MB_CASH.map(v => v - PRICE);                                  /* 17,13,9,5,1,-3 */
+const TNB     = (() => { let s = 0; return NET.map(n => (s += n)); })();      /* 17,30,39,44,45,42 */
+const Q_STAR  = TNB.indexOf(Math.max(...TNB)) + 1;                            /* 5 */
+/* continuous model: the chase animation + the embedded demo */
+const Q_MAX = 10;
+const TBf = q => 24 * Math.sqrt(q);
+const TCf = q => 0.8 * Math.pow(q, 2);
+const MBf = q => 12 / Math.sqrt(q);
+const MCf = q => 1.6 * q;
+const NBf = q => TBf(q) - TCf(q);
+const Q_OPT = Math.pow(7.5, 2 / 3);                                           /* 3.832 · MB = MC */
+
+/* ═══════════════ NAVIGATION ═══════════════ */
+const slides = [...document.querySelectorAll(".slide")];
+const TOTAL = slides.length;
+const demoLab = document.getElementById("demoLab");
+const chaseLab = document.getElementById("chaseLab");
+let cur = 0;
+function go(d) {
+  const n = cur + d;
+  if (n < 0 || n >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = n; slides[cur].classList.add("active");
+  updateNav();
+}
+function updateNav() {
+  document.querySelectorAll(".dot").forEach((el, i) => el.classList.toggle("on", i === cur));
+  document.getElementById("pageNum").textContent = (cur + 1) + " / " + TOTAL;
+  document.getElementById("navPrev").disabled = cur === 0;
+  document.getElementById("navNext").disabled = cur === TOTAL - 1;
+  document.getElementById("progressBar").style.width = ((cur + 1) / TOTAL * 100) + "%";
+  document.title = slides[cur].dataset.title + " · Marginal analysis";
+  /* kept last and guarded: a canvas failure must never break paging.
+     NB the ids sit on the slide elements themselves — compare elements,
+     never querySelector (it searches descendants only). */
+  try {
+    if (slides[cur] === demoLab) { labResize(); labRender(); }
+    if (slides[cur] === chaseLab) startChase(); else stopChase();
+  } catch (e) { /* draw nothing, keep navigating */ }
+}
+const dots = document.getElementById("dots");
+slides.forEach((s, i) => {
+  const d = document.createElement("div");
+  d.className = "dot" + (i === 0 ? " on" : "");
+  d.onclick = () => { slides[cur].classList.remove("active"); cur = i; slides[cur].classList.add("active"); updateNav(); };
+  dots.appendChild(d);
+});
+/* keyboard / presenter remote. Touch swipe paging is deliberately absent. */
+window.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { e.preventDefault(); go(1); }
+  else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(-1); }
+});
+function showStep(sel, stagger) {
+  slides[cur].querySelectorAll(sel).forEach((el, i) =>
+    setTimeout(() => el.classList.add("show"), (stagger || 150) * (i + 1)));
+}
+
+/* ═══════════════ P2 · CLICK FOR ANOTHER CAN ═══════════════ */
+const CAN_SVG = '<svg viewBox="0 0 40 62"><ellipse cx="20" cy="8" rx="12" ry="4.5" fill="#f2f2f2" stroke="#c9d4de" stroke-width="1.5"/><path d="M8 8 v46 a12 4.5 0 0 0 24 0 V8" fill="#E25C5C"/><rect x="8" y="20" width="24" height="11" fill="#ffffff" opacity=".85"/><path d="M8 46 h24" stroke="#c34a4a" stroke-width="2"/></svg>';
+const FACE = {
+  head:  ["#ffd9a8","#ffd9a8","#ffd9a8","#ffd2a0","#ffd09a","#f7d49b","#ecdfa0","#dde4a4","#cfe8a8"],
+  mouth: ["M78 130 L122 130",
+          "M68 116 Q100 158 132 116",
+          "M72 120 Q100 152 128 120",
+          "M75 124 Q100 144 125 124",
+          "M77 127 Q100 138 123 127",
+          "M78 130 L122 130",
+          "M78 138 Q100 126 122 138",
+          "M73 142 Q100 122 127 142",
+          "M70 142 Q85 126 100 142 Q115 158 130 140"],
+  status: ["Nobody has had a Coke yet.",
+           "Best drink of my life. Bliss!",
+           "Still delicious — that hit the spot.",
+           "Nice. Just… nice.",
+           "I could stop now. But sure, why not.",
+           "Why am I still drinking this?",
+           "Please. No more.",
+           "I am going to be sick.",
+           "I'm dying. This is torture."],
+  last:   [0, 1, .8, .6, .4, .2, .05, 0, 0],
+  total:  [0, .33, .6, .8, .93, 1, 1, .93, .8]
+};
+let canN = 0;
+function buildCanSlots() {
+  const box = document.getElementById("canSlots");
+  for (let i = 1; i <= 8; i++) {
+    const d = document.createElement("div");
+    d.className = "can-slot"; d.id = "slot" + i; d.innerHTML = CAN_SVG;
+    box.appendChild(d);
+  }
+}
+function renderFace() {
+  const i = canN;
+  document.getElementById("faceHead").setAttribute("fill", FACE.head[i]);
+  document.getElementById("faceMouth").setAttribute("d", FACE.mouth[i]);
+  document.getElementById("faceSweat").style.opacity = i >= 6 ? 1 : 0;
+  const eyes = document.getElementById("faceEyes");
+  if (i === 8) {
+    eyes.innerHTML = '<path d="M64 74 L84 94 M84 74 L64 94" stroke="#3a2c1f" stroke-width="7" stroke-linecap="round"/>' +
+                     '<path d="M116 74 L136 94 M136 74 L116 94" stroke="#3a2c1f" stroke-width="7" stroke-linecap="round"/>';
+  } else {
+    const r = (i >= 1 && i <= 2) ? 7 : 9;
+    eyes.innerHTML = '<circle cx="74" cy="84" r="' + r + '" fill="#3a2c1f"/>' +
+                     '<circle cx="126" cy="84" r="' + r + '" fill="#3a2c1f"/>';
+  }
+  document.getElementById("faceStatus").textContent = FACE.status[i];
+  document.getElementById("canCount").textContent = canN;
+  document.getElementById("cokeNote").textContent = canN + " / 8 cans";
+  const lb = document.getElementById("lastBar"), tb = document.getElementById("totalBar");
+  lb.style.width = (FACE.last[i] * 100) + "%";
+  lb.style.background = (i >= 6) ? "var(--accent-red)" : "var(--accent-green)";
+  tb.style.width = (FACE.total[i] * 100) + "%";
+}
+function addCan() {
+  if (canN >= 8) return;
+  canN++;
+  document.getElementById("slot" + canN).classList.add("on");
+  renderFace();
+  const hint = document.getElementById("cokeHint");
+  if (canN === 4) hint.innerHTML = "He still says yes… but look at the bar for the <b>last</b> can — it is getting short.";
+  if (canN === 6) hint.innerHTML = "Can 6: the <b>last</b> can adds nothing at all. Total happiness has stopped growing.";
+  if (canN === 8) hint.innerHTML = "The <b>last</b> can is now negative — he would pay to stop. Yet he drank all eight.";
+  if (canN >= 8) { const b = document.getElementById("cokeBtn"); b.disabled = true; b.textContent = "Done ✓"; }
+}
+function resetCoke() {
+  canN = 0;
+  for (let i = 1; i <= 8; i++) document.getElementById("slot" + i).classList.remove("on");
+  const b = document.getElementById("cokeBtn");
+  b.disabled = false; b.textContent = "➕ Add a can";
+  document.getElementById("cokeHint").innerHTML =
+    "Click <b>[Add a can]</b> and watch his face. Keep going — all the way to can 8.";
+  renderFace();
+}
+
+/* ═══════════════ SVG helpers ═══════════════ */
+const NS = "http://www.w3.org/2000/svg";
+function mk(tag, attrs, text) {
+  const el = document.createElementNS(NS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  if (text != null) el.textContent = text;
+  return el;
+}
+const AX = q => 110 + q * 67.5;             /* cans 0..8 → 110..650 */
+
+/* ── P3: TU curve (top panel) + MU bars (bottom panel) ── */
+const UTY = v => 200 - v * 2.5;              /* TU 0..64 → 200..40 */
+const UMY = v => 380 - v * 5.6;              /* MU −10..22 → 436..257 */
+
+function buildUM() {
+  const st = document.getElementById("umStatic");
+  if (!st || st.dataset.done) return;
+  st.dataset.done = "1";
+  for (let q = 0; q <= 8; q++) st.appendChild(mk("line", {class:"ggrid", x1:AX(q), y1:40, x2:AX(q), y2:440}));
+  /* TU panel */
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:200, x2:650, y2:200}));
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:40, x2:110, y2:200}));
+  [0, 20, 40, 60].forEach(v => st.appendChild(mk("text", {class:"gtick", x:98, y:UTY(v) + 8, "text-anchor":"end"}, v)));
+  st.appendChild(mk("text", {class:"glabel blue", x:28, y:120, transform:"rotate(-90 28 120)",
+    "text-anchor":"middle"}, "TU (utils)"));
+  /* MU panel */
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:380, x2:650, y2:380}));
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:250, x2:110, y2:440}));
+  [20, 10, -10].forEach(v => st.appendChild(mk("text", {class:"gtick", x:98, y:UMY(v) + 8, "text-anchor":"end"}, v)));
+  st.appendChild(mk("text", {class:"glabel orange", x:28, y:345, transform:"rotate(-90 28 345)",
+    "text-anchor":"middle"}, "MU (utils/can)"));
+  for (let q = 0; q <= 8; q++) st.appendChild(mk("text", {class:"gtick", x:AX(q), y:464, "text-anchor":"middle"}, q));
+  st.appendChild(mk("text", {class:"glabel", x:380, y:494, "text-anchor":"middle"}, "Cans of Coke →"));
+
+  /* TU curve — step 1 */
+  const pts = [[0, 0], ...TU_UTIL.map((v, i) => [i + 1, v])];
+  const g1 = document.getElementById("umTU");
+  g1.appendChild(mk("polyline", {class:"gline reveal s1", fill:"none",
+    points: pts.map(p => AX(p[0]) + "," + UTY(p[1])).join(" ")}));
+  pts.forEach(p => g1.appendChild(mk("circle", {class:"gpoint reveal s1", cx:AX(p[0]), cy:UTY(p[1]), r:8})));
+  g1.appendChild(mk("text", {class:"glabel blue reveal s1", x:150, y:UTY(60) - 16}, "TU rises to 60"));
+  /* MU bars — step 2 */
+  const g2 = document.getElementById("umMU");
+  MU_UTIL.forEach((v, i) => {
+    const n = i + 1;
+    const cls = v > 0 ? "gbar" : (v === 0 ? "gbar zero" : "gbar neg");
+    g2.appendChild(mk("rect", {class:cls + " reveal s2", x:AX(n) - 22, y:Math.min(UMY(v), 380),
+      width:44, height:Math.abs(UMY(v) - 380), rx:4}));
+    g2.appendChild(mk("text", {class:"gtick reveal s2", x:AX(n) + (v === 0 ? -30 : (v < 0 ? -46 : 0)),
+      y:v >= 0 ? UMY(v) - 12 : UMY(v) + 8, "text-anchor":"middle"}, v));
+  });
+  g2.appendChild(mk("text", {class:"glabel orange reveal s2", x:640, y:364, "text-anchor":"end"}, "MU"));
+  g2.appendChild(mk("text", {class:"glabel sub reveal s2", x:150, y:374}, "MU = 0"));
+}
+let umStep = 0;
+const UM_STEPS = [
+  { btn:"② Show marginal utility", note:"Total utility: the running total, up to 60 utils — it rises as long as each extra can still adds something." },
+  { btn:"All shown ✓", note:"The orange bars are MU: they shrink can by can, and TU is exactly their sum." }
+];
+function umNext() {
+  umStep++;
+  showStep(".reveal.s" + umStep, 110);
+  const s = UM_STEPS[umStep - 1];
+  if (s) {
+    document.getElementById("umBtn").textContent = s.btn;
+    document.getElementById("umNote").textContent = s.note;
+  }
+  if (umStep >= 2) document.getElementById("umBtn").disabled = true;
+}
+
+/* ── P4: TU and MU as two curves on one chart (dual axis) ── */
+const DY = v => 400 - v * 5;                 /* utils: 0 → y 400 · 60 → y 100 · −8 → y 440 */
+
+function buildDM() {
+  const st = document.getElementById("dmStatic");
+  if (!st || st.dataset.done) return;
+  st.dataset.done = "1";
+  for (let q = 0; q <= 8; q++) st.appendChild(mk("line", {class:"ggrid", x1:AX(q), y1:50, x2:AX(q), y2:444}));
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:400, x2:650, y2:400}));   /* 0 utils */
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:50, x2:110, y2:444}));
+  [0, 20, 40, 60].forEach(v => st.appendChild(mk("text", {class:"gtick", x:98, y:DY(v) + 8, "text-anchor":"end"}, v)));
+  st.appendChild(mk("text", {class:"gtick", x:98, y:DY(-8) + 8, "text-anchor":"end"}, "−8"));
+  st.appendChild(mk("text", {class:"glabel", x:30, y:250, transform:"rotate(-90 30 250)",
+    "text-anchor":"middle"}, "utils — one shared axis"));
+  for (let q = 0; q <= 8; q++) st.appendChild(mk("text", {class:"gtick", x:AX(q), y:468, "text-anchor":"middle"}, q));
+  st.appendChild(mk("text", {class:"glabel", x:380, y:497, "text-anchor":"middle"}, "Cans of Coke →"));
+
+  /* TU and MU are both in utils → same axis, directly comparable */
+  const pts = [[0, 0], ...TU_UTIL.map((v, i) => [i + 1, v])];
+  const g1 = document.getElementById("dmTU");
+  g1.appendChild(mk("polyline", {class:"gline reveal s1", fill:"none",
+    points: pts.map(p => AX(p[0]) + "," + DY(p[1])).join(" ")}));
+  pts.forEach(p => g1.appendChild(mk("circle", {class:"gpoint reveal s1", cx:AX(p[0]), cy:DY(p[1]), r:8})));
+  g1.appendChild(mk("text", {class:"glabel blue reveal s1", x:660, y:166}, "TU"));
+
+  const mp = MU_UTIL.map((v, i) => [i + 1, v]);
+  const g2 = document.getElementById("dmMU");
+  g2.appendChild(mk("polyline", {class:"gline orange reveal s2", fill:"none",
+    points: mp.map(p => AX(p[0]) + "," + DY(p[1])).join(" ")}));
+  mp.forEach(p => g2.appendChild(mk("circle", {class:"gpoint orange reveal s2", cx:AX(p[0]), cy:DY(p[1]), r:8})));
+  g2.appendChild(mk("text", {class:"glabel orange reveal s2", x:660, y:438}, "MU"));
+
+  /* the turning point: MU = 0 exactly where TU peaks */
+  const g3 = document.getElementById("dmMark");
+  g3.appendChild(mk("line", {class:"gzero reveal s3", x1:AX(6), y1:DY(60), x2:AX(6), y2:DY(0)}));
+  g3.appendChild(mk("circle", {class:"gpoint green reveal s3", cx:AX(6), cy:DY(60), r:13}));
+  g3.appendChild(mk("circle", {class:"gpoint green reveal s3", cx:AX(6), cy:DY(0), r:11}));
+  g3.appendChild(mk("text", {class:"glabel green reveal s3", x:500, y:250, "text-anchor":"end"},
+    "MU = 0 → TU max"));
+}
+let dmStep = 0;
+const DM_STEPS = [
+  { btn:"② Show MU", note:"Blue TU: it climbs to 60 utils at can 6, then turns down." },
+  { btn:"All shown ✓", note:"Orange MU: a steady fall from 20 to −8. Same axis as TU, so the two heights are directly comparable." },
+  { btn:"Done ✓", note:"The two green dots mark the turning point: MU hits zero exactly where TU peaks — then TU falls." }
+];
+function dmNext() {
+  dmStep++;
+  showStep(".reveal.s" + dmStep, 120);
+  const s = DM_STEPS[dmStep - 1];
+  if (s) {
+    document.getElementById("dmBtn").textContent = s.btn;
+    document.getElementById("dmNote").textContent = s.note;
+  }
+  if (dmStep >= 3) document.getElementById("dmBtn").disabled = true;
+}
+
+/* ── P5: MC → TC → TB → MB on one ¥ axis ── */
+const CY = v => 400 - v * 5;                 /* ¥ 0..64 → 400..80 */
+const CXa = q => 110 + q * 90;               /* cans 0..6 → 110..650 */
+
+function buildCO() {
+  const st = document.getElementById("coStatic");
+  if (!st || st.dataset.done) return;
+  st.dataset.done = "1";
+  for (let q = 0; q <= 6; q++) st.appendChild(mk("line", {class:"ggrid", x1:CXa(q), y1:60, x2:CXa(q), y2:400}));
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:400, x2:650, y2:400}));
+  st.appendChild(mk("line", {class:"gaxis", x1:110, y1:60, x2:110, y2:400}));
+  [0, 20, 40, 60].forEach(v => st.appendChild(mk("text", {class:"gtick", x:98, y:CY(v) + 8, "text-anchor":"end"}, v)));
+  st.appendChild(mk("text", {class:"glabel", x:28, y:230, transform:"rotate(-90 28 230)",
+    "text-anchor":"middle"}, "¥ per morning"));
+  for (let q = 0; q <= 6; q++) st.appendChild(mk("text", {class:"gtick", x:CXa(q), y:428, "text-anchor":"middle"}, q));
+  st.appendChild(mk("text", {class:"glabel", x:380, y:458, "text-anchor":"middle"}, "Cans of Coke →"));
+
+  /* ① MC — flat dashed line */
+  const gMC = document.getElementById("coMC");
+  gMC.appendChild(mk("line", {class:"gdash reveal s1", x1:CXa(0), y1:CY(PRICE), x2:CXa(6), y2:CY(PRICE),
+    stroke:"var(--accent-red)"}));
+  gMC.appendChild(mk("text", {class:"glabel red reveal s1", x:656, y:CY(PRICE) + 6}, "MC"));
+  /* ② TC — straight line */
+  const gTC = document.getElementById("coTC");
+  gTC.appendChild(mk("polyline", {class:"gline red reveal s2", fill:"none",
+    points:[[0,0], ...[1,2,3,4,5,6].map(q => [q, q * PRICE])].map(p => CXa(p[0]) + "," + CY(p[1])).join(" ")}));
+  gTC.appendChild(mk("text", {class:"glabel red reveal s2", x:656, y:CY(18) + 6}, "TC"));
+  /* ③ TB — rising curve */
+  const gTB = document.getElementById("coTB");
+  const pts = [[0,0], ...TBCASH.map((v, i) => [i + 1, v])];
+  gTB.appendChild(mk("polyline", {class:"gline reveal s3", fill:"none",
+    points: pts.map(p => CXa(p[0]) + "," + CY(p[1])).join(" ")}));
+  pts.forEach(p => gTB.appendChild(mk("circle", {class:"gpoint reveal s3", cx:CXa(p[0]), cy:CY(p[1]), r:8})));
+  gTB.appendChild(mk("text", {class:"glabel blue reveal s3", x:656, y:CY(60) + 6}, "TB"));
+  /* ④ MB — falling dashed line + the net-benefit bars */
+  const gMB = document.getElementById("coMB");
+  gMB.appendChild(mk("polyline", {class:"gdash reveal s4", fill:"none", stroke:"var(--primary)",
+    points: MB_CASH.map((v, i) => CXa(i + 1) + "," + CY(v)).join(" ")}));
+  MB_CASH.forEach((v, i) => gMB.appendChild(
+    mk("circle", {class:"gpoint reveal s4", cx:CXa(i + 1), cy:CY(v), r:8})));
+  gMB.appendChild(mk("text", {class:"glabel blue reveal s4", x:186, y:CY(21.6), "text-anchor":"end"}, "MB"));
+  NET.forEach((n, i) => {
+    const q = i + 1;
+    gMB.appendChild(mk("line", {class:"reveal s4", x1:CXa(q), y1:CY(q * PRICE), x2:CXa(q), y2:CY(TBCASH[i]),
+      stroke:(n > 0 ? "var(--accent-green)" : "var(--accent-red)"), "stroke-width":9, "stroke-linecap":"round"}));
+  });
+  gMB.appendChild(mk("circle", {class:"gpoint green reveal s4", cx:CXa(Q_STAR), cy:CY(TBCASH[Q_STAR - 1]), r:14}));
+}
+let coStep = 0;
+const CO_STEPS = [
+  { btn:"② Show total cost", note:"MC = ¥3 for every can — the price never changes, so this line is flat." },
+  { btn:"③ Show total benefit", note:"Add up the MCs and you get TC — a straight line through the origin." },
+  { btn:"All shown ✓", note:"TB rises fast at first, then flattens: diminishing MB." },
+  { btn:"Done ✓", note:"The falling line is MB, and the bars are the gap (MB − MC). It peaks at can 5 → stop there. Total net benefit = ¥45." }
+];
+function coNext() {
+  coStep++;
+  showStep(".reveal.s" + coStep, 130);
+  const s = CO_STEPS[coStep - 1];
+  if (s) {
+    document.getElementById("coBtn").textContent = s.btn;
+    document.getElementById("coNote").textContent = s.note;
+  }
+  if (coStep >= 5) document.getElementById("coBtn").disabled = true;
+  if (coStep === 1) {                        /* fill the table with the first click */
+    const t = document.getElementById("coTable");
+    MB_CASH.forEach((mb, i) => {
+      const q = i + 1, tr = document.createElement("tr");
+      tr.innerHTML = "<td>" + q + "</td><td>" + mb + "</td><td>" + PRICE + "</td><td>" + NET[i] +
+        "</td><td>" + TNB[i] + "</td>";
+      if (q === Q_STAR) tr.className = "best"; else if (NET[i] <= 0) tr.className = "neg";
+      t.appendChild(tr);
+    });
+  }
+}
+
+/* ═══════════════ P6 · THE CHASE — looping animation ═══════════════ */
+const chaseCanvas = document.getElementById("chaseCanvas");
+let chaseRAF = null, chaseT = 0, chaseQv = 0.2, chaseRunning = false, chaseHold = 0;
+
+function chaseResize() {
+  if (!chaseCanvas) return;
+  const w = chaseCanvas.parentElement.clientWidth, h = chaseCanvas.parentElement.clientHeight;
+  if (w > 0 && h > 0) { chaseCanvas.width = w; chaseCanvas.height = h; }
+}
+/* q advances; near the optimum it slows right down so the
+   "the gap stops growing" moment is visible */
+function chaseAdvance(dt) {
+  const near = Math.abs(MBf(chaseQv) - MCf(chaseQv)) < 0.8;
+  chaseQv += dt * (near ? 0.22 : 0.75);
+  if (chaseQv >= 9.2) {
+    chaseQv = 9.2; chaseHold += dt;
+    if (chaseHold > 1.6) { chaseQv = 0.2; chaseHold = 0; }
+  }
+}
+function chaseDraw() {
+  if (!chaseCanvas) return;
+  const q = chaseQv, mb = MBf(q), mc = MCf(q), nb = NBf(q);
+  /* captions first: they must work even if the canvas does not */
+  const cap = document.getElementById("chaseCaption");
+  const near = Math.abs(mb - mc) < 0.8;
+  if (near) {
+    cap.textContent = "MB = MC at Q ≈ 3.8 — same speed: the gap stops growing (maximum)";
+    cap.style.color = "#9a7d1f";
+  } else if (mb > mc) {
+    cap.textContent = "MB > MC — car B is faster, so the gap grows";
+    cap.style.color = "#2e7d5b";
+  } else {
+    cap.textContent = "MC > MB — car C is faster and eats the gap: you have gone too far";
+    cap.style.color = "#b03a3a";
+  }
+  document.getElementById("chaseQ").textContent = "Q = " + q.toFixed(1);
+  document.getElementById("chaseSpeeds").textContent =
+    "MB = " + mb.toFixed(1) + " · MC = " + mc.toFixed(1) + " · net benefit = " + nb.toFixed(1);
+
+  const ctx = chaseCanvas.getContext && chaseCanvas.getContext("2d");
+  if (!ctx) return;
+  const W = chaseCanvas.width, H = chaseCanvas.height;
+  if (!W || !H) return;
+  const FONT = "bold 24px 'Segoe UI','Microsoft YaHei',Arial";
+  ctx.clearRect(0, 0, W, H);
+
+  /* road */
+  const roadY = Math.round(H * 0.60), roadH = Math.round(H * 0.20);
+  ctx.fillStyle = "#eef4f9"; ctx.fillRect(0, roadY, W, roadH);
+  ctx.strokeStyle = "#d8e8f5"; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(0, roadY); ctx.lineTo(W, roadY);
+  ctx.moveTo(0, roadY + roadH); ctx.lineTo(W, roadY + roadH); ctx.stroke();
+  /* scrolling lane dashes — the road moves backwards, so the cars move forward */
+  const dashW = 46, gapD = 42, off = (chaseT * 110) % (dashW + gapD);
+  ctx.strokeStyle = "#c2d6e6"; ctx.lineWidth = 5;
+  for (let x = -dashW - off; x < W + dashW; x += dashW + gapD) {
+    ctx.beginPath(); ctx.moveTo(x, roadY + roadH / 2); ctx.lineTo(x + dashW, roadY + roadH / 2); ctx.stroke();
+  }
+  /* start line */
+  ctx.strokeStyle = "#9db2c8"; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(70, roadY - 10); ctx.lineTo(70, roadY + roadH + 10); ctx.stroke();
+
+  /* displacement = TB (car B) and TC (car C) */
+  const pad0 = 100, usable = W - pad0 - 96;
+  const scale = usable / TBf(9.2);
+  const xC = pad0 + TCf(q) * scale, xB = pad0 + TBf(q) * scale;
+  const carY = roadY + roadH - 44;
+  const car = (x, color, label) => {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(x - 40, carY - 26, 80, 30, 8); ctx.fill(); }
+    else { ctx.fillRect(x - 40, carY - 26, 80, 30); }
+    ctx.fillStyle = "#2b3a4a";
+    ctx.beginPath(); ctx.arc(x - 23, carY + 6, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 23, carY + 6, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = color; ctx.font = FONT; ctx.textAlign = "center";
+    ctx.fillText(label, x, carY - 34);
+  };
+  car(xC, "#b03a3a", "C · cost");
+  car(xB, "#1599cc", "B · benefit");
+  /* the gap between the cars = net benefit */
+  const gx1 = xC + 44, gx2 = xB - 44, gMid = (gx1 + gx2) / 2;
+  if (gx2 > gx1) {
+    ctx.strokeStyle = nb > 30 ? "#D4AF37" : (nb > 0 ? "#42BA97" : "#E25C5C");
+    ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(gx1, carY - 8); ctx.lineTo(gx2, carY - 8); ctx.stroke();
+  }
+  ctx.fillStyle = "#25324b"; ctx.font = FONT; ctx.textAlign = "center";
+  ctx.fillText("gap = net benefit " + nb.toFixed(1), gMid, carY - 62);
+
+  /* speed arrows (their lengths are the marginal values) */
+  const arrow = (x, y, len, color, label) => {
+    ctx.strokeStyle = color; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + len, y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + len, y - 10); ctx.lineTo(x + len + 16, y); ctx.lineTo(x + len, y + 10);
+    ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+    ctx.font = FONT; ctx.textAlign = "left";
+    ctx.fillText(label, x, y - 16);
+  };
+  arrow(xB - 40, roadY - 26, Math.min(150, mb * 6), "#1599cc", "speed MB = " + mb.toFixed(1));
+  arrow(xC - 40, roadY + roadH + 56, Math.min(150, mc * 6), "#b03a3a", "speed MC = " + mc.toFixed(1));
+}
+function chaseFrame(ts) {
+  if (!chaseRunning) return;
+  const dt = Math.min(0.05, (ts - (chaseFrame.last || ts)) / 1000);
+  chaseFrame.last = ts;
+  chaseT += dt;
+  chaseAdvance(dt);
+  chaseDraw();
+  chaseRAF = requestAnimationFrame(chaseFrame);
+}
+function startChase() {
+  chaseResize();
+  if (chaseRunning) return;
+  chaseRunning = true;
+  chaseFrame.last = undefined;
+  chaseRAF = requestAnimationFrame(chaseFrame);
+  const b = document.getElementById("chaseBtn");
+  if (b) b.textContent = "⏸ Pause";
+}
+function stopChase() {
+  chaseRunning = false;
+  if (chaseRAF) { cancelAnimationFrame(chaseRAF); chaseRAF = null; }
+  const b = document.getElementById("chaseBtn");
+  if (b && b.textContent.indexOf("Pause") >= 0) b.textContent = "▶ Play";
+}
+function toggleChase() { if (chaseRunning) stopChase(); else startChase(); }
+/* deterministic stepping hook so the animation is testable without rAF */
+function chaseStep(seconds) { chaseT += seconds; chaseAdvance(seconds); chaseDraw(); }
+function chaseReset() { chaseQv = 0.2; chaseT = 0; chaseHold = 0; chaseDraw(); }
+
+/* ═══════════════ P7 · EMBEDDED DEMO (from economics_mini_lab) ═══════════════ */
+const tbCanvas = document.getElementById("tbCanvas");
+const mmCanvas = document.getElementById("mmCanvas");
+const qSlider  = document.getElementById("qSlider");
+const tanToggle = document.getElementById("tanToggle");
+let labQ = 3.8;
+
+function labResize() {
+  [tbCanvas, mmCanvas].forEach(c => {
+    if (!c) return;
+    const w = c.parentElement.clientWidth, h = c.parentElement.clientHeight;
+    if (w > 0 && h > 0) { c.width = w; c.height = h; }
+  });
+}
+function drawAxes(ctx, W, H, yMax, title, yLabel, pad, ticks) {
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = "#e8f1f8"; ctx.lineWidth = 2;
+  for (let i = 1; i <= Q_MAX; i++) {
+    const x = pad.l + (i / Q_MAX) * (W - pad.l - pad.r);
+    ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H - pad.b); ctx.stroke();
+  }
+  ctx.strokeStyle = "#7a93ad"; ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t - 12); ctx.lineTo(pad.l, H - pad.b); ctx.lineTo(W - pad.r + 10, H - pad.b);
+  ctx.stroke();
+  ctx.fillStyle = "#25324b"; ctx.font = "bold 24px 'Segoe UI','Microsoft YaHei',Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(title, (pad.l + W - pad.r) / 2, pad.t - 22);
+  ctx.save();
+  ctx.translate(26, (pad.t + H - pad.b) / 2); ctx.rotate(-Math.PI / 2);
+  ctx.fillText(yLabel, 0, 0);
+  ctx.restore();
+  ctx.fillStyle = "#5b7288"; ctx.font = "22px 'Segoe UI','Microsoft YaHei',Arial";
+  ctx.fillText("Q", (pad.l + W - pad.r) / 2, H - 10);
+  for (let i = 0; i <= Q_MAX; i++) {
+    const x = pad.l + (i / Q_MAX) * (W - pad.l - pad.r);
+    ctx.beginPath(); ctx.moveTo(x, H - pad.b); ctx.lineTo(x, H - pad.b + 10); ctx.stroke();
+    ctx.fillText(i, x, H - pad.b + 36);
+  }
+  ctx.textAlign = "right"; ctx.font = "22px 'Segoe UI','Microsoft YaHei',Arial";
+  const mY = v => H - pad.b - (v / yMax) * (H - pad.t - pad.b);
+  (ticks || []).forEach(v => ctx.fillText(v, pad.l - 12, mY(v) + 8));
+}
+function drawCurve(ctx, fn, yMax, W, H, color, label, pad, offX, offY, from) {
+  const mX = q => pad.l + (q / Q_MAX) * (W - pad.l - pad.r);
+  const mY = v => H - pad.b - (v / yMax) * (H - pad.t - pad.b);
+  ctx.strokeStyle = color; ctx.lineWidth = 6; ctx.beginPath();
+  for (let q = (from || 0); q <= Q_MAX; q += 0.1) {
+    const x = mX(q), y = mY(fn(q));
+    (q === (from || 0)) ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.fillStyle = color; ctx.font = "bold 24px 'Segoe UI','Microsoft YaHei',Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(label, mX(Q_MAX) + offX, mY(fn(Q_MAX)) + offY);
+}
+function drawTangent(ctx, q, val, slope, yMax, W, H, color, pad) {
+  const mX = qq => pad.l + (qq / Q_MAX) * (W - pad.l - pad.r);
+  const mY = v => H - pad.b - (v / yMax) * (H - pad.t - pad.b);
+  const span = 2;
+  const q1 = Math.max(0, q - span), q2 = Math.min(Q_MAX, q + span);
+  ctx.strokeStyle = color; ctx.lineWidth = 5; ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(mX(q1), mY(val + slope * (q1 - q)));
+  ctx.lineTo(mX(q2), mY(val + slope * (q2 - q)));
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(mX(q), mY(val), 10, 0, Math.PI * 2); ctx.fill();
+}
+function labRender() {
+  if (!tbCanvas || !mmCanvas) return;
+  /* readouts first: they must work even if the canvases do not */
+  const q = labQ, mb = MBf(q), mc = MCf(q), nb = NBf(q);
+  document.getElementById("qVal").textContent = q.toFixed(1);
+  document.getElementById("roMB").textContent = mb.toFixed(1);
+  document.getElementById("roMC").textContent = mc.toFixed(1);
+  document.getElementById("roNB").textContent = nb.toFixed(1);
+  const near = Math.abs(mb - mc) < 0.35;
+  const flag = document.getElementById("roFlag");
+  flag.textContent = near ? "MB = MC → optimum, Q ≈ 3.8"
+    : (mb > mc ? "MB > MC → one more unit still pays" : "MC > MB → one more unit loses money");
+  flag.className = "opt-flag" + (near ? " on" : "");
+
+  const ctx = tbCanvas.getContext && tbCanvas.getContext("2d");
+  const ctx2 = mmCanvas.getContext && mmCanvas.getContext("2d");
+  if (!ctx || !ctx2) return;
+
+  let W = tbCanvas.width, H = tbCanvas.height;
+  let pad = { l: 86, r: 60, t: 66, b: 64 };
+  const YMAX_T = 85;
+  drawAxes(ctx, W, H, YMAX_T, "Total Benefit & Total Cost", "¥", pad, [0, 20, 40, 60, 80]);
+  const mX = qq => pad.l + (qq / Q_MAX) * (W - pad.l - pad.r);
+  const mY = v => H - pad.b - (v / YMAX_T) * (H - pad.t - pad.b);
+  drawCurve(ctx, TBf, YMAX_T, W, H, "#1CADE4", "TB", pad, -20, -34, 0.1);
+  drawCurve(ctx, TCf, YMAX_T, W, H, "#E25C5C", "TC", pad, 20, 40, 0);
+  ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 16;
+  ctx.beginPath(); ctx.moveTo(mX(q), mY(TCf(q))); ctx.lineTo(mX(q), mY(TBf(q))); ctx.stroke();
+  ctx.strokeStyle = "rgba(0,0,0,.10)"; ctx.lineWidth = 3; ctx.setLineDash([10, 10]);
+  ctx.beginPath(); ctx.moveTo(mX(q), pad.t); ctx.lineTo(mX(q), H - pad.b); ctx.stroke(); ctx.setLineDash([]);
+  if (tanToggle.checked) {
+    drawTangent(ctx, q, TBf(q), MBf(q), YMAX_T, W, H, "#8fd0f0", pad);
+    drawTangent(ctx, q, TCf(q), MCf(q), YMAX_T, W, H, "#f5b7b7", pad);
+  }
+  W = mmCanvas.width; H = mmCanvas.height;
+  pad = { l: 86, r: 60, t: 66, b: 64 };
+  const mode = (document.querySelector('input[name="viewMode"]:checked') || {}).value || "marginal";
+  const mX2 = qq => pad.l + (qq / Q_MAX) * (W - pad.l - pad.r);
+  if (mode === "marginal") {
+    const Y = 22;
+    drawAxes(ctx2, W, H, Y, "Marginal Benefit & Marginal Cost", "¥ per unit", pad, [0, 10, 20]);
+    const mY2 = v => H - pad.b - (v / Y) * (H - pad.t - pad.b);
+    drawCurve(ctx2, MBf, Y, W, H, "#1CADE4", "MB = speed of B", pad, -30, -30, 0.4);
+    drawCurve(ctx2, MCf, Y, W, H, "#E25C5C", "MC = speed of C", pad, -10, 42, 0);
+    ctx2.strokeStyle = mb >= mc ? "#42BA97" : "#E25C5C"; ctx2.lineWidth = 16;
+    ctx2.beginPath(); ctx2.moveTo(mX2(q), mY2(mc)); ctx2.lineTo(mX2(q), mY2(mb)); ctx2.stroke();
+    ctx2.fillStyle = "#2e7d5b"; ctx2.font = "bold 24px 'Segoe UI','Microsoft YaHei',Arial";
+    ctx2.textAlign = "center";
+    ctx2.beginPath(); ctx2.arc(mX2(Q_OPT), mY2(MBf(Q_OPT)), 12, 0, Math.PI * 2); ctx2.fill();
+    ctx2.fillText("MB = MC", mX2(Q_OPT), mY2(MBf(Q_OPT)) - 24);
+  } else if (mode === "net") {
+    const Y = 40;
+    drawAxes(ctx2, W, H, Y, "Net Benefit — the gap", "¥", pad, [0, 20, 40]);
+    const mY2 = v => H - pad.b - (v / Y) * (H - pad.t - pad.b);
+    drawCurve(ctx2, NBf, Y, W, H, "#D4AF37", "Net benefit", pad, -20, -32, 0);
+    ctx2.fillStyle = "#D4AF37";
+    ctx2.beginPath(); ctx2.arc(mX2(q), mY2(NBf(q)), 12, 0, Math.PI * 2); ctx2.fill();
+    ctx2.fillStyle = "#2e7d5b";
+    ctx2.beginPath(); ctx2.arc(mX2(Q_OPT), mY2(NBf(Q_OPT)), 12, 0, Math.PI * 2); ctx2.fill();
+    ctx2.font = "bold 24px 'Segoe UI','Microsoft YaHei',Arial"; ctx2.textAlign = "center";
+    ctx2.fillText("maximum", mX2(Q_OPT), mY2(NBf(Q_OPT)) - 26);
+  } else {
+    const Y = 85;
+    drawAxes(ctx2, W, H, Y, "Total Benefit & Total Cost", "¥", pad, [0, 20, 40, 60, 80]);
+    drawCurve(ctx2, TBf, Y, W, H, "#1CADE4", "TB", pad, -20, -34, 0.1);
+    drawCurve(ctx2, TCf, Y, W, H, "#E25C5C", "TC", pad, 20, 40, 0);
+    ctx2.strokeStyle = "rgba(0,0,0,.10)"; ctx2.lineWidth = 3; ctx2.setLineDash([10, 10]);
+    ctx2.beginPath(); ctx2.moveTo(mX2(q), pad.t); ctx2.lineTo(mX2(q), H - pad.b); ctx2.stroke(); ctx2.setLineDash([]);
+  }
+}
+function setQ(v) {
+  labQ = Math.min(9.9, Math.max(0.1, Math.round(v * 10) / 10));
+  qSlider.value = labQ; labRender();
+}
+
+/* ═══════════════ P8 · two theories of value ═══════════════ */
+let extStep = 0;
+const EXT_STEPS = [
+  { btn:"② Marginal utility theory", note:"The old answer — value = labour — cannot explain why water is cheap and diamonds dear." },
+  { btn:"③ Why AP asks this", note:"The new answer: marginal utility. Abundant water has low MU; scarce diamonds have high MU." },
+  { btn:"Done ✓", note:"Why AP asks: willingness to pay = marginal utility — the micro-foundation of the demand curve." }
+];
+function extNext() {
+  extStep++;
+  showStep(".reveal.s" + extStep, 160);
+  const s = EXT_STEPS[extStep - 1];
+  if (s) {
+    document.getElementById("extBtn").textContent = s.btn;
+    document.getElementById("extNote").textContent = s.note;
+  }
+  if (extStep >= 4) document.getElementById("extBtn").disabled = true;
+}
+
+/* ═══════════════ P9 · SUMMARY fill in the blanks ═══════════════ */
+const SUM_STEPS = [
+  { next:"Reveal ②", note:"① Marginal = the NEXT unit — the question is always “one more”." },
+  { next:"Reveal ③", note:"② MU falls as quantity rises; TU peaks where MU = 0 and falls after that." },
+  { next:"Reveal ④", note:"③ Rational people think at the margin — extra benefit against extra cost." },
+  { next:"Reveal ⑤", note:"④ AP links this to demand: willingness to pay is driven by marginal utility." },
+  { next:"Reveal ⑥", note:"⑤ MB falls, MC rises; maximum total net benefit is where MB = MC." },
+  { next:"All shown ✓", note:"⑥ The same rule settles study hours, overtime, output and public projects." }
+];
+const SUM_HINT = "Try the blanks yourself first — then reveal them one card at a time.";
+let sumStep = 0, sumTimers = [];
+function sumNext() {
+  const slide = slides[cur];
+  sumStep++;
+  slide.querySelectorAll('.blank[data-step="' + sumStep + '"]').forEach((el, i) =>
+    sumTimers.push(setTimeout(() => { el.textContent = el.dataset.ans; el.classList.add("filled"); }, 180 * (i + 1))));
+  const s = SUM_STEPS[sumStep - 1];
+  if (s) {
+    document.getElementById("sumNote").textContent = s.note;
+    document.getElementById("sumBtn").textContent = s.next;
+  }
+  if (sumStep >= SUM_STEPS.length) document.getElementById("sumBtn").disabled = true;
+}
+function sumReset() {
+  sumStep = 0;
+  sumTimers.forEach(clearTimeout); sumTimers = [];
+  slides[cur].querySelectorAll(".blank").forEach(el => { el.textContent = ""; el.classList.remove("filled"); });
+  document.getElementById("sumNote").textContent = SUM_HINT;
+  const b = document.getElementById("sumBtn");
+  b.disabled = false; b.textContent = "Reveal ①";
+}
+
+/* ═══════════════ INIT ═══════════════ */
+buildCanSlots();
+renderFace();
+buildUM(); buildDM(); buildCO();
+chaseDraw();
+qSlider.addEventListener("input", e => { labQ = parseFloat(e.target.value); labRender(); });
+tanToggle.addEventListener("change", labRender);
+document.querySelectorAll('input[name="viewMode"]').forEach(r => r.addEventListener("change", labRender));
+const _p = parseInt((location.hash || "").replace("#", ""), 10);
+if (!isNaN(_p) && _p >= 0 && _p < TOTAL) cur = _p;
+slides[cur].classList.add("active");
+updateNav();
+</script>
+</body>
+</html>
