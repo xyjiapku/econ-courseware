@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 4.2 · Measuring Money</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+    overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1 0 auto;min-height:44vh;overflow-y:auto;display:flex;flex-direction:column;}
+  /* The stage grows with its content instead of squeezing it; when a slide is taller
+     than the window the content keeps its natural height and a visible scrollbar appears. */
+  .slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+  .slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+  .slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px;border:3px solid #eef4f9;}
+  .slide{scrollbar-width:thin;scrollbar-color:var(--accent) #eef4f9;}
+  .stage{scrollbar-width:thin;scrollbar-color:var(--accent) #eef4f9;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .logostrip{display:flex;gap:2.6vw;justify-content:center;align-items:flex-start;flex-wrap:wrap;}
+  .logocol{display:flex;flex-direction:column;align-items:center;}
+  .logogroup{font-size:clamp(22px,2.2vh,25px);font-weight:800;color:var(--accent-dark);text-align:center;margin-bottom:.5vh;}
+  .logorow{display:flex;gap:1.2vw;justify-content:center;align-items:flex-start;}
+  .logorow figure{display:flex;flex-direction:column;align-items:center;gap:.3vh;margin:0;}
+  .logorow img{height:5vh;min-height:42px;width:auto;max-width:7vw;}
+  .logorow figcaption{font-size:clamp(22px,2.1vh,24px);font-weight:700;color:var(--ink);}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  .drill{display:flex;flex-direction:column;gap:.9vh;flex:1 0 auto;}
+  .drow{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:9px solid var(--accent);border-radius:12px;padding:1.1vh 1.2vw;flex:1 1 auto;}
+  .dn{flex:0 0 1.5em;font-weight:800;font-size:clamp(24px,2.7vh,30px);color:var(--accent-dark);}
+  .drow p{font-size:clamp(22px,2.35vh,27px);line-height:1.5;margin:0;}
+  .cover .q{font-size:clamp(28px,3.4vh,44px);color:#fff;font-weight:700;max-width:88%;line-height:1.35;}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<section class="slide cover active" id="s1">
+  <div class="tag">AP Macroeconomics · Unit 4: Financial Sector</div>
+  <h1>Measuring Money</h1>
+  <p>M0 · M1 · M2 · the money stock · and whether Bitcoin counts</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="tag">Unit 4 · Lesson 2 · Measuring money (MEA-3.C.3)</div>
+  <h2>M1 &mdash; the medium-of-exchange measure</h2>
+  <div class="stage">
+    <div class="hl" style="margin-bottom:.9vh;">The money measures are drawn <b>by function</b>. M1 collects everything that does the <b>spending</b> job &mdash; assets you can pay with directly.</div>
+    <div class="svgwrap">
+      <svg viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:44vh;">
+        <rect x="15" y="25" width="870" height="280" rx="16" fill="#e3f4fb" stroke="#1CADE4" stroke-width="3"/>
+        <text x="40" y="62" font-size="26" font-weight="800" fill="#0e7fae">M1 &mdash; the spending measure</text>
+        <rect x="40" y="90" width="480" height="150" rx="12" fill="#ffffff" stroke="#0e7fae" stroke-width="3"/>
+        <text x="60" y="125" font-size="24" font-weight="800" fill="#1f2d3d">M0 &mdash; currency in circulation</text>
+        <text x="60" y="165" font-size="22" fill="#5b7288">paper notes + coins</text>
+        <text x="60" y="205" font-size="22" fill="#5b7288">the part you can hold in your hand</text>
+        <text x="545" y="130" font-size="22" font-weight="700" fill="#1f2d3d">demand deposits</text>
+        <text x="545" y="168" font-size="22" font-weight="700" fill="#1f2d3d">(checking accounts)</text>
+        <text x="545" y="206" font-size="22" font-weight="700" fill="#1f2d3d">other checkable deposits</text>
+        <text x="450" y="282" font-size="22" fill="#5b7288">Everything inside M1 can be handed over, swiped or transferred to pay &mdash; directly.</text>
+      </svg>
+    </div>
+    <p class="subline" style="margin-top:.6vh;">One narrower name still: <b>M0</b> = currency in circulation only &mdash; the cash inside M1.</p>
+    <p class="cn">中文速记：M0 = 流通中的现金（纸币 + 硬币）；M1 = M0 + 活期存款 —— 能直接用来支付的钱。</p>
+    <div class="s-foot">
+      <div class="hl green">M1 is the <b>narrowest</b> spendable measure. The US M1 total in August 2026 was about <b>$20.0 trillion</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 12 M2 与基础货币 ══════ -->
+
+<section class="slide" id="s3">
+  <div class="tag">Unit 4 · Lesson 2 · The wider measures (MEA-3.C.3, C.4)</div>
+  <h2>M2 &mdash; M1 plus the store-of-value measure</h2>
+  <div class="stage">
+    <div class="svgwrap">
+      <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:46vh;">
+        <rect x="15" y="20" width="870" height="315" rx="16" fill="#e3f4fb" stroke="#1CADE4" stroke-width="3"/>
+        <text x="40" y="55" font-size="26" font-weight="800" fill="#0e7fae">M2 &mdash; adds the store-of-value assets</text>
+        <rect x="40" y="80" width="560" height="230" rx="12" fill="#ffffff" stroke="#0e7fae" stroke-width="3"/>
+        <text x="60" y="112" font-size="24" font-weight="800" fill="#1f2d3d">M1 &mdash; the spending measure</text>
+        <rect x="60" y="130" width="300" height="105" rx="10" fill="#f4f8fc" stroke="#0e7fae" stroke-width="2"/>
+        <text x="75" y="162" font-size="22" font-weight="700" fill="#1f2d3d">M0 &mdash; currency</text>
+        <text x="75" y="198" font-size="22" fill="#5b7288">notes + coins</text>
+        <text x="385" y="170" font-size="22" fill="#1f2d3d">demand deposits</text>
+        <text x="385" y="206" font-size="22" fill="#1f2d3d">other checkable</text>
+        <text x="625" y="115" font-size="22" fill="#1f2d3d">savings deposits</text>
+        <text x="625" y="152" font-size="22" fill="#1f2d3d">small time deposits (CDs)</text>
+        <text x="625" y="189" font-size="22" fill="#1f2d3d">retail money market funds</text>
+        <rect x="625" y="215" width="240" height="60" rx="10" fill="#fdf3e3" stroke="#e6a23c" stroke-width="2" stroke-dasharray="7 5"/>
+        <text x="640" y="252" font-size="22" font-weight="700" fill="#a97422">bank reserves</text>
+        <text x="440" y="315" font-size="23" font-weight="800" fill="#a97422">MB (monetary base) = M0 + bank reserves</text>
+      </svg>
+    </div>
+    <p class="cn">中文速记：M1 = 现金 + 活期存款；M2 = M1 + 储蓄存款、小额定期（CD）、货币市场基金；M0 = 流通中的现金；MB（基础货币）= M0 + 银行准备金。</p>
+    <div class="s-foot">
+      <div class="hl green">M2 = M1 + near monies: <b>$23.3 trillion</b> in August 2026. One function, two measures.</div>
+      <div class="hl amber" style="margin-top:.8vh;">MB = currency + <b>bank reserves</b> &mdash; the banks' money, outside M1 and M2.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 13 度量练习 ══════ -->
+
+<section class="slide" id="s4">
+  <div class="tag">Unit 4 · Lesson 2 · Practice (MEA-3.C.3)</div>
+  <h2>M1, M2, or neither?</h2>
+  <div class="stage">
+    <div style="flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;">
+    <div class="game-meta"><span id="m13Prog">Q1 / 8</span><span id="m13Score">Score 0</span></div>
+    <div class="game-card" id="m13Card"></div>
+    <div class="btnrow" id="m13Btns"></div>
+    <div class="game-fb" id="m13Fb"></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Credit limits and shares are <b>not</b> money: one is a debt you can draw on, the other is an asset you must sell first.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 14 真实数据 ══════ -->
+
+<section class="slide" id="s5">
+  <div class="tag">Unit 4 · Lesson 2 · Real data (FRED: M2SL, GDPC1, CPIAUCSL)</div>
+  <h2>Money growth &mdash; and the value it quietly loses</h2>
+  <div class="stage">
+    <div class="svgwrap" style="gap:1.4vw;align-items:flex-start;">
+      <div class="col" style="flex:1.35;min-width:0;justify-content:flex-start;gap:.4vh;">
+<svg viewBox="0 0 980 470" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:46vh;">
+          <text x="60" y="26" font-size="23" font-weight="700" fill="#1f2d3d">Annual growth, %</text>
+          <rect x="560" y="10" width="14" height="14" fill="#1CADE4"/>
+          <text x="582" y="23" font-size="22" fill="#1f2d3d">M2</text>
+          <rect x="650" y="10" width="14" height="14" fill="#2e9e6b"/>
+          <text x="672" y="23" font-size="22" fill="#1f2d3d">Real GDP</text>
+          <rect x="790" y="10" width="14" height="14" fill="#d9534f"/>
+          <text x="812" y="23" font-size="22" fill="#1f2d3d">CPI inflation</text>
+          <line x1="60" y1="389.4" x2="950" y2="950.0" stroke="#e3f4fb" stroke-width="1.5"/>
+          <text x="52" y="396.4" text-anchor="end" font-size="22" fill="#5b7288">-5</text>
+          <line x1="60" y1="336.5" x2="950" y2="950.0" stroke="#cfe0ee" stroke-width="2"/>
+          <text x="52" y="343.5" text-anchor="end" font-size="22" fill="#5b7288">0</text>
+          <line x1="60" y1="283.5" x2="950" y2="950.0" stroke="#e3f4fb" stroke-width="1.5"/>
+          <text x="52" y="290.5" text-anchor="end" font-size="22" fill="#5b7288">5</text>
+          <line x1="60" y1="230.6" x2="950" y2="950.0" stroke="#e3f4fb" stroke-width="1.5"/>
+          <text x="52" y="237.6" text-anchor="end" font-size="22" fill="#5b7288">10</text>
+          <line x1="60" y1="177.6" x2="950" y2="950.0" stroke="#e3f4fb" stroke-width="1.5"/>
+          <text x="52" y="184.6" text-anchor="end" font-size="22" fill="#5b7288">15</text>
+          <line x1="60" y1="124.7" x2="950" y2="950.0" stroke="#e3f4fb" stroke-width="1.5"/>
+          <text x="52" y="131.7" text-anchor="end" font-size="22" fill="#5b7288">20</text>
+          <line x1="60" y1="71.8" x2="950" y2="950.0" stroke="#e3f4fb" stroke-width="1.5"/>
+          <text x="52" y="78.8" text-anchor="end" font-size="22" fill="#5b7288">25</text>
+          <rect x="61.8" y="268.7" width="8.2" height="67.8" fill="#1CADE4"/>
+          <rect x="71.4" y="293.1" width="8.2" height="43.4" fill="#2e9e6b"/>
+          <rect x="81.0" y="300.5" width="8.2" height="36.0" fill="#d9534f"/>
+          <rect x="94.8" y="222.1" width="8.2" height="114.4" fill="#1CADE4"/>
+          <rect x="104.4" y="325.9" width="8.2" height="10.6" fill="#2e9e6b"/>
+          <rect x="114.0" y="306.8" width="8.2" height="29.6" fill="#d9534f"/>
+          <rect x="127.7" y="272.9" width="8.2" height="63.5" fill="#1CADE4"/>
+          <rect x="137.3" y="318.5" width="8.2" height="18.0" fill="#2e9e6b"/>
+          <rect x="146.9" y="319.5" width="8.2" height="16.9" fill="#d9534f"/>
+          <rect x="160.7" y="282.5" width="8.2" height="54.0" fill="#1CADE4"/>
+          <rect x="170.3" y="306.8" width="8.2" height="29.6" fill="#2e9e6b"/>
+          <rect x="179.9" y="312.1" width="8.2" height="24.4" fill="#d9534f"/>
+          <rect x="193.7" y="270.8" width="8.2" height="65.6" fill="#1CADE4"/>
+          <rect x="203.3" y="295.2" width="8.2" height="41.3" fill="#2e9e6b"/>
+          <rect x="212.9" y="307.9" width="8.2" height="28.6" fill="#d9534f"/>
+          <rect x="226.6" y="293.1" width="8.2" height="43.4" fill="#1CADE4"/>
+          <rect x="236.2" y="299.4" width="8.2" height="37.1" fill="#2e9e6b"/>
+          <rect x="245.8" y="300.5" width="8.2" height="36.0" fill="#d9534f"/>
+          <rect x="259.6" y="271.9" width="8.2" height="64.6" fill="#1CADE4"/>
+          <rect x="269.2" y="306.8" width="8.2" height="29.6" fill="#2e9e6b"/>
+          <rect x="278.8" y="302.6" width="8.2" height="33.9" fill="#d9534f"/>
+          <rect x="292.5" y="275.1" width="8.2" height="61.4" fill="#1CADE4"/>
+          <rect x="302.1" y="315.3" width="8.2" height="21.2" fill="#2e9e6b"/>
+          <rect x="311.7" y="305.8" width="8.2" height="30.7" fill="#d9534f"/>
+          <rect x="325.5" y="228.5" width="8.2" height="108.0" fill="#1CADE4"/>
+          <rect x="335.1" y="336.5" width="8.2" height="1.1" fill="#2e9e6b"/>
+          <rect x="344.7" y="296.2" width="8.2" height="40.2" fill="#d9534f"/>
+          <rect x="358.5" y="302.6" width="8.2" height="33.9" fill="#1CADE4"/>
+          <rect x="368.1" y="336.5" width="8.2" height="27.5" fill="#2e9e6b"/>
+          <rect x="377.7" y="336.5" width="8.2" height="4.2" fill="#d9534f"/>
+          <rect x="391.4" y="293.1" width="8.2" height="43.4" fill="#1CADE4"/>
+          <rect x="401.0" y="307.9" width="8.2" height="28.6" fill="#2e9e6b"/>
+          <rect x="410.6" y="319.5" width="8.2" height="16.9" fill="#d9534f"/>
+          <rect x="424.4" y="234.8" width="8.2" height="101.6" fill="#1CADE4"/>
+          <rect x="434.0" y="319.5" width="8.2" height="16.9" fill="#2e9e6b"/>
+          <rect x="443.6" y="302.6" width="8.2" height="33.9" fill="#d9534f"/>
+          <rect x="457.4" y="236.9" width="8.2" height="99.5" fill="#1CADE4"/>
+          <rect x="467.0" y="312.1" width="8.2" height="24.4" fill="#2e9e6b"/>
+          <rect x="476.6" y="314.2" width="8.2" height="22.2" fill="#d9534f"/>
+          <rect x="490.3" y="284.6" width="8.2" height="51.9" fill="#1CADE4"/>
+          <rect x="499.9" y="314.2" width="8.2" height="22.2" fill="#2e9e6b"/>
+          <rect x="509.5" y="320.6" width="8.2" height="15.9" fill="#d9534f"/>
+          <rect x="523.3" y="272.9" width="8.2" height="63.5" fill="#1CADE4"/>
+          <rect x="532.9" y="310.0" width="8.2" height="26.5" fill="#2e9e6b"/>
+          <rect x="542.5" y="319.5" width="8.2" height="16.9" fill="#d9534f"/>
+          <rect x="556.2" y="276.1" width="8.2" height="60.4" fill="#1CADE4"/>
+          <rect x="565.8" y="303.6" width="8.2" height="32.8" fill="#2e9e6b"/>
+          <rect x="575.4" y="335.4" width="8.2" height="1.1" fill="#d9534f"/>
+          <rect x="589.2" y="264.5" width="8.2" height="72.0" fill="#1CADE4"/>
+          <rect x="598.8" y="317.4" width="8.2" height="19.1" fill="#2e9e6b"/>
+          <rect x="608.4" y="322.7" width="8.2" height="13.8" fill="#d9534f"/>
+          <rect x="622.2" y="284.6" width="8.2" height="51.9" fill="#1CADE4"/>
+          <rect x="631.8" y="310.0" width="8.2" height="26.5" fill="#2e9e6b"/>
+          <rect x="641.4" y="314.2" width="8.2" height="22.2" fill="#d9534f"/>
+          <rect x="655.1" y="290.9" width="8.2" height="45.5" fill="#1CADE4"/>
+          <rect x="664.7" y="304.7" width="8.2" height="31.8" fill="#2e9e6b"/>
+          <rect x="674.3" y="311.1" width="8.2" height="25.4" fill="#d9534f"/>
+          <rect x="688.1" y="268.7" width="8.2" height="67.8" fill="#1CADE4"/>
+          <rect x="697.7" y="308.9" width="8.2" height="27.5" fill="#2e9e6b"/>
+          <rect x="707.3" y="317.4" width="8.2" height="19.1" fill="#d9534f"/>
+          <rect x="721.1" y="71.8" width="8.2" height="264.7" fill="#1CADE4"/>
+          <rect x="730.7" y="336.5" width="8.2" height="23.3" fill="#2e9e6b"/>
+          <rect x="740.3" y="323.8" width="8.2" height="12.7" fill="#d9534f"/>
+          <rect x="754.0" y="199.9" width="8.2" height="136.6" fill="#1CADE4"/>
+          <rect x="763.6" y="271.9" width="8.2" height="64.6" fill="#2e9e6b"/>
+          <rect x="773.2" y="286.7" width="8.2" height="49.8" fill="#d9534f"/>
+          <rect x="787.0" y="336.5" width="8.2" height="15.9" fill="#1CADE4"/>
+          <rect x="796.6" y="310.0" width="8.2" height="26.5" fill="#2e9e6b"/>
+          <rect x="806.2" y="251.8" width="8.2" height="84.7" fill="#d9534f"/>
+          <rect x="819.9" y="336.5" width="8.2" height="26.5" fill="#1CADE4"/>
+          <rect x="829.5" y="305.8" width="8.2" height="30.7" fill="#2e9e6b"/>
+          <rect x="839.1" y="293.1" width="8.2" height="43.4" fill="#d9534f"/>
+          <rect x="852.9" y="295.2" width="8.2" height="41.3" fill="#1CADE4"/>
+          <rect x="862.5" y="306.8" width="8.2" height="29.6" fill="#2e9e6b"/>
+          <rect x="872.1" y="305.8" width="8.2" height="30.7" fill="#d9534f"/>
+          <rect x="885.9" y="295.2" width="8.2" height="41.3" fill="#1CADE4"/>
+          <rect x="895.5" y="315.3" width="8.2" height="21.2" fill="#2e9e6b"/>
+          <rect x="905.1" y="307.9" width="8.2" height="28.6" fill="#d9534f"/>
+          <rect x="918.8" y="299.4" width="8.2" height="37.1" fill="#1CADE4"/>
+          <rect x="928.4" y="315.3" width="8.2" height="21.2" fill="#2e9e6b"/>
+          <rect x="938.0" y="307.9" width="8.2" height="28.6" fill="#d9534f"/>
+          <text x="76.5" y="432" text-anchor="middle" font-size="22" fill="#5b7288">2000</text>
+          <text x="241.3" y="432" text-anchor="middle" font-size="22" fill="#5b7288">2005</text>
+          <text x="406.1" y="432" text-anchor="middle" font-size="22" fill="#5b7288">2010</text>
+          <text x="570.9" y="432" text-anchor="middle" font-size="22" fill="#5b7288">2015</text>
+          <text x="735.7" y="432" text-anchor="middle" font-size="22" fill="#5b7288">2020</text>
+          <text x="933.5" y="432" text-anchor="middle" font-size="22" fill="#5b7288">2026</text>
+          <text x="735.7" y="61.8" text-anchor="middle" font-size="22" font-weight="700" fill="#0e7fae">25.0</text>
+          <text x="806.5" y="241.8" text-anchor="middle" font-size="22" font-weight="700" fill="#a94442">8.0</text>
+        </svg>
+        <div class="piccap">M2, real GDP and CPI, annual %, 2000&ndash;2026</div>
+      </div>
+      <div class="col" style="flex:1;min-width:0;justify-content:flex-start;gap:.4vh;">
+        <svg viewBox="0 -10 700 524" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:46vh;" id="ppSvg">
+  <text x="96" y="26" font-size="26" font-weight="700" fill="#1f2d3d">What $1 from 1926 buys today</text>
+  <line x1="96" y1="400" x2="660" y2="400" stroke="#eef4f9" stroke-width="1.5"/>
+  <text x="86" y="407" text-anchor="end" font-size="26" fill="#5b7288">$0</text>
+  <line x1="96" y1="286.7" x2="660" y2="286.7" stroke="#eef4f9" stroke-width="1.5"/>
+  <text x="86" y="293.7" text-anchor="end" font-size="26" fill="#5b7288">$0.50</text>
+  <line x1="96" y1="173.3" x2="660" y2="173.3" stroke="#cfe0ee" stroke-width="2.5" stroke-dasharray="8 6"/>
+  <text x="86" y="180.3" text-anchor="end" font-size="26" fill="#5b7288">$1.00</text>
+  <line x1="96" y1="60" x2="660" y2="60" stroke="#eef4f9" stroke-width="1.5"/>
+  <text x="86" y="67" text-anchor="end" font-size="26" fill="#5b7288">$1.50</text>
+  <polygon points="96,400 96,173.3 118.6,159.8 135.5,91.4 175,113.4 203.2,177.1 231.4,233.5 259.6,250.3 287.8,264.5 316,272.6 344.2,296.6 372.4,325.4 400.6,351.3 428.8,362.7 457,369.3 485.2,373.7 513.4,376.7 541.6,379.5 569.8,381.6 598,383.1 626.2,384.5 643.1,386.8 660,387.8 660,400" fill="#e8f6ef"/>
+  <polyline points="96,173.3 118.6,159.8 135.5,91.4 175,113.4 203.2,177.1 231.4,233.5 259.6,250.3 287.8,264.5 316,272.6 344.2,296.6 372.4,325.4 400.6,351.3 428.8,362.7 457,369.3 485.2,373.7 513.4,376.7 541.6,379.5 569.8,381.6 598,383.1 626.2,384.5 643.1,386.8 660,387.8" fill="none" stroke="#2e9e6b" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="96" cy="173.3" r="7" fill="#2e9e6b" stroke="#fff" stroke-width="2.5"/>
+  <circle cx="660" cy="387.8" r="7" fill="#d9534f" stroke="#fff" stroke-width="2.5"/>
+  <text x="108" y="159.3" font-size="26" font-weight="700" fill="#1e6e4a">$1.00 in 1926</text>
+  <text x="656" y="371.8" text-anchor="end" font-size="26" font-weight="800" fill="#d9534f">$0.05 today</text>
+  <circle cx="135.5" cy="91.4" r="6" fill="#1CADE4" stroke="#fff" stroke-width="2.5"/>
+  <text x="157.5" y="85.4" text-anchor="start" font-size="26" font-weight="700" fill="#0e7fae">1933: prices fell</text>
+  <text x="96" y="440" text-anchor="middle" font-size="26" fill="#5b7288">1926</text>
+  <text x="231.4" y="440" text-anchor="middle" font-size="26" fill="#5b7288">1950</text>
+  <text x="372.4" y="440" text-anchor="middle" font-size="26" fill="#5b7288">1975</text>
+  <text x="513.4" y="440" text-anchor="middle" font-size="26" fill="#5b7288">2000</text>
+  <text x="660" y="440" text-anchor="middle" font-size="26" fill="#5b7288">2026</text>
+  <line x1="96" y1="400" x2="660" y2="400" stroke="#cfe0ee" stroke-width="2.5"/>
+  <text x="96" y="492" font-size="26" fill="#8a99a8">Shaded area = the purchasing power still left.</text>
+</svg>
+        <div class="piccap">CPI-U &middot; the shaded area is what is left of it</div>
+      </div>
+    </div>
+
+    <p class="subline" style="margin:.4vh 0 .2vh;">Year-on-year growth, %. Source: FRED &mdash; M2SL, GDPC1, CPIAUCSL; 2025&ndash;26 partly estimated.</p>
+    <div class="s-foot">
+      <div class="hl">Money grows about <b>6%</b> a year &mdash; roughly <b>three times</b> the real economy's ~2%. When the gap widens, as after 2020, inflation follows: CPI peaked at <b>8.0%</b> in 2022.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 15b 全球货币贬值 ══════ -->
+
+<section class="slide" id="s5b">
+  <div class="tag">Unit 4 · Lesson 2 · Real data · Purchasing power</div>
+  <h2>Every currency leaks &mdash; including the dollar</h2>
+  <div class="stage">
+    <div class="svgwrap">
+      <svg viewBox="0 -10 980 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:49vh;" id="fxSvg">
+  <text x="0" y="20" font-size="21" font-weight="700" fill="#1f2d3d">Purchasing power of 100 units of local money, 2000 &#8594; 2024</text>
+  <text x="980" y="20" text-anchor="end" font-size="18" fill="#8a99a8">World Bank CPI (2010 = 100)</text>
+  <text x="104" y="52" text-anchor="end" font-size="18" fill="#1f2d3d">Iran</text>
+  <rect x="112" y="41" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="41" width="1.6" height="15" rx="3" fill="#a94442"/>
+  <text x="120.6" y="52" font-size="17" font-weight="700" fill="#a94442">0.9</text>
+  <text x="104" y="77" text-anchor="end" font-size="18" fill="#1f2d3d">Turkey</text>
+  <rect x="112" y="66" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="66" width="2.8" height="15" rx="3" fill="#a94442"/>
+  <text x="121.8" y="77" font-size="17" font-weight="700" fill="#a94442">1.6</text>
+  <text x="104" y="102" text-anchor="end" font-size="18" fill="#1f2d3d">Ethiopia</text>
+  <rect x="112" y="91" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="91" width="6.4" height="15" rx="3" fill="#a94442"/>
+  <text x="125.4" y="102" font-size="17" font-weight="700" fill="#a94442">3.6</text>
+  <text x="104" y="127" text-anchor="end" font-size="18" fill="#1f2d3d">Nigeria</text>
+  <rect x="112" y="116" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="116" width="7.5" height="15" rx="3" fill="#a94442"/>
+  <text x="126.5" y="127" font-size="17" font-weight="700" fill="#a94442">4.2</text>
+  <text x="104" y="152" text-anchor="end" font-size="18" fill="#1f2d3d">Egypt</text>
+  <rect x="112" y="141" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="141" width="12.8" height="15" rx="3" fill="#a94442"/>
+  <text x="131.8" y="152" font-size="17" font-weight="700" fill="#a94442">7.2</text>
+  <text x="104" y="177" text-anchor="end" font-size="18" fill="#1f2d3d">Ukraine</text>
+  <rect x="112" y="166" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="166" width="13.5" height="15" rx="3" fill="#a94442"/>
+  <text x="132.5" y="177" font-size="17" font-weight="700" fill="#a94442">7.6</text>
+  <text x="104" y="202" text-anchor="end" font-size="18" fill="#1f2d3d">Pakistan</text>
+  <rect x="112" y="191" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="191" width="19.9" height="15" rx="3" fill="#d9534f"/>
+  <text x="138.9" y="202" font-size="17" font-weight="700" fill="#d9534f">11.2</text>
+  <text x="104" y="227" text-anchor="end" font-size="18" fill="#1f2d3d">Russia</text>
+  <rect x="112" y="216" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="216" width="21" height="15" rx="3" fill="#d9534f"/>
+  <text x="140" y="227" font-size="17" font-weight="700" fill="#d9534f">11.8</text>
+  <text x="104" y="252" text-anchor="end" font-size="18" fill="#1f2d3d">Brazil</text>
+  <rect x="112" y="241" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="241" width="41.8" height="15" rx="3" fill="#d9534f"/>
+  <text x="160.8" y="252" font-size="17" font-weight="700" fill="#d9534f">23.5</text>
+  <text x="104" y="277" text-anchor="end" font-size="18" fill="#1f2d3d">India</text>
+  <rect x="112" y="266" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="112" y="266" width="42.5" height="15" rx="3" fill="#d9534f"/>
+  <text x="161.5" y="277" font-size="17" font-weight="700" fill="#d9534f">23.9</text>
+  <text x="430" y="52" text-anchor="end" font-size="18" fill="#1f2d3d">Vietnam</text>
+  <rect x="438" y="41" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="41" width="45" height="15" rx="3" fill="#d9534f"/>
+  <text x="490" y="52" font-size="17" font-weight="700" fill="#d9534f">25.3</text>
+  <text x="430" y="77" text-anchor="end" font-size="18" fill="#1f2d3d">Indonesia</text>
+  <rect x="438" y="66" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="66" width="45.4" height="15" rx="3" fill="#d9534f"/>
+  <text x="490.4" y="77" font-size="17" font-weight="700" fill="#d9534f">25.5</text>
+  <text x="430" y="102" text-anchor="end" font-size="18" fill="#1f2d3d">South Africa</text>
+  <rect x="438" y="91" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="91" width="52.5" height="15" rx="3" fill="#d9534f"/>
+  <text x="497.5" y="102" font-size="17" font-weight="700" fill="#d9534f">29.5</text>
+  <text x="430" y="127" text-anchor="end" font-size="18" fill="#1f2d3d">Colombia</text>
+  <rect x="438" y="116" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="116" width="52.9" height="15" rx="3" fill="#d9534f"/>
+  <text x="497.9" y="127" font-size="17" font-weight="700" fill="#d9534f">29.7</text>
+  <text x="430" y="152" text-anchor="end" font-size="18" fill="#1f2d3d">Mexico</text>
+  <rect x="438" y="141" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="141" width="61.1" height="15" rx="3" fill="#e6a23c"/>
+  <text x="506.1" y="152" font-size="17" font-weight="700" fill="#e6a23c">34.3</text>
+  <text x="430" y="177" text-anchor="end" font-size="18" fill="#1f2d3d">Philippines</text>
+  <rect x="438" y="166" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="166" width="71" height="15" rx="3" fill="#e6a23c"/>
+  <text x="516" y="177" font-size="17" font-weight="700" fill="#e6a23c">39.9</text>
+  <text x="430" y="202" text-anchor="end" font-size="18" fill="#1f2d3d">Chile</text>
+  <rect x="438" y="191" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="191" width="73.7" height="15" rx="3" fill="#e6a23c"/>
+  <text x="518.7" y="202" font-size="17" font-weight="700" fill="#e6a23c">41.4</text>
+  <text x="430" y="227" text-anchor="end" font-size="18" fill="#1f2d3d">Poland</text>
+  <rect x="438" y="216" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="216" width="82.4" height="15" rx="3" fill="#e6a23c"/>
+  <text x="527.4" y="227" font-size="17" font-weight="700" fill="#e6a23c">46.3</text>
+  <text x="430" y="252" text-anchor="end" font-size="18" fill="#1f2d3d">Peru</text>
+  <rect x="438" y="241" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="241" width="86.5" height="15" rx="3" fill="#e6a23c"/>
+  <text x="531.5" y="252" font-size="17" font-weight="700" fill="#e6a23c">48.6</text>
+  <text x="430" y="277" text-anchor="end" font-size="18" font-weight="800" fill="#0e7fae">United States</text>
+  <rect x="438" y="266" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="438" y="266" width="97.7" height="15" rx="3" fill="#1CADE4"/>
+  <text x="542.7" y="277" font-size="17" font-weight="700" fill="#1CADE4">54.9</text>
+  <text x="756" y="52" text-anchor="end" font-size="18" fill="#1f2d3d">Britain</text>
+  <rect x="764" y="41" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="41" width="98.4" height="15" rx="3" fill="#1CADE4"/>
+  <text x="869.4" y="52" font-size="17" font-weight="700" fill="#1CADE4">55.3</text>
+  <text x="756" y="77" text-anchor="end" font-size="18" fill="#1f2d3d">South Korea</text>
+  <rect x="764" y="66" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="66" width="98.4" height="15" rx="3" fill="#1CADE4"/>
+  <text x="869.4" y="77" font-size="17" font-weight="700" fill="#1CADE4">55.3</text>
+  <text x="756" y="102" text-anchor="end" font-size="18" fill="#1f2d3d">Saudi Arabia</text>
+  <rect x="764" y="91" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="91" width="100.6" height="15" rx="3" fill="#1CADE4"/>
+  <text x="871.6" y="102" font-size="17" font-weight="700" fill="#1CADE4">56.5</text>
+  <text x="756" y="127" text-anchor="end" font-size="18" fill="#1f2d3d">China</text>
+  <rect x="764" y="116" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="116" width="108.8" height="15" rx="3" fill="#1CADE4"/>
+  <text x="879.8" y="127" font-size="17" font-weight="700" fill="#1CADE4">61.1</text>
+  <text x="756" y="152" text-anchor="end" font-size="18" fill="#1f2d3d">Thailand</text>
+  <rect x="764" y="141" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="141" width="112.3" height="15" rx="3" fill="#1CADE4"/>
+  <text x="883.3" y="152" font-size="17" font-weight="700" fill="#1CADE4">63.1</text>
+  <text x="756" y="177" text-anchor="end" font-size="18" fill="#1f2d3d">Germany</text>
+  <rect x="764" y="166" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="166" width="113" height="15" rx="3" fill="#1CADE4"/>
+  <text x="884" y="177" font-size="17" font-weight="700" fill="#1CADE4">63.5</text>
+  <text x="756" y="202" text-anchor="end" font-size="18" fill="#1f2d3d">France</text>
+  <rect x="764" y="191" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="191" width="118.7" height="15" rx="3" fill="#1CADE4"/>
+  <text x="889.7" y="202" font-size="17" font-weight="700" fill="#1CADE4">66.7</text>
+  <text x="756" y="227" text-anchor="end" font-size="18" fill="#1f2d3d">Switzerland</text>
+  <rect x="764" y="216" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="216" width="154.9" height="15" rx="3" fill="#2e9e6b"/>
+  <text x="925.9" y="227" font-size="17" font-weight="700" fill="#2e9e6b">87.0</text>
+  <text x="756" y="252" text-anchor="end" font-size="18" fill="#1f2d3d">Japan</text>
+  <rect x="764" y="241" width="178" height="15" rx="3" fill="#eef4f9"/>
+  <rect x="764" y="241" width="159.7" height="15" rx="3" fill="#2e9e6b"/>
+  <text x="930.7" y="252" font-size="17" font-weight="700" fill="#2e9e6b">89.7</text>
+  <line x1="209.7" y1="30" x2="209.7" y2="286" stroke="#8a99a8" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="209.7" y="304" text-anchor="middle" font-size="17" font-weight="700" fill="#5b7288">&#8593; the US dollar</text>
+  <line x1="535.7" y1="30" x2="535.7" y2="286" stroke="#8a99a8" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="535.7" y="304" text-anchor="middle" font-size="17" fill="#8a99a8">(dollar)</text>
+  <line x1="861.7" y1="30" x2="861.7" y2="286" stroke="#8a99a8" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="861.7" y="304" text-anchor="middle" font-size="17" fill="#8a99a8">(dollar)</text>
+</svg>
+    </div>
+    <p class="subline" style="margin:.5vh 0 .2vh;">What <b>100 units</b> of each currency, held since 2000, still buy after 24 years of that country's own inflation. Bars to the right of the dashed line held up better than the US dollar.</p>
+    <div class="s-foot">
+      <div class="hl amber">Nothing here is exotic. The <b>US dollar</b> lost <b>45%</b> of its purchasing power in 24 years; Japan and Switzerland kept ~90 of every 100. Money is a store of value only as long as the central bank keeps it scarce.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="tag">Unit 4 · Lesson 2 · Beyond the CED · Crypto</div>
+  <h2>Bitcoin: where it came from</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 0 auto;">
+      <div class="col" style="gap:.8vh;">
+        <div class="fig"><img src="photos/satoshi-statue.jpg" alt="Statue of Satoshi Nakamoto in Budapest" style="max-height:20vh;"><span>Satoshi Nakamoto &mdash; a pseudonym; the face is unknown</span></div>
+        <div class="card" style="flex:1;"><h3>2008: a nine-page paper</h3><p>A nine-page paper by Satoshi Nakamoto &mdash; a name nobody has ever identified. The first block was mined in January 2009.</p></div>
+      </div>
+      <div class="col" style="gap:.8vh;">
+        <div class="fig"><img src="photos/bitcoin-coin.jpg" alt="Physical bitcoin token" style="max-height:20vh;"><span>A bitcoin token &mdash; the real thing is a ledger entry</span></div>
+        <div class="card win" style="flex:1;"><h3>The blockchain: a shared ledger</h3><p>Money as a record &mdash; in software: a public ledger copied to thousands of computers, new blocks about every ten minutes.</p></div>
+      </div>
+    </div>
+    <div class="hl amber" style="margin-top:.9vh;">Hard rules, written in code: supply capped at <b>21 million</b> coins; new coins created by "mining", reward halving about every four years.</div>
+    <div class="s-foot">
+      <div class="hl green">For the first time, the village ledger runs without the village &mdash; no bank, no government, nobody in charge.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="tag">Unit 4 · Lesson 2 · Beyond the CED · Crypto</div>
+  <h2>Bitcoin, in one chart &mdash; and next to everything else</h2>
+  <div class="stage">
+    <div class="split" style="flex:1 0 auto;">
+      <div class="col" style="flex:1 1 auto;min-width:0;justify-content:center;gap:.6vh;">
+        <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;max-height:52vh;" id="btcSvg">
+  <line x1="74" y1="460" x2="870" y2="460" stroke="#cfe0ee" stroke-width="3"/>
+  <text x="64" y="467" text-anchor="end" font-size="24" fill="#5b7288">$300</text>
+  <line x1="74" y1="377.1" x2="870" y2="377.1" stroke="#e3f4fb" stroke-width="2"/>
+  <text x="64" y="384.1" text-anchor="end" font-size="24" fill="#5b7288">$1k</text>
+  <line x1="74" y1="218.5" x2="870" y2="218.5" stroke="#e3f4fb" stroke-width="2"/>
+  <text x="64" y="225.5" text-anchor="end" font-size="24" fill="#5b7288">$10k</text>
+  <line x1="74" y1="60" x2="870" y2="60" stroke="#e3f4fb" stroke-width="2"/>
+  <text x="64" y="67" text-anchor="end" font-size="24" fill="#5b7288">$100k</text>
+  <polyline points="74,396.5 135.2,455.6 196.5,435.2 257.7,379.6 318.9,194.6 380.2,286.3 441.4,241.3 502.6,145.3 563.8,113 625.1,183.7 686.3,119.5 747.5,65.1 808.8,69.4 870,72.4" fill="none" stroke="#e6a23c" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="563.8" cy="113" r="7" fill="#d9534f" stroke="#fff" stroke-width="2.5"/>
+  <text x="557.8" y="97" text-anchor="middle" font-size="24" font-weight="700" fill="#a94442">2021 peak</text>
+  <circle cx="870" cy="72.4" r="7" fill="#e6a23c" stroke="#fff" stroke-width="2.5"/>
+  <text x="74" y="502" text-anchor="middle" font-size="24" fill="#5b7288">2013</text>
+  <text x="319.1" y="502" text-anchor="middle" font-size="24" fill="#5b7288">2017</text>
+  <text x="563.8" y="502" text-anchor="middle" font-size="24" fill="#5b7288">2021</text>
+  <text x="870" y="502" text-anchor="middle" font-size="24" fill="#5b7288">2026</text>
+</svg>
+        <div class="piccap">Bitcoin year-end price, log scale &mdash; $754 in 2013 to $83,503 in 2026</div>
+      </div>
+      <div class="txt" style="gap:.45vh;">
+        <p class="qtext" style="margin-bottom:.2vh;">What $1 put in at end-2013 became:</p>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">Nvidia (NVDA)</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:100.0%;background:#1f2d3d;"></div></div><div class="bar-num" style="flex:0 0 8vw;">575×</div></div>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">Bitcoin</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:19.3%;background:#d9534f;"></div></div><div class="bar-num" style="flex:0 0 8vw;">111×</div></div>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">Apple (AAPL)</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:3.0%;background:#1CADE4;"></div></div><div class="bar-num" style="flex:0 0 8vw;">17×</div></div>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">NASDAQ index</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:1.1%;background:#1CADE4;"></div></div><div class="bar-num" style="flex:0 0 8vw;">6.4×</div></div>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">Berkshire (BRK.B)</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:0.8%;background:#1CADE4;"></div></div><div class="bar-num" style="flex:0 0 8vw;">4.5×</div></div>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">Gold</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:0.6%;background:#1CADE4;"></div></div><div class="bar-num" style="flex:0 0 8vw;">3.6×</div></div>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">CSI 300</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:0.3%;background:#1CADE4;"></div></div><div class="bar-num" style="flex:0 0 8vw;">1.9×</div></div>
+        <div class="bar-row" style="margin-bottom:.5vh;"><div class="bar-label" style="flex:0 0 11vw;">SSE Composite</div><div class="bar-track" style="height:4vh;min-height:30px;"><div class="bar-fill" style="width:0.3%;background:#1CADE4;"></div></div><div class="bar-num" style="flex:0 0 8vw;">1.8×</div></div>
+        <p class="note" style="margin:.3vh 0 0;">End-2013 to Sep-2026. NVDA and AAPL split-adjusted; bitcoin at its 2025 year-end; indices and BRK.B at 29 Sep 2026.</p>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl amber">Bitcoin multiplied money <b>111&times;</b> &mdash; and was still beaten by Nvidia. The swings are the point: this is not a <b>store of value</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 16 三职能检验 ══════ -->
+
+<section class="slide" id="s8">
+  <div class="tag">Unit 4 · Lesson 2 · Beyond the CED · The verdict (MEA-3.C.1)</div>
+  <h2>Run Bitcoin through the definition</h2>
+  <div class="stage">
+    <table style="flex:1 0 auto;">
+      <tr><th class="l">Test</th><th>Result</th><th class="l">Why</th></tr>
+      <tr><td class="l">Medium of exchange</td><td class="no">Weak</td><td class="l">Very few merchants accept it; settlement is slow and costly.</td></tr>
+      <tr><td class="l">Unit of account</td><td class="no">Fails</td><td class="l">Almost nothing is priced in BTC — wages, rent and menus are in dollars.</td></tr>
+      <tr><td class="l">Store of value</td><td class="no">Fails</td><td class="l">Year-end closes ran from $320 to $93,429 over thirteen years.</td></tr>
+      <tr><td class="l">Widely accepted</td><td class="no">Fails</td><td class="l">Acceptance is the one property it cannot borrow from the others.</td></tr>
+    </table>
+    <p class="subline" style="margin-top:1vh;">On our properties list it actually scores well: divisible, durable, portable and strictly limited. It still is not money.</p>
+    <div class="two" style="margin-top:1.4vh;">
+      <div class="col"><div class="card lose"><h3>By the CED definition</h3><p><b>Not money.</b> It is not generally accepted as a means of payment, and it appears in neither M1 nor M2.</p></div></div>
+      <div class="col"><div class="card warn"><h3>What it actually is</h3><p>A <b>speculative digital asset</b> — closer to a commodity than to a currency.</p></div></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl red">Answer the exam question with the <b>definition</b>, not the hype: acceptance is the test, and Bitcoin fails it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 17 稳定币与 CBDC ══════ -->
+
+<section class="slide" id="s9">
+  <div class="tag">Unit 4 · Lesson 2 · Beyond the CED · Digital money</div>
+  <h2>Private tokens vs central-bank money</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 0 auto;align-items:flex-start;gap:1.8vw;">
+
+      <div class="col" style="flex:1.45;min-width:0;justify-content:flex-start;gap:.55vh;">
+        <div class="hl" style="padding:.5vh 1vw;">Private digital money &mdash; <b>no issuer, no peg</b>. The market sets the price.</div>
+        <div class="logorow" style="justify-content:flex-start;">
+          <figure><img src="photos/crypto/btc.svg" alt="BTC logo"><figcaption>BTC</figcaption></figure>
+          <figure><img src="photos/crypto/eth.svg" alt="ETH logo"><figcaption>ETH</figcaption></figure>
+          <figure><img src="photos/crypto/xrp.svg" alt="XRP logo"><figcaption>XRP</figcaption></figure>
+          <figure><img src="photos/crypto/bnb.svg" alt="BNB logo"><figcaption>BNB</figcaption></figure>
+          <figure><img src="photos/crypto/sol.svg" alt="SOL logo"><figcaption>SOL</figcaption></figure>
+          <figure><img src="photos/crypto/ltc.svg" alt="LTC logo"><figcaption>LTC</figcaption></figure>
+        </div>
+        <div class="hl green" style="padding:.5vh 1vw;">Stablecoins promise <b>1 token = $1</b>, backed by reserves.</div>
+        <div class="logorow" style="justify-content:flex-start;">
+          <figure><img src="photos/crypto/usdc.svg" alt="USDC logo"><figcaption>USDC</figcaption></figure>
+          <figure><img src="photos/crypto/usdt.svg" alt="USDT logo"><figcaption>USDT</figcaption></figure>
+          <figure><img src="photos/crypto/dai.svg" alt="DAI logo"><figcaption>DAI</figcaption></figure>
+          <figure><img src="photos/crypto/busd.svg" alt="BUSD logo"><figcaption>BUSD</figcaption></figure>
+          <figure><img src="photos/crypto/fdusd.svg" alt="FDUSD logo"><figcaption>FDUSD</figcaption></figure>
+          <figure><img src="photos/crypto/pyusd.svg" alt="PYUSD logo"><figcaption>PYUSD</figcaption></figure>
+        </div>
+        <div style="display:flex;flex-direction:column;width:100%;margin-top:.4vh;">
+        <svg viewBox="0 -6 912 264" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:100%;" id="volSvg">
+          <line x1="96" y1="175" x2="880" y2="175" stroke="#eef4f9" stroke-width="1.5"/>
+          <text x="86" y="169" text-anchor="end" font-size="20" fill="#5b7288">0</text>
+          <line x1="96" y1="136.8" x2="880" y2="136.8" stroke="#cfe0ee" stroke-width="2.5" stroke-dasharray="7 6"/>
+          <text x="86" y="130.8" text-anchor="end" font-size="20" fill="#5b7288">100</text>
+          <line x1="96" y1="98.5" x2="880" y2="98.5" stroke="#eef4f9" stroke-width="1.5"/>
+          <text x="86" y="92.5" text-anchor="end" font-size="20" fill="#5b7288">200</text>
+          <line x1="96" y1="60.3" x2="880" y2="60.3" stroke="#eef4f9" stroke-width="1.5"/>
+          <text x="86" y="54.3" text-anchor="end" font-size="20" fill="#5b7288">300</text>
+          <line x1="96" y1="175" x2="880" y2="175" stroke="#cfe0ee" stroke-width="2.5"/>
+          <text x="96" y="20" font-size="21" font-weight="700" fill="#1f2d3d">Index, end-2020 = 100</text>
+          <rect x="300" y="7" width="15" height="15" fill="#e6a23c"/><text x="322" y="20" font-size="20" font-weight="700" fill="#1f2d3d">Bitcoin</text>
+          <rect x="440" y="7" width="15" height="15" fill="#2e9e6b"/><text x="462" y="20" font-size="20" font-weight="700" fill="#1f2d3d">a stablecoin</text>
+          <line x1="96" y1="136.8" x2="880" y2="136.8" stroke="#2e9e6b" stroke-width="5"/>
+          <text x="876" y="126.8" text-anchor="end" font-size="20" font-weight="800" fill="#1e6e4a">$1.00, always</text>
+          <polyline points="96,136.8 226.7,113.9 357.3,153.1 488,119.3 618.7,52.4 749.3,59.8 880,64.8" fill="none" stroke="#e6a23c" stroke-width="5" stroke-linejoin="round"/>
+          <circle cx="96" cy="136.8" r="5.5" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+          <text x="96" y="200" text-anchor="middle" font-size="20" fill="#5b7288">2020</text>
+          <circle cx="226.7" cy="113.9" r="5.5" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+          <text x="226.7" y="200" text-anchor="middle" font-size="20" fill="#5b7288">2021</text>
+          <circle cx="357.3" cy="153.1" r="5.5" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+          <text x="357.3" y="200" text-anchor="middle" font-size="20" fill="#5b7288">2022</text>
+          <circle cx="488" cy="119.3" r="5.5" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+          <text x="488" y="200" text-anchor="middle" font-size="20" fill="#5b7288">2023</text>
+          <circle cx="618.7" cy="52.4" r="5.5" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+          <text x="618.7" y="200" text-anchor="middle" font-size="20" fill="#5b7288">2024</text>
+          <circle cx="749.3" cy="59.8" r="5.5" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+          <text x="749.3" y="200" text-anchor="middle" font-size="20" fill="#5b7288">2025</text>
+          <circle cx="880" cy="64.8" r="5.5" fill="#e6a23c" stroke="#fff" stroke-width="2"/>
+          <text x="880" y="200" text-anchor="middle" font-size="20" fill="#5b7288">2026</text>
+          <text x="102" y="156.8" font-size="20" font-weight="700" fill="#1e6e4a">the peg holds</text>
+          <text x="357.3" y="232" text-anchor="middle" font-size="21" font-weight="800" fill="#a94442">&#8722;64% in 2022</text>
+          <text x="618.7" y="38" text-anchor="middle" font-size="21" font-weight="800" fill="#a97422">3.2&#215;</text>
+          <text x="880" y="252" text-anchor="end" font-size="20" fill="#8a99a8">March 2023: USDC slipped to $0.88 for two days</text>
+        </svg>
+        </div>
+      </div>
+
+      <div class="col" style="flex:1;min-width:0;justify-content:flex-start;gap:.6vh;">
+        <div class="card warn"><h3>Central bank digital currency</h3><p>Issued by the <b>central bank</b> itself, not by a company. The digital yuan (e-CNY) is live; a digital dollar is not.</p></div>
+        <div class="fig" style="flex:1 0 auto;justify-content:center;">
+          <img src="photos/ecny-cny-wallet.png" alt="The e-CNY wallet app on a phone, with the digital yuan logo" style="max-height:28vh;width:auto;max-width:100%;border:2px solid var(--line);border-radius:10px;background:#fff;">
+          <span>The e-CNY wallet &mdash; central-bank money in an app</span>
+        </div>
+        <div class="hl amber" style="padding:.6vh 1vw;">A different asset class: Bitcoin and Ether are <b>private tokens whose price floats</b>. The e-CNY is <b>the yuan itself</b> &mdash; same unit, same value, just no paper.</div>
+      </div>
+
+    </div>
+    <div class="s-foot">
+      <div class="hl">A stablecoin <b>borrows</b> a currency's stability. A CBDC <b>is</b> that currency, in digital form. Neither of them is Bitcoin.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="tag">Unit 4 · Lesson 2 · Beyond the CED · Payment innovation</div>
+  <h2>The form changes; the functions do not</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>Mobile wallets</h3><p>Alipay and WeChat Pay move <b>existing bank money</b> instantly. In China they have largely replaced cash.</p></div>
+      <div class="card"><h3>FedNow</h3><p>The Fed's instant payment rail, live since 2023 — dollars settle in seconds, around the clock.</p></div>
+      <div class="card"><h3>UPI</h3><p>India's public instant-payment system — now the busiest retail payment network in the world.</p></div>
+    </div>
+    <p class="subline" style="margin-top:1.4vh;">Every one of these moves money <b>faster</b>. None of them invents a new unit of account: balances are still counted in dollars, yuan or rupees.</p>
+    <div class="s-foot">
+      <div class="hl green">New plumbing, same three functions. When the exam asks what money does, the answer has not changed since the Yap stones.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 19 常见失分 ══════ -->
+
+<section class="slide" id="s11">
+  <div class="tag">Unit 4 · Lesson 2 · Before you move on</div>
+  <h2>Three ways students lose points</h2>
+  <div class="stage">
+    <div class="aim"><div class="no">1</div><div><div class="at">Treating savings accounts as M1</div><div class="ad">Savings are M2: they store value well, but you cannot pay with them directly.</div></div></div>
+    <div class="aim"><div class="no">2</div><div><div class="at">Putting bank reserves inside M1</div><div class="ad">Reserves belong to the monetary base only. They are not spendable by the public.</div></div></div>
+    <div class="aim"><div class="no">3</div><div><div class="at">Mixing up commodity, commodity-backed and fiat money</div><div class="ad">Gold coins are commodity money; a gold-standard dollar is commodity-backed; today's dollar is backed by nothing but acceptance.</div></div></div>
+    <div class="s-foot">
+      <div class="hl amber">All three are vocabulary errors, not calculation errors. Precision with words is a graded skill on this exam.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 20 收尾 ══════ -->
+
+<section class="slide" id="s12">
+  <div class="tag">Unit 4 · Lesson 2 · Key takeaways</div>
+  <h2>What to walk out with &mdash; fill the blanks</h2>
+  <div class="stage">
+    <div class="drill">
+      <div class="drow"><span class="dn">1</span><p>M0 is currency in circulation; M1 adds <span class="fill" data-a="demand deposits">____</span>; M2 adds <span class="fill" data-a="savings deposits">____</span> and small time deposits; the <span class="fill" data-a="monetary base">____</span> adds bank reserves.</p></div>
+      <div class="drow"><span class="dn">2</span><p>Money grows about <span class="fill" data-a="6%">____</span> a year — roughly three times the real economy's rate.</p></div>
+      <div class="drow"><span class="dn">3</span><p>Primitive → commodity → commodity-backed → <span class="fill" data-a="fiat">____</span>.</p></div>
+      <div class="drow"><span class="dn">4</span><p>Stablecoins and CBDC try to fix <span class="fill" data-a="volatility">____</span>; payment apps only move money faster.</p></div>
+    </div>
+    <div class="btnrow" style="margin-top:1vh;justify-content:center;">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+    <div class="s-foot"><div class="hl">Next: the quantity of money is one thing — controlling it is another. Who holds the printing press, and what do banks do with deposits? That is where banking begins.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 结束页 ═══════════ -->
+<section class="slide cover" id="s13">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">Money is measured by what it does — and it has been losing value all along.</div>
+  <div class="meta">Dr. Jia &middot; &copy; 2026</div>
+</section>
+
+</main>
+
+
+
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 14</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+function goTo(i){ gotoSlide(i); }
+window.goTo = goTo;
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+
+/* ═══════════ 小测验引擎 ═══════════ */
+function makeQuiz(items, cardId, progId, scoreId, btnsId, fbId){
+  const card = document.getElementById(cardId);
+  const prog = document.getElementById(progId);
+  const scoreEl = document.getElementById(scoreId);
+  const btns = document.getElementById(btnsId);
+  const fb = document.getElementById(fbId);
+  let i = 0, score = 0, done = false;
+  function show(){
+    if(i >= items.length){
+      card.textContent = "Final score: " + score + " / " + items.length + " — restart to try again?";
+      prog.textContent = "Done";
+      fb.textContent = ""; fb.className = "game-fb";
+      btns.innerHTML = "";
+      const r = document.createElement("button");
+      r.className = "btn"; r.textContent = "Restart";
+      r.onclick = restart;
+      btns.appendChild(r);
+      return;
+    }
+    card.textContent = items[i].q;
+    prog.textContent = "Q" + (i+1) + " / " + items.length;
+    fb.textContent = ""; fb.className = "game-fb";
+    btns.innerHTML = "";
+    items[i].opts.forEach(function(t,k){
+      const b = document.createElement("button");
+      b.className = "btn ghost opt"; b.textContent = t;
+      b.onclick = function(){ answer(k); };
+      btns.appendChild(b);
+    });
+    const nx = document.createElement("button");
+    nx.className = "btn"; nx.textContent = "Next →"; nx.style.display = "none";
+    nx.onclick = function(){ i++; show(); };
+    btns.appendChild(nx);
+    done = false;
+  }
+  function answer(k){
+    if(done) return;
+    done = true;
+    const ok = (k === items[i].a);
+    if(ok) score++;
+    scoreEl.textContent = "Score " + score;
+    btns.querySelectorAll(".opt").forEach(function(b,idx){
+      b.className = "btn opt " + (idx === items[i].a ? "green" : (idx === k ? "red" : "ghost"));
+    });
+    fb.innerHTML = (ok ? "✓ Correct — " : "✗ Not quite — ") + items[i].w;
+    fb.className = "game-fb " + (ok ? "good" : "bad");
+    const nx = btns.querySelector("button:not(.opt)");
+    if(nx) nx.style.display = "inline-block";
+  }
+  function restart(){ i = 0; score = 0; scoreEl.textContent = "Score 0"; show(); }
+  show();
+}
+
+/* ═══════════ p13 M1 / M2 ═══════════ */
+const MON = [
+  {q:"Cash in your wallet", opts:["M1","M2 only","Neither"], a:0,
+   w:"Currency held by the public is the most obvious <b>M1</b> item."},
+  {q:"The balance in your checking account", opts:["M1","M2 only","Neither"], a:0,
+   w:"Demand deposits are spendable on demand — <b>M1</b>."},
+  {q:"The balance in your savings account", opts:["M1","M2 only","Neither"], a:1,
+   w:"Liquid, but not directly spendable — <b>M2 only</b>."},
+  {q:"A $500 certificate of deposit maturing in six months", opts:["M1","M2 only","Neither"], a:1,
+   w:"A small time deposit — <b>M2 only</b>. You cannot swipe it at a shop."},
+  {q:"Shares in a retail money market mutual fund", opts:["M1","M2 only","Neither"], a:1,
+   w:"Retail money market funds sit in <b>M2</b>."},
+  {q:"Your credit card limit of $5,000", opts:["M1","M2 only","Neither"], a:2,
+   w:"A credit limit is a <b>loan you can draw on</b>, not an asset you own — neither."},
+  {q:"Ten shares of Apple stock", opts:["M1","M2 only","Neither"], a:2,
+   w:"Stock is an asset, but you must <b>sell it first</b> — neither M1 nor M2."},
+  {q:"Reserves a commercial bank holds at the Fed", opts:["M1","M2 only","Neither"], a:2,
+   w:"Reserves belong to the <b>monetary base only</b> — never to M1 or M2."}
+];
+makeQuiz(MON, "m13Card", "m13Prog", "m13Score", "m13Btns", "m13Fb");
+
+/* ════════════ 初始化 ════════════ */
+try{
+  const hashInit = parseInt(location.hash.slice(1)||"0",10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+}catch(err){ console.error(err); gotoSlide(0); }
+
+
+/* ═══════════ 总结页填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillAll(){
+  fillEls.forEach(f=>{ f.textContent = f.dataset.a; f.classList.add("done"); });
+  fillIdx = fillEls.length;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+</script>
+
+</body>
+</html>
