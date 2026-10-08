@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 4.3 · Banking and the Money Multiplier</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+        overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1 0 auto;min-height:44vh;overflow-y:auto;display:flex;flex-direction:column;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  .mstep{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:8px solid var(--accent);border-radius:12px;padding:.7vh 1vw;}
+  .mstep .no{flex:0 0 auto;width:2.8vw;min-width:46px;height:2.8vw;min-height:46px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.5vh,29px);font-weight:800;}
+  .mstep .mbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:.3vh;}
+  .mstep .mtitle{font-size:clamp(21.5px,2.2vh,26px);font-weight:800;color:var(--accent-dark);line-height:1.25;}
+  .mstep .mnote{font-size:clamp(21.5px,2.1vh,25px);color:var(--sub);line-height:1.35;}
+  .zhbox{background:#fffaf0;border:3px solid var(--amber);border-radius:12px;padding:1vh 1.1vw;line-height:1.45;}
+  .zhbox .zhtext{font-size:clamp(21.5px,2.1vh,25px);color:var(--ink);font-weight:700;}
+  .zhbox .zhen{font-size:clamp(21.5px,2vh,24px);color:var(--sub);}
+/* The stage / slide are the scroll boxes: content keeps its natural height and a
+   visible scrollbar appears instead of the columns being squeezed and clipped. */
+.slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+.slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+.slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent,#1CADE4);border-radius:8px;border:3px solid #eef4f9;}
+.slide{scrollbar-width:thin;scrollbar-color:var(--accent,#1CADE4) #eef4f9;}
+.stage{scrollbar-width:thin;scrollbar-color:var(--accent,#1CADE4) #eef4f9;}
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  .drill{display:flex;flex-direction:column;gap:.9vh;flex:1 0 auto;}
+  .drow{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:9px solid var(--accent);border-radius:12px;padding:1.1vh 1.2vw;flex:1 1 auto;}
+  .dn{flex:0 0 1.5em;font-weight:800;font-size:clamp(24px,2.7vh,30px);color:var(--accent-dark);}
+  .drow p{font-size:clamp(22px,2.35vh,27px);line-height:1.5;margin:0;}
+  .cover .q{font-size:clamp(28px,3.4vh,44px);color:#fff;font-weight:700;max-width:88%;line-height:1.35;}
+  /* the multipliers comparison page: denser rows so all four fit on one screen */
+  #s14b td{padding:.38vh .7vw;line-height:1.28;}
+  #s14c td{padding:.38vh .7vw;line-height:1.25;}
+  #s14c th{padding:.38vh .7vw;}
+  #s14c .card{padding:1vh 1vw;}
+  #s14b th{padding:.38vh .7vw;}
+  #s14b .sliderbox{padding:.6vh .8vw;}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<section class="slide cover active" id="s1">
+  <div class="tag">AP Macroeconomics · Unit 4: Financial Sector</div>
+  <h1>Banking and the Money Multiplier</h1>
+  <p>Deposits · T-accounts · fractional reserves · how banks create money</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+
+
+
+
+<section class="slide" id="s2">
+  <div class="tag">Unit 4 · Lesson 3 · What banks do</div>
+  <h2>What a bank actually does with your money</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>1 · Take in deposits</h3><p>It pays you a little interest and keeps your money available on demand.</p></div>
+      <div class="card"><h3>2 · Make loans and buy securities</h3><p>It charges borrowers a much higher rate &mdash; mortgages, business loans, government bonds.</p></div>
+      <div class="card win"><h3>3 · Lives on the spread</h3><p>Borrow short and cheap, lend long and dear. Economists call it <b>maturity transformation</b>.</p></div>
+    </div>
+    <p class="subline" style="margin-top:1.2vh;">Banks do not keep your money in a vault. Most of it is out working &mdash; which is exactly why banking needs rules.</p>
+    <div class="s-foot">
+      <div class="hl">"Borrow short, lend long" is the heart of banking &mdash; and the seed of everything in this lesson.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s3">
+  <div class="tag">Unit 4 · Lesson 3 · The balance sheet</div>
+  <h2>Every bank keeps a T-account</h2>
+  <div class="stage">
+    <div class="svgwrap">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:44vh;">
+        <rect x="60" y="25" width="780" height="255" rx="10" fill="#ffffff" stroke="#1f2d3d" stroke-width="3"/>
+        <line x1="60" y1="80" x2="840" y2="80" stroke="#1f2d3d" stroke-width="3"/>
+        <line x1="450" y1="25" x2="450" y2="280" stroke="#1f2d3d" stroke-width="3"/>
+        <text x="255" y="62" text-anchor="middle" font-size="26" font-weight="800" fill="#0e7fae">ASSETS</text>
+        <text x="645" y="62" text-anchor="middle" font-size="26" font-weight="800" fill="#a94442">LIABILITIES</text>
+        <text x="85" y="125" font-size="23" fill="#1f2d3d">Reserves &mdash; its account at the Fed</text>
+        <text x="85" y="172" font-size="23" fill="#1f2d3d">Loans to customers</text>
+        <text x="85" y="219" font-size="23" fill="#1f2d3d">Securities (bonds)</text>
+        <text x="475" y="125" font-size="23" fill="#1f2d3d">Deposits &mdash; owed to customers</text>
+        <text x="475" y="172" font-size="23" fill="#1f2d3d">Net worth = assets &minus; liabilities</text>
+        <text x="450" y="308" text-anchor="middle" font-size="22" fill="#5b7288">Every entry has a twin on the other side &mdash; that is why it is a "T".</text>
+      </svg>
+    </div>
+    <div class="constbar">Assets = Liabilities + Net worth</div>
+    <div class="s-foot">
+      <div class="hl green">Reserves are the bank's own account at the Fed &mdash; the "banker to the banks" promise from last lesson, now in numbers.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s4">
+  <div class="tag">Unit 4 · Lesson 4 · Where the T comes from</div>
+  <h2>Every T-account is double-entry bookkeeping</h2>
+  <div class="stage">
+    <div class="split" style="flex:1 0 auto;">
+      <div class="pic"><img src="photos/pacioli.jpg" alt="Portrait of Luca Pacioli, by Jacopo de' Barbari"></div>
+      <div class="txt">
+        <div class="card"><h3>Venice, 1494 &mdash; Luca Pacioli writes it down</h3><p>Italian merchants already kept their books this way; Pacioli's <b>Summa de arithmetica</b> was the first printed manual of it. The rule is simple: <b>every transaction is entered twice</b> &mdash; a debit and a credit.</p></div>
+        <table>
+          <tr><th class="l">Single entry (a cash book)</th><th class="l">Double entry (a T-account)</th></tr>
+          <tr><td class="l">Follows only the cash</td><td class="l">Records both sides of every deal</td></tr>
+          <tr><td class="l">Debts and profit stay invisible</td><td class="l">Shows assets, debts and net worth</td></tr>
+          <tr><td class="l">Errors hide silently</td><td class="l">Both sides must match &mdash; errors surface</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green">This is why the T-account is the perfect tool for this lesson: a bank loan adds an asset and creates a deposit <b>in the same breath</b> &mdash; only double entry can show money being born.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="tag">Unit 4 · Lesson 4 · Where reserves come from</div>
+  <h2>Reserves are born at the Fed</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;">
+      <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:.55vh;justify-content:center;">
+        <table>
+          <tr><th colspan="2">THE FED &mdash; T-account</th></tr>
+          <tr><th style="width:50%;">Assets</th><th>Liabilities</th></tr>
+          <tr><td class="l">Treasuries it bought<br><b>+ $1,000</b></td><td class="l">Bank reserves<br><b>+ $1,000</b></td></tr>
+        </table>
+        <div style="display:flex;align-items:center;gap:.8vw;padding-left:1.5vw;">
+          <div style="font-size:34px;color:#0e7fae;line-height:1;">&darr;</div>
+          <div style="font-size:clamp(21.5px,2.1vh,25px);color:#0e7fae;font-weight:700;line-height:1.3;">buys a bond from the bank &mdash;<br>pays with reserves</div>
+        </div>
+        <table>
+          <tr><th colspan="2">A COMMERCIAL BANK &mdash; T-account</th></tr>
+          <tr><th style="width:50%;">Assets</th><th>Liabilities</th></tr>
+          <tr><td class="l">Reserves <b>+ $1,000</b><br>Treasuries <b>&minus; $1,000</b></td><td class="l">No change</td></tr>
+        </table>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.8vh;justify-content:center;">
+        <div class="card"><h3>Why nothing else changed</h3><p>The bank swapped a bond for reserves &mdash; an asset swap. The system's buying power did not change yet.</p></div>
+        <div class="card win"><h3>But the raw material now exists</h3><p>Reserves are the fuel for lending. How banks turn this $1,000 into more &mdash; that is the rest of this lesson.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Reserves enter the system only when the <b>Fed</b> puts them there &mdash; by buying securities. Monetary policy (4.6) pulls exactly this lever.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s6">
+  <div class="tag">Unit 4 · Lesson 3 · The vulnerability</div>
+  <h2>The bank run &mdash; the flaw in the design</h2>
+  <div class="stage">
+    <div class="split" style="flex:1 0 auto;">
+      <div class="pic"><img src="photos/northern-rock-run.jpg" alt="Queue outside a Northern Rock branch, September 2007"></div>
+      <div class="txt">
+        <div class="card lose"><h3>Why runs happen</h3><p>The bank owes every depositor their money on demand &mdash; but most of that money is out in loans. If everyone queues at once, the cash simply is not there.</p></div>
+        <div class="card"><h3>Northern Rock, September 2007</h3><p>Britain's first bank run in about 150 years &mdash; queues like this for days, until the state stepped in to guarantee deposits.</p></div>
+        <div class="card win"><h3>The fix: deposit insurance</h3><p>The FDIC insures <b>$250,000</b> per depositor. Insurance ends most runs before they start &mdash; nobody needs to queue.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl red">A perfectly solvent bank can still die of a run &mdash; liquidity, not solvency, is the killer.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s7">
+  <div class="tag">Unit 4 · Lesson 3 · The key idea</div>
+  <h2>Fractional reserve banking</h2>
+  <div class="stage">
+    <div class="constbar">Banks keep only a FRACTION of deposits as reserves &mdash; and lend the rest.</div>
+    <div class="two" style="flex:1 0 auto;">
+      <div class="col">
+        <div class="card win"><h3>Why it works</h3><p>Depositors never all withdraw at once &mdash; and deposit insurance keeps it that way. A fraction is enough for everyday business.</p></div>
+      </div>
+      <div class="col">
+        <div class="card lose"><h3>What it means</h3><p>Most of your deposit is not "in the bank". It has been lent out and is working in somebody else's account.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">This one sentence is the engine of the whole lesson.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s8">
+  <div class="tag">Unit 4 · Lesson 3 · Two kinds of reserves</div>
+  <h2>Required reserves and excess reserves</h2>
+  <div class="stage">
+    <table style="flex:1 0 auto;">
+      <tr><th class="l">Item</th><th class="l">Definition</th><th>Example (rr = 10%, new deposit $1,000)</th></tr>
+      <tr><td class="l"><b>Required reserves</b></td><td class="l">The legal minimum the bank must hold and may not lend</td><td>rr &times; deposits = <b>$100</b></td></tr>
+      <tr><td class="l"><b>Excess reserves</b></td><td class="l">Reserves beyond the minimum &mdash; free to lend</td><td>reserves &minus; required = <b>$900</b></td></tr>
+    </table>
+    <p class="subline" style="margin-top:1.1vh;">The ratio rr is the <b>reserve requirement</b> &mdash; set by the Fed.</p>
+    <div class="s-foot">
+      <div class="hl">Only the <b>excess</b> part can start a loan. Remember this line &mdash; it is the exam's favourite trap.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s9">
+  <div class="tag">Unit 4 · Lesson 4 · One bank makes a loan</div>
+  <h2>A loan is not money leaving &mdash; it is money being born</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;">
+      <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:.55vh;justify-content:center;">
+        <table>
+          <tr><th colspan="2">BEFORE &mdash; Bank A</th></tr>
+          <tr><th style="width:50%;">Assets</th><th>Liabilities</th></tr>
+          <tr><td class="l">Reserves <b>$1,000</b></td><td class="l">Deposit <b>$1,000</b></td></tr>
+        </table>
+        <div style="display:flex;align-items:center;gap:.8vw;padding-left:1.5vw;">
+          <div style="font-size:34px;color:#0e7fae;line-height:1;">&darr;</div>
+          <div style="font-size:clamp(21.5px,2.1vh,25px);color:#0e7fae;font-weight:700;line-height:1.3;">lends $900 to a borrower &mdash;<br>the loan is a new asset</div>
+        </div>
+        <table>
+          <tr><th colspan="2">AFTER &mdash; Bank A</th></tr>
+          <tr><th style="width:50%;">Assets</th><th>Liabilities</th></tr>
+          <tr><td class="l">Reserves <b>$100</b><br>Loan <b>$900</b></td><td class="l">Deposit <b>$1,000</b></td></tr>
+        </table>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.8vh;justify-content:center;">
+        <div class="card win"><h3>Count the money</h3><p>The original $1,000 deposit still exists &mdash; and the seller's new $900 exists too. <b>M1 grew by $900.</b></p></div>
+        <div class="card warn"><h3>Nothing left the bank</h3><p>The $900 loan sits on the asset side; the deposit stays on the liability side. Only the mix changed.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green">Loans create deposits &mdash; the most surprising sentence in banking, and the engine of the multiplier.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s10">
+  <div class="tag">Unit 4 · Lesson 4 · The chain, round by round</div>
+  <h2>One deposit, five rounds &mdash; watch the total grow</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
+      <div style="flex:0 0 46%;min-width:0;display:flex;flex-direction:column;gap:.6vh;">
+        <div id="chBox" style="display:flex;flex-direction:column;gap:.45vh;overflow-y:auto;flex:1 0 auto;"></div>
+        <div class="btnrow">
+          <button class="btn" id="chBtn" onclick="chainNext()">Next round ▶</button>
+          <button class="btn ghost" onclick="chainReset()">Reset</button>
+        </div>
+      </div>
+      <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;">
+        <svg viewBox="0 0 560 340" id="chainSvg" xmlns="http://www.w3.org/2000/svg" style="width:100%;flex:1 1 0;min-height:0;">
+          <line x1="60" y1="300" x2="540" y2="300" stroke="#cfe0ee" stroke-width="3"/>
+          <line x1="60" y1="50" x2="540" y2="50" stroke="#e6a23c" stroke-width="3" stroke-dasharray="8 6"/>
+          <text x="64" y="72" font-size="22" font-weight="700" fill="#a97422">$10,000 &mdash; the limit</text>
+          <text x="44" y="28" font-size="22" fill="#5b7288">Cumulative deposits, $ &mdash; one colour per round</text>
+          <g id="chainBars"></g>
+          <text id="chainCur" x="60" y="330" font-size="22" font-weight="700" fill="#0e7fae"></text>
+        </svg>
+        <div class="piccap">Each bar adds that round's new money &mdash; and every slice is smaller than the last.</div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl amber">After the demo &mdash; a question: this pattern, every round keeping a fixed share of the last, is the same maths you have already used. For what?</div>
+      <div class="hl green" id="chainRev" style="display:none;margin-top:.8vh;">It is the <b>fiscal multiplier</b> from Unit 3: 1 + c + c&sup2; + &hellip; = 1 / (1 &minus; c). Here the "leakage" each round is the required-reserve share &mdash; same shape, same converging total.</div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="slide" id="s11">
+  <div class="tag">Unit 4 · Lesson 4 · From endless rounds to one formula</div>
+  <h2>Collapsing the chain into a formula</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
+      <div style="flex:1.32;min-width:0;display:flex;flex-direction:column;gap:.55vh;">
+        <div id="gmBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1 0 auto;"></div>
+        <div class="btnrow" style="margin-top:.4vh;">
+          <button class="btn" id="gmBtn" onclick="gmNext()">Next step ▶</button>
+          <button class="btn ghost" onclick="gmReset()">Reset</button>
+        </div>
+      </div>
+      <div style="flex:0 0 34%;min-width:0;display:flex;flex-direction:column;gap:.8vh;">
+        <table>
+          <tr><th>rr</th><th>Multiplier 1/rr</th></tr>
+          <tr><td>5%</td><td>20&times;</td></tr>
+          <tr><td>10%</td><td>10&times;</td></tr>
+          <tr><td>20%</td><td>5&times;</td></tr>
+        </table>
+        <div class="hl amber" style="line-height:1.5;">Check: rr = 10% &rarr; 1 / 0.10 = <b>10</b>. So $1,000 of new reserves &rarr; <b>$10,000</b> of deposits.</div>
+        <div class="hl" style="line-height:1.5;margin-top:auto;">The <b>smaller</b> the leakage into required reserves, the <b>bigger</b> the multiplier &mdash; every round keeps more money in the flow.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="slide" id="s12">
+  <div class="tag">Unit 4 · Lesson 4 · The formula</div>
+  <h2>The money multiplier</h2>
+  <div class="stage">
+    <div class="constbar">&Delta;Deposits = &Delta;Reserves &times; 1 / rr</div>
+    <div class="two" style="flex:1 0 auto;">
+      <div class="col">
+        <div class="card win"><h3>The numbers</h3><p>rr = 10% &rarr; multiplier = <b>10</b>. New reserves of $1,000 eventually support <b>$10,000</b> of deposits &mdash; $9,000 of them created by lending.</p></div>
+      </div>
+      <div class="col">
+        <div class="card"><h3>Read it both ways</h3><p>Same formula, two uses: how much money CAN a new reserve create &mdash; and how much does the money supply CHANGE when rr moves.</p></div>
+      </div>
+    </div>
+    <div class="hl amber" style="line-height:1.4;">Three traps &mdash; say the mechanism, not just the number:
+      <div style="margin-top:.55vh;">① <b>one bank &ne; the system</b> &mdash; a single bank can lend only its own $900 of excess reserves.</div>
+      <div style="margin-top:.45vh;">② <b>deposits &ne; wealth</b> &mdash; every new deposit is matched by someone's debt.</div>
+      <div style="margin-top:.45vh;">③ <b>loans must come back</b> &mdash; if borrowers hold cash, the chain leaks and the multiplier shrinks.</div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">The multiplier is the <b>inverse</b> of the reserve ratio. Small rr, huge multiplier.</div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="slide" id="s13">
+  <div class="tag">Unit 4 · Lesson 4 · Practice</div>
+  <h2>Two cases, worked step by step</h2>
+  <div class="stage">
+    <div class="constbar">&Delta;Deposits = &Delta;Reserves &times; 1 / rr</div>
+    <table style="flex:1 0 auto;margin-top:1vh;">
+      <tr><th class="l">Case</th><th>&Delta;Reserves</th><th>rr</th><th class="l">Working</th><th>&Delta;Deposits</th></tr>
+      <tr><td class="l">The Fed <b>buys</b> bonds &mdash; injects reserves</td><td>+$1,000bn</td><td>10%</td><td class="l">1/rr = 1/0.10 = 10<br>1,000 &times; 10</td><td class="yes">+$10,000bn</td></tr>
+      <tr><td class="l">The Fed <b>sells</b> bonds &mdash; drains reserves</td><td>&minus;$200bn</td><td>5%</td><td class="l">1/rr = 1/0.05 = 20<br>&minus;200 &times; 20</td><td class="no">&minus;$4,000bn</td></tr>
+    </table>
+    <div class="s-foot">
+      <div class="hl amber" style="margin-bottom:.9vh;">Exam trap: the multiplier multiplies a <b>change in reserves</b> &mdash; never the whole money stock.</div>
+      <div class="hl">And it is an <b>upper bound</b>: cash held outside banks and excess reserves both leak out, so the real expansion is smaller.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="tag">Unit 4 · Lesson 3 · Real world check</div>
+  <h2>What changed in 2020 &mdash; the multiplier went quiet</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>March 2020</h3><p>The Fed cut the reserve requirement to <b>0%</b>. The textbook's rr is, right now, literally zero.</p></div>
+      <div class="card warn"><h3>Banks still hold trillions</h3><p>About <b>$3.2 trillion</b> of reserves &mdash; not because they must, but because the Fed <b>pays interest</b> on them.</p></div>
+      <div class="card win"><h3>So policy works differently</h3><p>The Fed steers with <b>interest rates</b>, not with a 10&times; multiplier &mdash; the "ample reserves" world (4.6 &mdash; detailed in 4.7).</p></div>
+    </div>
+    <p class="subline" style="margin-top:1.2vh;">The multiplier is still what the exam wants &mdash; and still the clearest story of how lending creates money.</p>
+    <div class="s-foot">
+      <div class="hl">Textbook first, real world second. Both matter on this exam.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s14c">
+  <div class="tag">Unit 4 &middot; Lesson 4 &middot; Real world check</div>
+  <h2>Who still uses rr &mdash; and who dropped it</h2>
+  <div class="stage">
+    <div class="hl" style="line-height:1.4;">Not just the US. The Fed cut rr to <b>0%</b> in 2020 and steers lending by
+      <b>paying interest on reserves</b> &mdash; but the UK, Canada, Australia, New Zealand, Sweden, Norway and Hong Kong have had
+      <b>no rr at all</b> for decades. The US is the <b>newest</b> member, not the only one.</div>
+
+    <div class="two" style="flex:1 0 auto;margin-top:1vh;">
+      <div class="col">
+        <div class="card win" style="flex:0 0 auto;"><h3>Ample reserves &mdash; set the <i>price</i></h3>
+          <p>rr = 0% or none. The central bank <b>pays interest</b> on reserves, then moves that rate to steer lending.</p></div>
+        <table>
+          <tr><th>Economy</th><th>rr &middot; pays interest?</th></tr>
+          <tr><td><b>United States</b></td><td>0% (2020) &middot; IORB 3.65%</td></tr>
+          <tr><td>United Kingdom</td><td>none (1981) &middot; at Bank Rate</td></tr>
+          <tr><td>Canada</td><td>none (1992) &middot; yes</td></tr>
+          <tr><td>Australia &middot; New Zealand &middot; Sweden</td><td>none &middot; yes</td></tr>
+          <tr><td>Norway &middot; Hong Kong &middot; euro area &middot; Switzerland</td><td>none / low, fixed &middot; yes</td></tr>
+        </table>
+      </div>
+      <div class="col">
+        <div class="card warn" style="flex:0 0 auto;"><h3>Scarce reserves &mdash; set the <i>quantity</i></h3>
+          <p>rr is still a live dial: raise it to drain lending, cut it to release it.</p></div>
+        <table>
+          <tr><th>Economy</th><th>rr (late 2026)</th></tr>
+          <tr><td><b>China</b></td><td>7.5% &mdash; the main liquidity dial</td></tr>
+          <tr><td><b>Turkey</b> &middot; <b>Brazil</b></td><td>25% &middot; 21%</td></tr>
+          <tr><td>Indonesia &middot; Russia</td><td>9% &middot; 8.5%</td></tr>
+          <tr><td><b>India</b></td><td>3% (cut from 4% in 2025)</td></tr>
+          <tr><td colspan="2" style="color:var(--sub);">China, India, Brazil and Turkey raise and cut rr to steer credit &mdash; and India pays <b>no</b> interest on required reserves.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="s-foot">
+      <div class="hl">Same instrument, two regimes: <b>advanced economies set the price of reserves; China, India, Brazil and Turkey set the quantity.</b> The exam still wants the textbook rr story.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s14b">
+  <div class="tag">Unit 4 · Lesson 4 · Every multiplier in AP Macro</div>
+  <h2>The four multipliers, side by side</h2>
+  <div class="stage">
+    <div class="hl" style="padding:.5vh 1vw;">Three move <b>aggregate demand</b>, one moves the <b>money supply</b>. Drag either leak.</div>
+
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
+
+      <div style="flex:1.55;min-width:0;display:flex;flex-direction:column;gap:.6vh;">
+        <div style="display:flex;gap:.9vw;">
+          <div class="sliderbox" style="flex:1;min-width:0;margin-bottom:0;">
+            <input type="range" id="amMpc" min="50" max="90" step="5" value="80" oninput="amUpdate()">
+            <div class="slideval" id="amMpcVal">MPC = 0.80 · MPS = 0.20</div>
+          </div>
+          <div class="sliderbox" style="flex:1;min-width:0;margin-bottom:0;">
+            <input type="range" id="amRr" min="0" max="20" step="5" value="10" oninput="amUpdate()">
+            <div class="slideval" id="amRrVal">rr = 10%</div>
+          </div>
+        </div>
+
+        <table>
+          <tr>
+            <th>Multiplier</th><th>Formula</th><th>Size</th>
+          </tr>
+          <tr>
+            <td><b>Spending</b> (expenditure)</td><td>1 / (1 &minus; MPC) = 1 / MPS</td>
+            <td id="amSpend">5.0&times;</td>
+          </tr>
+          <tr>
+            <td><b>Tax</b></td><td>&minus; MPC / (1 &minus; MPC) = &minus; MPC / MPS</td>
+            <td id="amTax">&minus;4.0&times;</td>
+          </tr>
+          <tr>
+            <td><b>Balanced budget</b></td><td>1 / MPS &minus; MPC / MPS = 1</td>
+            <td>1.0&times;</td>
+          </tr>
+          <tr>
+            <td><b>Money</b></td><td>1 / rr</td>
+            <td id="amMoney">10.0&times;</td>
+          </tr>
+        </table>
+
+        <div class="hl" style="line-height:1.4;">The exam asks for three: <b>expenditure</b>, <b>tax</b>, <b>money</b>. Balanced budget is <b>not one of the three</b> &mdash; it follows from the first two.</div>
+      </div>
+
+      <div style="flex:0 0 30%;min-width:0;display:flex;flex-direction:column;gap:.8vh;">
+        <div class="card"><h3>Same shape, different target</h3><p>All four are <b>1 &divide; the fraction that leaks out each round</b> &mdash; saving (MPS) for fiscal, required reserves (rr) for money. But fiscal multipliers move <b>aggregate demand &rarr; real GDP</b>; the money multiplier moves the <b>money supply</b>.</p></div>
+        <div class="card amber"><h3>One is a ceiling</h3><p>The simple money multiplier is a <b>maximum</b>: banks may sit on excess reserves and the public may hold cash &mdash; and since 2020, rr = 0%.</p></div>
+      </div>
+
+    </div>
+
+    <div class="s-foot">
+      <div class="hl">The money multiplier is the <b>last</b> multiplier AP Macro ever asks you to use.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="slide" id="s16">
+  <div class="tag">Unit 4 · Lesson 3 · Key takeaways</div>
+  <h2>What to walk out with &mdash; fill the blanks</h2>
+  <div class="stage">
+    <div class="drill">
+      <div class="drow"><span class="dn">1</span><p>Banks create money by <span class="fill" data-a="lending">____</span> — loans create <span class="fill" data-a="deposits">____</span>.</p></div>
+      <div class="drow"><span class="dn">2</span><p><span class="fill" data-a="Required reserves">____</span> = <span class="fill" data-a="rr">____</span> × deposits. Only <span class="fill" data-a="excess reserves">____</span> can be lent.</p></div>
+      <div class="drow"><span class="dn">3</span><p>ΔDeposits = ΔReserves × <span class="fill" data-a="1/rr">____</span> — that is the <span class="fill" data-a="money multiplier">____</span>. At rr = 10%, $1,000 of new reserves becomes <span class="fill" data-a="$10,000">____</span> of deposits.</p></div>
+      <div class="drow"><span class="dn">4</span><p>Since 2020, rr = <span class="fill" data-a="0%">____</span>. The Fed steers with <span class="fill" data-a="interest rates">____</span>.</p></div>
+    </div>
+    <div class="btnrow" style="margin-top:1vh;justify-content:center;">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+    <div class="s-foot"><div class="hl">Next: banks create the quantity of money — but what sets its <b>price</b>? Interest rates, from the money market → <b>4.4 The Money Market</b>.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 结束页 ═══════════ -->
+<section class="slide cover" id="s17">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">Banks create money by lending — and the multiplier says how much.</div>
+  <div class="meta">Dr. Jia &middot; &copy; 2026</div>
+</section>
+
+</main>
+
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 18</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+function goTo(i){ gotoSlide(i); }
+window.goTo = goTo;
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+
+
+
+/* ═══════════ p9 链条逐步揭示 ═══════════ */
+/* 只播 5 轮：10 轮要滚很久，而且第 6 轮之后信息完全重复（同样的比例、同样的形状）。
+   5 轮足够看出"每轮都在缩、累计在逼近 10 倍"，最后一行直接给出极限 $10,000。 */
+const CHAIN = [
+  {d:1000, k:100, l:900, bank:"A"},
+  {d:900,  k:90,  l:810, bank:"B"},
+  {d:810,  k:81,  l:729, bank:"C"},
+  {d:729,  k:73,  l:656, bank:"D"},
+  {d:656,  k:66,  l:590, bank:"E"}
+];
+const cumOf = n => 1000 * (1 - Math.pow(0.9, n)) / 0.1;
+const PAL = ["#1CADE4","#2e9e6b","#e6a23c","#d9534f","#8B5CF6","#0e7fae","#1e6e4a","#a97422","#a94442","#5b7288"];
+let chIdx = -1;
+const fmt = v => "$" + Math.round(v).toLocaleString("en-US");
+/* 每轮只占表格一行（6 列），比原来两行长句紧凑得多 ——
+   原来 10 条说明叠起来有近 800px，5 行表格只要 ~260px，一屏看得完。 */
+function chainAdd(){
+  const r = CHAIN[chIdx];
+  const cum0 = cumOf(chIdx), cum1 = cumOf(chIdx + 1);
+  const slot = 480 / CHAIN.length, x = 60 + chIdx * slot + 4;
+  const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  rect.setAttribute("x", x);
+  rect.setAttribute("y", 300 - cum1 / 40);
+  rect.setAttribute("width", slot - 8);
+  rect.setAttribute("height", (cum1 - cum0) / 40);
+  rect.setAttribute("fill", PAL[chIdx % PAL.length]);
+  document.getElementById("chainBars").appendChild(rect);
+
+  const box = document.getElementById("chBox");
+  if (chIdx === 0) {
+    box.innerHTML = '<table id="chTable"><tr><th>Round</th><th>Bank</th><th>New deposit</th>'
+      + '<th>Keep (rr 10%)</th><th>Lend out</th><th>Cumulative deposits</th></tr></table>';
+  }
+  const tb = document.getElementById("chTable");
+  const tr = document.createElement("tr");
+  tr.innerHTML = '<td><b style="color:' + PAL[chIdx % PAL.length] + ';">' + (chIdx + 1) + '</b></td>'
+    + '<td>' + r.bank + '</td><td>' + fmt(r.d) + '</td><td>' + fmt(r.k) + '</td><td>' + fmt(r.l)
+    + '</td><td><b>' + fmt(cum1) + '</b></td>';
+  tb.appendChild(tr);
+  if (chIdx === CHAIN.length - 1) {
+    const tr2 = document.createElement("tr");
+    tr2.style.background = "var(--accent-light)";
+    tr2.innerHTML = '<td>…</td><td>—</td><td>keeps shrinking</td><td>→ 0</td><td>→ 0</td>'
+      + '<td><b>' + fmt(10000) + ' — the limit</b></td>';
+    tb.appendChild(tr2);
+  }
+  box.scrollTop = box.scrollHeight;
+  /* 这句必须短：viewBox 只有 560 宽，长了会被右边缘裁掉（"heading for $10,000" 就是这么被切的） */
+  document.getElementById("chainCur").textContent = "After " + (chIdx+1) + " round" + (chIdx ? "s" : "")
+    + ": " + fmt(cum1) + " of deposits";
+  if (chIdx === CHAIN.length - 1) {
+    document.getElementById("chainRev").style.display = "";
+  }
+}
+function chainNext(){
+  if (chIdx + 1 >= CHAIN.length) return;
+  chIdx++; chainAdd();
+  if (chIdx === CHAIN.length - 1) { const b = document.getElementById("chBtn"); b.disabled = true; b.textContent = "All shown ✓"; }
+}
+function chainReset(){
+  chIdx = -1;
+  document.getElementById("chBox").innerHTML = "";
+  document.getElementById("chainBars").innerHTML = "";
+  document.getElementById("chainCur").textContent = "";
+  const b = document.getElementById("chBtn"); b.disabled = false; b.textContent = "Next round ▶";
+}
+
+/* ═══════════ p10 等比级数揭示 ═══════════ */
+const GEOM = [
+  ["Round 1", "total deposits = $1,000"],
+  ["Round 2", "$1,000 + 900 = 1,000 × (1 + 0.9)"],
+  ["Round 3", "= 1,000 × (1 + 0.9 + 0.9²)"],
+  ["Round 4", "= 1,000 × (1 + 0.9 + 0.9² + 0.9³)"],
+  ["Forever", "= 1,000 × (1 + 0.9 + 0.9² + 0.9³ + …)"],
+  ["The sum", "1 + r + r² + … = 1 / (1 − r) — here 1 / 0.1 = 1 / rr = 10"],
+  ["Result", "$1,000 of new reserves → $10,000 of deposits"]
+];
+let gmIdx = -1;
+function gmAdd(){
+  const div = document.createElement("div");
+  div.className = "mstep";
+  div.innerHTML = '<div class="no">' + (gmIdx+1) + '</div><div class="mbody">'
+    + '<div class="mtitle">' + GEOM[gmIdx][0] + '</div>'
+    + '<div class="mnote">' + GEOM[gmIdx][1] + '</div></div>';
+  const box = document.getElementById("gmBox");
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function gmNext(){
+  if (gmIdx + 1 >= GEOM.length) return;
+  gmIdx++; gmAdd();
+  if (gmIdx === GEOM.length - 1) { const b = document.getElementById("gmBtn"); b.disabled = true; b.textContent = "All shown ✓"; }
+}
+function gmReset(){
+  gmIdx = -1;
+  document.getElementById("gmBox").innerHTML = "";
+  const b = document.getElementById("gmBtn"); b.disabled = false; b.textContent = "Next step ▶";
+}
+
+/* ═══════════ 初始化 ═══════════ */
+try{
+  const hashInit = parseInt(location.hash.slice(1)||"0",10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+}catch(err){ console.error(err); gotoSlide(0); }
+
+/* ═══════════ 总结页填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillAll(){
+  fillEls.forEach(f=>{ f.textContent = f.dataset.a; f.classList.add("done"); });
+  fillIdx = fillEls.length;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+
+/* ═══════════ 四个乘数对比页 ═══════════ */
+function amUpdate(){
+  const mpc = parseInt(document.getElementById("amMpc").value, 10) / 100;
+  const mps = 1 - mpc;
+  const rr  = parseInt(document.getElementById("amRr").value, 10) / 100;
+  document.getElementById("amMpcVal").textContent = "MPC = " + mpc.toFixed(2) + " \u00b7 MPS = " + mps.toFixed(2);
+  document.getElementById("amRrVal").textContent  = "rr = " + Math.round(rr * 100) + "%";
+  document.getElementById("amSpend").textContent  = (1 / mps).toFixed(1) + "\u00d7";
+  document.getElementById("amTax").textContent    = (-mpc / mps).toFixed(1) + "\u00d7";
+  document.getElementById("amMoney").textContent  = rr > 0 ? (1 / rr).toFixed(1) + "\u00d7" : "\u221e \u2014 unused";
+}
+try{ amUpdate(); }catch(err){ console.error(err); }
+</script>
+</body>
+</html>

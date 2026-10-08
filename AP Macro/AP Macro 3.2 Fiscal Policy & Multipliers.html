@@ -13,7 +13,7 @@ body{
     background:var(--bg); color:var(--ink);
     display:flex; flex-direction:column; height:100vh; overflow:hidden;
   }
-main{flex:1;min-height:0;position:relative;}
+main{flex:1 1 0;position:relative;}
 .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
 .slide{
     position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
@@ -37,7 +37,7 @@ nav{
 .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
 .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
 .ns21 .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
-.ns21 .cn{font-size:clamp(20px,2vh,24px);color:var(--sub);}
+.ns21 .cn{font-size:clamp(22px,2vh,24px);color:var(--sub);}
 .ns21 h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
 .ns21 h2{font-size:clamp(28px,3.1vh,38px);color:var(--ink);line-height:1.3;margin-bottom:1vh;}
 .ns21 p{font-size:clamp(23px,2.4vh,28px);line-height:1.55;margin-bottom:1vh;}
@@ -68,7 +68,7 @@ nav{
 .ns21 .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
 .ns21 .btn.green{background:var(--green);}
 .ns21 .btn.red{background:var(--red);}
-.ns21 .btn.sm{font-size:clamp(20px,2.1vh,24px);padding:.8vh 1vw;}
+.ns21 .btn.sm{font-size:clamp(22px,2.1vh,24px);padding:.8vh 1vw;}
 .ns21 .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
 .ns21 .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.2vh;flex-wrap:wrap;}
 .ns21 .s-foot{margin-top:auto;padding-top:1.4vh;}
@@ -86,27 +86,22 @@ nav{
 .ns21 .cover .q{font-size:clamp(32px,4vh,50px);color:#fff;font-weight:700;max-width:88%;}
 .ns21 .cover p{font-size:clamp(26px,3vh,36px);color:#fff;}
 .ns21 .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
-.ns21 .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.8vh 1.4vw;margin:1vh 0;flex:1;min-height:0;overflow-y:auto;}
+.ns21 .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.8vh 1.4vw;margin:1vh 0;flex:1;min-height:44vh;overflow-y:auto;}
 .ns21 .qtext{font-size:clamp(24px,2.6vh,30px);font-weight:700;color:var(--accent-dark);margin-bottom:1vh;}
-.ns21 .lab{
-    background:var(--card);border:3px solid var(--accent);border-radius:14px;
-    padding:1.6vh 1.4vw;flex:1;min-height:0;display:flex;flex-direction:column;
-  }
 .ns21 .lab-head{display:flex;justify-content:space-between;align-items:center;gap:1vw;flex-wrap:wrap;margin-bottom:1vh;}
 .ns21 .lab-title{font-size:clamp(24px,2.6vh,30px);font-weight:800;color:var(--accent-dark);}
 .ns21 .lab-desc{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 8px 8px 0;
-    padding:1vh 1vw;font-size:clamp(21px,2.2vh,25px);margin-bottom:1vh;line-height:1.5;}
+    padding:1vh 1vw;font-size:clamp(22px,2.2vh,25px);margin-bottom:1vh;line-height:1.5;}
 .ns21 .tabs{display:flex;gap:.8vw;flex-wrap:wrap;}
 .ns21 .tab{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
-    font-size:clamp(21px,2.2vh,25px);font-weight:700;padding:.8vh 1.2vw;cursor:pointer;}
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.8vh 1.2vw;cursor:pointer;}
 .ns21 .tab.on{background:var(--accent);color:#fff;}
-.ns21 .lab-grid{display:flex;gap:1.2vw;flex:1;min-height:0;}
 .ns21 .lab-graph{flex:2;background:#fff;border:1px solid var(--line);border-radius:10px;position:relative;min-height:34vh;}
 .ns21 .lab-graph canvas{width:100%;height:100%;display:block;}
 .ns21 .lab-side{flex:1;display:flex;flex-direction:column;gap:1vh;min-width:230px;}
 .ns21 .stat{background:var(--accent-light);border-radius:10px;padding:1vh 1vw;text-align:center;}
 .ns21 .stat .lab-num{font-size:clamp(30px,3.4vh,42px);font-weight:800;color:var(--accent-dark);}
-.ns21 .stat .lab-lab{font-size:clamp(20px,2.1vh,24px);color:var(--sub);font-weight:700;}
+.ns21 .stat .lab-lab{font-size:clamp(22px,2.1vh,24px);color:var(--sub);font-weight:700;}
 .ns21 .stat.bad{background:var(--red-light);}
 .ns21 .stat.bad .lab-num{color:var(--red);}
 .ns21 .stat.good{background:var(--green-light);}
@@ -114,43 +109,48 @@ nav{
 .ns21 .stat.warn{background:var(--amber-light);}
 .ns21 .stat.warn .lab-num{color:var(--amber);}
 .ns21 .lab-ctrl{display:flex;align-items:center;gap:1.2vw;margin-top:1.2vh;flex-wrap:wrap;}
-.ns21 .lab-ctrl label{font-size:clamp(21px,2.2vh,25px);font-weight:700;color:var(--ink);white-space:nowrap;}
+.ns21 .lab-ctrl label{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--ink);white-space:nowrap;}
 .ns21 .lab-ctrl input[type=range]{flex:1;min-width:200px;cursor:pointer;height:8px;max-width:300px;}
-.ns21 .lab-val{font-weight:800;color:var(--accent-dark);font-size:clamp(21px,2.2vh,25px);}
-.ns21 .lab-hint{font-size:clamp(20px,2vh,24px);color:var(--sub);margin-top:.6vh;}
+.ns21 .lab-val{font-weight:800;color:var(--accent-dark);font-size:clamp(22px,2.2vh,25px);}
+.ns21 .lab-hint{font-size:clamp(22px,2vh,24px);color:var(--sub);margin-top:.6vh;}
 .ns21 .verdict{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1.2vw;border-radius:10px;}
 .ns21 .verdict.good{background:var(--green-light);color:var(--green);}
 .ns21 .verdict.bad{background:var(--red-light);color:var(--red);}
 .ns21 .verdict.warn{background:var(--amber-light);color:var(--amber);}
 .ns21 .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
 .ns21 .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
-    font-size:clamp(21px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
 .ns21 .ds-btn.on{background:var(--accent);color:#fff;}
 .ns21 .game-card{
     background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
     font-size:clamp(26px,2.9vh,34px);font-weight:700;text-align:center;line-height:1.4;font-family:inherit;cursor:pointer;
   }
-.ns21 .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(21px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:1vh;gap:1vw;}
+.ns21 .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:1vh;gap:1vw;}
 .ns21 .game-fb{margin-top:1.2vh;font-weight:700;font-size:clamp(22px,2.3vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:3vh;}
 .ns21 .game-fb.good{background:var(--green-light);color:var(--green);}
 .ns21 .game-fb.bad{background:var(--red-light);color:var(--red);}
 .ns21 .chip{display:inline-block;background:var(--accent-light);color:var(--accent-dark);border-radius:999px;
-    padding:.3vh 1vw;font-size:clamp(19px,2vh,23px);font-weight:700;margin:.2vh .3vw;cursor:pointer;}
+    padding:.3vh 1vw;font-size:clamp(22px,2vh,23px);font-weight:700;margin:.2vh .3vw;cursor:pointer;}
 .ns21 .chip.on{background:var(--accent);color:#fff;}
 .ns21 .flow-btns{display:flex;gap:.6vw;flex-wrap:wrap;}
 .ns21 .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
 .ns21 .fill.done{color:var(--green);border-color:var(--green);}
+/* 总结页填空（与 Unit 4 各课件同一形式）：逐条揭晓 */
+.ns21 .drill{display:flex;flex-direction:column;gap:1vh;}
+.ns21 .drow{display:flex;gap:1vw;align-items:flex-start;background:var(--card);border:2px solid var(--line);border-left:9px solid var(--accent);border-radius:12px;padding:1.1vh 1.2vw;}
+.ns21 .dn{flex:0 0 1.6em;font-weight:800;font-size:clamp(24px,2.7vh,30px);color:var(--accent-dark);}
+.ns21 .drow p{font-size:clamp(22px,2.35vh,27px);line-height:1.5;margin:0;}
 @media (max-width:900px){.ns21 .cards{flex-direction:column;}.ns21 .card{min-width:auto;}.ns21 .lab-grid{flex-direction:column;}.ns21 .lab-side{flex-direction:row;flex-wrap:wrap;}.ns21 .stat{flex:1;min-width:120px;}}
 .ns21 .btnrow.side{position:absolute;right:1.4vw;top:50%;transform:translateY(-50%);flex-direction:column;align-items:stretch;margin:0;z-index:30;}
 .ns21 .btnrow.side .btn{white-space:normal;max-width:11vw;text-align:center;box-shadow:0 4px 14px rgba(14,127,174,.25);}
-.ns21 .svgwrap{flex:1;min-height:0;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:1.2vw;}
+.ns21 .svgwrap{flex:1 0 auto;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:1.2vw;}
 .ns21 .svgbox{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4vh;}
 .ns21 .svgbox svg{flex:1;min-height:0;width:100%;}
 .ns21 .cap{font-size:clamp(23px,2.4vh,28px);font-weight:800;color:var(--accent-dark);text-align:center;max-width:100%;}
 .ns21 .eqline{display:flex;align-items:center;gap:1vw;flex-wrap:wrap;}
 .ns21 .zhbox{background:#fffaf0;border:3px solid var(--amber);border-radius:12px;padding:1.1vh 1.1vw;line-height:1.45;}
 .ns21 .zhbox .cn{font-size:clamp(25px,2.7vh,31px);font-weight:800;color:#a06400;}
-.ns21 .zhbox .en{font-size:clamp(21px,2.2vh,25px);color:var(--sub);font-weight:600;}
+.ns21 .zhbox .en{font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:600;}
 /* ---- 数学排版 ---- */
 .ns21 .mstep{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);
     border-left:8px solid var(--accent);border-radius:12px;padding:.7vh 1vw;}
@@ -158,8 +158,8 @@ nav{
     background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
     font-size:clamp(24px,2.5vh,29px);font-weight:800;}
 .ns21 .mstep .mbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:.3vh;}
-.ns21 .mstep .mtitle{font-size:clamp(21px,2.2vh,26px);font-weight:800;color:var(--accent-dark);line-height:1.25;}
-.ns21 .mstep .mnote{font-size:clamp(20px,2.1vh,24px);color:var(--sub);line-height:1.35;}
+.ns21 .mstep .mtitle{font-size:clamp(22px,2.2vh,26px);font-weight:800;color:var(--accent-dark);line-height:1.25;}
+.ns21 .mstep .mnote{font-size:clamp(22px,2.1vh,24px);color:var(--sub);line-height:1.35;}
 .ns21 .mfrac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
     font-size:.8em;line-height:1.15;margin:0 .3em;}
 .ns21 .mfrac .num{border-bottom:3px solid currentColor;padding:0 .42em .12em;}
@@ -170,9 +170,9 @@ nav{
 .ns21 .eqbox.green{background:var(--green);}
 .ns21 .eqbox.amber{background:var(--amber);}
 .ns21 .eqbox.ghost{background:#fff;color:var(--ink);border:3px solid var(--accent);}
-.ns21 .eqbox .lbl{font-size:clamp(20px,2.1vh,24px);font-weight:700;}
+.ns21 .eqbox .lbl{font-size:clamp(22px,2.1vh,24px);font-weight:700;}
 .ns21 .mvar{font-family:"Cambria Math",Cambria,Georgia,serif;font-style:italic;font-weight:700;}
-.ns21 .mrownote{font-size:clamp(21px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+.ns21 .mrownote{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
 /* ---- 练习格 + 关键词高亮 ---- */
 .ns21 td.ans{font-weight:800;color:var(--sub);background:#eef2f6;}
 .ns21 td.ans.done{color:#1e7a52;background:var(--green-light);}
@@ -182,285 +182,13 @@ nav{
 .ns21 .kw.sur{background:var(--green-light);color:var(--green);border-color:var(--green);}
 .ns21 .exq{font-size:clamp(22px,2.3vh,27px);font-weight:700;line-height:1.4;}
 @media (max-width:900px){.ns21 .svgwrap{flex-wrap:wrap;}}
-.ns23 .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
-.ns23 .cn{font-size:clamp(22px,2.1vh,25px);color:var(--sub);}
-.ns23 h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
-.ns23 h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
-.ns23 p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
-.ns23 ul, .ns23 ol{margin-left:1.6em;margin-bottom:.8vh;}
-.ns23 li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
-.ns23 b{color:var(--ink);}
-.ns23 .accent{color:var(--accent-dark);}
-.ns23 .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
-.ns23 .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;}
-.ns23 .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
-.ns23 .card p{font-size:clamp(22px,2.3vh,26px);}
-.ns23 .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
-.ns23 .card.win{background:var(--green-light);border-color:var(--green);}
-.ns23 .card.warn{background:var(--amber-light);border-color:var(--amber);}
-.ns23 .card.lose{background:var(--red-light);border-color:var(--red);}
-.ns23 table{border-collapse:collapse;width:100%;background:var(--card);}
-.ns23 th, .ns23 td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
-.ns23 th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
-.ns23 td.l{text-align:left;}
-.ns23 td.yes{color:var(--green);font-weight:700;}
-.ns23 td.no{color:var(--red);font-weight:700;}
-.ns23 .btn{
-    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
-    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
-    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
-  }
-.ns23 .btn:hover{background:var(--accent-dark);}
-.ns23 .btn:active{transform:scale(.97);}
-.ns23 .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
-.ns23 .btn.green{background:var(--green);}
-.ns23 .btn.red{background:var(--red);}
-.ns23 .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
-.ns23 .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
-.ns23 .s-foot{margin-top:auto;padding-top:1.2vh;}
-.ns23 .hl{
-    background:var(--accent-light);border-left:6px solid var(--accent);
-    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
-    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
-  }
-.ns23 .hl.green{background:var(--green-light);border-color:var(--green);}
-.ns23 .hl.amber{background:var(--amber-light);border-color:var(--amber);}
-.ns23 .hl.red{background:var(--red-light);border-color:var(--red);}
-.ns23 .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
-.ns23 .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
-.ns23 .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
-.ns23 .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
-.ns23 .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
-.ns23 .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1;min-height:0;overflow-y:auto;}
-.ns23 .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
-.ns23 .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
-.ns23 .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
-.ns23 .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;}
-.ns23 .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
-    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
-.ns23 .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
-    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
-.ns23 .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
-    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
-    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
-.ns23 .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
-.ns23 .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
-.ns23 .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
-.ns23 .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
-.ns23 .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
-.ns23 .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
-.ns23 .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
-.ns23 .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
-.ns23 .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
-.ns23 .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
-    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
-.ns23 .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
-.ns23 .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
-.ns23 .imgbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
-.ns23 .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
-.ns23 .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
-.ns23 .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
-.ns23 .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
-.ns23 .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
-.ns23 .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
-.ns23 .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
-    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
-.ns23 .ds-btn.on{background:var(--accent);color:#fff;}
-.ns23 .flowwrap{display:flex;gap:1.4vw;flex:1;min-height:0;align-items:stretch;}
-.ns23 .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
-.ns23 .flowimg img{max-width:100%;max-height:100%;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
-.ns23 .flowimg svg{width:100%;height:auto;max-height:48vh;}
-.ns23 .flowside .hl{font-size:clamp(22px,2.2vh,25px);padding:.9vh 1vw;}
-.ns23 .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
-.ns23 .game-card{
-    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
-    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
-  }
-.ns23 .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
-.ns23 .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
-.ns23 .game-fb.good{background:var(--green-light);color:var(--green);}
-.ns23 .game-fb.bad{background:var(--red-light);color:var(--red);}
-.ns23 .anslist{columns:2;column-gap:2.4vw;}
-.ns23 .anslist li{break-inside:avoid;margin-bottom:.5vh;}
-.ns23 .aim.top{background:var(--accent-light);border-color:var(--accent);border-left-width:10px;}
-.ns23 .aim.first{background:linear-gradient(100deg,#1CADE4 0%,#0e7fae 100%);border-color:var(--accent-dark);
-    border-left-width:14px;padding:1.8vh 1.4vw;box-shadow:0 6px 18px rgba(14,127,174,.28);}
-.ns23 .aim.first .no{background:#fff;color:var(--accent-dark);width:3.6vw;min-width:62px;height:3.6vw;min-height:62px;
-    font-size:clamp(27px,3vh,35px);}
-.ns23 .aim.first .at{color:#fff;font-size:clamp(27px,3vh,34px);letter-spacing:.5px;}
-.ns23 .aim.first .ad{color:rgba(255,255,255,.92);font-size:clamp(23px,2.4vh,27px);}
-.ns23 .aim.dim{opacity:.72;}
-.ns23 .svgwrap{flex:1;min-height:0;display:flex;flex-direction:row;gap:2vw;align-items:center;justify-content:center;}
-.ns23 .svgbox{flex:1;min-width:0;max-width:46%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3vh;}
-.ns23 .svgbox svg{width:100%;height:auto;max-height:46vh;}
-.ns23 .cap{font-size:clamp(23px,2.4vh,28px);font-weight:800;color:var(--accent-dark);}
-.ns23 .split{display:flex;gap:1.8vw;flex:1;min-height:0;align-items:stretch;}
-.ns23 .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
-.ns23 .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
-.ns23 .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
-.ns23 .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
-.ns23 .mk circle{transition:fill .25s,r .25s;}
-.ns23 .flowlegend{display:flex;gap:1vw;margin-top:.9vh;}
-.ns23 .flowlegend .lg{flex:1;background:#f4f8fc;border:2px solid var(--line);border-left:8px solid var(--line);
-    border-radius:10px;padding:1vh 1vw;transition:background .25s,border-color .25s;}
-.ns23 .flowlegend .lg.on{background:var(--accent-light);border-color:var(--accent);}
-.ns23 .flowlegend .lg b{display:block;font-size:clamp(23px,2.4vh,27px);color:var(--accent-dark);}
-.ns23 .flowlegend .lg p{font-size:clamp(22px,2.2vh,25px);line-height:1.4;margin:.4vh 0 0;}
-@media (max-width:900px){.ns23 .cards{flex-direction:column;}.ns23 .card{min-width:auto;}.ns23 .two{flex-direction:column;}.ns23 .flowwrap{flex-direction:column;}.ns23 .flowside{flex:1 1 auto;}.ns23 .bar-label{flex:0 0 30vw;}.ns23 .bar-num{flex:0 0 22vw;}.ns23 .anslist{columns:1;}}
-.ns25 .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
-.ns25 .cn{font-size:clamp(22px,2.1vh,25px);color:var(--sub);}
-.ns25 h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
-.ns25 h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
-.ns25 p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
-.ns25 ul, .ns25 ol{margin-left:1.6em;margin-bottom:.8vh;}
-.ns25 li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
-.ns25 b{color:var(--ink);}
-.ns25 .accent{color:var(--accent-dark);}
-.ns25 .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
-.ns25 .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;}
-.ns25 .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
-.ns25 .card p{font-size:clamp(22px,2.3vh,26px);}
-.ns25 .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
-.ns25 .card.win{background:var(--green-light);border-color:var(--green);}
-.ns25 .card.warn{background:var(--amber-light);border-color:var(--amber);}
-.ns25 .card.lose{background:var(--red-light);border-color:var(--red);}
-.ns25 table{border-collapse:collapse;width:100%;background:var(--card);}
-.ns25 th, .ns25 td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
-.ns25 th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
-.ns25 td.l{text-align:left;}
-.ns25 td.yes{color:var(--green);font-weight:700;}
-.ns25 td.no{color:var(--red);font-weight:700;}
-.ns25 .btn{
-    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
-    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
-    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
-  }
-.ns25 .btn:hover{background:var(--accent-dark);}
-.ns25 .btn:active{transform:scale(.97);}
-.ns25 .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
-.ns25 .btn.green{background:var(--green);}
-.ns25 .btn.red{background:var(--red);}
-.ns25 .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
-.ns25 .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
-.ns25 .s-foot{margin-top:auto;padding-top:1.2vh;}
-.ns25 .hl{
-    background:var(--accent-light);border-left:6px solid var(--accent);
-    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
-    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
-  }
-.ns25 .hl.green{background:var(--green-light);border-color:var(--green);}
-.ns25 .hl.amber{background:var(--amber-light);border-color:var(--amber);}
-.ns25 .hl.red{background:var(--red-light);border-color:var(--red);}
-.ns25 .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
-.ns25 .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
-.ns25 .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
-.ns25 .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
-.ns25 .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
-.ns25 .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1;min-height:0;overflow-y:auto;}
-.ns25 .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
-.ns25 .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
-.ns25 .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
-.ns25 .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;}
-.ns25 .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
-    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
-.ns25 .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
-    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
-.ns25 .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
-    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
-    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
-.ns25 .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
-.ns25 .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
-.ns25 .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
-.ns25 .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
-.ns25 .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
-.ns25 .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
-.ns25 .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
-.ns25 .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
-.ns25 .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
-.ns25 .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
-    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
-.ns25 .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
-.ns25 .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
-.ns25 .imgbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
-.ns25 .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
-.ns25 .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
-.ns25 .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
-.ns25 .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
-.ns25 .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
-.ns25 .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
-.ns25 .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
-    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
-.ns25 .ds-btn.on{background:var(--accent);color:#fff;}
-.ns25 .flowwrap{display:flex;gap:1.4vw;flex:1;min-height:0;align-items:stretch;}
-.ns25 .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
-.ns25 .flowimg img{max-width:100%;max-height:100%;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
-.ns25 .flowimg svg{width:100%;height:auto;max-height:48vh;}
-.ns25 .flowside .hl{font-size:clamp(22px,2.2vh,25px);padding:.9vh 1vw;}
-.ns25 .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
-.ns25 .game-card{
-    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
-    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
-  }
-.ns25 .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
-.ns25 .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
-.ns25 .game-fb.good{background:var(--green-light);color:var(--green);}
-.ns25 .game-fb.bad{background:var(--red-light);color:var(--red);}
-.ns25 .anslist{columns:2;column-gap:2.4vw;}
-.ns25 .anslist li{break-inside:avoid;margin-bottom:.5vh;}
-.ns25 .aim.top{background:var(--accent-light);border-color:var(--accent);border-left-width:10px;}
-.ns25 .aim.first{background:linear-gradient(100deg,#1CADE4 0%,#0e7fae 100%);border-color:var(--accent-dark);
-    border-left-width:14px;padding:1.8vh 1.4vw;box-shadow:0 6px 18px rgba(14,127,174,.28);}
-.ns25 .aim.first .no{background:#fff;color:var(--accent-dark);width:3.6vw;min-width:62px;height:3.6vw;min-height:62px;
-    font-size:clamp(27px,3vh,35px);}
-.ns25 .aim.first .at{color:#fff;font-size:clamp(27px,3vh,34px);letter-spacing:.5px;}
-.ns25 .aim.first .ad{color:rgba(255,255,255,.92);font-size:clamp(23px,2.4vh,27px);}
-.ns25 .aim.dim{opacity:.72;}
-.ns25 .svgwrap{flex:1;min-height:0;display:flex;flex-direction:row;gap:2vw;align-items:center;justify-content:center;}
-.ns25 .svgbox{flex:1;min-width:0;max-width:46%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3vh;}
-.ns25 .svgbox svg{width:100%;height:auto;max-height:46vh;}
-.ns25 .cap{font-size:clamp(23px,2.4vh,28px);font-weight:800;color:var(--accent-dark);}
-.ns25 .split{display:flex;gap:1.8vw;flex:1;min-height:0;align-items:stretch;}
-.ns25 .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
-.ns25 .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
-.ns25 .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
-.ns25 .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
-.ns25 .mk circle{transition:fill .25s,r .25s;}
-.ns25 .flowlegend{display:flex;gap:1vw;margin-top:.9vh;}
-.ns25 .flowlegend .lg{flex:1;background:#f4f8fc;border:2px solid var(--line);border-left:8px solid var(--line);
-    border-radius:10px;padding:1vh 1vw;transition:background .25s,border-color .25s;}
-.ns25 .flowlegend .lg.on{background:var(--accent-light);border-color:var(--accent);}
-.ns25 .flowlegend .lg b{display:block;font-size:clamp(23px,2.4vh,27px);color:var(--accent-dark);}
-.ns25 .flowlegend .lg p{font-size:clamp(22px,2.2vh,25px);line-height:1.4;margin:.4vh 0 0;}
-.ns25 .eqn{display:flex;align-items:center;justify-content:center;gap:1.2vw;background:var(--accent-dark);color:#fff;
-    border-radius:12px;padding:1.5vh 1.2vw;font-size:clamp(26px,2.9vh,34px);font-weight:800;margin-bottom:.9vh;}
-.ns25 .eqn .frac{display:inline-flex;flex-direction:column;align-items:center;font-size:clamp(24px,2.7vh,31px);line-height:1.25;}
-.ns25 .eqn .num{border-bottom:4px solid #fff;padding:0 1vw .35vh;}
-.ns25 .eqn .den{padding:.35vh 1vw 0;}
-.ns25 .eqn .lbl{white-space:nowrap;}
-.ns25 th.sub{font-size:clamp(21px,2.2vh,24px);font-weight:600;}
-.ns25 td.bl{border-left:3px solid var(--accent);}
-.ns25 .split .pic svg{width:100%;height:auto;max-height:44vh;}
-.ns25 .popbox{background:#fff;border:3px solid var(--accent-dark);border-radius:12px;padding:1vh 1vw;margin-top:.4vh;}
-.ns25 .popcap{font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);margin-bottom:.5vh;}
-.ns25 .poprow{display:flex;gap:1vw;align-items:stretch;}
-.ns25 .poppart{border-radius:10px;padding:.9vh .8vw;flex:1;}
-.ns25 .poppart.nolf{background:#eef2f6;border:2px solid #c4d0da;color:var(--sub);
-    font-size:clamp(21px,2.2vh,25px);font-weight:700;line-height:1.35;}
-.ns25 .poppart.lf{background:var(--accent-light);border:2px solid var(--accent);flex:1.35;}
-.ns25 .popcap2{font-size:clamp(21px,2.2vh,25px);font-weight:800;color:var(--accent-dark);margin-bottom:.5vh;}
-.ns25 .poprow2{display:flex;gap:.8vw;}
-.ns25 .poprow2 .poppart{font-size:clamp(21px,2.2vh,25px);font-weight:700;}
-.ns25 .poppart.emp{background:#e8f6ef;border:2px solid var(--green);color:#1e7a52;}
-.ns25 .poppart.une{background:#fdeaea;border:2px solid var(--red);color:#a94442;}
-.ns25 #c1Box, .ns25 #c2Box{display:flex;gap:.9vw;flex-wrap:nowrap;}
-.ns25 #c1Box > div, .ns25 #c2Box > div{flex:1;min-width:0;}
-.ns25 #euList{columns:1;}
-.ns25 .cmpAns{visibility:hidden;}
-.ns25 .labframe{width:100%;height:74vh;border:2px solid var(--line);border-radius:10px;background:#fff;display:block;}
-.ns25 .imgfull{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
-@media (max-width:900px){.ns25 .cards{flex-direction:column;}.ns25 .card{min-width:auto;}.ns25 .two{flex-direction:column;}.ns25 .flowwrap{flex-direction:column;}.ns25 .flowside{flex:1 1 auto;}.ns25 .bar-label{flex:0 0 30vw;}.ns25 .bar-num{flex:0 0 22vw;}.ns25 .anslist{columns:1;}}
+/* .slide / .stage 就是滚动盒：内容保持自然高度，出现可见滚动条，
+   而不是把列压扁再裁掉。 */
+.slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+.slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+.slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px;border:3px solid #eef4f9;}
+.slide,.stage{scrollbar-width:thin;scrollbar-color:var(--accent) #eef4f9;}
+
 </style>
 </head>
 <body>
@@ -479,12 +207,12 @@ nav{
   <div class="stage">
     <div style="display:flex;gap:1.2vw;height:100%;align-items:stretch;">
       <div style="flex:1 1 0;display:flex;flex-direction:column;gap:.9vh;min-width:0;">
-        <div id="mpBox" style="display:flex;flex-direction:column;gap:.7vh;font-size:clamp(15px,1.5vw,20px);font-weight:700;color:var(--ink);"></div>
+        <div id="mpBox" style="display:flex;flex-direction:column;gap:.7vh;font-size:clamp(22px,1.6vw,26px);font-weight:700;color:var(--ink);"></div>
         <div class="card" style="margin-top:auto;">
-          <h3 style="font-size:clamp(15px,1.5vw,20px);">Disposable income slider</h3>
+          <h3 style="font-size:clamp(22px,1.6vw,26px);">Disposable income slider</h3>
           <input type="range" id="cfY" min="0" max="100" step="1" value="50" style="width:100%;accent-color:#1CADE4;">
-          <p id="cfRead" style="font-family:Consolas,monospace;font-size:clamp(15px,1.5vw,20px);margin-top:.6vh;">Yd = 50 · C = 48.8 · S = 1.2</p>
-          <p id="cfMarg" style="font-family:Consolas,monospace;font-size:clamp(15px,1.5vw,20px);font-weight:800;color:#0e7fae;">MPC = 0.50 · MPS = 0.50</p>
+          <p id="cfRead" style="font-family:Consolas,monospace;font-size:clamp(22px,1.6vw,26px);margin-top:.6vh;">Yd = 50 · C = 48.8 · S = 1.2</p>
+          <p id="cfMarg" style="font-family:Consolas,monospace;font-size:clamp(22px,1.6vw,26px);font-weight:800;color:#0e7fae;">MPC = 0.50 · MPS = 0.50</p>
         </div>
         <div class="btnrow">
           <button class="btn" id="mpBtn" onclick="cfNext()">Next step ▶</button>
@@ -492,74 +220,96 @@ nav{
         </div>
       </div>
       <div class="svgbox" style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:.4vh;">
-        <svg viewBox="0 0 1000 460" id="cfSvg" style="width:100%;flex:1 1 0;min-height:0;">
-          <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
-            <g stroke="#eef4f9" stroke-width="1"><line x1="120" y1="324" x2="900" y2="324"/><line x1="120" y1="258" x2="900" y2="258"/><line x1="120" y1="192" x2="900" y2="192"/><line x1="120" y1="126" x2="900" y2="126"/><line x1="120" y1="60" x2="900" y2="60"/></g>
-            <g id="cfAx" opacity="0" style="transition:opacity .4s;">
-              <line x1="120" y1="390" x2="930" y2="390" stroke="#343a40" stroke-width="3"/>
-              <line x1="120" y1="440" x2="120" y2="30" stroke="#343a40" stroke-width="3"/>
-              <text x="560" y="448" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d">Disposable income  Yd →</text>
-              <text x="66" y="230" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d" transform="rotate(-90 66 230)">Consumption &amp; saving</text>
-              <g font-size="22" fill="#8a99a8"><text x="120" y="418">0</text><text x="276" y="418">20</text><text x="432" y="418">40</text><text x="588" y="418">60</text><text x="744" y="418">80</text><text x="886" y="418">100</text></g>
-            </g>
-            <g id="cf45" opacity="0" style="transition:opacity .4s;">
-              <line x1="120" y1="390" x2="900" y2="60" stroke="#8a99a8" stroke-width="3" stroke-dasharray="9 7"/>
-              <text x="672" y="98" font-size="26" font-weight="800" fill="#6b7c8f">45° line: C = Yd</text>
-              <text x="672" y="128" font-size="22" fill="#8a99a8">break-even</text>
-            </g>
-            <g id="cfC" opacity="0" style="transition:opacity .4s;">
-              <polyline points="120.0,340.5 135.6,334.9 151.2,329.5 166.8,324.1 182.4,318.8 198.0,313.6 213.6,308.5 229.2,303.5 244.8,298.6 260.4,293.8 276.0,289.0 291.6,284.4 307.2,279.8 322.8,275.4 338.4,271.0 354.0,266.7 369.6,262.6 385.2,258.5 400.8,254.5 416.4,250.6 432.0,246.8 447.6,243.1 463.2,239.4 478.8,235.9 494.4,232.5 510.0,229.1 525.6,225.9 541.2,222.7 556.8,219.6 572.4,216.7 588.0,213.8 603.6,211.0 619.2,208.3 634.8,205.7 650.4,203.2 666.0,200.7 681.6,198.4 697.2,196.2 712.8,194.0 728.4,192.0 744.0,190.0 759.6,188.2 775.2,186.4 790.8,184.7 806.4,183.1 822.0,181.6 837.6,180.2 853.2,178.9 868.8,177.7 884.4,176.5 900.0,175.5" fill="none" stroke="#1CADE4" stroke-width="5"/>
-              <text x="452" y="286" font-size="30" font-weight="800" fill="#0e7fae">C</text>
-              <text x="452" y="314" font-size="22" fill="#5b7288">rises, but flattens</text>
-            </g>
-            <g id="cfS" opacity="0" style="transition:opacity .4s;">
-              <line id="cfGap" x1="510" y1="390" x2="510" y2="390" stroke="#2e9e6b" stroke-width="4"/>
-              <polyline points="120.0,439.5 135.6,438.5 151.2,437.3 166.8,436.1 182.4,434.8 198.0,433.4 213.6,431.9 229.2,430.3 244.8,428.6 260.4,426.8 276.0,425.0 291.6,423.0 307.2,421.0 322.8,418.8 338.4,416.6 354.0,414.3 369.6,411.8 385.2,409.3 400.8,406.7 416.4,404.0 432.0,401.2 447.6,398.3 463.2,395.4 478.8,392.3 494.4,389.1 510.0,385.9 525.6,382.5 541.2,379.1 556.8,375.6 572.4,371.9 588.0,368.2 603.6,364.4 619.2,360.5 634.8,356.5 650.4,352.4 666.0,348.3 681.6,344.0 697.2,339.6 712.8,335.2 728.4,330.6 744.0,326.0 759.6,321.2 775.2,316.4 790.8,311.5 806.4,306.5 822.0,301.4 837.6,296.2 853.2,290.9 868.8,285.5 884.4,280.1 900.0,274.5" fill="none" stroke="#2e9e6b" stroke-width="4" stroke-dasharray="8 6"/>
-              <text x="430" y="330" font-size="28" font-weight="800" fill="#1f7a52">S = Yd − C</text>
-              <text x="430" y="358" font-size="22" fill="#5b7288">grows faster &amp; faster</text>
-              <text x="160" y="452" font-size="22" font-weight="800" fill="#d9534f">negative S (dissaving)</text>
-            </g>
-            <g id="cfTan" opacity="0" style="transition:opacity .4s;">
-              <line id="cfTanLine" x1="0" y1="0" x2="0" y2="0" stroke="#d97800" stroke-width="5" stroke-linecap="round"/>
-              <circle id="cfTanDot" cx="0" cy="0" r="7" fill="#d97800" stroke="#fff" stroke-width="2.5"/>
-              <text id="cfTanTxt" x="0" y="0" font-size="26" font-weight="900" fill="#a35200">slope of C = MPC</text>
-            </g>
-            <g id="cfTanS" opacity="0" style="transition:opacity .4s;">
-              <line id="cfTanSLine" x1="0" y1="0" x2="0" y2="0" stroke="#8e44ad" stroke-width="5" stroke-linecap="round"/>
-              <circle id="cfTanSDot" cx="0" cy="0" r="7" fill="#8e44ad" stroke="#fff" stroke-width="2.5"/>
-              <text id="cfTanSTxt" x="0" y="0" font-size="26" font-weight="900" fill="#5e2d80">slope of S = MPS</text>
-            </g>
-            <circle id="cfPt" cx="510" cy="230" r="9" fill="#d9534f" stroke="#fff" stroke-width="3" opacity="0"/>
-          </g>
-        </svg>
-        <svg viewBox="0 0 1000 460" id="mpSvg" style="width:100%;flex:1 1 0;min-height:0;">
-          <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
-            <g id="cfMM" opacity="0" style="transition:opacity .4s;">
-              <line x1="120" y1="390" x2="940" y2="390" stroke="#343a40" stroke-width="3"/>
-              <line x1="120" y1="410" x2="120" y2="36" stroke="#343a40" stroke-width="3"/>
-              <text x="560" y="448" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d">Disposable income  Yd →</text>
-              <text x="50" y="215" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d" transform="rotate(-90 50 215)">Propensity</text>
-              <g font-size="22" fill="#8a99a8"><text x="120" y="418">0</text><text x="276" y="418">20</text><text x="432" y="418">40</text><text x="588" y="418">60</text><text x="744" y="418">80</text><text x="886" y="418">100</text></g>
-              <g font-size="22" fill="#8a99a8">
-                <text x="106" y="397" text-anchor="end">0</text>
-                <text x="106" y="232" text-anchor="end">.5</text>
-                <text x="106" y="67" text-anchor="end">1</text>
+<svg viewBox="0 0 890 698" id="cfSvg" style="width:100%;flex:0 0 auto;height:661px;">
+  <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+    <g id="cfGeom">
+      <g stroke="#eef4f9" stroke-width="1">
+        <line x1="110.0" y1="436.0" x2="630.0" y2="436.0"/>
+        <line x1="110.0" y1="332.0" x2="630.0" y2="332.0"/>
+        <line x1="110.0" y1="228.0" x2="630.0" y2="228.0"/>
+        <line x1="110.0" y1="124.0" x2="630.0" y2="124.0"/>
+      </g>
+      <g id="cfGAx" opacity="0" style="transition:opacity .4s;">
+        <line x1="110.0" y1="540.0" x2="630.0" y2="540.0" stroke="#343a40" stroke-width="3"/>
+        <line x1="110.0" y1="618.0" x2="110.0" y2="20.0" stroke="#343a40" stroke-width="3"/>
+      </g>
+      <g id="cfG45" opacity="0" style="transition:opacity .4s;">
+        <line x1="110.0" y1="540.0" x2="630.0" y2="20.0" stroke="#8a99a8" stroke-width="3" stroke-dasharray="9 7"/>
+      </g>
+      <g id="cfGC" opacity="0" style="transition:opacity .4s;">
+        <polyline points="110.0,462.0 118.7,454.7 127.3,447.5 136.0,440.4 144.7,433.3 153.3,426.4 162.0,419.6 170.7,412.9 179.3,406.3 188.0,399.8 196.7,393.4 205.3,387.1 214.0,380.9 222.7,374.8 231.3,368.8 240.0,362.9 248.7,357.1 257.3,351.4 266.0,345.8 274.7,340.3 283.3,334.9 292.0,329.6 300.7,324.4 309.3,319.3 318.0,314.3 326.7,309.4 335.3,304.6 344.0,300.0 352.7,295.4 361.3,290.9 370.0,286.5 378.7,282.2 387.3,278.0 396.0,274.0 404.7,270.0 413.3,266.1 422.0,262.3 430.7,258.6 439.3,255.1 448.0,251.6 456.7,248.2 465.3,245.0 474.0,241.8 482.7,238.7 491.3,235.7 500.0,232.9 508.7,230.1 517.3,227.4 526.0,224.9 534.7,222.4 543.3,220.1 552.0,217.8 560.7,215.6 569.3,213.6 578.0,211.6 586.7,209.8 595.3,208.0 604.0,206.4 612.7,204.8 621.3,203.4 630.0,202.0" fill="none" stroke="#1CADE4" stroke-width="5"/>
+      </g>
+      <g id="cfGS" opacity="0" style="transition:opacity .4s;">
+        <line id="cfGap" x1="370.0" y1="540.0" x2="370.0" y2="540.0" stroke="#2e9e6b" stroke-width="4"/>
+        <polyline points="110.0,618.0 118.7,616.6 127.3,615.2 136.0,613.6 144.7,612.0 153.3,610.2 162.0,608.4 170.7,606.4 179.3,604.4 188.0,602.2 196.7,599.9 205.3,597.6 214.0,595.1 222.7,592.6 231.3,589.9 240.0,587.1 248.7,584.3 257.3,581.3 266.0,578.2 274.7,575.0 283.3,571.8 292.0,568.4 300.7,564.9 309.3,561.4 318.0,557.7 326.7,553.9 335.3,550.0 344.0,546.0 352.7,542.0 361.3,537.8 370.0,533.5 378.7,529.1 387.3,524.6 396.0,520.0 404.7,515.4 413.3,510.6 422.0,505.7 430.7,500.7 439.3,495.6 448.0,490.4 456.7,485.1 465.3,479.7 474.0,474.2 482.7,468.6 491.3,462.9 500.0,457.1 508.7,451.2 517.3,445.2 526.0,439.1 534.7,432.9 543.3,426.6 552.0,420.2 560.7,413.7 569.3,407.1 578.0,400.4 586.7,393.6 595.3,386.7 604.0,379.6 612.7,372.5 621.3,365.3 630.0,358.0" fill="none" stroke="#2e9e6b" stroke-width="4" stroke-dasharray="8 6"/>
+      </g>
+      <g id="cfGTan" opacity="0" style="transition:opacity .4s;">
+        <line id="cfTanLine" x1="0" y1="0" x2="0" y2="0" stroke="#d97800" stroke-width="5" stroke-linecap="round"/>
+        <circle id="cfTanDot" cx="0" cy="0" r="7" fill="#d97800" stroke="#fff" stroke-width="2.5"/>
+      </g>
+      <g id="cfGTanS" opacity="0" style="transition:opacity .4s;">
+        <line id="cfTanSLine" x1="0" y1="0" x2="0" y2="0" stroke="#8e44ad" stroke-width="5" stroke-linecap="round"/>
+        <circle id="cfTanSDot" cx="0" cy="0" r="7" fill="#8e44ad" stroke="#fff" stroke-width="2.5"/>
+      </g>
+      <circle id="cfPt" cx="0" cy="0" r="9" fill="#d9534f" stroke="#fff" stroke-width="3" opacity="0"/>
+    </g>
+    <g id="cfTAx" opacity="0" style="transition:opacity .4s;">
+      <text x="630.0" y="614.0" data-y0="614.0" data-y1="320.0" data-x1="880.0" text-anchor="end" font-size="26" font-weight="800" fill="#1f2d3d">Disposable income  Yd →</text>
+      <text x="30" y="332.0" data-y0="332.0" data-y1="170" data-rot="1" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d" transform="rotate(-90 30 332.0)">Consumption &amp; saving</text>
+      <g font-size="26" fill="#8a99a8">
+        <text data-xtick="1" x="110.0" y="570.0" data-y0="570.0" data-y1="285.0" text-anchor="middle">0</text>
+        <text data-xtick="1" x="214.0" y="570.0" data-y0="570.0" data-y1="285.0" text-anchor="middle">20</text>
+        <text data-xtick="1" x="318.0" y="570.0" data-y0="570.0" data-y1="285.0" text-anchor="middle">40</text>
+        <text data-xtick="1" x="422.0" y="570.0" data-y0="570.0" data-y1="285.0" text-anchor="middle">60</text>
+        <text data-xtick="1" x="526.0" y="570.0" data-y0="570.0" data-y1="285.0" text-anchor="middle">80</text>
+        <text data-xtick="1" x="630.0" y="570.0" data-y0="570.0" data-y1="285.0" text-anchor="middle">100</text>
+        <text x="94.0" y="548.0" data-y0="548.0" text-anchor="end">0</text>
+        <text x="94.0" y="444.0" data-y0="444.0" text-anchor="end">20</text>
+        <text x="94.0" y="340.0" data-y0="340.0" text-anchor="end">40</text>
+        <text x="94.0" y="236.0" data-y0="236.0" text-anchor="end">60</text>
+        <text x="94.0" y="132.0" data-y0="132.0" text-anchor="end">80</text>
+        <text x="94.0" y="28.0" data-y0="28.0" text-anchor="end">100</text>
+      </g>
+    </g>
+    <g id="cfT45" opacity="0" style="transition:opacity .4s;">
+      <text x="880.0" y="90.0" data-y0="90.0" data-y1="59.0" text-anchor="end" font-size="26" font-weight="800" fill="#6b7c8f">45° line: C = Yd</text>
+    </g>
+    <g id="cfTC" opacity="0" style="transition:opacity .4s;">
+      <text x="224.4" y="427.6" data-y0="427.6" data-y1="194.0" font-size="28" font-weight="800" fill="#0e7fae">C</text>
+      <text x="224.4" y="463.6" data-y0="463.6" data-y1="240.0" font-size="26" fill="#5b7288">rises, but flattens</text>
+    </g>
+    <g id="cfTS" opacity="0" style="transition:opacity .4s;">
+      <text x="489.6" y="300.0" data-y0="300.0" data-y1="145.0" font-size="26" fill="#5b7288">grows faster &amp; faster</text>
+      <text x="489.6" y="340.0" data-y0="340.0" data-y1="188.0" font-size="28" font-weight="800" fill="#1f7a52">S = Yd − C</text>
+      <text x="141.2" y="664.0" data-y0="664.0" data-y1="328.0" font-size="26" font-weight="800" fill="#d9534f">negative S (dissaving)</text>
+    </g>
+    <g id="cfTTan" opacity="0" style="transition:opacity .4s;">
+      <text id="cfTanTxt" x="0" y="0" data-y0="0" data-y1="100" font-size="26" font-weight="900" fill="#a35200">slope of C = MPC</text>
+    </g>
+    <g id="cfTTanS" opacity="0" style="transition:opacity .4s;">
+      <text id="cfTanSTxt" x="0" y="0" data-y0="0" data-y1="274" font-size="26" font-weight="900" fill="#5e2d80">slope of S = MPS</text>
+    </g>
+  </g>
+</svg>
+        <svg data-flat="1" viewBox="0 0 890 349" id="mpSvg" style="width:100%;flex:0 0 auto;height:0;overflow:hidden;"><g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+<g id="cfMM" opacity="0" style="transition:opacity .4s;">
+              <g transform="matrix(1,0,0,0.7633,0,-9.805)"><line x1="110" y1="390" x2="656.7" y2="390" stroke="#343a40" stroke-width="3"/><line x1="110" y1="410" x2="110" y2="36" stroke="#343a40" stroke-width="3"/><line x1="110" y1="225" x2="630" y2="225" stroke="#b9c9d6" stroke-width="2" stroke-dasharray="6 4"/><line x1="110" y1="109.5" x2="630" y2="340.5" stroke="#1CADE4" stroke-width="5"/><line x1="110" y1="340.5" x2="630" y2="109.5" stroke="#2e9e6b" stroke-width="5"/><circle cx="370" cy="225" r="6" fill="#1f2d3d"/><line id="mpCur" x1="370" y1="36" x2="370" y2="390" stroke="#d9534f" stroke-width="2.5" stroke-dasharray="5 4"/><circle id="mpCpt" cx="370" cy="225" r="9" fill="#1CADE4" stroke="#fff" stroke-width="2.5"/><circle id="mpSpt" cx="370" cy="225" r="9" fill="#2e9e6b" stroke="#fff" stroke-width="2.5"/></g>
+              <text x="880" y="338" text-anchor="end" font-size="26" font-weight="800" fill="#1f2d3d">Disposable income  Yd →</text>
+              <text x="63.3" y="144.5" text-anchor="middle" font-size="26" font-weight="800" fill="#1f2d3d" transform="rotate(-90 63.3 144.5)">Propensity</text>
+              <g font-size="26" fill="#8a99a8"><text data-xtick="1" x="110.0" text-anchor="middle" y="301.4">0</text><text data-xtick="1" x="214.0" text-anchor="middle" y="301.4">20</text><text data-xtick="1" x="318.0" text-anchor="middle" y="301.4">40</text><text data-xtick="1" x="422.0" text-anchor="middle" y="301.4">60</text><text data-xtick="1" x="526.0" text-anchor="middle" y="301.4">80</text><text data-xtick="1" x="630.0" text-anchor="middle" y="301.4">100</text></g>
+              <g font-size="26" fill="#8a99a8">
+                <text x="100.7" y="283.4" text-anchor="end">0</text>
+                <text x="100.7" y="157.5" text-anchor="end">.5</text>
+                <text x="100.7" y="31.5" text-anchor="end">1</text>
               </g>
-              <line x1="120" y1="225" x2="900" y2="225" stroke="#b9c9d6" stroke-width="2" stroke-dasharray="6 4"/>
-              <line x1="120" y1="109.5" x2="900" y2="340.5" stroke="#1CADE4" stroke-width="5"/>
-              <text x="152" y="92" font-size="28" font-weight="900" fill="#0e7fae">MPC</text>
-              <line x1="120" y1="340.5" x2="900" y2="109.5" stroke="#2e9e6b" stroke-width="5"/>
-              <text x="152" y="380" font-size="28" font-weight="900" fill="#1f7a52">MPS</text>
-              <circle cx="510" cy="225" r="6" fill="#1f2d3d"/>
-              <text x="540" y="215" font-size="22" font-weight="800" fill="#1f2d3d">MPC = MPS = 0.5 at Yd = 50</text>
-              <line id="mpCur" x1="510" y1="36" x2="510" y2="390" stroke="#d9534f" stroke-width="2.5" stroke-dasharray="5 4"/>
-              <circle id="mpCpt" cx="510" cy="225" r="9" fill="#1CADE4" stroke="#fff" stroke-width="2.5"/>
-              <circle id="mpSpt" cx="510" cy="225" r="9" fill="#2e9e6b" stroke="#fff" stroke-width="2.5"/>
-              <text id="mpCTxt" x="0" y="0" font-size="24" font-weight="900" fill="#0e7fae">MPC = 0.50</text>
-              <text id="mpSTxt" x="0" y="0" font-size="24" font-weight="900" fill="#1f7a52">MPS = 0.50</text>
-              <text x="640" y="112" font-size="26" font-weight="900" fill="#1f2d3d">MPC + MPS = 1</text>
+              <text x="131.3" y="50.6" font-size="28" font-weight="900" fill="#0e7fae">MPC</text>
+              <text x="131.3" y="270.4" font-size="28" font-weight="900" fill="#1f7a52">MPS</text>
+              <text x="430" y="31" font-size="26" font-weight="800" fill="#1f2d3d">MPC = MPS = 0.5 at Yd = 50</text>
+              <text id="mpCTxt" x="30" y="-19.6" font-size="26" font-weight="900" fill="#0e7fae">MPC = 0.50</text>
+              <text id="mpSTxt" x="30" y="-19.6" font-size="26" font-weight="900" fill="#1f7a52">MPS = 0.50</text>
+              <text x="456.7" y="65.8" font-size="26" font-weight="900" fill="#1f2d3d">MPC + MPS = 1</text>
             </g>
-          </g>
+        </g>
         </svg>
       </div>
     </div>
@@ -568,9 +318,9 @@ nav{
 <div class="ns21"><section class="slide" id="new_spendincome">
   <div class="tag">Toolbox ④ · The circular flow</div>
   <h2>One person's spending is another person's income</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow:hidden;">
+  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow-x:hidden;overflow-y:auto;">
     <div class="hl green" style="line-height:1.5;">The government spends <b>$100</b> repaving a road. The money does not stop there: every dollar spent is a dollar of <b>income</b> for somebody else — and income is exactly what we count as GDP.</div>
-    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
       <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;">
         <div id="ripBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1;min-height:0;"></div>
       </div>
@@ -582,7 +332,7 @@ nav{
     <div class="btnrow" style="flex-wrap:nowrap;">
       <button class="btn" id="ripBtn" onclick="ripNext()">Next round ▶</button>
       <button class="btn ghost" onclick="ripReset()">Reset</button>
-      <span style="font-size:clamp(21px,2.2vh,25px);font-weight:700;">MPC&nbsp;<span class="lab-val" id="ripMpcV">0.60</span></span>
+      <span style="font-size:clamp(22px,2.2vh,25px);font-weight:700;">MPC&nbsp;<span class="lab-val" id="ripMpcV">0.60</span></span>
       <input type="range" id="ripMpc" min="0.5" max="0.9" step="0.1" value="0.6" oninput="ripSet()" style="flex:0 0 190px;height:8px;accent-color:#1CADE4;cursor:pointer;">
       <div class="hl amber" style="margin:0 0 0 auto;padding:.6vh 1.1vw;">GDP created so far: <b id="ripTot">$0.0</b></div>
     </div>
@@ -591,8 +341,8 @@ nav{
 <div class="ns21"><section class="slide" id="new_zhuangzi">
   <div class="tag">Toolbox ⑤ · How do we add them all up?</div>
   <h2>Endless rounds — but a finite total?</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow:hidden;">
-    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow-x:hidden;overflow-y:auto;">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
       <div style="flex:0 0 45%;min-width:0;display:flex;flex-direction:column;gap:.7vh;">
         <div class="zhbox">
           <div class="cn">一尺之捶，日取其半，万世不竭。</div>
@@ -616,7 +366,7 @@ nav{
   <div class="tag">Toolbox ⑥ · The geometric series</div>
   <h2>From a geometric series to the spending multiplier</h2>
   <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow-y:auto;">
-    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
       <div style="flex:1.32;min-width:0;display:flex;flex-direction:column;gap:.6vh;">
         <div id="gmBox" style="display:flex;flex-direction:column;gap:.55vh;overflow-y:auto;flex:1;min-height:0;"></div>
         <div class="btnrow" style="margin-top:.4vh;">
@@ -640,7 +390,7 @@ nav{
 <div class="ns21"><section class="slide" id="new_ex_spend">
   <div class="tag">Practice ① · Spending multiplier</div>
   <h2>Drill: new government spending</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow-x:hidden;overflow-y:auto;">
     <div class="hl" style="line-height:1.5;">multiplier = <span class="mfrac"><span class="num">1</span><span class="den">1 − MPC</span></span> &nbsp;·&nbsp; ΔAD = ΔG × multiplier &nbsp;·&nbsp; G ↑ always shifts AD <b>right</b></div>
     <div style="flex:1;min-height:0;overflow-y:auto;">
       <table>
@@ -688,7 +438,7 @@ nav{
 <div class="ns21"><section class="slide" id="new_ex_tax">
   <div class="tag">Practice ② · Tax multiplier</div>
   <h2>Drill: taxes up, or taxes down?</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow-x:hidden;overflow-y:auto;">
     <div class="hl" style="line-height:1.5;">tax multiplier = <span class="mfrac"><span class="num">−MPC</span><span class="den">1 − MPC</span></span> &nbsp;·&nbsp; ΔAD = ΔT × tax multiplier &nbsp;·&nbsp; T ↓ shifts AD <b>right</b>, T ↑ shifts AD <b>left</b></div>
     <div style="flex:1;min-height:0;overflow-y:auto;">
       <table>
@@ -722,20 +472,20 @@ nav{
 <div class="ns21"><section class="slide" id="new_bbm">
   <div class="tag">Policy ③ · Think deeper</div>
   <h2>Tax more, spend it all — does GDP still rise?</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow:hidden;">
+  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;overflow-x:hidden;overflow-y:auto;">
     <div class="hl amber" style="line-height:1.5;">The tax multiplier is <b>smaller</b> than the spending multiplier. So: raise taxes by $10 bn, spend the whole $10 bn, keep the budget balanced — is that still expansionary?</div>
-    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
       <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;">
         <div id="bbBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1;min-height:0;"></div>
         <div class="btnrow" style="margin-top:.6vh;">
           <button class="btn" id="bbBtn" onclick="bbNext()">Next step ▶</button>
           <button class="btn ghost" onclick="bbReset()">Reset</button>
-          <label style="font-size:clamp(21px,2.2vh,25px);font-weight:700;">MPC <span class="lab-val" id="bbMpcV">0.60</span></label>
+          <label style="font-size:clamp(22px,2.2vh,25px);font-weight:700;">MPC <span class="lab-val" id="bbMpcV">0.60</span></label>
           <input type="range" id="bbMpc" min="0.5" max="0.9" step="0.1" value="0.6" oninput="bbSet()" style="flex:0 0 180px;height:8px;accent-color:#1CADE4;cursor:pointer;">
         </div>
       </div>
       <div class="svgbox" style="flex:0 0 420px;max-width:420px;">
-        <svg viewBox="0 0 420 330" id="bbSvg" style="width:100%;flex:1 1 0;min-height:0;"></svg>
+        <svg viewBox="25 25 390 385" id="bbSvg" style="width:100%;flex:1 1 0;min-height:0;"></svg>
         <div class="cap">+25 from spending, −15 from taxes: net +10</div>
       </div>
     </div>
@@ -744,9 +494,9 @@ nav{
 <div class="ns21"><section class="slide" id="new_fiscal">
   <div class="tag">Policy ④ · The two levers inside the model</div>
   <h2>Fiscal policy in the AD-AS model</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow-x:hidden;overflow-y:auto;">
     <div class="hl" style="line-height:1.5;">Fiscal policy = the government's use of <b>spending (G)</b> and <b>taxation (T)</b> to shift <b>AD</b> towards potential output <b>GDP*</b>.</div>
-    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
       <div style="flex:0 0 50%;min-width:0;display:flex;flex-direction:column;justify-content:center;">
         <table>
           <tr><th>What to fix</th><th>Policy</th><th>G</th><th>T</th><th>AD</th><th>Budget</th></tr>
@@ -763,7 +513,7 @@ nav{
       </div>
       <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.9vh;">
         <div class="svgbox" style="flex:1;">
-          <svg viewBox="0 0 464 250" style="width:100%;max-height:100%;">
+          <svg viewBox="18 20 434 212" style="width:100%;max-height:26vh;"><!-- 原 0 0 464 250：内容只占 y34~224，空白把缩放压到 0.964 → 收紧后 1.14 -->
             <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
               <line x1="75" y1="34" x2="75" y2="200" stroke="#343a40" stroke-width="3"/>
               <line x1="75" y1="200" x2="435" y2="200" stroke="#343a40" stroke-width="3"/>
@@ -789,7 +539,7 @@ nav{
           <div class="cap">Recessionary gap → expansionary → AD right</div>
         </div>
         <div class="svgbox" style="flex:1;">
-          <svg viewBox="0 0 464 250" style="width:100%;max-height:100%;">
+          <svg viewBox="18 20 434 212" style="width:100%;max-height:26vh;"><!-- 原 0 0 464 250：内容只占 y34~224，空白把缩放压到 0.964 → 收紧后 1.14 -->
             <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
               <line x1="75" y1="34" x2="75" y2="200" stroke="#343a40" stroke-width="3"/>
               <line x1="75" y1="200" x2="435" y2="200" stroke="#343a40" stroke-width="3"/>
@@ -802,7 +552,7 @@ nav{
               <text x="371" y="92" font-size="22" font-weight="800" fill="#1f7a52">SRAS</text>
               <line x1="326" y1="105" x2="326" y2="200" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="6 4"/>
               <line x1="145" y1="43" x2="348" y2="113" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>
-              <text x="360" y="119" font-size="22" font-weight="800" fill="#5b7288">AD₁</text>
+              <text x="368" y="126" font-size="22" font-weight="800" fill="#5b7288">AD₁</text>
               <line x1="90" y1="61" x2="348" y2="150" stroke="#1CADE4" stroke-width="5"/>
               <text x="360" y="156" font-size="22" font-weight="800" fill="#0e7fae">AD₂</text>
               <line x1="362" y1="120" x2="267" y2="120" stroke="#1CADE4" stroke-width="4"/>
@@ -829,19 +579,19 @@ nav{
       <div class="card win"><h3>Automatic vs discretionary</h3><p>Discretionary policy needs legislation and suffers lags; automatic stabilizers act immediately, every cycle.</p></div>
     </div>
     <div class="svgbox" style="flex:1;min-height:0;">
-      <svg viewBox="0 0 660 220" width="660" height="205">
-        <line x1="45" y1="25" x2="45" y2="185" stroke="#343a40" stroke-width="3"/>
+      <svg viewBox="6 14 630 206" width="660" height="205"><!-- 原 0 0 660 220：收紧 viewBox，并把 17/18px 统一到 24（小视口下 17px 只剩 15px） -->
+        <line x1="45" y1="48" x2="45" y2="185" stroke="#343a40" stroke-width="3"/><!-- y 轴顶端 25→48：原来穿过 "Real GDP" -->
         <line x1="45" y1="185" x2="630" y2="185" stroke="#343a40" stroke-width="3"/>
-        <text x="14" y="40" font-size="18" font-weight="bold" fill="#343a40">Real GDP</text>
-        <text x="560" y="208" font-size="18" font-weight="bold" fill="#343a40">Time</text>
+        <text x="14" y="40" font-size="24" font-weight="bold" fill="#343a40">Real GDP</text>
+        <text x="560" y="206" font-size="24" font-weight="bold" fill="#343a40">Time</text>
         <line x1="55" y1="150" x2="620" y2="45" stroke="#5b7288" stroke-width="3" stroke-dasharray="8 5"/>
-        <text x="500" y="70" font-size="17" font-weight="bold" fill="#5b7288">trend</text>
+        <text x="498" y="42" font-size="24" font-weight="bold" fill="#5b7288">trend</text><!-- 原 (500,70)：虚线在 x=500 处 y=67.2，标签正好压线 → 移到线上方 -->
         <path d="M55,150 C100,60 130,130 175,120 C230,108 260,45 315,80 C370,115 400,160 445,140 C500,116 540,70 620,52"
               fill="none" stroke="#d9534f" stroke-width="3" stroke-dasharray="6 4"/>
-        <text x="70" y="62" font-size="17" font-weight="bold" fill="#d9534f">without</text>
+        <text x="86" y="74" font-size="24" font-weight="bold" fill="#d9534f">without</text><!-- 原 (70,62)：与 "Real GDP" 相碰 -->
         <path d="M55,150 C100,110 130,130 175,124 C230,116 260,72 315,88 C370,104 400,142 445,136 C500,128 540,80 620,52"
               fill="none" stroke="#1CADE4" stroke-width="4"/>
-        <text x="230" y="168" font-size="17" font-weight="bold" fill="#0e7fae">with stabilizers</text>
+        <text x="230" y="168" font-size="24" font-weight="bold" fill="#0e7fae">with stabilizers</text>
       </svg>
       <div class="cap">Automatic stabilizers flatten the swings around the trend</div>
     </div>
@@ -850,45 +600,45 @@ nav{
 <div class="ns21"><section class="slide" id="new_procyclical">
   <div class="tag">Policy ⑥ · Procyclical &amp; countercyclical</div>
   <h2>With the cycle, or against it?</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow:hidden;">
+  <div class="stage" style="display:flex;flex-direction:column;gap:.8vh;overflow-x:hidden;overflow-y:auto;">
     <div class="hl" style="line-height:1.5;">A variable or a policy is <b>procyclical</b> when it moves in the <b>same</b> direction as the cycle — it amplifies the swing. It is <b>countercyclical</b> when it moves in the <b>opposite</b> direction — it damps the swing.</div>
-    <div style="display:flex;gap:1.2vw;flex:1;min-height:0;">
-      <div style="flex:0 0 40%;min-width:0;display:flex;flex-direction:column;gap:.7vh;">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
+      <div style="flex:0 0 50%;min-width:0;display:flex;flex-direction:column;gap:.7vh;">
         <div class="card lose"><h3>Procyclical — amplifies</h3><p>Moves <b>with</b> GDP: up in a boom, down in a slump.</p><p>Investment, hiring, bank lending, consumer durables … and, politically, spending cuts forced in a slump.</p></div>
         <div class="card win"><h3>Countercyclical — damps</h3><p>Moves <b>against</b> GDP: up in a slump, down in a boom.</p><p>Automatic stabilizers — progressive taxes, unemployment benefits — and discretionary expansion in a slump.</p></div>
         <div class="hl amber" style="line-height:1.45;margin-top:auto;">Automatic stabilizers are countercyclical <b>by design</b>. That is precisely why they are called stabilizers.</div>
       </div>
-      <div class="svgwrap" style="flex:1;">
+      <div class="svgwrap" style="flex:1;flex-direction:column;gap:1vh;"><!-- 右半栏两图上下叠（原来并排，每张只有 493 宽 + 上下大片留白） -->
         <div class="svgbox">
-          <svg viewBox="0 0 320 250" style="width:100%;max-height:100%;">
+          <svg viewBox="110 28 670 206" style="width:100%;max-height:26vh;"><!-- 由 320x250 横向铺开到 670x206，匹配「右半栏上下叠」后的盒子比例 -->
             <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
-              <line x1="52" y1="40" x2="52" y2="200" stroke="#343a40" stroke-width="3"/>
-              <line x1="52" y1="200" x2="300" y2="200" stroke="#343a40" stroke-width="3"/>
-              <text x="296" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Time</text>
-              <line x1="52" y1="135" x2="300" y2="135" stroke="#dbe6ee" stroke-width="2" stroke-dasharray="5 4"/>
-              <polyline points="52,135 83,106.7 114,95 145,106.7 176,135 207,163.3 238,175 269,163.3 300,135"
+              <line x1="130" y1="40" x2="130" y2="200" stroke="#343a40" stroke-width="3"/>
+              <line x1="130" y1="200" x2="750" y2="200" stroke="#343a40" stroke-width="3"/>
+              <text x="740" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Time</text>
+              <line x1="130" y1="135" x2="750" y2="135" stroke="#dbe6ee" stroke-width="2" stroke-dasharray="5 4"/>
+              <polyline points="130,135 207.5,106.7 285,95 362.5,106.7 440,135 517.5,163.3 595,175 672.5,163.3 750,135"
                         fill="none" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>
-              <text x="114" y="88" text-anchor="middle" font-size="20" font-weight="800" fill="#5b7288">GDP</text>
-              <polyline points="52,135 83,92.6 114,75 145,92.6 176,135 207,177.4 238,195 269,177.4 300,135"
+              <text x="595" y="162" text-anchor="middle" font-size="22" font-weight="800" fill="#5b7288">GDP</text>
+              <polyline points="130,135 207.5,92.6 285,75 362.5,92.6 440,135 517.5,177.4 595,195 672.5,177.4 750,135"
                         fill="none" stroke="#d9534f" stroke-width="5"/>
-              <text x="114" y="66" text-anchor="middle" font-size="22" font-weight="800" fill="#d9534f">Investment</text>
+              <text x="285" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="#d9534f">Investment</text>
             </g>
           </svg>
           <div class="cap">In phase, wider swings → amplifies</div>
         </div>
         <div class="svgbox">
-          <svg viewBox="0 0 320 250" style="width:100%;max-height:100%;">
+          <svg viewBox="110 28 670 206" style="width:100%;max-height:26vh;">
             <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
-              <line x1="52" y1="40" x2="52" y2="200" stroke="#343a40" stroke-width="3"/>
-              <line x1="52" y1="200" x2="300" y2="200" stroke="#343a40" stroke-width="3"/>
-              <text x="296" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Time</text>
-              <line x1="52" y1="135" x2="300" y2="135" stroke="#dbe6ee" stroke-width="2" stroke-dasharray="5 4"/>
-              <polyline points="52,135 83,106.7 114,95 145,106.7 176,135 207,163.3 238,175 269,163.3 300,135"
+              <line x1="130" y1="40" x2="130" y2="200" stroke="#343a40" stroke-width="3"/>
+              <line x1="130" y1="200" x2="750" y2="200" stroke="#343a40" stroke-width="3"/>
+              <text x="740" y="224" text-anchor="end" font-size="22" font-weight="800" fill="#343a40">Time</text>
+              <line x1="130" y1="135" x2="750" y2="135" stroke="#dbe6ee" stroke-width="2" stroke-dasharray="5 4"/>
+              <polyline points="130,135 207.5,106.7 285,95 362.5,106.7 440,135 517.5,163.3 595,175 672.5,163.3 750,135"
                         fill="none" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>
-              <text x="114" y="88" text-anchor="middle" font-size="20" font-weight="800" fill="#5b7288">GDP</text>
-              <polyline points="52,135 83,166.8 114,180 145,166.8 176,135 207,103.2 238,90 269,103.2 300,135"
+              <text x="595" y="162" text-anchor="middle" font-size="22" font-weight="800" fill="#5b7288">GDP</text>
+              <polyline points="130,135 207.5,166.8 285,180 362.5,166.8 440,135 517.5,103.2 595,90 672.5,103.2 750,135"
                         fill="none" stroke="#2e9e6b" stroke-width="5"/>
-              <text x="238" y="80" text-anchor="middle" font-size="22" font-weight="800" fill="#1f7a52">Benefits</text>
+              <text x="595" y="76" text-anchor="middle" font-size="22" font-weight="800" fill="#1f7a52">Benefits</text>
             </g>
           </svg>
           <div class="cap">Out of phase → offsets the swing</div>
@@ -898,48 +648,23 @@ nav{
   </div>
 </section></div>
 <div class="ns21"><section class="slide" id="new_summary">
-  <div class="tag">Unit 3 · Recap</div>
-  <h2>Everything on one page</h2>
-  <div class="stage" style="display:flex;flex-direction:column;gap:.85vh;">
-    <table>
-      <tr><th>Idea</th><th>Formula / rule</th><th>What it means</th></tr>
-      <tr>
-        <td class="l"><b>Marginal propensities</b></td>
-        <td>MPC + MPS = 1</td>
-        <td class="l">Every extra dollar is split between spending and saving.</td>
-      </tr>
-      <tr>
-        <td class="l"><b>The circular flow</b></td>
-        <td>spending = income = GDP</td>
-        <td class="l">One person's spending is another person's income — that is why a ripple grows.</td>
-      </tr>
-      <tr>
-        <td class="l"><b>Spending multiplier</b></td>
-        <td><span class="mfrac"><span class="num">1</span><span class="den">1 − MPC</span></span> = <span class="mfrac"><span class="num">1</span><span class="den">MPS</span></span></td>
-        <td class="l">Multiply <b>any</b> change in autonomous spending: G, I, X or autonomous C.</td>
-      </tr>
-      <tr>
-        <td class="l"><b>Tax multiplier</b></td>
-        <td><span class="mfrac"><span class="num">−MPC</span><span class="den">1 − MPC</span></span></td>
-        <td class="l">Weaker — taxes reach spending only through disposable income.</td>
-      </tr>
-      <tr>
-        <td class="l"><b>Balanced budget</b></td>
-        <td>multiplier = 1</td>
-        <td class="l">Equal ΔG and ΔT still raise GDP by that amount; deficit unchanged.</td>
-      </tr>
-      <tr>
-        <td class="l"><b>Fiscal policy</b></td>
-        <td>recessionary → AD right<br>inflationary → AD left</td>
-        <td class="l">G ↑ / T ↓ to close a recessionary gap; G ↓ / T ↑ for an inflationary one.</td>
-      </tr>
-      <tr>
-        <td class="l"><b>Automatic stabilizers</b></td>
-        <td>countercyclical</td>
-        <td class="l">Progressive taxes + unemployment benefits damp the cycle, no vote needed.</td>
-      </tr>
-    </table>
-    <div class="hl amber" style="line-height:1.5;">Two easy marks: (1) the tax multiplier is smaller than the spending multiplier by exactly <b>1</b>; (2) the AD shift is the policy change <b>× the multiplier</b> — never just the policy change.</div>
+  <div class="tag">Unit 3 · Key takeaways</div>
+  <h2>What to walk out with — fill the blanks</h2>
+  <div class="stage" style="display:flex;flex-direction:column;">
+    <div class="drill">
+      <div class="drow"><span class="dn">1</span><p><b>MPC</b> is the <span class="fill" data-a="marginal propensity to consume">____</span>; <b>MPS</b> is the <span class="fill" data-a="marginal propensity to save">____</span> — and the two must add to 1.</p></div>
+      <div class="drow"><span class="dn">2</span><p>The <span class="fill" data-a="spending multiplier">____</span> (1 / MPS) turns any change in <span class="fill" data-a="autonomous spending">____</span> — G, I, X or autonomous C — into a larger change in GDP.</p></div>
+      <div class="drow"><span class="dn">3</span><p>The <span class="fill" data-a="tax multiplier">____</span> is −MPC / (1 − MPC). It is weaker, because a tax change reaches spending only through <span class="fill" data-a="disposable income">____</span>.</p></div>
+      <div class="drow"><span class="dn">4</span><p>Raise taxes and spend the same amount — GDP still rises. That is the <span class="fill" data-a="balanced budget multiplier">____</span>, and it equals 1.</p></div>
+      <div class="drow"><span class="dn">5</span><p>A <span class="fill" data-a="recessionary gap">____</span> is closed by <span class="fill" data-a="expansionary">____</span> policy (G ↑ / T ↓, AD → right); an <span class="fill" data-a="inflationary gap">____</span> takes <span class="fill" data-a="contractionary">____</span> policy.</p></div>
+      <div class="drow"><span class="dn">6</span><p><span class="fill" data-a="automatic stabilizers">____</span> — progressive taxes and unemployment benefits — are <span class="fill" data-a="countercyclical">____</span>; investment and hiring are <span class="fill" data-a="procyclical">____</span>.</p></div>
+    </div>
+    <div class="btnrow" style="margin-top:1.1vh;justify-content:center;">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+    <div class="s-foot"><div class="hl amber">Two easy marks: (1) the tax multiplier is smaller than the spending multiplier by exactly <b>1</b>; (2) the AD shift is the policy change <b>× the multiplier</b> — never just the policy change.</div></div>
   </div>
 </section></div>
 <div class="ns21"><section class="slide cover" id="fb_end">
@@ -969,8 +694,77 @@ document.getElementById=function(id){return _ge(id)||stub();};})();
   const C = y => 15 + 0.85*y - 0.0035*y*y;
   const MPC = y => 0.85 - 0.007*y;
   const S = y => y - C(y);
-  const X = y => 120 + 7.8*y;
-  const V = v => 390 - 3.3*v;
+  // 一张图两种状态：等比例（第 1~6 步，45° 线为真）↔ 竖向压扁（第 7 步，让出下半栏）。
+  // x 坐标与 viewBox 宽度两态完全相同 → 图的横向尺寸不变；唯一变量是竖向系数 K。
+  // 几何在 <g id="cfGeom"> 里跟着 K 压；文字在组外，逐帧把 y 换成 b + K*y0（y0 存在 data-y0）
+  // → 字形永不被拉扁。H = 644K + 54、b = 27 - 20K 一起变，使渲染缩放恒为 0.947。
+  const HF = 644, HB = 54, BY = 27, BY0 = 20;   // 内容竖向跨度 / 高度基准 / 上下留白
+  const K1 = 1, H1 = 698, PX1 = 661;            // 等比例态
+  const K0 = 0.458, H0 = 349.0, PX0 = 331;      // 压扁态（661/698 = 331/349.5 = 0.947）
+  const CFG = { X:t=>110+5.2*t, V:v=>540-5.2*v, ss:m=>-m,
+                dxMin:60, dxMax:145, xLo:100, xHi:880, ty:40, ty2:64, yTop:20, yBot:664,
+                labX:880, labY1:180, labY2:560 };
+  const CS = [CFG];
+  const SIX = ["Ax","45","C","S","Tan","TanS"];  // 前 6 步各对应一组几何 + 一组文字
+  const GEOM = document.getElementById("cfGeom");
+  const svgCS = document.getElementById("cfSvg");
+  const svgMP = document.getElementById("mpSvg");
+  // 记下每处文字在等比例坐标下的原始 y（存在 data-y0），applyK 逐帧换算
+  let splitP = 0;                                // 0 = 等比例，1 = 压扁
+  // jsdom 里没有 requestAnimationFrame（套件立刻报出来了）→ 降级为直接跳到目标态。
+  // 顺带让测试可确定：没有 rAF 时不存在"动画没跑完"的中间态。
+  const HAS_RAF = typeof requestAnimationFrame === "function";
+  const REDUCE = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const NOW = () => (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+  function applyK(p){
+    const K = K1 + (K0 - K1) * p;
+    const b = BY - BY0 * K;
+    GEOM.setAttribute("transform", "matrix(1,0,0," + K + ",0," + b + ")");
+    svgCS.setAttribute("viewBox", "0 0 890 " + (HF * K + HB).toFixed(1));
+    // 高度：量出容器实际高度再写成 px。试过 percentage height（不保证解析，实测塌）
+    // 和 flex 比例（与内联 height 打架）—— 显式 px + 自己监听 resize 最稳。
+    const sb = svgCS.parentNode;
+    const gap = parseFloat(getComputedStyle(sb).rowGap) || 0;
+    const avail = Math.max(1, sb.clientHeight - (p > 0.001 ? gap : 0));
+    svgCS.style.height = (avail * (1 - 0.5 * p)).toFixed(1) + "px";
+    svgMP.style.height = (avail * 0.5 * p).toFixed(1) + "px";
+    // 每帧现查 data-y0：切线标签的 data-y0 是 paint/初始化时才写上的，缓存会漏
+    // 文字位置：两套排版（等比例 / 压扁）之间按 p 插值 —— 行距随 K 缩而字号不变，
+    // 单套位置不可能同时排好两态（压扁态行距只剩 45.8%）。
+    document.querySelectorAll("#cfSvg [data-y0]").forEach(el=>{
+      const y0 = +el.getAttribute("data-y0");
+      const y1 = el.hasAttribute("data-y1") ? +el.getAttribute("data-y1") : (b + K * y0);
+      const y = y0 + (y1 - y0) * p;
+      el.setAttribute("y", y.toFixed(1));
+      if (el.hasAttribute("data-x1")) {
+        const x1 = +el.getAttribute("data-x1");
+        const x0 = +el.getAttribute("x");
+        el.setAttribute("x", (x0 + (x1 - x0) * p).toFixed(1));
+      }
+      if (el.hasAttribute("data-rot")) el.setAttribute("transform", "rotate(-90 30 " + y.toFixed(1) + ")");
+    });
+  }
+  // 视口变化时按当前 splitP 重算高度（px 是量出来的，不重算会失真）
+  window.addEventListener("resize", ()=>applyK(splitP));
+  // 换页钩子：初始化时本页还没 active，容器高度是 0 → 高度会算成 1px。
+  // 必须在页面真正显示后重算一次，否则图根本不显示（真实放映同样会坏）。
+  window.cfRelayout = ()=>applyK(splitP);
+  // 给探针用：直接切到某个压扁系数（绕过动画，测试才可确定）
+  window.cfSetSplit = p => { splitP = p; applyK(p); };
+  let anim = null;
+  function animateTo(p){
+    if (!HAS_RAF || REDUCE) { splitP = p; applyK(p); return; }   // 无 rAF / 要求减弱动效：直接到位
+    if (anim && typeof cancelAnimationFrame === "function") cancelAnimationFrame(anim);
+    const from = splitP, t0 = NOW(), DUR = 480;
+    (function tick(now){
+      const t = Math.max(0, Math.min(1, (now - t0) / DUR));   // 必须 clamp 下端：t<0 时 2t^2 会爆掉
+      const e = t < .5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;      // easeInOutQuad
+      splitP = from + (p - from) * e;
+      applyK(splitP);
+      anim = (t < 1) ? requestAnimationFrame(tick) : null;
+    })(t0);
+  }
+
   const STEPS = [
     "① Axes — X: disposable income; Y: spending",
     "② 45° line — where C = Yd (break-even)",
@@ -980,57 +774,50 @@ document.getElementById=function(id){return _ge(id)||stub();};})();
     "⑥ Tangent to S — its slope is MPS",
     "⑦ MPC and MPS at every income level — the two always add to 1"
   ];
-  const GROUPS = ["cfAx","cf45","cfC","cfS","cfTan","cfTanS","cfMM"];
+  // 竖向压扁：几何在压缩组里自动跟着压，文字在外所以要由 applyK 逐帧换算（见上）
+  const CY = y => 0.7633*y - 9.805;   // 只给 MPC/MPS 那张图用（与 C/S 图统一坐标后）
   let step = 0;
   const box = document.getElementById("mpBox");
   const btn = document.getElementById("mpBtn");
+  // 两条切线标签固定在右侧留白栏（跟着切线走会撞 45° 对角线）
+  const tanTxt = document.getElementById("cfTanTxt");
+  const tsTxt = document.getElementById("cfTanSTxt");
+  tanTxt.setAttribute("x", CFG.labX); tanTxt.setAttribute("data-y0", CFG.labY1);
+  tanTxt.setAttribute("text-anchor", "end");
+  tsTxt.setAttribute("x", CFG.labX); tsTxt.setAttribute("data-y0", CFG.labY2);
+  tsTxt.setAttribute("text-anchor", "end");
   function paint(){
     const y = +document.getElementById("cfY").value;
     const c = C(y), s = S(y), mpc = MPC(y), mps = 1-mpc;
-    const px = X(y), pc = V(c), p45 = V(y);
-    const pt = document.getElementById("cfPt");
-    pt.setAttribute("cx", px); pt.setAttribute("cy", pc);
-    pt.setAttribute("opacity", step >= 3 ? 1 : 0);
-    const gap = document.getElementById("cfGap");
-    gap.setAttribute("x1", px); gap.setAttribute("x2", px);
-    gap.setAttribute("y1", pc); gap.setAttribute("y2", p45);
-    gap.setAttribute("stroke", s >= 0 ? "#2e9e6b" : "#d9534f");
-    // --- step5 tangent to C: touches the curve at one point, slope = MPC ---
-    // screen slope = dV/dX = -(3.3/7.8)*mpc (screen y points down); right end goes up-right
-    const dx = Math.max(70, Math.min(130, px-150, 970-px));
-    const ss = -(3.3/7.8)*mpc;
-    const tl = document.getElementById("cfTanLine");
-    tl.setAttribute("x1", px-dx); tl.setAttribute("y1", pc - ss*dx);
-    tl.setAttribute("x2", px+dx); tl.setAttribute("y2", pc + ss*dx);
-    document.getElementById("cfTanDot").setAttribute("cx", px);
-    document.getElementById("cfTanDot").setAttribute("cy", pc);
-    const tanTxt = document.getElementById("cfTanTxt");
-    if (px+dx+250 > 990) {
-      tanTxt.setAttribute("x", px-dx-14); tanTxt.setAttribute("y", pc - ss*dx + 30);
-      tanTxt.setAttribute("text-anchor", "end");
-    } else {
-      tanTxt.setAttribute("x", px+dx+14); tanTxt.setAttribute("y", pc + ss*dx + 8);
-      tanTxt.setAttribute("text-anchor", "start");
-    }
-    // --- step6 tangent to S: S is convex, tangent below the curve, slope = MPS ---
-    const ps = V(S(y));
-    const ssS = -(3.3/7.8)*mps;
-    const dxS = Math.max(40, Math.min(dx, (452-ps)/(-ssS), (ps-30)/(-ssS)));
-    const tlS = document.getElementById("cfTanSLine");
-    tlS.setAttribute("x1", px-dxS); tlS.setAttribute("y1", ps - ssS*dxS);
-    tlS.setAttribute("x2", px+dxS); tlS.setAttribute("y2", ps + ssS*dxS);
-    document.getElementById("cfTanSDot").setAttribute("cx", px);
-    document.getElementById("cfTanSDot").setAttribute("cy", ps);
-    const tsTxt = document.getElementById("cfTanSTxt");
-    if (px+dxS+250 > 990) {
-      tsTxt.setAttribute("x", px-dxS-14); tsTxt.setAttribute("y", ps - ssS*dxS + 30);
-      tsTxt.setAttribute("text-anchor", "end");
-    } else {
-      tsTxt.setAttribute("x", px+dxS+14); tsTxt.setAttribute("y", ps + ssS*dxS + 8);
-      tsTxt.setAttribute("text-anchor", "start");
+    const g = CFG;
+    {
+      const px = g.X(y), pc = g.V(c), p45 = g.V(y), ps = g.V(s);
+      const pt = document.getElementById("cfPt");
+      pt.setAttribute("cx", px); pt.setAttribute("cy", pc);
+      pt.setAttribute("opacity", step >= 3 ? 1 : 0);
+      const gap = document.getElementById("cfGap");
+      gap.setAttribute("x1", px); gap.setAttribute("x2", px);
+      gap.setAttribute("y1", pc); gap.setAttribute("y2", p45);
+      gap.setAttribute("stroke", s >= 0 ? "#2e9e6b" : "#d9534f");
+      // --- step5 tangent to C: touches the curve at one point, slope = MPC ---
+      const dx = Math.max(g.dxMin, Math.min(g.dxMax, px-g.xLo, g.xHi-px));
+      const ss = g.ss(mpc);
+      const tl = document.getElementById("cfTanLine");
+      tl.setAttribute("x1", px-dx); tl.setAttribute("y1", pc - ss*dx);
+      tl.setAttribute("x2", px+dx); tl.setAttribute("y2", pc + ss*dx);
+      document.getElementById("cfTanDot").setAttribute("cx", px);
+      document.getElementById("cfTanDot").setAttribute("cy", pc);
+      // --- step6 tangent to S: S is convex, tangent below the curve, slope = MPS ---
+      const ssS = g.ss(mps);
+      const dxS = Math.max(g.dxMin*0.6, Math.min(dx, (g.yBot-ps)/(-ssS), (ps-g.yTop)/(-ssS)));
+      const tlS = document.getElementById("cfTanSLine");
+      tlS.setAttribute("x1", px-dxS); tlS.setAttribute("y1", ps - ssS*dxS);
+      tlS.setAttribute("x2", px+dxS); tlS.setAttribute("y2", ps + ssS*dxS);
+      document.getElementById("cfTanSDot").setAttribute("cx", px);
+      document.getElementById("cfTanSDot").setAttribute("cy", ps);
     }
     // --- step7 lower chart: current points on MPC/MPS lines (same x-mapping as main chart) ---
-    const mX = 120 + 7.8*y;
+    const mX = 110 + 5.2*y;   // 与 C/S 图同一映射 → 刻度对齐
     const mY = v => 390 - 330*v;
     const mcY = mY(mpc), msY = mY(1-mpc);
     document.getElementById("mpCur").setAttribute("x1", mX);
@@ -1039,22 +826,32 @@ document.getElementById=function(id){return _ge(id)||stub();};})();
     document.getElementById("mpCpt").setAttribute("cy", mcY);
     document.getElementById("mpSpt").setAttribute("cx", mX);
     document.getElementById("mpSpt").setAttribute("cy", msY);
-    const mRight = mX > 640;
+    const mRight = mX > 560;
     const cTxt = document.getElementById("mpCTxt");
     cTxt.setAttribute("x", mRight ? mX-16 : mX+16);
-    cTxt.setAttribute("y", mcY-14);
+    cTxt.setAttribute("y", CY(mcY-22));
     cTxt.setAttribute("text-anchor", mRight ? "end" : "start");
     cTxt.textContent = "MPC = " + mpc.toFixed(2);
     const sTxt = document.getElementById("mpSTxt");
     sTxt.setAttribute("x", mRight ? mX-16 : mX+16);
-    sTxt.setAttribute("y", msY+30);
+    sTxt.setAttribute("y", CY(msY+38));
     sTxt.setAttribute("text-anchor", mRight ? "end" : "start");
     sTxt.textContent = "MPS = " + (1-mpc).toFixed(2);
     document.getElementById("cfRead").textContent = "Yd = " + y + " · C = " + c.toFixed(1) + " · S = " + s.toFixed(1) + (s < 0 ? " (dissaving)" : "");
     document.getElementById("cfMarg").textContent = "MPC = " + mpc.toFixed(2) + " · MPS = " + mps.toFixed(2);
   }
   function reveal(){
-    GROUPS.forEach((g,i)=>{ document.getElementById(g).setAttribute("opacity", i < step ? 1 : 0); });
+    SIX.forEach((n,i)=>{
+      const v = i < step ? 1 : 0;
+      document.getElementById("cfG"+n).setAttribute("opacity", v);   // 几何
+      document.getElementById("cfT"+n).setAttribute("opacity", v);   // 文字
+    });
+    document.getElementById("cfMM").setAttribute("opacity", step >= STEPS.length ? 1 : 0);
+    // 第 7 步（= STEPS.length）C/S 图竖向压扁、让出下半栏给 MPC/MPS 图。
+    // 门槛用 STEPS.length 而不是 SIX.length —— 写成 SIX.length 会提前到第 6 步就切。
+    // 走动画而不是直接切：x 与缩放全程不变，只有竖向系数在动，所以看起来是"压上去"。
+    animateTo(step >= STEPS.length ? 1 : 0);
+    paint();
     box.innerHTML = "";
     STEPS.slice(0, step).forEach((t,i)=>{
       const d = document.createElement("div");
@@ -1063,7 +860,6 @@ document.getElementById=function(id){return _ge(id)||stub();};})();
       box.appendChild(d);
     });
     if(step >= STEPS.length){ btn.disabled = true; btn.textContent = "All shown ✓"; }
-    paint();
   }
   window.cfNext = function(){ if(step < STEPS.length) step++; reveal(); };
   window.cfReset = function(){ step = 0; btn.disabled = false; btn.textContent = "Next step ▶"; reveal(); };
@@ -1129,6 +925,10 @@ function fillNext(){
 function fillReset(){
   fillIdx = 0;
   fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+function fillAll(){
+  fillEls.forEach(f=>{ f.textContent = f.dataset.a; f.classList.add("done"); });
+  fillIdx = fillEls.length;
 }
 fillReset();
 
@@ -1574,15 +1374,15 @@ function resetBr(){ brStep.reset(); }</script><script>
              + " → income for <b>" + cur.p + "</b>: $" + fmt(a) + ". The rest, $" + fmt(amt(k-1)*(1-mpc))
              + ", is saved — it <b>leaks</b> out of the flow.";
       }
-      d.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);line-height:1.4;'>" + body + "</div>"
-        + "<div style='font-size:clamp(20px,2.1vh,24px);font-weight:800;color:#0e7fae;margin-top:.2vh;'>"
+      d.innerHTML = "<div style='font-size:clamp(22px,2.2vh,25px);line-height:1.4;'>" + body + "</div>"
+        + "<div style='font-size:clamp(22px,2.1vh,24px);font-weight:800;color:#0e7fae;margin-top:.2vh;'>"
         + "GDP + $" + fmt(a) + " &nbsp;·&nbsp; running total $" + fmt(cum) + "</div>";
       box.appendChild(d);
     }
     if(step >= N){
       var f = document.createElement("div");
       f.style.cssText = "background:#fdf3e3;border-left:6px solid #e6a23c;border-radius:0 8px 8px 0;padding:.6vh .9vw;";
-      f.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);font-weight:800;line-height:1.4;'>"
+      f.innerHTML = "<div style='font-size:clamp(22px,2.2vh,25px);font-weight:800;line-height:1.4;'>"
         + "Round 7, 8, 9 … the ripple never quite stops. <b>How do we add up infinitely many rounds?</b></div>";
       box.appendChild(f);
     }
@@ -1593,7 +1393,7 @@ function resetBr(){ brStep.reset(); }</script><script>
     s += '<line x1="'+cx+'" y1="'+cy+'" x2="415" y2="'+cy+'" stroke="#dbe6ee" stroke-width="3"/>';
     s += '<line x1="'+cx+'" y1="'+cy+'" x2="'+cx+'" y2="16" stroke="#dbe6ee" stroke-width="3"/>';
     s += '<circle cx="'+cx+'" cy="'+cy+'" r="9" fill="#0e7fae"/>';
-    s += '<text x="'+(cx+16)+'" y="'+(cy+32)+'" font-size="22" font-weight="800" fill="#5b7288">the $100 injection</text>';
+    s += '<text x="'+(cx+16)+'" y="'+(cy+32)+'" font-size="24" font-weight="800" fill="#5b7288">the $100 injection</text>';
     for(var k=1;k<=N;k++){
       var a = amt(k);
       var r = 40 + (k-1)*52;
@@ -1644,7 +1444,7 @@ function resetBr(){ brStep.reset(); }</script><script>
     for(var k=1;k<=day;k++){
       var d = document.createElement("div");
       d.style.cssText = "background:#eef7fc;border-left:6px solid #1CADE4;border-radius:0 8px 8px 0;padding:.45vh .9vw;";
-      d.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);line-height:1.4;font-weight:700;'>"
+      d.innerHTML = "<div style='font-size:clamp(22px,2.2vh,25px);line-height:1.4;font-weight:700;'>"
         + "Day " + k + " · take <b>" + NICE[k-1] + "</b> · taken so far <b>" + (pw(k)-1) + "/" + pw(k)
         + "</b> · still left <b>1/" + pw(k) + "</b></div>";
       box.appendChild(d);
@@ -1652,7 +1452,7 @@ function resetBr(){ brStep.reset(); }</script><script>
     if(day >= N){
       var f = document.createElement("div");
       f.style.cssText = "background:#e8f6ef;border-left:6px solid #2e9e6b;border-radius:0 8px 8px 0;padding:.55vh .9vw;";
-      f.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);font-weight:800;line-height:1.45;'>"
+      f.innerHTML = "<div style='font-size:clamp(22px,2.2vh,25px);font-weight:800;line-height:1.45;'>"
         + "So is it really inexhaustible? Strictly, <b>yes</b> — (½)ⁿ is never exactly 0, a sliver always remains. "
         + "But the sliver shrinks towards nothing, and the endless list of pieces adds up to exactly <b>ONE</b> stick.</div>";
       box.appendChild(f);
@@ -1676,7 +1476,7 @@ function resetBr(){ brStep.reset(); }</script><script>
     var remW = W * Math.pow(0.5, day);
     var remX = x0 + (W - remW);
     s += '<rect x="'+remX.toFixed(1)+'" y="'+y+'" width="'+remW.toFixed(1)+'" height="'+h+'" fill="#eef2f6" stroke="#9aa8b5" stroke-width="3" stroke-dasharray="7 5"/>';
-    s += '<text x="'+(remX+remW/2).toFixed(1)+'" y="'+(y-8)+'" text-anchor="middle" font-size="22" font-weight="800" fill="#5b7288">1/'+pw(day)+'</text>';
+    s += '<text x="'+(remX+remW/2).toFixed(1)+'" y="'+(y+h+32)+'" text-anchor="middle" font-size="22" font-weight="800" fill="#5b7288">1/'+pw(day)+'</text>';
     var terms = [];
     for(var j=1;j<=day;j++) terms.push(NICE[j-1]);
     if(day > 0) terms.push("…");
@@ -1858,7 +1658,7 @@ function exTReset(){ exT.reset(); }
     if(step >= N){
       var f = document.createElement("div");
       f.style.cssText = "background:#e8f6ef;border-left:6px solid #2e9e6b;border-radius:0 8px 8px 0;padding:.6vh .9vw;";
-      f.innerHTML = "<div style='font-size:clamp(21px,2.2vh,25px);font-weight:800;line-height:1.45;'>"
+      f.innerHTML = "<div style='font-size:clamp(22px,2.2vh,25px);font-weight:800;line-height:1.45;'>"
         + "Balanced-budget multiplier = <b>1</b>. Equal increases in G and T raise GDP by that same amount — the budget stays balanced and the economy still expands.</div>";
       box.appendChild(f);
     }
@@ -1868,23 +1668,26 @@ function exTReset(){ exT.reset(); }
     var maxv = Math.max(g, t, net);
     var sc = 118/maxv;
     var hg = g*sc, ht = t*sc, hn = net*sc;
-    var zero = 200, bw = 78;
+    var zero = 190, bw = 78;
     var centers = [88, 210, 332];
+    /* 纵向排布：轴 190 → 红条最坏垂到 296 → 数值 326 → 标签行 356 / 390。
+       原来数值标签放在 zero+ht+28，正好压在 y=290 的 "T ↑ 10" 上。 */
+    var row1 = 356, row2 = 390;
     var s = '<g font-family="Segoe UI, Microsoft YaHei, sans-serif">';
     s += '<line x1="30" y1="'+zero+'" x2="405" y2="'+zero+'" stroke="#343a40" stroke-width="3"/>';
-    s += '<text x="34" y="'+(zero-8)+'" font-size="20" font-weight="800" fill="#5b7288">0</text>';
+    s += '<text x="36" y="'+(zero-8)+'" font-size="24" font-weight="800" fill="#5b7288">0</text>';
     s += '<rect x="'+(centers[0]-bw/2)+'" y="'+(zero-hg).toFixed(1)+'" width="'+bw+'" height="'+hg.toFixed(1)+'" fill="#2e9e6b"/>';
-    s += '<text x="'+centers[0]+'" y="'+(zero-hg-10).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#1f7a52">+'+f2(g)+'</text>';
+    s += '<text x="'+centers[0]+'" y="'+(zero-hg-12).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#1f7a52">+'+f2(g)+'</text>';
     s += '<rect x="'+(centers[1]-bw/2)+'" y="'+zero+'" width="'+bw+'" height="'+ht.toFixed(1)+'" fill="#d9534f"/>';
-    s += '<text x="'+centers[1]+'" y="'+(zero+ht+28).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#a94442">−'+f2(t)+'</text>';
+    s += '<text x="'+centers[1]+'" y="'+(zero+ht+30).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#a94442">−'+f2(t)+'</text>';
     s += '<rect x="'+(centers[2]-bw/2)+'" y="'+(zero-hn).toFixed(1)+'" width="'+bw+'" height="'+hn.toFixed(1)+'" fill="#1CADE4"/>';
-    s += '<text x="'+centers[2]+'" y="'+(zero-hn-10).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#0e7fae">+'+f2(net)+'</text>';
-    s += '<text x="'+centers[0]+'" y="290" text-anchor="middle" font-size="22" font-weight="800" fill="#343a40">G ↑ 10</text>';
-    s += '<text x="'+centers[1]+'" y="290" text-anchor="middle" font-size="22" font-weight="800" fill="#343a40">T ↑ 10</text>';
-    s += '<text x="'+centers[2]+'" y="290" text-anchor="middle" font-size="22" font-weight="800" fill="#343a40">Net</text>';
-    s += '<text x="'+centers[0]+'" y="316" text-anchor="middle" font-size="20" font-weight="700" fill="#5b7288">× '+f2(kg())+'</text>';
-    s += '<text x="'+centers[1]+'" y="316" text-anchor="middle" font-size="20" font-weight="700" fill="#5b7288">× '+f2(kt())+'</text>';
-    s += '<text x="'+centers[2]+'" y="316" text-anchor="middle" font-size="20" font-weight="700" fill="#5b7288">× 1</text>';
+    s += '<text x="'+centers[2]+'" y="'+(zero-hn-12).toFixed(1)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#0e7fae">+'+f2(net)+'</text>';
+    s += '<text x="'+centers[0]+'" y="'+row1+'" text-anchor="middle" font-size="24" font-weight="800" fill="#343a40">G ↑ 10</text>';
+    s += '<text x="'+centers[1]+'" y="'+row1+'" text-anchor="middle" font-size="24" font-weight="800" fill="#343a40">T ↑ 10</text>';
+    s += '<text x="'+centers[2]+'" y="'+row1+'" text-anchor="middle" font-size="24" font-weight="800" fill="#343a40">Net</text>';
+    s += '<text x="'+centers[0]+'" y="'+row2+'" text-anchor="middle" font-size="24" font-weight="700" fill="#5b7288">× '+f2(kg())+'</text>';
+    s += '<text x="'+centers[1]+'" y="'+row2+'" text-anchor="middle" font-size="24" font-weight="700" fill="#5b7288">× '+f2(kt())+'</text>';
+    s += '<text x="'+centers[2]+'" y="'+row2+'" text-anchor="middle" font-size="24" font-weight="700" fill="#5b7288">× 1</text>';
     s += '</g>';
     svg.innerHTML = s;
   }
@@ -1908,6 +1711,7 @@ function renderHooks(){
   try{ var sl = slides[cur]; if(!sl||!sl.querySelector) return;
     if(sl.querySelector('#adCanvas')){ if(typeof adResize==='function'){adResize(); if(typeof adRender==='function') adRender();} }
     if(sl.querySelector('#sdCanvas')){ if(typeof sdResize==='function'){sdResize(); if(typeof sdRender==='function') sdRender();} }
+    if(sl.querySelector('#cfSvg') && typeof cfRelayout==='function') cfRelayout();
   }catch(e){}
 }
 function gotoSlide(i){
@@ -1927,13 +1731,10 @@ function gotoSlide(i){
     if(box){ box.innerHTML=''; slides.forEach(function(_,i){ var d=document.createElement('div'); d.className='dot'; d.onclick=function(){ gotoSlide(i); }; box.appendChild(d); }); }
     gotoSlide(0);
   }catch(e){ console.error(e); }
-  document.addEventListener('keydown', function(e){
-    if(e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); gotoSlide(cur+1); }
-    else if(e.key==='ArrowLeft'){ e.preventDefault(); gotoSlide(cur-1); }
-  });
-  var tx=null;
-  document.addEventListener('touchstart', function(e){ tx=e.touches[0].clientX; }, {passive:true});
-  document.addEventListener('touchend', function(e){ if(tx===null) return; var dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>60){ dx<0?gotoSlide(cur+1):gotoSlide(cur-1); } tx=null; }, {passive:true});
+  /* 翻页只走左右下角的按键（贾老师 2026-10-08 定，全部课件适用）：
+     这里原来还挂着「左右滑动翻页」与「方向键/空格翻页」两套监听，都已移除。
+     滑动那个尤其危险 —— 拖课件里的滚动条时会被判成 swipe，直接误触翻页。
+     顺带：去掉 keydown 的 preventDefault 之后，焦点在内容区时键盘能正常滚动溢出内容。 */
 })();
 </script>
 </body>

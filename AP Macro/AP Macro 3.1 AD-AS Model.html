@@ -1760,14 +1760,6 @@ nav{
     </div>
   </div>
 </section></div>
-<div class="ns21"><section class="slide cover" id="new_end">
-  <div class="tag">What comes next</div>
-  <h1>Next: Fiscal Policy</h1>
-  <div class="q">Multipliers and automatic stabilizers</div>
-  <p>How policy tries to shorten stages ③ and ①.</p>
-  <div class="meta">Dr. Jia · © 2026</div>
-</section></div>
-
 <div class="ns21"><section class="slide cover" id="new_thanks">
 <div class="tag">Wrap-up</div>
 <h1>Thank you!</h1>
@@ -1778,7 +1770,7 @@ nav{
 <nav>
   <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
   <div class="dots" id="dots"></div>
-  <div class="pageinfo" id="pageinfo">1 / 18</div>
+  <div class="pageinfo" id="pageinfo">1 / 17</div>
   <div class="copy">© 2026 Dr. Jia</div>
   <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
 </nav>
@@ -2281,13 +2273,10 @@ function gotoSlide(i){
     if(box){ box.innerHTML=''; slides.forEach(function(_,i){ var d=document.createElement('div'); d.className='dot'; d.onclick=function(){ gotoSlide(i); }; box.appendChild(d); }); }
     gotoSlide(0);
   }catch(e){ console.error(e); }
-  document.addEventListener('keydown', function(e){
-    if(e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); gotoSlide(cur+1); }
-    else if(e.key==='ArrowLeft'){ e.preventDefault(); gotoSlide(cur-1); }
-  });
-  var tx=null;
-  document.addEventListener('touchstart', function(e){ tx=e.touches[0].clientX; }, {passive:true});
-  document.addEventListener('touchend', function(e){ if(tx===null) return; var dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>60){ dx<0?gotoSlide(cur+1):gotoSlide(cur-1); } tx=null; }, {passive:true});
+  /* 翻页只走左右下角的按键（2026-10-08 定，全部课件适用）：原先挂在 document 上的「左右滑动翻页」与「方向键/空格翻页」都已移除 ——拖动滚动条时滑动会被判成 swipe 而误触翻页。 */
+
+  /* 翻页只走左右下角的按键（2026-10-08 定，全部课件适用）：原先挂在 document 上的「左右滑动翻页」与「方向键/空格翻页」都已移除 ——拖动滚动条时滑动会被判成 swipe 而误触翻页。 */
+
 })();
 </script>
 </body>
