@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 4.5 · Financial Assets</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+        overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1 0 auto;min-height:44vh;overflow-y:auto;display:flex;flex-direction:column;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  /* 卡片里用的是裸 <div>：不给规则就会落到浏览器默认 16px（这就是「字太小」的成因）。
+     这里把 s9b/s9c 两页的正文统一提到 24–28px。 */
+  #s9b p,#s9b div,#s9b .mnote,#s9c p,#s9c div{font-size:clamp(24px,2.6vh,28px);}
+  #s9b .card h3,#s9c .card h3{font-size:clamp(26px,2.8vh,30px);}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .tag .cn,h2 .cn{font-size:inherit;color:inherit;line-height:inherit;padding-left:0;margin-bottom:0;font-weight:inherit;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  .mstep{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:8px solid var(--accent);border-radius:12px;padding:.7vh 1vw;}
+  .mstep .no{flex:0 0 auto;width:2.8vw;min-width:46px;height:2.8vw;min-height:46px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.5vh,29px);font-weight:800;}
+  .mstep .mbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:.3vh;}
+  .mstep .mtitle{font-size:clamp(21.5px,2.2vh,26px);font-weight:800;color:var(--accent-dark);line-height:1.25;}
+  .mstep .mnote{font-size:clamp(21.5px,2.1vh,25px);color:var(--sub);line-height:1.35;}
+  .zhbox{background:#fffaf0;border:3px solid var(--amber);border-radius:12px;padding:1vh 1.1vw;line-height:1.45;}
+  .zhbox .zhtext{font-size:clamp(21.5px,2.1vh,25px);color:var(--ink);font-weight:700;}
+  .zhbox .zhen{font-size:clamp(21.5px,2vh,24px);color:var(--sub);}
+/* The stage / slide are the scroll boxes: content keeps its natural height and a
+   visible scrollbar appears instead of the columns being squeezed and clipped. */
+.slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+.slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+.slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent,#1CADE4);border-radius:8px;border:3px solid #eef4f9;}
+.slide{scrollbar-width:thin;scrollbar-color:var(--accent,#1CADE4) #eef4f9;}
+.stage{scrollbar-width:thin;scrollbar-color:var(--accent,#1CADE4) #eef4f9;}
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  .drill{display:flex;flex-direction:column;gap:.9vh;flex:1 0 auto;}
+  .drow{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:9px solid var(--accent);border-radius:12px;padding:1.1vh 1.2vw;flex:1 1 auto;}
+  .dn{flex:0 0 1.5em;font-weight:800;font-size:clamp(24px,2.7vh,30px);color:var(--accent-dark);}
+  .drow p{font-size:clamp(22px,2.35vh,27px);line-height:1.5;margin:0;}
+  .cover .q{font-size:clamp(28px,3.4vh,44px);color:#fff;font-weight:700;max-width:88%;line-height:1.35;}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<section class="slide cover active" id="s1">
+  <div class="tag">AP Macroeconomics · Unit 4: Financial Sector</div>
+  <h1>Financial Assets</h1>
+  <p>What you can hold instead of cash · liquidity, return, risk · bonds, stocks, funds</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="tag">Unit 4 · Lesson 7 · Why look beyond cash</div>
+  <h2>Cash is convenient &mdash; and that is all it is</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>Last lesson's balance</h3><p>Holding money costs you the interest you could have earned. The heavier the interest pan, the less cash you want to hold.</p></div>
+      <div class="card warn"><h3>So what is on the other pan?</h3><p>Everything else you could own &mdash; each one a <b>financial asset</b>, a claim on future money:<div style="margin-top:.4vh;">deposits <span style="color:var(--sub);">存款</span></div><div style="margin-top:.3vh;">bonds <span style="color:var(--sub);">债券</span></div><div style="margin-top:.3vh;">stocks <span style="color:var(--sub);">股票</span></div><div style="margin-top:.3vh;">funds <span style="color:var(--sub);">基金</span></div></p></div>
+      <div class="card win"><h3>And each one is a trade-off</h3><p>More return, less safety or less liquidity. Choosing between them is the whole subject of this lesson.</p></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">A financial asset is simply a <b>claim on someone else's future payment</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="tag">Unit 4 · Lesson 7 · The menu</div>
+  <h2>What a household can actually hold</h2>
+  <div class="stage">
+    <table style="flex:1 0 auto;">
+      <tr><th class="l">Asset</th><th class="l">Who owes you</th><th class="l">What you receive</th><th class="l">Liquidity</th><th class="l">Risk</th></tr>
+      <tr><td class="l">Checking / savings deposit <span style="color:var(--sub);font-size:.92em;">活期 / 储蓄存款</span></td><td class="l">A bank</td><td class="l">Interest, tiny</td><td class="l">Highest</td><td class="l">Very low</td></tr>
+      <tr><td class="l">CD (time deposit) <span style="color:var(--sub);font-size:.92em;">定期存单</span></td><td class="l">A bank</td><td class="l">Fixed interest for a set term</td><td class="l">Low (locked up)</td><td class="l">Very low</td></tr>
+      <tr><td class="l">Treasury bill / note / bond <span style="color:var(--sub);font-size:.92em;">国库券 / 中短期 / 长期国债</span></td><td class="l">The US government</td><td class="l">Interest + face value at maturity</td><td class="l">High</td><td class="l">Lowest of all bonds</td></tr>
+      <tr><td class="l">Corporate bond <span style="color:var(--sub);font-size:.92em;">公司债</span></td><td class="l">A company</td><td class="l">Higher interest + face value</td><td class="l">Medium</td><td class="l">Higher (default)</td></tr>
+      <tr><td class="l">Stock <span style="color:var(--sub);font-size:.92em;">股票</span></td><td class="l">A company (you own a slice)</td><td class="l">Dividends + price gains</td><td class="l">High</td><td class="l">Highest</td></tr>
+      <tr><td class="l">Money market fund <span style="color:var(--sub);font-size:.92em;">货币市场基金</span></td><td class="l">A fund holding T-bills</td><td class="l">Market interest, daily</td><td class="l">High</td><td class="l">Very low</td></tr>
+    </table>
+    <div class="s-foot">
+      <div class="hl">Six ways to hold wealth &mdash; and every one of them trades something away.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="tag">Unit 4 · Lesson 7 · The three attributes</div>
+  <h2>Liquidity, return, risk &mdash; you cannot have all three</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;">
+      <div style="flex:1.25;min-width:0;">
+        <svg viewBox="0 0 820 430" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <line x1="90" y1="360" x2="790" y2="360" stroke="#1f2d3d" stroke-width="2.5"/>
+          <line x1="90" y1="360" x2="90" y2="40" stroke="#1f2d3d" stroke-width="2.5"/>
+          <text x="440" y="404" text-anchor="middle" font-size="23" fill="#5b7288">Risk (how uncertain the payoff is)</text>
+          <text x="78" y="60" text-anchor="end" font-size="23" fill="#5b7288">return</text>
+          <line x1="420" y1="40" x2="420" y2="360" stroke="#c4d6e4" stroke-width="2" stroke-dasharray="6 6"/>
+          <line x1="90" y1="200" x2="790" y2="200" stroke="#c4d6e4" stroke-width="2" stroke-dasharray="6 6"/>
+          <text x="100" y="62" font-size="22" font-weight="700" fill="#a94442">&#10007; low risk, high return</text>
+          <text x="100" y="92" font-size="22" font-weight="700" fill="#a94442">(not on offer)</text>
+          <text x="432" y="62" font-size="22" font-weight="700" fill="#2e9e6b">high risk, high return</text>
+          <text x="432" y="352" font-size="22" font-weight="700" fill="#5b7288">high risk, low return</text>
+          <text x="100" y="352" font-size="22" font-weight="700" fill="#0e7fae">low risk, low return</text>
+          <line x1="120" y1="330" x2="760" y2="90" stroke="#e3f4fb" stroke-width="3" stroke-dasharray="8 6"/>
+          <circle cx="180" cy="316" r="11" fill="#2e9e6b"/><text x="180" y="300" text-anchor="middle" font-size="22" fill="#1e6e4a">T-bills 3.5%</text>
+          <circle cx="340" cy="266" r="11" fill="#0e7fae"/><text x="360" y="272" font-size="22" fill="#0e7fae">10-yr Treasury 5.2%</text>
+          <circle cx="500" cy="216" r="11" fill="#e6a23c"/><text x="520" y="222" font-size="22" fill="#a97422">Corporate bonds 6.5%</text>
+          <circle cx="700" cy="120" r="11" fill="#d9534f"/><text x="690" y="106" text-anchor="end" font-size="22" fill="#a94442">Stocks, 10% long run</text>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.8vh;justify-content:center;">
+        <div class="card"><h3>Liquidity</h3><p>How fast you can turn it into money without losing value.</p></div>
+        <div class="card"><h3>Rate of return</h3><p>Interest, dividends and price gains &mdash; as a percentage per year.</p></div>
+        <div class="card win"><h3>Risk</h3><p>Extra return is the <b>payment</b> for extra risk. So the top-right quadrant is full of assets &mdash; and the top-left stays empty.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Read the four quadrants: high risk can pay well or go badly; <b>low risk never pays well</b>. Yields are September 2026; stock and T-bill figures are long-run averages.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="tag">Unit 4 · Lesson 7 · Financial literacy ①</div>
+  <h2>Compounding: slow, then explosive</h2>
+  <div class="stage">
+    <div class="constbar">FV = PV &times; (1 + r)<sup>n</sup></div>
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;">
+      <div style="flex:1.3;min-width:0;">
+        <svg viewBox="0 0 820 410" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <line x1="100" y1="360" x2="790" y2="360" stroke="#1f2d3d" stroke-width="2.5"/>
+          <line x1="100" y1="360" x2="100" y2="50" stroke="#1f2d3d" stroke-width="2.5"/>
+          <line x1="100" y1="285" x2="790" y2="285" stroke="#e3f4fb" stroke-width="1.5"/>
+          <line x1="100" y1="210" x2="790" y2="210" stroke="#e3f4fb" stroke-width="1.5"/>
+          <line x1="100" y1="135" x2="790" y2="135" stroke="#e3f4fb" stroke-width="1.5"/>
+          <text x="92" y="366" text-anchor="end" font-size="22" fill="#5b7288">0</text>
+          <text x="92" y="291" text-anchor="end" font-size="22" fill="#5b7288">2k</text>
+          <text x="92" y="216" text-anchor="end" font-size="22" fill="#5b7288">4k</text>
+          <text x="92" y="141" text-anchor="end" font-size="22" fill="#5b7288">6k</text>
+          <text x="92" y="66" text-anchor="end" font-size="22" fill="#5b7288">8k</text>
+          <polyline points="100.0,322.5 168.0,314.1 236.0,303.7 304.0,291.1 372.0,275.6 440.0,256.5 508.0,233.3 576.0,204.8 644.0,169.9 712.0,127.1 780.0,74.6" fill="none" stroke="#1CADE4" stroke-width="5" stroke-linejoin="round"/>
+          <line x1="100" y1="75" x2="780" y2="75" stroke="#e6a23c" stroke-width="2.5" stroke-dasharray="7 5"/>
+          <circle cx="780" cy="75" r="10" fill="#a97422"/>
+          <text x="770" y="62" text-anchor="end" font-size="22" font-weight="700" fill="#a97422">$7,612</text>
+          <text x="200" y="330" font-size="22" fill="#5b7288">the first decade looks flat&hellip;</text>
+          <text x="470" y="150" font-size="22" font-weight="700" fill="#0e7fae">&hellip;then it takes off</text>
+          <text x="100" y="404" text-anchor="middle" font-size="22" fill="#5b7288">0</text>
+          <text x="440" y="404" text-anchor="middle" font-size="22" fill="#5b7288">15 years</text>
+          <text x="780" y="404" text-anchor="middle" font-size="22" fill="#5b7288">30</text>
+          <text x="100" y="26" font-size="22" fill="#5b7288">$1,000 at 7%</text>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.7vh;justify-content:center;">
+        <div class="card"><h3>What the curve says</h3><p>Interest earns interest. Most of the growth arrives in the <b>last</b> years &mdash; which is why starting early matters more than adding more.</p></div>
+        <table>
+          <tr><th>After</th><th>10 yr</th><th>20 yr</th><th>30 yr</th></tr>
+          <tr><td class="l">$1,000 at 7%</td><td class="yes">$1,967</td><td class="yes">$3,870</td><td class="yes">$7,612</td></tr>
+        </table>
+        <div class="card warn"><h3>The same curve, reversed</h3><p>Debt compounds too &mdash; and so does inflation. The shape is identical; only the sign changes.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Time beats size: the last ten years add more than the first twenty.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="tag">Unit 4 · Lesson 7 · Financial literacy ②</div>
+  <h2>The Rule of 72, the Rule of 70 &mdash; and the exact answer</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.3vw;flex:1 0 auto;">
+      <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:.7vh;justify-content:center;">
+        <div class="sliderbox" style="margin-bottom:0;">
+          <input type="range" id="rzRange" min="1" max="15" step="0.5" value="7" oninput="rzSlide()">
+          <div class="slideval" id="rzVal">Growth rate 7.0% a year</div>
+        </div>
+        <div class="bar-row" style="margin-bottom:0;">
+          <div class="bar-label">Rule of 72<br>72 &divide; r</div>
+          <div class="bar-track"><div class="bar-fill" id="rzBar" style="width:35%;background:#1CADE4;"></div></div>
+          <div class="bar-num" id="rz72">10.3 yr</div>
+        </div>
+        <div class="bar-row" style="margin-bottom:0;">
+          <div class="bar-label">Rule of 70<br>70 &divide; r</div>
+          <div class="bar-track"><div class="bar-fill" id="rzBar2" style="width:33%;background:#2e9e6b;"></div></div>
+          <div class="bar-num" id="rz70">10.0 yr</div>
+        </div>
+        <div class="bar-row" style="margin-bottom:0;">
+          <div class="bar-label">Exact<br>ln2 &divide; ln(1+r)</div>
+          <div class="bar-track"><div class="bar-fill" id="rzBar3" style="width:33%;background:#a97422;"></div></div>
+          <div class="bar-num" id="rzEx">10.2 yr</div>
+        </div>
+        <div class="slidenote" id="rzNote" style="text-align:left;">At 7%: exact 10.2 yr &mdash; the rule of 72 is closer here.</div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.7vh;justify-content:center;">
+        <div class="card win"><h3>Which rule, when?</h3><p>Below ~<b>5%</b> the rule of <b>70</b> is closer (69.3 is exact for continuous growth); above 5%, <b>72</b> wins.</p></div>
+        <div class="card"><h3>Why 72 and 70 anyway?</h3><p>72 divides neatly by 2, 3, 4, 6, 8, 9, 12; 70 is easy in tens. Both are mental-arithmetic tools.</p></div>
+        <div class="card warn"><h3>Use it on inflation</h3><p>At 2%, prices take 36 years to double; at 3.90%, money doubles in ~18.</p></div>
+        <p class="cn">中文速记：翻倍年数 ≈ 72 ÷ 利率（%）</p>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl amber">Drag the slider: watch which rule hugs the exact answer as the rate changes.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="tag">Unit 4 · Lesson 7 · Financial literacy ③</div>
+  <h2>Present value &mdash; and whether a deal is worth doing</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
+      <div style="flex:1.1;min-width:0;display:flex;flex-direction:column;gap:.5vh;">
+        <div id="npvBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1 0 auto;"></div>
+        <div class="btnrow">
+          <button class="btn" id="npvBtn" onclick="npvNext()">Next step ▶</button>
+          <button class="btn ghost" onclick="npvReset()">Reset</button>
+        </div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.6vh;justify-content:center;">
+        <svg viewBox="0 0 640 410" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:44vh;">
+          <line x1="70" y1="320" x2="530" y2="320" stroke="#1f2d3d" stroke-width="2.5"/>
+          <line x1="70" y1="320" x2="70" y2="40" stroke="#1f2d3d" stroke-width="2.5"/>
+          <text x="60" y="326" text-anchor="end" font-size="24" fill="#5b7288">0</text>
+          <text x="60" y="196" text-anchor="end" font-size="24" fill="#5b7288">$500</text>
+          <text x="60" y="66" text-anchor="end" font-size="24" fill="#5b7288">$1k</text>
+          <g id="npvG1" opacity="0" style="transition:opacity .35s;">
+            <rect x="130" y="63" width="90" height="257" fill="#e3f4fb" stroke="#1CADE4" stroke-width="3"/>
+            <text x="175" y="52" text-anchor="middle" font-size="24" font-weight="700" fill="#0e7fae">$1,000</text>
+            <text x="175" y="350" text-anchor="middle" font-size="24" fill="#5b7288">face value</text>
+            <text x="175" y="384" text-anchor="middle" font-size="24" fill="#5b7288">in 3 years</text>
+          </g>
+          <g id="npvG2" opacity="0" style="transition:opacity .35s;">
+            <rect x="290" y="116" width="90" height="204" fill="#e8f6ef" stroke="#2e9e6b" stroke-width="3"/>
+            <text x="335" y="105" text-anchor="middle" font-size="24" font-weight="700" fill="#1e6e4a">$864</text>
+            <text x="335" y="350" text-anchor="middle" font-size="24" fill="#5b7288">its value</text>
+            <text x="335" y="384" text-anchor="middle" font-size="24" fill="#5b7288">today</text>
+          </g>
+          <g id="npvG3" opacity="0" style="transition:opacity .35s;">
+            <rect x="450" y="116" width="60" height="204" fill="#fdeaea" stroke="#d9534f" stroke-width="3"/>
+            <text x="480" y="105" text-anchor="middle" font-size="24" font-weight="700" fill="#a94442">$800</text>
+            <text x="480" y="350" text-anchor="middle" font-size="24" fill="#5b7288">cost</text>
+            <text x="480" y="384" text-anchor="middle" font-size="24" fill="#5b7288">today</text>
+            <line x1="380" y1="165" x2="450" y2="165" stroke="#a97422" stroke-width="4"/>
+            <text x="415" y="152" text-anchor="middle" font-size="24" font-weight="700" fill="#a97422">+$64</text>
+            <text x="252" y="30" font-size="24" font-weight="700" fill="#a97422">NPV = $864 &minus; $800 = +$64 &rarr; do it</text>
+          </g>
+        </svg>
+        <p class="cn" style="margin:0;">中文速记：现值 = 未来金额 ÷ (1+利率)^年数；净现值 = 收益现值 − 成本；NPV &gt; 0 才做。</p>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green">This is exactly how a bond is priced: its price is the present value of its future payments &mdash; next page.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="tag">Unit 4 · Lesson 7 · The instrument the Fed trades</div>
+  <h2>Anatomy of a bond</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.3vw;flex:1 0 auto;">
+      <div style="flex:0 0 26%;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <div class="fig"><img src="photos/savings-bond.jpg" alt="United States savings bond" style="max-height:26vh;"><span>A US savings bond &mdash; a promise on paper</span></div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.7vh;justify-content:center;">
+        <table>
+          <tr><th class="l">Piece</th><th class="l">What it is</th><th class="l">Example</th></tr>
+          <tr><td class="l"><b>Face value</b> (par)</td><td class="l">What the issuer repays at the end</td><td class="l">$1,000</td></tr>
+          <tr><td class="l"><b>Coupon rate</b></td><td class="l">The interest paid each year</td><td class="l">5% &rarr; $50 a year</td></tr>
+          <tr><td class="l"><b>Maturity</b></td><td class="l">When the face value comes back</td><td class="l">10 years</td></tr>
+          <tr><td class="l"><b>Issuer</b></td><td class="l">Who owes you &mdash; and how safe that is</td><td class="l">US Treasury or a company</td></tr>
+        </table>
+        <div class="hl">So a bond is just a list of future payments &mdash; and its <b>price is their present value</b>. When interest rates move, that present value moves &mdash; in the opposite direction. That is lesson 4.9.</div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl amber">Remember this page for 4.6: when the Fed buys and sells securities, <b>it is trading these</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s8b">
+  <div class="tag">Unit 4 &middot; Lesson 7 &middot; Pricing a bond, step by step</div>
+  <h2>What a 5-year bond is worth today</h2>
+  <div class="stage">
+    <div class="hl" style="padding:.5vh 1vw;">The same bond, shorter life: <b>$1,000 face, 5% coupon &rarr; $50 a year, 5 years to run</b>. Market rate <b>6%</b> &mdash; work out what it is worth, one payment at a time.</div>
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;margin-top:.8vh;">
+
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.5vh;">
+        <div id="bdBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1 1 0;min-height:0;"></div>
+        <div class="btnrow">
+          <button class="btn" id="bdBtn" onclick="bdNext()">Next step &#9654;</button>
+          <button class="btn ghost" onclick="bdReset()">Reset</button>
+        </div>
+      </div>
+
+      <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+        <svg viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:38vh;">
+          <text id="bdPrice" x="70" y="34" font-size="26" font-weight="800" fill="#0e7fae"></text>
+          <text x="70" y="78" font-size="26" font-weight="800" fill="#1f2d3d">The five $50 coupons &#8194;&#183;&#8194; zoomed &times;20</text>
+          <line x1="90" y1="300" x2="90" y2="104" stroke="#1f2d3d" stroke-width="2.5"/>
+          <line x1="90" y1="300" x2="640" y2="300" stroke="#1f2d3d" stroke-width="2.5"/>
+          <text x="80" y="118" text-anchor="end" font-size="26" fill="#5b7288">$50</text>
+          <text x="80" y="308" text-anchor="end" font-size="26" fill="#5b7288">0</text>
+          <g id="bdB1" opacity="0" style="transition:opacity .4s;">
+            <rect x="120" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="120" y="120.8" width="40" height="179.2" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="140" y="330" text-anchor="middle" font-size="26" fill="#5b7288">1</text>
+          </g>
+          <g id="bdB2" opacity="0" style="transition:opacity .4s;">
+            <rect x="172" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="172" y="130.9" width="40" height="169.1" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="192" y="330" text-anchor="middle" font-size="26" fill="#5b7288">2</text>
+          </g>
+          <g id="bdB3" opacity="0" style="transition:opacity .4s;">
+            <rect x="224" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="224" y="140.5" width="40" height="159.5" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="244" y="330" text-anchor="middle" font-size="26" fill="#5b7288">3</text>
+          </g>
+          <g id="bdB4" opacity="0" style="transition:opacity .4s;">
+            <rect x="276" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="276" y="149.5" width="40" height="150.5" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="296" y="330" text-anchor="middle" font-size="26" fill="#5b7288">4</text>
+          </g>
+          <g id="bdB5" opacity="0" style="transition:opacity .4s;">
+            <rect x="328" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="328" y="158.0" width="40" height="142.0" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="348" y="330" text-anchor="middle" font-size="26" fill="#5b7288">5</text>
+          </g>
+          <g id="bdB6" opacity="0" style="transition:opacity .4s;">
+            <rect x="380" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="380" y="166.1" width="40" height="133.9" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="400" y="330" text-anchor="middle" font-size="26" fill="#5b7288">6</text>
+          </g>
+          <g id="bdB7" opacity="0" style="transition:opacity .4s;">
+            <rect x="432" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="432" y="173.6" width="40" height="126.4" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="452" y="330" text-anchor="middle" font-size="26" fill="#5b7288">7</text>
+          </g>
+          <g id="bdB8" opacity="0" style="transition:opacity .4s;">
+            <rect x="484" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="484" y="180.8" width="40" height="119.2" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="504" y="330" text-anchor="middle" font-size="26" fill="#5b7288">8</text>
+          </g>
+          <g id="bdB9" opacity="0" style="transition:opacity .4s;">
+            <rect x="536" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="536" y="187.5" width="40" height="112.5" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="556" y="330" text-anchor="middle" font-size="26" fill="#5b7288">9</text>
+          </g>
+          <g id="bdB10" opacity="0" style="transition:opacity .4s;">
+            <rect x="588" y="110" width="40" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="588" y="193.9" width="40" height="106.1" fill="#cfe9f6" stroke="#1CADE4" stroke-width="2.2"/>
+            <text x="608" y="330" text-anchor="middle" font-size="26" fill="#5b7288">10</text>
+          </g>
+          <text id="bdInf" x="646" y="258" font-size="46" font-weight="800" fill="#a97422" opacity="0" style="transition:opacity .4s;">&#8734;</text>
+          <text x="700" y="78" font-size="26" font-weight="800" fill="#1f2d3d">The principal</text>
+          <line x1="730" y1="300" x2="730" y2="104" stroke="#1f2d3d" stroke-width="2.5"/>
+          <line x1="730" y1="300" x2="950" y2="300" stroke="#1f2d3d" stroke-width="2.5"/>
+          <text x="720" y="118" text-anchor="end" font-size="26" fill="#5b7288">$1,000</text>
+          <text x="720" y="308" text-anchor="end" font-size="26" fill="#5b7288">0</text>
+          <g id="bdPB" opacity="0" style="transition:opacity .45s;">
+            <rect x="790" y="110" width="80" height="190" fill="none" stroke="#a97422" stroke-width="2.4" stroke-dasharray="7 5"/>
+            <rect x="790" y="158.0" width="80" height="142.0" fill="#d6efe0" stroke="#2e9e6b" stroke-width="2.4"/>
+            <text x="830" y="152" text-anchor="middle" font-size="26" font-weight="800" fill="#1e6e4a">$747.3</text>
+          </g>
+          <text id="bdNoPrin" x="830" y="330" text-anchor="middle" font-size="26" font-weight="700" fill="#a94442" opacity="0" style="transition:opacity .45s;">never repaid</text>
+        </svg>
+        <div class="piccap">Dashed = promised, filled = today&#8217;s value. The two panels use different scales.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="tag">Unit 4 · Lesson 7 · Government vs corporate</div>
+  <h2>Same promise, different risk</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 0 auto;">
+      <div class="col">
+        <div class="card win"><h3>US Treasuries</h3><p>The safest bonds in the world: bills (under a year), notes (2&ndash;10 years), bonds (20&ndash;30 years). The 10-year yield is the world's benchmark &mdash; about <b>5.2%</b> in September 2026.</p></div>
+        <div class="card"><h3>Why the Fed cares</h3><p>This market is huge and liquid, so it is where the Fed buys and sells to move the money supply (4.6).</p></div>
+      </div>
+      <div class="col">
+        <div class="card warn"><h3>Corporate bonds</h3><p>A company can go bankrupt, so it must pay more: roughly a <b>percentage point or two</b> above Treasuries for solid firms, far more for shaky ones.</p></div>
+        <div class="card lose"><h3>Junk bonds</h3><p>Low-rated issuers pay the highest yields &mdash; and default most often. The extra yield is the <b>price of that risk</b>.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">No free lunch: the extra coupon is what the market charges for the chance of not being repaid.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s9b">
+  <div class="tag">Unit 4 &middot; Lesson 7 &middot; Real world: how a local government borrows</div>
+  <h2>Why borrow through a company?</h2>
+  <div class="stage">
+    <div class="hl" style="padding:.5vh 1vw;line-height:1.4;">A local government&rsquo;s own borrowing is capped and must sit in its budget. So to build more, it creates a <b>company</b> &mdash; and the company borrows.</div>
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;margin-top:.8vh;">
+
+      <div style="flex:1.25;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 840 350" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:42vh;">
+          <defs><marker id="chAh" markerWidth="10" markerHeight="10" refX="5" refY="9" orient="auto">
+            <path d="M0,9 L5,0 L10,9" fill="none" stroke="#5b7288" stroke-width="2.6"/></marker></defs>
+          <rect x="50" y="12" width="740" height="56" rx="10" fill="#e3f4fb" stroke="#1CADE4" stroke-width="3"/>
+          <text x="420" y="50" text-anchor="middle" font-size="28" font-weight="800" fill="#0e7fae">Local government &#8194;地方政府</text>
+          <line x1="420" y1="68" x2="420" y2="100" stroke="#5b7288" stroke-width="2.6" marker-end="url(#chAh)"/>
+          <text x="436" y="96" font-size="26" fill="#5b7288">creates it</text>
+          <rect x="50" y="106" width="740" height="82" rx="10" fill="#fdf3e3" stroke="#e6a23c" stroke-width="3"/>
+          <text x="420" y="136" text-anchor="middle" font-size="28" font-weight="800" fill="#a97422">Financing platform &#8194;城投公司</text>
+          <text x="420" y="178" text-anchor="middle" font-size="26" fill="#a94442">the debt lands here &#8212; not on the government&#8217;s budget</text>
+          <text x="64" y="230" font-size="26" fill="#5b7288">It borrows from:</text>
+          <text x="64" y="272" font-size="26" fill="#1f2d3d">&#8226; banks (loans) &#183; bonds</text>
+          <text x="64" y="314" font-size="26" fill="#1f2d3d">&#8226; trusts and leasing &#8194;信托 / 融资租赁</text>
+        </svg>
+      </div>
+
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.9vh;justify-content:center;">
+        <div class="card warn" style="flex:0 0 auto;">
+          <div style="margin-top:.2vh;">① The debt is the <b>company&rsquo;s</b>, not the government&rsquo;s.</div>
+          <div style="margin-top:.6vh;">That is borrowing in disguise &mdash; <b>变相发债</b>.</div>
+          <div style="margin-top:1.1vh;">② But everyone assumed the government would repay it anyway.</div>
+          <div style="margin-top:.6vh;">That assumption has a name: an <b>implicit guarantee</b> &mdash; <b>隐性担保</b>.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="s-foot">
+      <div class="hl amber" style="line-height:1.3;padding:.6vh 1vw;">
+        <div>And the market <b>priced</b> that assumption (Feb 2025):</div>
+        <div style="display:flex;align-items:center;gap:.7vw;margin-top:.5vh;">
+          <span style="flex:0 0 17em;">A province&rsquo;s own bond</span>
+          <span style="height:1.5em;width:7%;background:#2e9e6b;border-radius:5px;"></span>
+          <b style="color:#1e6e4a;">20 bp</b>
+        </div>
+        <div style="display:flex;align-items:center;gap:.7vw;margin-top:.35vh;">
+          <span style="flex:0 0 17em;">An LGFV</span>
+          <span style="height:1.5em;width:34%;background:#d9534f;border-radius:5px;"></span>
+          <b style="color:#a94442;">98 bp</b>
+          <span style="color:var(--sub);">&mdash; about 5&times;, for the same money</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s9c">
+  <div class="tag">Unit 4 &middot; Lesson 7 &middot; Real world: the bill arrives</div>
+  <h2>What it built &mdash; and who pays</h2>
+  <div class="stage">
+    <div class="hl" style="padding:.5vh 1vw;line-height:1.4;">Dushan county, Guizhou <span style="color:var(--sub);">贵州独山县</span>: under <b>&#165;1 bn</b> a year in revenue, over <b>&#165;40 bn</b> borrowed in eight years. Its most famous purchase: the <b>&ldquo;No.1 Water Department Tower&rdquo;</b> <span style="color:var(--sub);">天下第一水司楼</span>.</div>
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;margin-top:.8vh;">
+
+      <div style="flex:0 0 36%;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <div class="fig"><img src="photos/dushan-shuisilou.jpg" alt="The No.1 Water Department Tower, Dushan county, Guizhou" style="max-height:30vh;"><span>99.9 m &#183; 24 floors &#183; never finished. Photo: 视觉中国 / 凤凰新闻</span></div>
+      </div>
+
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.9vh;justify-content:center;">
+        <svg viewBox="0 0 1000 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:26vh;">
+          <text x="40" y="34" font-size="26" font-weight="800" fill="#1f2d3d">One county, two numbers</text>
+          <rect x="40" y="52" width="920" height="56" rx="8" fill="#fdeaea" stroke="#d9534f" stroke-width="3"/>
+          <text x="58" y="90" font-size="26" font-weight="800" fill="#a94442">Total debt &#165;40 bn &#8212; 40 years of revenue</text>
+          <rect x="40" y="140" width="23" height="56" rx="4" fill="#e8f6ef" stroke="#2e9e6b" stroke-width="3"/>
+          <line x1="63" y1="168" x2="108" y2="168" stroke="#2e9e6b" stroke-width="2.4"/>
+          <text x="116" y="177" font-size="26" font-weight="800" fill="#1e6e4a">One year&#8217;s revenue &#165;1 bn</text>
+          <text x="40" y="230" font-size="26" fill="#5b7288">The tower cost <tspan font-weight="800" fill="#a97422">&#165;256 m</tspan> &#8212; 0.6% of the debt.</text>
+        </svg>
+        <div class="hl" style="line-height:1.35;padding:.6vh 1vw;">
+          <div>Then it was repriced:</div>
+          <div style="margin-top:.5vh;">① non-standard debt <span style="color:var(--sub);">非标</span> took the first losses &mdash; <b>88</b> risk events in 2023&ndash;24, against <b>16</b> in 2022.</div>
+          <div style="margin-top:.45vh;">② a <b>&#165;10 tn</b> swap cut hidden debt from &#165;14.3 tn towards <b>&#165;2.3 tn</b> by 2028.</div>
+          <div style="margin-top:.45vh;">③ LGFV coupons fell from <b>4.03%</b> to <b>1.89%</b>.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="s-foot">
+      <div class="hl amber">Public LGFV bonds have still not defaulted &mdash; but the extra yield was never free money. It was the price of a risk that turned out to be real.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="tag">Unit 4 · Lesson 7 · Equity</div>
+  <h2>Stocks: owning a slice, not lending</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.3vw;flex:1 0 auto;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.8vh;justify-content:center;">
+        <div class="card"><h3>A different claim</h3><p>A bondholder is a <b>lender</b>; a shareholder is an <b>owner</b> &mdash; paid last, after everyone else, and with no fixed promise.</p></div>
+        <div class="card win"><h3>Where the return comes from</h3><p>Dividends plus price gains. Historically US large-company stocks averaged about <b>10% a year</b> &mdash; the top of the risk ladder.</p></div>
+        <div class="card warn"><h3>And the price today</h3><p>The S&amp;P 500 stood near <b>7,700</b> in September 2026. You can own the whole index for about <b>0.03%</b> a year in fees.</p></div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <div class="fig"><img src="photos/nyse-floor.jpg" alt="Trading floor of the New York Stock Exchange" style="max-height:30vh;"><span>The New York Stock Exchange trading floor</span></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Highest expected return, highest risk &mdash; and the only asset on the menu that makes you an owner.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="tag">Unit 4 · Lesson 7 · Financial literacy ④</div>
+  <h2>The products you will actually meet</h2>
+  <div class="stage">
+    <table style="flex:1 0 auto;">
+      <tr><th class="l">Product</th><th class="l">What it is</th><th class="l">What it costs you</th><th class="l">Main risk</th></tr>
+      <tr><td class="l"><b>Money market fund</b> <span style="color:var(--sub);font-size:.92em;">货币市场基金</span></td><td class="l">Holds T-bills and similar IOUs; pays market interest daily</td><td class="l">A small fee &mdash; and <b>not</b> insured like a deposit</td><td class="l">Very low</td></tr>
+      <tr><td class="l"><b>Index fund / ETF</b> <span style="color:var(--sub);font-size:.92em;">指数基金 / ETF</span></td><td class="l">Owns an entire index for you &mdash; no stock picking</td><td class="l">About <b>0.03%</b> a year &mdash; the cheapest way to own stocks</td><td class="l">The index itself can fall</td></tr>
+      <tr><td class="l"><b>Target-date fund</b> <span style="color:var(--sub);font-size:.92em;">目标日期基金</span></td><td class="l">Shifts from stocks to bonds as the goal gets closer</td><td class="l">Higher than an index fund &mdash; you pay for the shift</td><td class="l">Falls less, but still falls</td></tr>
+      <tr><td class="l"><b>CD (certificate of deposit)</b> <span style="color:var(--sub);font-size:.92em;">定期存单</span></td><td class="l">Fixed rate for a fixed term, and insured</td><td class="l">No fee &mdash; you pay with <b>lost liquidity</b></td><td class="l">Very low</td></tr>
+      <tr><td class="l"><b>TIPS</b> <span style="color:var(--sub);font-size:.92em;">通胀保值国债</span></td><td class="l">Treasury bonds whose principal is adjusted for inflation</td><td class="l">Low fees; the coupon is usually lower than a plain Treasury's</td><td class="l">No inflation risk &mdash; still loses when rates rise</td></tr>
+    </table>
+    <div class="s-foot">
+      <div class="hl">Every product is one of those six assets, wrapped in a rule about fees, access and taxes.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="tag">Unit 4 · Lesson 7 · Practice</div>
+  <h2>Quick check</h2>
+  <div class="stage">
+    <div style="flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;">
+    <div class="game-meta"><span id="fqProg">Q1 / 6</span><span id="fqScore">Score 0</span></div>
+    <div class="game-card" id="fqCard"></div>
+    <div class="btnrow" id="fqBtns"></div>
+    <div class="game-fb" id="fqFb"></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Name the attribute before you answer: liquidity, return, or risk?</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="tag">Unit 4 · Lesson 7 · Before you move on</div>
+  <h2>Three ways students lose points</h2>
+  <div class="stage">
+    <div class="aim"><div class="no">1</div><div><div class="at">Promising high return with low risk</div><div class="ad">There is no such asset. Risk is what the extra return <b>buys</b> &mdash; and the exam tests exactly this trade-off.</div></div></div>
+    <div class="aim"><div class="no">2</div><div><div class="at">Confusing liquidity with safety</div><div class="ad">Cash is the most liquid asset and the worst long-run store of value. Liquid and safe are different words.</div></div></div>
+    <div class="aim"><div class="no">3</div><div><div class="at">Reading the coupon as the return</div><div class="ad">A bond's coupon is fixed; its <b>price and yield move with interest rates</b> &mdash; that is 4.9.</div></div></div>
+    <div class="s-foot">
+      <div class="hl amber">All three come down to one sentence: every asset is a bundle of liquidity, return and risk.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="tag">Unit 4 · Lesson 7 · Key takeaways</div>
+  <h2>What to walk out with &mdash; fill the blanks</h2>
+  <div class="stage">
+    <div class="drill">
+      <div class="drow"><span class="dn">1</span><p>Deposits, bonds, stocks, funds — each is a <span class="fill" data-a="claim">____</span> on someone's future payment.</p></div>
+      <div class="drow"><span class="dn">2</span><p><span class="fill" data-a="Liquidity">____</span>, <span class="fill" data-a="rate of return">____</span>, risk — you can optimise two, never all three.</p></div>
+      <div class="drow"><span class="dn">3</span><p>Two tools to keep: <span class="fill" data-a="compounding">____</span>, and the <span class="fill" data-a="Rule of 72">____</span> — 72 ÷ the growth rate is the doubling time.</p></div>
+      <div class="drow"><span class="dn">4</span><p>A bond is future payments; its price is their <span class="fill" data-a="present value">____</span>, and a project is worth doing when its <span class="fill" data-a="net present value">____</span> is positive.</p></div>
+    </div>
+    <div class="btnrow" style="margin-top:1vh;justify-content:center;">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+    <div class="s-foot"><div class="hl">Next: the Fed buys and sells these assets to steer the money supply → <b>4.6 Monetary Policy</b>.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 结束页 ═══════════ -->
+<section class="slide cover" id="s15">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">Every asset is a claim — and liquidity, return and risk never all come at once.</div>
+  <div class="meta">Dr. Jia &middot; &copy; 2026</div>
+</section>
+
+</main>
+
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 18</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+
+
+
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+function goTo(i){ gotoSlide(i); }
+window.goTo = goTo;
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+
+
+
+/* ═══════════ 小测验引擎 ═══════════ */
+function makeQuiz(items, cardId, progId, scoreId, btnsId, fbId){
+  const card = document.getElementById(cardId);
+  const prog = document.getElementById(progId);
+  const scoreEl = document.getElementById(scoreId);
+  const btns = document.getElementById(btnsId);
+  const fb = document.getElementById(fbId);
+  let i = 0, score = 0, done = false;
+  function show(){
+    if(i >= items.length){
+      card.textContent = "Final score: " + score + " / " + items.length + " — restart to try again?";
+      prog.textContent = "Done";
+      fb.textContent = ""; fb.className = "game-fb";
+      btns.innerHTML = "";
+      const r = document.createElement("button");
+      r.className = "btn"; r.textContent = "Restart";
+      r.onclick = restart;
+      btns.appendChild(r);
+      return;
+    }
+    card.textContent = items[i].q;
+    prog.textContent = "Q" + (i+1) + " / " + items.length;
+    fb.textContent = ""; fb.className = "game-fb";
+    btns.innerHTML = "";
+    items[i].opts.forEach(function(t,k){
+      const b = document.createElement("button");
+      b.className = "btn ghost opt"; b.textContent = t;
+      b.onclick = function(){ answer(k); };
+      btns.appendChild(b);
+    });
+    const nx = document.createElement("button");
+    nx.className = "btn"; nx.textContent = "Next →"; nx.style.display = "none";
+    nx.onclick = function(){ i++; show(); };
+    btns.appendChild(nx);
+    done = false;
+  }
+  function answer(k){
+    if(done) return;
+    done = true;
+    const ok = (k === items[i].a);
+    if(ok) score++;
+    scoreEl.textContent = "Score " + score;
+    btns.querySelectorAll(".opt").forEach(function(b,idx){
+      b.className = "btn opt " + (idx === items[i].a ? "green" : (idx === k ? "red" : "ghost"));
+    });
+    fb.innerHTML = (ok ? "✓ Correct — " : "✗ Not quite — ") + items[i].w;
+    fb.className = "game-fb " + (ok ? "good" : "bad");
+    const nx = btns.querySelector("button:not(.opt)");
+    if(nx) nx.style.display = "inline-block";
+  }
+  function restart(){ i = 0; score = 0; scoreEl.textContent = "Score 0"; show(); }
+  show();
+}
+
+
+/* ═══════════ p3 建图逐步揭示 ═══════════ */
+const MMS = [
+  ["Axes", "Vertical: the nominal interest rate i. Horizontal: the quantity of money."],
+  ["Money demand (MD)", "Downward sloping: at a high i, holding money is expensive, so people hold less."],
+  ["Money supply (MS)", "Vertical: in this framework the Fed fixes the quantity of money."],
+  ["Intersection", "Where MD meets MS the market clears — at i*."],
+  ["Read the price", "i* IS the price of money: what holding a dollar costs you per year."]
+];
+let mmIdx = -1;
+function mmPaint(){
+  ["mmAxes","mmMD","mmMS","mmEq","mmCap"].forEach((id, k) => {
+    document.getElementById(id).setAttribute("opacity", mmIdx >= k ? "1" : "0");
+  });
+}
+function mmNext(){
+  if (mmIdx + 1 >= MMS.length) return;
+  mmIdx++;
+  const div = document.createElement("div");
+  div.className = "mstep";
+  div.innerHTML = '<div class="no">' + (mmIdx+1) + '</div><div class="mbody">'
+    + '<div class="mtitle">' + MMS[mmIdx][0] + '</div>'
+    + '<div class="mnote">' + MMS[mmIdx][1] + '</div></div>';
+  const box = document.getElementById("mmBox");
+  box.appendChild(div); box.scrollTop = box.scrollHeight;
+  mmPaint();
+  if (mmIdx === MMS.length - 1) { const b = document.getElementById("mmBtn"); b.disabled = true; b.textContent = "All shown ✓"; }
+}
+function mmReset(){
+  mmIdx = -1;
+  document.getElementById("mmBox").innerHTML = "";
+  mmPaint();
+  const b = document.getElementById("mmBtn"); b.disabled = false; b.textContent = "Next step ▶";
+}
+
+/* ═══════════ 小测验引擎 ═══════════ */
+function makeQuiz(items, cardId, progId, scoreId, btnsId, fbId){
+  const card = document.getElementById(cardId);
+  const prog = document.getElementById(progId);
+  const scoreEl = document.getElementById(scoreId);
+  const btns = document.getElementById(btnsId);
+  const fb = document.getElementById(fbId);
+  let i = 0, score = 0, done = false;
+  function show(){
+    if(i >= items.length){
+      card.textContent = "Final score: " + score + " / " + items.length + " — restart to try again?";
+      prog.textContent = "Done";
+      fb.textContent = ""; fb.className = "game-fb";
+      btns.innerHTML = "";
+      const r = document.createElement("button");
+      r.className = "btn"; r.textContent = "Restart";
+      r.onclick = restart;
+      btns.appendChild(r);
+      return;
+    }
+    card.textContent = items[i].q;
+    prog.textContent = "Q" + (i+1) + " / " + items.length;
+    fb.textContent = ""; fb.className = "game-fb";
+    btns.innerHTML = "";
+    items[i].opts.forEach(function(t,k){
+      const b = document.createElement("button");
+      b.className = "btn ghost opt"; b.textContent = t;
+      b.onclick = function(){ answer(k); };
+      btns.appendChild(b);
+    });
+    const nx = document.createElement("button");
+    nx.className = "btn"; nx.textContent = "Next →"; nx.style.display = "none";
+    nx.onclick = function(){ i++; show(); };
+    btns.appendChild(nx);
+    done = false;
+  }
+  function answer(k){
+    if(done) return;
+    done = true;
+    const ok = (k === items[i].a);
+    if(ok) score++;
+    scoreEl.textContent = "Score " + score;
+    btns.querySelectorAll(".opt").forEach(function(b,idx){
+      b.className = "btn opt " + (idx === items[i].a ? "green" : (idx === k ? "red" : "ghost"));
+    });
+    fb.innerHTML = (ok ? "✓ Correct — " : "✗ Not quite — ") + items[i].w;
+    fb.className = "game-fb " + (ok ? "good" : "bad");
+    const nx = btns.querySelector("button:not(.opt)");
+    if(nx) nx.style.display = "inline-block";
+  }
+  function restart(){ i = 0; score = 0; scoreEl.textContent = "Score 0"; show(); }
+  show();
+}
+
+
+/* ═══════════ p6 72 / 70 法则 ═══════════ */
+function rzSlide(){
+  const r = +document.getElementById("rzRange").value;
+  const d72 = 72 / r, d70 = 70 / r;
+  const exact = Math.log(2) / Math.log(1 + r / 100);
+  document.getElementById("rzVal").textContent = "Growth rate " + r.toFixed(1) + "% a year";
+  document.getElementById("rz72").textContent = d72.toFixed(1) + " yr";
+  document.getElementById("rz70").textContent = d70.toFixed(1) + " yr";
+  document.getElementById("rzEx").textContent = exact.toFixed(1) + " yr";
+  const w = v => Math.max(4, Math.min(100, 500 / v)) + "%";
+  document.getElementById("rzBar").style.width = w(d72);
+  document.getElementById("rzBar2").style.width = w(d70);
+  document.getElementById("rzBar3").style.width = w(exact);
+  const e72 = Math.abs(d72 - exact), e70 = Math.abs(d70 - exact);
+  const closer = e70 < e72 ? "70" : "72";
+  document.getElementById("rzNote").textContent = "At " + r.toFixed(1) + "%: exact " + exact.toFixed(1)
+    + " yr — the rule of " + closer + " is closer here (72 off by " + e72.toFixed(2) + ", 70 off by " + e70.toFixed(2) + ").";
+}
+
+/* ═══════════ p7 现值 / NPV 逐步揭示 ═══════════ */
+const NPVS = [
+  ["The deal", "A machine pays you $1,000 in three years. It costs $800 today. Your alternative investment earns 5% a year."],
+  ["Formula", "PV = FV ÷ (1 + r)^n"],
+  ["Plug in", "PV = $1,000 ÷ (1.05)^3 = $1,000 ÷ 1.1576"],
+  ["Present value", "$1,000 in three years is worth $863.84 today"],
+  ["Net present value", "NPV = $863.84 − $800.00 = +$63.84"],
+  ["Decision", "NPV > 0 → the machine beats putting the $800 at 5%. Buy it."]
+];
+let npvIdx = -1;
+function npvNext(){
+  if (npvIdx + 1 >= NPVS.length) return;
+  npvIdx++;
+  const div = document.createElement("div");
+  div.className = "mstep";
+  div.innerHTML = '<div class="no">' + (npvIdx+1) + '</div><div class="mbody">'
+    + '<div class="mtitle">' + NPVS[npvIdx][0] + '</div>'
+    + '<div class="mnote">' + NPVS[npvIdx][1] + '</div></div>';
+  const box = document.getElementById("npvBox");
+  box.appendChild(div); box.scrollTop = box.scrollHeight;
+  npvPaint();
+  if (npvIdx === NPVS.length - 1) { const b = document.getElementById("npvBtn"); b.disabled = true; b.textContent = "All shown ✓"; }
+}
+/* 图跟着步骤出现：① 面值 ④ 现值 ⑤ 成本与差额 */
+function npvPaint(){
+  const on = [npvIdx >= 0, npvIdx >= 3, npvIdx >= 4];
+  ["npvG1", "npvG2", "npvG3"].forEach((id, i) => {
+    document.getElementById(id).setAttribute("opacity", on[i] ? 1 : 0);
+  });
+}
+function npvReset(){
+  npvIdx = -1;
+  document.getElementById("npvBox").innerHTML = "";
+  const b = document.getElementById("npvBtn"); b.disabled = false; b.textContent = "Next step ▶";
+  npvPaint();
+}
+
+/* ═══════════ p9 债券估值逐步揭示（每期一根柱子） ═══════════ */
+const BDS = [
+  ["The bond", "$1,000 face value, 5% coupon &rarr; $50 a year, 5 years to run. The market rate is 6%."],
+  ["Year 1 coupon", "$50 &divide; 1.06 = <b>$47.2</b> &mdash; the first bar. One year of discounting barely dents it."],
+  ["Year 2 coupon", "$50 &divide; 1.06&sup2; = <b>$44.5</b> &mdash; the filled part is a little shorter than the dashed frame."],
+  ["Year 3 coupon", "$50 &divide; 1.06&sup3; = <b>$41.9</b>"],
+  ["Year 4 coupon", "$50 &divide; 1.06&#8308; = <b>$39.6</b>"],
+  ["Year 5 coupon", "$50 &divide; 1.06&#8309; = <b>$37.4</b> &mdash; five bars, and the fill shrinks every time. Together they are worth <b>$210.6</b>."],
+  ["The principal", "$1,000 &divide; 1.06&#8309; = <b>$747.3</b> &mdash; the big bar on the right (its own scale). It dwarfs the coupons, because it is 20&times; bigger."],
+  ["Add the two", "$210.6 + $747.3 = <b>$957.9</b>. The bond sells <b>below</b> face value, because the market rate (6%) beats the coupon (5%)."],
+  ["And if it never matured?", "A <b>perpetuity</b> pays $50 forever. The <b>principal bar disappears</b> (never repaid) and the coupons <b>keep going</b> &mdash; years 6, 7, 8 &hellip; forever. Add up the endless stream and you get <b>$833.3</b> = $50 &divide; 0.06 &mdash; <b>less</b> than the 5-year bond."]
+];
+const BD_PV10 = [47.1698,44.4998,41.9810,39.6047,37.3629,35.2480,33.2529,31.3706,29.5949,27.9197];
+const BD_PRIN = 747.3, BD_PERP = 833.3;
+let bdIdx = -1;
+
+function bdShow(id, on){
+  const el = document.getElementById(id);
+  if (el) el.setAttribute("opacity", on ? 1 : 0);
+}
+function bdPaint(){
+  for (let i = 1; i <= 5; i++) bdShow("bdB" + i, bdIdx >= i);          /* 第 2–6 步：五张券息 */
+  for (let i = 6; i <= 10; i++) bdShow("bdB" + i, bdIdx >= 8);         /* 第 9 步：永续，后面还长 */
+  bdShow("bdInf", bdIdx >= 8);
+  bdShow("bdPB", bdIdx >= 6 && bdIdx < 8);                            /* 本金：第 7 步出现，永续时消失 */
+  bdShow("bdNoPrin", bdIdx >= 8);
+  let c = 0;
+  if (bdIdx >= 8) c = BD_PERP;
+  else for (let i = 1; i <= Math.min(bdIdx, 5); i++) c += BD_PV10[i - 1];
+  const p = (bdIdx >= 6 && bdIdx < 8) ? BD_PRIN : 0;
+  document.getElementById("bdPrice").textContent =
+    (c + p) > 0 ? (bdIdx >= 8 ? "Perpetuity:   $" + (c + p).toFixed(1) : "Price today = $" + (c + p).toFixed(1)) : "";
+}
+function bdNext(){
+  if (bdIdx + 1 >= BDS.length) return;
+  bdIdx++;
+  const div = document.createElement("div");
+  div.className = "mstep";
+  div.innerHTML = '<div class="no">' + (bdIdx+1) + '</div><div class="mbody">'
+    + '<div class="mtitle">' + BDS[bdIdx][0] + '</div>'
+    + '<div class="mnote">' + BDS[bdIdx][1] + '</div></div>';
+  const box = document.getElementById("bdBox");
+  box.appendChild(div); box.scrollTop = box.scrollHeight;
+  bdPaint();
+  if (bdIdx === BDS.length - 1) {
+    const b = document.getElementById("bdBtn"); b.disabled = true; b.textContent = "All shown ✓";
+  }
+}
+function bdReset(){
+  bdIdx = -1;
+  document.getElementById("bdBox").innerHTML = "";
+  const b = document.getElementById("bdBtn"); b.disabled = false; b.textContent = "Next step ▶";
+  bdPaint();
+}
+
+/* ═══════════ p12 小测 ═══════════ */
+const FQ = [
+  {q:"Which of these is the MOST liquid?", opts:["A checking account","A 30-year Treasury bond","A house","A corporate bond"],
+   a:0, w:"You can turn a checking balance into money instantly, at full value, with no sale."},
+  {q:"At 6% a year, about how long does money take to double?", opts:["6 years","12 years","72 years"],
+   a:1, w:"Rule of 72: 72 ÷ 6 = 12 years."},
+  {q:"A bond pays $1,000 in exactly two years. With r = 5%, its present value is about…", opts:["$907","$1,000","$1,100"],
+   a:0, w:"PV = 1,000 ÷ (1.05)² = 1,000 ÷ 1.1025 ≈ $907."},
+  {q:"Which asset carries the highest expected return?", opts:["T-bills","10-year Treasury bonds","Corporate bonds","Stocks"],
+   a:3, w:"Equity is last in line and most exposed — so it must offer the highest expected return."},
+  {q:"Corporate bonds usually pay more than Treasuries because…", opts:["They are more liquid","The issuer might default","They have longer maturities"],
+   a:1, w:"Default risk: the extra yield is the price of the chance of not being repaid."},
+  {q:"A project costs $800 and its future benefits are worth $864 today. You should…",
+   opts:["Do it — NPV is +$64","Refuse it — NPV is negative","Be indifferent"],
+   a:0, w:"NPV = 864 − 800 = +$64 > 0: it beats the alternative."}
+];
+makeQuiz(FQ, "fqCard", "fqProg", "fqScore", "fqBtns", "fqFb");
+
+/* ═══════════ 初始化 ═══════════ */
+rzSlide();
+try{
+  const hashInit = parseInt(location.hash.slice(1)||"0",10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+}catch(err){ console.error(err); gotoSlide(0); }
+
+/* ═══════════ 总结页填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillAll(){
+  fillEls.forEach(f=>{ f.textContent = f.dataset.a; f.classList.add("done"); });
+  fillIdx = fillEls.length;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+</script>
+</body>
+</html>

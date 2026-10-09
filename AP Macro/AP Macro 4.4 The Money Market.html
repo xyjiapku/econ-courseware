@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 4.4 · The Money Market</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+        overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1 0 auto;min-height:44vh;overflow-y:auto;display:flex;flex-direction:column;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .tag .cn,h2 .cn{font-size:inherit;color:inherit;line-height:inherit;padding-left:0;margin-bottom:0;font-weight:inherit;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  .mstep{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:8px solid var(--accent);border-radius:12px;padding:.7vh 1vw;}
+  .mstep .no{flex:0 0 auto;width:2.8vw;min-width:46px;height:2.8vw;min-height:46px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.5vh,29px);font-weight:800;}
+  .mstep .mbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:.3vh;}
+  .mstep .mtitle{font-size:clamp(21.5px,2.2vh,26px);font-weight:800;color:var(--accent-dark);line-height:1.25;}
+  .mstep .mnote{font-size:clamp(21.5px,2.1vh,25px);color:var(--sub);line-height:1.35;}
+  .zhbox{background:#fffaf0;border:3px solid var(--amber);border-radius:12px;padding:1vh 1.1vw;line-height:1.45;}
+  .zhbox .zhtext{font-size:clamp(21.5px,2.1vh,25px);color:var(--ink);font-weight:700;}
+  .zhbox .zhen{font-size:clamp(21.5px,2vh,24px);color:var(--sub);}
+/* The stage / slide are the scroll boxes: content keeps its natural height and a
+   visible scrollbar appears instead of the columns being squeezed and clipped. */
+.slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+.slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+.slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent,#1CADE4);border-radius:8px;border:3px solid #eef4f9;}
+.slide{scrollbar-width:thin;scrollbar-color:var(--accent,#1CADE4) #eef4f9;}
+.stage{scrollbar-width:thin;scrollbar-color:var(--accent,#1CADE4) #eef4f9;}
+  /* ── Summary 填空 ── */
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  .drill{display:flex;flex-direction:column;gap:.9vh;flex:1 0 auto;}
+  .drow{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:9px solid var(--accent);border-radius:12px;padding:1.1vh 1.2vw;flex:1 1 auto;}
+  .dn{flex:0 0 1.5em;font-weight:800;font-size:clamp(24px,2.7vh,30px);color:var(--accent-dark);}
+  .drow p{font-size:clamp(22px,2.35vh,27px);line-height:1.5;margin:0;}
+  .cover .q{font-size:clamp(28px,3.4vh,44px);color:#fff;font-weight:700;max-width:88%;line-height:1.35;}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<section class="slide cover active" id="s1">
+  <div class="tag">AP Macroeconomics · Unit 4: Financial Sector</div>
+  <h1>The Money Market</h1>
+  <p>The price of money · demand and supply of money balances · the nominal interest rate</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s2">
+  <div class="tag">Unit 4 · Lesson 6 · The big idea</div>
+  <h2>Money is the one good whose price is an interest rate</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>A $20 note earns nothing</h3><p>Hold it for a year and it is still $20. No dividend, no coupon, no rent &mdash; unlike every other asset you might own.</p></div>
+      <div class="card warn"><h3>So holding it costs you</h3><p>What it costs is the interest you <b>gave up</b>. That forgotten interest is the price of holding money.</p></div>
+      <div class="card win"><h3>And that price has a name</h3><p>The <b>nominal interest rate</b>, i. Everything in this lesson follows from that single idea.</p></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Money is not "free" to hold: its price is what you could have earned instead &mdash; the <b>opportunity cost</b>.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s3">
+  <div class="tag">Unit 4 · Lesson 6 · Build the graph</div>
+  <h2>Building the money market, one piece at a time</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
+      <div style="flex:1.35;min-width:0;display:flex;flex-direction:column;">
+        <svg viewBox="0 0 900 440" id="mmSvg" xmlns="http://www.w3.org/2000/svg" style="width:100%;flex:1 1 0;min-height:0;">
+          <g id="mmAxes" opacity="0">
+            <line x1="110" y1="380" x2="870" y2="380" stroke="#1f2d3d" stroke-width="2.5"/>
+            <line x1="110" y1="380" x2="110" y2="40" stroke="#1f2d3d" stroke-width="2.5"/>
+            <text x="490" y="420" text-anchor="middle" font-size="23" fill="#5b7288">Quantity of money</text>
+            <text x="98" y="48" text-anchor="end" font-size="23" fill="#5b7288">i</text>
+            <text x="98" y="96" text-anchor="end" font-size="22" fill="#5b7288">(nominal)</text>
+          </g>
+          <g id="mmMD" opacity="0">
+            <line x1="150" y1="80" x2="760" y2="360" stroke="#1CADE4" stroke-width="5"/>
+            <text x="770" y="345" font-size="23" font-weight="800" fill="#0e7fae">MD</text>
+          </g>
+          <g id="mmMS" opacity="0">
+            <line x1="560" y1="70" x2="560" y2="380" stroke="#d9534f" stroke-width="5"/>
+            <text x="572" y="80" font-size="23" font-weight="800" fill="#a94442">MS</text>
+          </g>
+          <g id="mmEq" opacity="0">
+            <circle cx="560" cy="268" r="11" fill="#a97422"/>
+            <line x1="110" y1="268" x2="560" y2="268" stroke="#e6a23c" stroke-width="3" stroke-dasharray="7 5"/>
+            <line x1="560" y1="268" x2="560" y2="380" stroke="#e6a23c" stroke-width="3" stroke-dasharray="7 5"/>
+            <text x="100" y="275" text-anchor="end" font-size="23" font-weight="800" fill="#a97422">i*</text>
+          </g>
+          <g id="mmCap" opacity="0">
+            <text x="200" y="130" font-size="23" font-weight="700" fill="#a97422">the price of money</text>
+          </g>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.55vh;">
+        <div id="mmBox" style="display:flex;flex-direction:column;gap:.5vh;overflow-y:auto;flex:1 0 auto;"></div>
+        <div class="btnrow">
+          <button class="btn" id="mmBtn" onclick="mmNext()">Next step ▶</button>
+          <button class="btn ghost" onclick="mmReset()">Reset</button>
+        </div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">A market is a price and a quantity. Here the "good" is money, and the price is <b>i</b>.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s4">
+  <div class="tag">Unit 4 · Lesson 6 · Why MD slopes down</div>
+  <h2>The trade-off, on a balance</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;">
+      <div style="flex:1.5;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 900 436" id="balSvg" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:48vh;">
+          <line id="blStrL" x1="270" y1="180" x2="270" y2="235" stroke="#8a9aab" stroke-width="3"/>
+          <line id="blStrR" x1="630" y1="180" x2="630" y2="235" stroke="#8a9aab" stroke-width="3"/>
+          <g id="blPanL" transform="translate(0,0)">
+            <path d="M210,235 L330,235 A60,60 0 0 1 210,235 Z" fill="#e3f4fb" stroke="#1CADE4" stroke-width="3"/>
+            <text x="270" y="278" text-anchor="middle" font-size="23" font-weight="800" fill="#0e7fae">Money in hand</text>
+            <text x="270" y="308" text-anchor="middle" font-size="22" fill="#5b7288">1 &middot; Transactions demand</text>
+            <text x="270" y="338" text-anchor="middle" font-size="22" fill="#5b7288">2 &middot; Asset demand</text>
+            <text x="270" y="368" text-anchor="middle" font-size="22" fill="#5b7288">to buy things now &middot; safe and liquid</text>
+          </g>
+          <g id="blPanR" transform="translate(0,0)">
+            <path d="M570,235 L690,235 A60,60 0 0 1 570,235 Z" fill="#e8f6ef" stroke="#2e9e6b" stroke-width="3"/>
+            <text x="630" y="278" text-anchor="middle" font-size="23" font-weight="800" fill="#1e6e4a">Money lent out</text>
+            <text x="630" y="308" text-anchor="middle" font-size="22" fill="#5b7288">earns interest i</text>
+            <text x="630" y="368" text-anchor="middle" font-size="22" fill="#5b7288">the opportunity cost of cash</text>
+          </g>
+          <line id="blBeam" x1="270" y1="180" x2="630" y2="180" stroke="#1f2d3d" stroke-width="6"/>
+          <polygon points="450,180 415,250 485,250" fill="#1f2d3d"/>
+          <line x1="380" y1="250" x2="520" y2="250" stroke="#1f2d3d" stroke-width="6"/>
+          <circle cx="450" cy="180" r="9" fill="#e6a23c"/>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1vh;justify-content:center;">
+        <div class="sliderbox" style="margin-bottom:0;">
+          <input type="range" id="blRange" min="0" max="8" step="0.5" value="2" oninput="blSlide()">
+          <div class="slideval" id="blVal">Interest rate i = 2%</div>
+        </div>
+        <div class="slidenote" id="blNote" style="text-align:left;">At low interest rates, keeping cash looks cheap &mdash; the money pan wins.</div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">The higher i is, the heavier the interest pan &mdash; so you hold <b>less</b> money. That is the downward-sloping demand curve.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s5">
+  <div class="tag">Unit 4 · Lesson 6 · Where money demand comes from</div>
+  <h2>MV = PY &mdash; the reason money demand moves</h2>
+  <div class="stage">
+    <div class="constbar">MV = PY &nbsp;&rarr;&nbsp; M = PY / V</div>
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>The four letters</h3><p><b>M</b> &mdash; the money people hold<br><b>V</b> &mdash; velocity: how many times a dollar is spent in a year<br><b>P</b> &mdash; price level<br><b>Y</b> &mdash; real output. So <b>PY</b> = nominal GDP.</p></div>
+      <div class="card win"><h3>Read it as money demand</h3><p>People hold money <b>in proportion to the value of their transactions</b> (PY) and <b>inversely to how fast money moves</b> (V).</p></div>
+      <div class="card warn"><h3>So the shifters are the letters</h3><p>Y up &rarr; hold more. P up &rarr; hold more. V up (faster payments) &rarr; hold less. Next page: exactly this table.</p></div>
+    </div>
+    <p class="subline" style="margin-top:1vw;">The loose joint is <b>V</b>: US M2 velocity fell from about 2.0 (2000) to 1.1&ndash;1.4 in the 2020s &mdash; which is why M2 could jump 25% in 2020 with little inflation until velocity recovered (and CPI hit 8% in 2022).</p>
+    <div class="s-foot">
+      <div class="hl green">MV = PY is not a forecast &mdash; it is the checklist: before shifting MD, ask which letter changed.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="slide" id="s6">
+  <div class="tag">Unit 4 · Lesson 6 · What shifts it</div>
+  <h2>What shifts money demand</h2>
+  <div class="stage">
+    <table style="flex:1 0 auto;">
+      <tr><th class="l">Change</th><th>Direction</th><th class="l">Why</th></tr>
+      <tr><td class="l">Real income rises</td><td class="yes">MD &rarr;</td><td class="l">More transactions &mdash; you need more money on hand</td></tr>
+      <tr><td class="l">Price level rises</td><td class="yes">MD &rarr;</td><td class="l">The same basket of goods now costs more money</td></tr>
+      <tr><td class="l">Banks start paying interest on deposits</td><td class="yes">MD &rarr;</td><td class="l">Holding money has become <b>less costly</b></td></tr>
+      <tr><td class="l">Faster payments, cards, e-wallets</td><td class="no">MD &larr;</td><td class="l">You need less cash sitting around</td></tr>
+    </table>
+    <div class="s-foot">
+      <div class="hl amber">Each row is one letter of <b>M = PY/V</b>. And careful: a change in <b>i</b> does not shift MD &mdash; it moves you <b>along</b> the curve.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s7">
+  <div class="tag">Unit 4 · Lesson 6 · The supply side</div>
+  <h2>Who supplies the money?</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>The Fed steers the quantity</h3><p>It sets the monetary base. In this framework the quantity of money is what policy says it is &mdash; so <b>MS is vertical</b>.</p></div>
+      <div class="card"><h3>Banks multiply it</h3><p>Loans create deposits &mdash; last lesson's chain. The Fed sets the fuel, the banks do the multiplication.</p></div>
+      <div class="card win"><h3>Vertical means "whatever i is"</h3><p>No matter the interest rate, the quantity supplied is fixed by policy. So the supply line does not slope &mdash; it <b>shifts</b>.</p></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">In the ample-reserves world this line behaves differently &mdash; that is 4.7's story.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s8">
+  <div class="tag">Unit 4 · Lesson 6 · When the Fed did not set the supply</div>
+  <h2>Under gold, nobody controlled the money supply</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>The quantity was mined, not decided</h3><p>On the gold standard, money was claims on gold: the supply grew with <b>gold output and flows</b>, not with any committee's decision. The Fed's MS line could not be moved at will.</p></div>
+      <div class="card lose"><h3>America's long deflation</h3><p>From roughly <b>1873 to 1896</b> US prices fell about <b>1% a year</b> for a generation. Debtors &mdash; above all farmers &mdash; were squeezed as the dollars they owed grew more valuable.</p></div>
+      <div class="card warn"><h3>Free silver and 1896</h3><p>The <b>Free Silver</b> movement demanded silver coinage to expand money. William Jennings Bryan's "Cross of Gold" speech (1896) became its anthem &mdash; and the election was fought over money.</p></div>
+      <div class="card win"><h3>The Wizard of Oz, read as allegory</h3><p>Baum's 1900 tale is widely read as this debate in code: <b>silver slippers</b> (silver), the <b>yellow brick road</b> (gold), <b>Oz</b> (ounce), the Wizard as the politicians who promise but cannot deliver.</p></div>
+    </div>
+    <p class="subline" style="margin-top:1vw;">Two verdicts on the same institution: <b>Hayek</b> admired the discipline of commodity money and wanted money issued by competing private banks rather than a central bank; <b>Keynes</b> called gold "a barbarous relic" and blamed its deflationary grip for deepening the Depression.</p>
+    <div class="s-foot">
+      <div class="hl">The lesson: who controls the supply decides whether the price of money serves the economy or the metal.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s9">
+  <div class="tag">Unit 4 · Lesson 6 · Target vs price</div>
+  <h2>The Fed announces a target &mdash; the market does the pricing</h2>
+  <div class="stage">
+    <div class="cards" style="flex:1 0 auto;">
+      <div class="card"><h3>What the FOMC announces</h3><p>"We will keep the federal funds rate in a <b>target range</b> of 3.75&ndash;4.00%." That is a <b>goal</b>, published, not a price tag on the market.</p></div>
+      <div class="card lose"><h3>What it cannot do</h3><p>It cannot decree the rate at which two banks lend each other overnight &mdash; that price is made by the <b>market</b>, the same way a shop cannot decree what customers will pay.</p></div>
+      <div class="card win"><h3>How it gets there</h3><p>In the scarce-reserves story it shifts <b>MS</b> (open market operations) until the market rate lands inside the range. In today's ample-reserves world it sets <b>administered rates</b> &mdash; IORB 3.90% as a floor (4.6&ndash;4.7).</p></div>
+    </div>
+    <p class="subline" style="margin-top:1vw;">So read every headline correctly: "the Fed raises rates" means it <b>raises its target</b> &mdash; implementation follows through the tools, and the market still has to trade there.</p>
+    <div class="s-foot">
+      <div class="hl">Announcement = target. Control = steering, with the tools of the day. The two are not the same thing.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="slide" id="s10">
+  <div class="tag">Unit 4 · Lesson 6 · Real data (BLS, FOMC)</div>
+  <h2>US inflation and the target rate, 2000&ndash;2026</h2>
+  <div class="stage">
+    <div class="svgwrap"><svg viewBox="0 0 980 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:50vh;">
+          <text x="70" y="26" font-size="23" font-weight="700" fill="#1f2d3d">Annual %, both series</text>
+          <rect x="560" y="12" width="14" height="14" fill="#d9534f"/><text x="582" y="25" font-size="22" fill="#1f2d3d">CPI inflation (y/y)</text>
+          <line x1="790" y1="19" x2="818" y2="19" stroke="#1CADE4" stroke-width="5"/><text x="826" y="25" font-size="22" fill="#1f2d3d">target (upper bound)</text>
+          <line x1="70" y1="380.0" x2="940" y2="380.0" stroke="#cfe0ee" stroke-width="2"/><text x="62" y="387.0" text-anchor="end" font-size="22" fill="#5b7288">0</text>
+          <line x1="70" y1="312.0" x2="940" y2="312.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="62" y="319.0" text-anchor="end" font-size="22" fill="#5b7288">2</text>
+          <line x1="70" y1="244.0" x2="940" y2="244.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="62" y="251.0" text-anchor="end" font-size="22" fill="#5b7288">4</text>
+          <line x1="70" y1="176.0" x2="940" y2="176.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="62" y="183.0" text-anchor="end" font-size="22" fill="#5b7288">6</text>
+          <line x1="70" y1="108.0" x2="940" y2="108.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="62" y="115.0" text-anchor="end" font-size="22" fill="#5b7288">8</text>
+          <rect x="63.5" y="264.4" width="13" height="115.6" fill="#d9534f"/>
+          <rect x="97.0" y="284.8" width="13" height="95.2" fill="#d9534f"/>
+          <rect x="130.4" y="325.6" width="13" height="54.4" fill="#d9534f"/>
+          <rect x="163.9" y="301.8" width="13" height="78.2" fill="#d9534f"/>
+          <rect x="197.3" y="288.2" width="13" height="91.8" fill="#d9534f"/>
+          <rect x="230.8" y="264.4" width="13" height="115.6" fill="#d9534f"/>
+          <rect x="264.3" y="271.2" width="13" height="108.8" fill="#d9534f"/>
+          <rect x="297.7" y="281.4" width="13" height="98.6" fill="#d9534f"/>
+          <rect x="331.2" y="250.8" width="13" height="129.2" fill="#d9534f"/>
+          <rect x="364.7" y="380.0" width="13" height="0.0" fill="#d9534f"/>
+          <rect x="398.1" y="325.6" width="13" height="54.4" fill="#d9534f"/>
+          <rect x="431.6" y="271.2" width="13" height="108.8" fill="#d9534f"/>
+          <rect x="465.0" y="308.6" width="13" height="71.4" fill="#d9534f"/>
+          <rect x="498.5" y="329.0" width="13" height="51.0" fill="#d9534f"/>
+          <rect x="532.0" y="325.6" width="13" height="54.4" fill="#d9534f"/>
+          <rect x="565.4" y="376.6" width="13" height="3.4" fill="#d9534f"/>
+          <rect x="598.9" y="335.8" width="13" height="44.2" fill="#d9534f"/>
+          <rect x="632.3" y="308.6" width="13" height="71.4" fill="#d9534f"/>
+          <rect x="665.8" y="298.4" width="13" height="81.6" fill="#d9534f"/>
+          <rect x="699.3" y="318.8" width="13" height="61.2" fill="#d9534f"/>
+          <rect x="732.7" y="339.2" width="13" height="40.8" fill="#d9534f"/>
+          <rect x="766.2" y="220.2" width="13" height="159.8" fill="#d9534f"/>
+          <rect x="799.7" y="108.0" width="13" height="272.0" fill="#d9534f"/>
+          <rect x="833.1" y="240.6" width="13" height="139.4" fill="#d9534f"/>
+          <rect x="866.6" y="281.4" width="13" height="98.6" fill="#d9534f"/>
+          <rect x="900.0" y="288.2" width="13" height="91.8" fill="#d9534f"/>
+          <rect x="933.5" y="250.8" width="13" height="129.2" fill="#d9534f"/><rect x="364.7" y="380" width="13" height="13.6" fill="#d9534f"/>
+          <polyline points="70.0,159.0 103.5,320.5 136.9,337.5 170.4,346.0 203.8,303.5 237.3,235.5 270.8,201.5 304.2,235.5 337.7,371.5 371.2,371.5 404.6,371.5 438.1,371.5 471.5,371.5 505.0,371.5 538.5,371.5 571.9,363.0 605.4,354.5 638.8,329.0 672.3,295.0 705.8,320.5 739.2,371.5 772.7,371.5 806.2,227.0 839.6,193.0 873.1,227.0 906.5,252.5 940.0,244.0" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-linejoin="round"/>
+          <text x="806.2" y="98.0" text-anchor="middle" font-size="22" font-weight="700" fill="#a94442">8.0</text>
+          <text x="839.6" y="221.0" text-anchor="middle" font-size="22" font-weight="700" fill="#0e7fae">5.50</text>
+          <text x="948.0" y="276.0" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">Sep 2026 hike: 3.75&ndash;4.00%</text>
+          <text x="70.0" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2000</text>
+          <text x="237.3" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2005</text>
+          <text x="404.6" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2010</text>
+          <text x="571.9" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2015</text>
+          <text x="739.2" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2020</text>
+          <text x="940.0" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2026</text>
+        </svg></div>
+    <div class="s-foot">
+      <div class="hl">The pattern: the Fed <b>lags inflation</b> &mdash; it tightened hard in 2022&ndash;23 as CPI hit 8.0%, eased in 2024&ndash;25 as inflation cooled, and in September 2026 hiked again (to 3.75&ndash;4.00%) with CPI back near 3.8%.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="slide" id="s11">
+  <div class="tag">Unit 4 · Lesson 6 · Real data (PBoC, 2026)</div>
+  <h2>China: the same levers, a different cycle</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.3vw;flex:1 0 auto;">
+      <div style="flex:1.35;min-width:0;display:flex;"><svg viewBox="0 0 980 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:38vh;">
+          <rect x="400" y="12" width="14" height="14" fill="#8B5CF6"/><text x="422" y="25" font-size="22" fill="#1f2d3d">RRR, large banks</text>
+          <line x1="610" y1="19" x2="636" y2="19" stroke="#1CADE4" stroke-width="5"/><text x="644" y="25" font-size="22" fill="#1f2d3d">1Y LPR</text>
+          <line x1="726" y1="19" x2="752" y2="19" stroke="#e6a23c" stroke-width="5"/><text x="760" y="25" font-size="22" fill="#1f2d3d">7-day reverse repo</text>
+          <line x1="80" y1="380.0" x2="940" y2="380.0" stroke="#cfe0ee" stroke-width="2"/><text x="72" y="387.0" text-anchor="end" font-size="22" fill="#5b7288">0</text>
+          <line x1="80" y1="324.0" x2="940" y2="324.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="72" y="331.0" text-anchor="end" font-size="22" fill="#5b7288">4</text>
+          <line x1="80" y1="268.0" x2="940" y2="268.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="72" y="275.0" text-anchor="end" font-size="22" fill="#5b7288">8</text>
+          <line x1="80" y1="212.0" x2="940" y2="212.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="72" y="219.0" text-anchor="end" font-size="22" fill="#5b7288">12</text>
+          <line x1="80" y1="156.0" x2="940" y2="156.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="72" y="163.0" text-anchor="end" font-size="22" fill="#5b7288">16</text>
+          <line x1="80" y1="100.0" x2="940" y2="100.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="72" y="107.0" text-anchor="end" font-size="22" fill="#5b7288">20</text>
+          <line x1="80" y1="44.0" x2="940" y2="44.0" stroke="#e3f4fb" stroke-width="1.5"/><text x="72" y="51.0" text-anchor="end" font-size="22" fill="#5b7288">24</text>
+          <path d="M80.0,79.0 L309.3,79.0 L309.3,135.0 L481.3,135.0 L481.3,142.0 L538.7,142.0 L538.7,198.0 L596.0,198.0 L596.0,205.0 L653.3,205.0 L653.3,219.0 L710.7,219.0 L710.7,222.5 L768.0,222.5 L768.0,233.0 L825.3,233.0 L825.3,240.0 L882.7,240.0 L882.7,254.0 L940.0,254.0 L940.0,254.0" fill="none" stroke="#8B5CF6" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M538.7,320.5 L596.0,320.5 L596.0,326.1 L653.3,326.1 L653.3,326.8 L710.7,326.8 L710.7,328.9 L768.0,328.9 L768.0,331.7 L825.3,331.7 L825.3,336.6 L882.7,336.6 L882.7,338.0 L940.0,338.0 L940.0,338.0" fill="none" stroke="#1CADE4" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M309.3,347.1 L366.7,347.1 L366.7,348.5 L424.0,348.5 L424.0,345.7 L481.3,345.7 L481.3,344.3 L538.7,344.3 L538.7,345.0 L596.0,345.0 L596.0,349.2 L653.3,349.2 L653.3,349.2 L710.7,349.2 L710.7,352.0 L768.0,352.0 L768.0,354.8 L825.3,354.8 L825.3,359.0 L882.7,359.0 L882.7,360.4 L940.0,360.4 L940.0,360.4" fill="none" stroke="#e6a23c" stroke-width="5" stroke-linejoin="round"/>
+          <text x="80.0" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2011</text>
+          <text x="194.7" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2013</text>
+          <text x="309.3" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2015</text>
+          <text x="424.0" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2017</text>
+          <text x="538.7" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2019</text>
+          <text x="653.3" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2021</text>
+          <text x="768.0" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2023</text>
+          <text x="940.0" y="420" text-anchor="middle" font-size="22" fill="#5b7288">2026</text>
+        </svg></div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.8vh;justify-content:center;">
+        <div class="card warn"><h3>Quantity: RRR down for a decade</h3><p>21.5% (2011) &rarr; 9.0% now; weighted average 6.2%.</p></div>
+        <div class="card"><h3>Price: the 7-day reverse repo</h3><p>China's policy rate: 1.40%, cut in May 2025.</p></div>
+        <div class="card win"><h3>LPR: the lending benchmark</h3><p>3.0% (1-year) / 3.5% (5-year), flat 16 months &mdash; no cuts this year with CPI at +0.9% and the Fed hiking.</p></div>
+      </div>
+    </div>
+    <p class="subline" style="margin:.2vh 0 0;">China: large-bank RRR (%), 1-year LPR (%) and the 7-day reverse repo policy rate (%). The RRR series starts earlier: the reserve system dates from <b>1984</b>, while the 7-day repo became the policy rate only around <b>2015</b> and LPR became the loan benchmark after the <b>2019 reform</b>.</p>
+    <div class="s-foot">
+      <div class="hl">Same toolkit &mdash; quantity plus an administered price. What differs is the cycle: China has eased in small steps for a decade, while the US ran from 0% to 5.5% and back.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="slide" id="s12">
+  <div class="tag"><span class="cn">Unit 4 · Lesson 6 · 中文讲清：谁把钱借给谁</span></div>
+  <h2><span class="cn">隔夜拆借、7 天逆回购、给货币基金付息 &mdash; 到底在做什么交易？</span></h2>
+  <div class="stage">
+    <div class="cn" style="display:flex;flex-direction:column;gap:.7vh;flex:1 0 auto;">
+      <div class="card" style="padding:.9vh 1vw;">
+        <h3>① 隔夜拆借 &mdash; 银行之间"今天借、明天还"</h3>
+        <p>营业结束，A 银行头寸不够、B 银行恰好闲着钱：B 借给 A <b>一晚</b>，次日还本付息 &mdash; 这就是隔夜拆借利率。美国叫它<b>联邦基金利率</b>（两边都是<b>银行</b>，与政府无关）；中国的 DR001 要拿债券抵押，所以叫"质押式回购"。</p>
+      </div>
+      <div class="card" style="padding:.9vh 1vw;">
+        <h3>② 7 天逆回购 &mdash; 央行向银行"放钱"的价格</h3>
+        <p>"回购"＝先卖后买回，差价就是利息。<b>逆回购</b>是站在央行一侧：<b>央行把钱借给银行 7 天</b>，银行拿债券抵押，到期连本带息赎回。逆回购＝央行<b>放钱</b>，正回购＝央行<b>收钱</b>。央行天天用它放钱，于它成了中国的<b>政策利率</b>（现 1.40%）。</p>
+      </div>
+      <div class="card" style="padding:.9vh 1vw;">
+        <h3>③ 给货币基金付息（ON RRP）&mdash; 美联储为什么"借"非银的钱</h3>
+        <p>货币基金是普通人、企业放闲钱的"钱袋"，随时要能赎回。它们<b>不是银行</b>，不能在美联储开户，钱会乱找短期出路、把短期利率压到目标以下。于是美联储开个小窗口：让货币基金<b>隔夜借钱给美联储</b>并付息（现 3.75%）&mdash; 这就是 ON RRP，给非银也垫一层<b>地板</b>。</p>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green"><span class="cn">都是"借钱"，区别只在<b>谁借给谁</b>：银行 ↔ 银行 = 隔夜拆借；央行 → 银行 = 逆回购（放钱）；央行 ← 非银 = ON RRP；央行 ← 银行准备金 = IORB。</span></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="slide" id="s13">
+  <div class="tag"><span class="cn">Unit 4 · Lesson 6 · 利率名词对照（中文）</span></div>
+  <h2><span class="cn">这些"利率"分别是什么？</span></h2>
+  <div class="stage">
+    <table class="cn" style="flex:1 0 auto;">
+      <tr><th class="l">名称</th><th class="l">是什么 · 谁决定</th></tr>
+      <tr><td class="l">Federal funds rate　联邦基金利率</td><td class="l">银行之间<b>隔夜拆借</b>的价格 &mdash; 由市场交易形成，央行只能引导</td></tr>
+      <tr><td class="l">Target range　目标区间 3.75–4.00%</td><td class="l">FOMC <b>宣布</b>的政策目标，不是市场成交价</td></tr>
+      <tr><td class="l">IORB / ON RRP　准备金利率 / 隔夜逆回购</td><td class="l">央行付息的两层<b>地板</b>：银行 3.90%，货币基金 3.75%</td></tr>
+      <tr><td class="l">Discount rate　贴现率 4.00%</td><td class="l">银行直接向央行借钱的价，即"最后贷款人"利率</td></tr>
+      <tr><td class="l">DR001　银行间隔夜质押回购利率</td><td class="l">中国货币市场的隔夜基准（2026 上半年均值 1.31%）</td></tr>
+      <tr><td class="l">7-day reverse repo　7 天期逆回购 1.40%</td><td class="l">中国的<b>政策利率</b>，由中国人民银行宣布</td></tr>
+      <tr><td class="l">LPR　贷款市场报价利率 3.0% / 3.5%</td><td class="l">银行贷款的定价基准，由报价行在政策利率上加/减点报出</td></tr>
+    </table>
+    <div class="s-foot">
+      <div class="hl green"><span class="cn">记住区别：央行<b>宣布</b>的是政策价格（目标区间、IORB、7 天逆回购）；市场<b>交易</b>出来的是隔夜价格（联邦基金利率、DR001）。</span></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="slide" id="s14">
+  <div class="tag">Unit 4 · Lesson 6 · Practice</div>
+  <h2>Which way does the price move?</h2>
+  <div class="stage">
+    <div style="flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;">
+    <div class="game-meta"><span id="mmqProg">Q1 / 6</span><span id="mmqScore">Score 0</span></div>
+    <div class="game-card" id="mmqCard"></div>
+    <div class="btnrow" id="mmqBtns"></div>
+    <div class="game-fb" id="mmqFb"></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Say the shift out loud before you answer: <b>MD</b> or <b>MS</b>, and which way.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s15">
+  <div class="tag">Unit 4 · Lesson 6 · Before you move on</div>
+  <h2>Three ways students lose points</h2>
+  <div class="stage">
+    <div class="aim"><div class="no">1</div><div><div class="at">Labelling the vertical axis wrong</div><div class="ad">The price on this graph is the <b>nominal interest rate</b> &mdash; not the price level, not the real rate.</div></div></div>
+    <div class="aim"><div class="no">2</div><div><div class="at">Sloping the money supply</div><div class="ad">In this framework MS is <b>vertical</b>: policy fixes the quantity &mdash; and the line shifts, it never slopes.</div></div></div>
+    <div class="aim"><div class="no">3</div><div><div class="at">Shifting MD when i changes</div><div class="ad">A change in i is a <b>movement along</b> MD. Only income, prices, technology or interest paid on money shift the curve.</div></div></div>
+    <div class="s-foot">
+      <div class="hl amber">All three are drawing errors &mdash; and drawing errors are where the marks are lost.</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="slide" id="s16">
+  <div class="tag">Unit 4 · Lesson 6 · Key takeaways</div>
+  <h2>What to walk out with &mdash; fill the blanks</h2>
+  <div class="stage">
+    <div class="drill">
+      <div class="drow"><span class="dn">1</span><p>The interest rate is the <span class="fill" data-a="opportunity cost">____</span> of holding money — that is why MD slopes down.</p></div>
+      <div class="drow"><span class="dn">2</span><p>Downward MD against <span class="fill" data-a="vertical">____</span> MS; the intersection is i*, the <span class="fill" data-a="price of money">____</span>.</p></div>
+      <div class="drow"><span class="dn">3</span><p>M = PY/V names the shifters: <span class="fill" data-a="income">____</span>, the price level, and <span class="fill" data-a="velocity">____</span> — how many times a dollar is spent.</p></div>
+      <div class="drow"><span class="dn">4</span><p>The Fed announces a target for the <span class="fill" data-a="federal funds rate">____</span>; the tools pull the rate into the range.</p></div>
+    </div>
+    <div class="btnrow" style="margin-top:1vh;justify-content:center;">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+    <div class="s-foot"><div class="hl">Next: if holding cash costs interest, what else could you hold instead? Bonds, stocks and the rest → <b>4.5 Financial Assets</b>.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 结束页 ═══════════ -->
+<section class="slide cover" id="s17">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <div class="q">Money has a price: the interest rate, where money demand meets money supply.</div>
+  <div class="meta">Dr. Jia &middot; &copy; 2026</div>
+</section>
+
+</main>
+
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 17</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+
+
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+function goTo(i){ gotoSlide(i); }
+window.goTo = goTo;
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+
+
+
+/* ═══════════ 小测验引擎 ═══════════ */
+function makeQuiz(items, cardId, progId, scoreId, btnsId, fbId){
+  const card = document.getElementById(cardId);
+  const prog = document.getElementById(progId);
+  const scoreEl = document.getElementById(scoreId);
+  const btns = document.getElementById(btnsId);
+  const fb = document.getElementById(fbId);
+  let i = 0, score = 0, done = false;
+  function show(){
+    if(i >= items.length){
+      card.textContent = "Final score: " + score + " / " + items.length + " — restart to try again?";
+      prog.textContent = "Done";
+      fb.textContent = ""; fb.className = "game-fb";
+      btns.innerHTML = "";
+      const r = document.createElement("button");
+      r.className = "btn"; r.textContent = "Restart";
+      r.onclick = restart;
+      btns.appendChild(r);
+      return;
+    }
+    card.textContent = items[i].q;
+    prog.textContent = "Q" + (i+1) + " / " + items.length;
+    fb.textContent = ""; fb.className = "game-fb";
+    btns.innerHTML = "";
+    items[i].opts.forEach(function(t,k){
+      const b = document.createElement("button");
+      b.className = "btn ghost opt"; b.textContent = t;
+      b.onclick = function(){ answer(k); };
+      btns.appendChild(b);
+    });
+    const nx = document.createElement("button");
+    nx.className = "btn"; nx.textContent = "Next →"; nx.style.display = "none";
+    nx.onclick = function(){ i++; show(); };
+    btns.appendChild(nx);
+    done = false;
+  }
+  function answer(k){
+    if(done) return;
+    done = true;
+    const ok = (k === items[i].a);
+    if(ok) score++;
+    scoreEl.textContent = "Score " + score;
+    btns.querySelectorAll(".opt").forEach(function(b,idx){
+      b.className = "btn opt " + (idx === items[i].a ? "green" : (idx === k ? "red" : "ghost"));
+    });
+    fb.innerHTML = (ok ? "✓ Correct — " : "✗ Not quite — ") + items[i].w;
+    fb.className = "game-fb " + (ok ? "good" : "bad");
+    const nx = btns.querySelector("button:not(.opt)");
+    if(nx) nx.style.display = "inline-block";
+  }
+  function restart(){ i = 0; score = 0; scoreEl.textContent = "Score 0"; show(); }
+  show();
+}
+
+
+/* ═══════════ p3 建图逐步揭示 ═══════════ */
+const MMS = [
+  ["Axes", "Vertical: the nominal interest rate i. Horizontal: the quantity of money."],
+  ["Money demand (MD)", "Downward sloping: at a high i, holding money is expensive, so people hold less."],
+  ["Money supply (MS)", "Vertical: in this framework the Fed fixes the quantity of money."],
+  ["Intersection", "Where MD meets MS the market clears — at i*."],
+  ["Read the price", "i* IS the price of money: what holding a dollar costs you per year."]
+];
+let mmIdx = -1;
+function mmPaint(){
+  ["mmAxes","mmMD","mmMS","mmEq","mmCap"].forEach((id, k) => {
+    document.getElementById(id).setAttribute("opacity", mmIdx >= k ? "1" : "0");
+  });
+}
+function mmNext(){
+  if (mmIdx + 1 >= MMS.length) return;
+  mmIdx++;
+  const div = document.createElement("div");
+  div.className = "mstep";
+  div.innerHTML = '<div class="no">' + (mmIdx+1) + '</div><div class="mbody">'
+    + '<div class="mtitle">' + MMS[mmIdx][0] + '</div>'
+    + '<div class="mnote">' + MMS[mmIdx][1] + '</div></div>';
+  const box = document.getElementById("mmBox");
+  box.appendChild(div); box.scrollTop = box.scrollHeight;
+  mmPaint();
+  if (mmIdx === MMS.length - 1) { const b = document.getElementById("mmBtn"); b.disabled = true; b.textContent = "All shown ✓"; }
+}
+function mmReset(){
+  mmIdx = -1;
+  document.getElementById("mmBox").innerHTML = "";
+  mmPaint();
+  const b = document.getElementById("mmBtn"); b.disabled = false; b.textContent = "Next step ▶";
+}
+
+/* ═══════════ p4 天平 ═══════════ */
+function blSlide(){
+  const i = +document.getElementById("blRange").value;
+  const ang = (i - 4) * 4.5;                 // -18° .. +18°
+  const rad = ang * Math.PI / 180;
+  const cx = 450, cy = 180, half = 180;
+  const xl = cx - half * Math.cos(rad), yl = cy - half * Math.sin(rad);
+  const xr = cx + half * Math.cos(rad), yr = cy + half * Math.sin(rad);
+  const beam = document.getElementById("blBeam");
+  beam.setAttribute("x1", xl); beam.setAttribute("y1", yl);
+  beam.setAttribute("x2", xr); beam.setAttribute("y2", yr);
+  const sl = document.getElementById("blStrL"), sr = document.getElementById("blStrR");
+  sl.setAttribute("x1", xl); sl.setAttribute("y1", yl);
+  sr.setAttribute("x1", xr); sr.setAttribute("y1", yr);
+  document.getElementById("blPanL").setAttribute("transform", "translate(" + (xl - 270) + "," + (yl - 180) + ")");
+  document.getElementById("blPanR").setAttribute("transform", "translate(" + (xr - 630) + "," + (yr - 180) + ")");
+  document.getElementById("blVal").textContent = "Interest rate i = " + i.toFixed(1) + "%";
+  const note = document.getElementById("blNote");
+  if (i <= 1.5) note.textContent = "Very low i: keeping cash costs almost nothing — the money pan wins.";
+  else if (i <= 3) note.textContent = "At " + i.toFixed(1) + "% keeping cash is still cheap — the money pan is heavier.";
+  else if (i <= 5.5) note.textContent = "At " + i.toFixed(1) + "% the interest pan is winning — you hold less cash.";
+  else note.textContent = "High i (" + i.toFixed(1) + "%): the interest pan dominates — you hold only what you must.";
+}
+/* ═══════════ p9 小测 ═══════════ */
+const MMQ = [
+  {q:"The economy booms and incomes rise across the country.", opts:["i rises","i falls","no change"], a:0,
+   w:"Higher income means more transactions, so MD shifts right — at the same MS, i rises."},
+  {q:"The price level jumps 8% in a year.", opts:["i rises","i falls","no change"], a:0,
+   w:"The same basket costs more money, so MD shifts right — and i rises."},
+  {q:"The Fed sells government securities.", opts:["i rises","i falls","no change"], a:0,
+   w:"Selling drains reserves, MS shifts left — with unchanged MD, i rises."},
+  {q:"The Fed buys government securities.", opts:["i rises","i falls","no change"], a:1,
+   w:"Buying injects reserves, MS shifts right — i falls."},
+  {q:"Mobile payment apps let people hold much less cash.", opts:["i rises","i falls","no change"], a:1,
+   w:"Less cash needed shifts MD left — i falls."},
+  {q:"Banks begin paying interest on checking deposits.", opts:["i rises","i falls","no change"], a:0,
+   w:"Holding money now costs less, so MD shifts right — i rises."}
+];
+makeQuiz(MMQ, "mmqCard", "mmqProg", "mmqScore", "mmqBtns", "mmqFb");
+
+/* ═══════════ 初始化 ═══════════ */
+mmPaint();
+blSlide();
+try{
+  const hashInit = parseInt(location.hash.slice(1)||"0",10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+}catch(err){ console.error(err); gotoSlide(0); }
+
+/* ═══════════ 总结页填空 ═══════════ */
+let fillIdx = 0;
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+function fillNext(){
+  if(fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillAll(){
+  fillEls.forEach(f=>{ f.textContent = f.dataset.a; f.classList.add("done"); });
+  fillIdx = fillEls.length;
+}
+function fillReset(){
+  fillIdx = 0;
+  fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
+}
+fillReset();
+</script>
+</body>
+</html>
