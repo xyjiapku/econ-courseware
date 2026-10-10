@@ -9,7 +9,7 @@
     --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
     --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
     --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
-    --amber:#e6a23c; --amber-light:#fdf3e3;
+    --amber:#e6a23c; --amber-light:#fdf3e3; --amber-dark:#a97422;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{height:100%;}
@@ -192,6 +192,53 @@
   #s14c .card{padding:1vh 1vw;}
   #s14b th{padding:.38vh .7vw;}
   #s14b .sliderbox{padding:.6vh .8vw;}
+  /* 每个滑杆一种颜色；Size 列里被它驱动的数字用同一种颜色 */
+  #s14b #amMpc{accent-color:var(--accent);}
+  #s14b #amRr{accent-color:var(--amber);}
+  #s14b .sb-mpc{background:var(--accent-light);}
+  #s14b .sb-rr{background:var(--amber-light);}
+  #s14b #amMpcVal{color:var(--accent-dark);}
+  #s14b #amRrVal{color:var(--amber-dark);}
+  #s14b #amSpend,#s14b #amTax{color:var(--accent-dark);background:var(--accent-light);font-weight:800;}
+  #s14b #amMoney{color:var(--amber-dark);background:var(--amber-light);font-weight:800;}
+  #s14b td.fixed-size{color:var(--sub);}
+/* == math typesetting (math-typeset.py) == */
+  /* Formulas: source stays plain text. Wrap in .ma (inline) / .eqbox (block);
+     the engine italicises single-letter variables and leaves words upright. */
+  .ma,.eqbox,.mcell{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}
+  .ma{font-size:1.2em;line-height:1.22;}
+  .mas{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}   /* scope that keeps the host font-size */
+  .eqbox .ma,.mcell .ma,td .ma,th .ma,.hl .ma,.card .ma,.subline .ma,.cn .ma{font-size:1em;}
+  .ma i,.eqbox i,.mcell i{font-style:italic;font-weight:inherit;}
+  .ma .fn,.eqbox .fn,.mcell .fn{font-style:normal;}
+  .ma .fn::after,.eqbox .fn::after{content:"";display:inline-block;width:.15em;}
+  .ma sup,.ma sub,.eqbox sup,.eqbox sub,.mcell sup,.mcell sub{font-size:.82em;line-height:0;
+    font-style:normal;position:relative;vertical-align:baseline;}
+  .ma sup,.eqbox sup,.mcell sup{top:-.55em;}
+  .ma sub,.eqbox sub,.mcell sub{top:.14em;}
+  .bigop{font-size:1.32em;line-height:1;font-style:normal;position:relative;top:.08em;margin-right:.03em;}
+  .bar,.hat{position:relative;display:inline-block;}
+  .bar::after{content:"";position:absolute;left:-.05em;right:-.05em;bottom:1.05em;
+    height:.06em;background:currentColor;border-radius:.03em;}
+  .hat::after{content:"";position:absolute;left:50%;bottom:.98em;transform:translateX(-50%);
+    width:0;height:0;border-left:.15em solid transparent;border-right:.15em solid transparent;
+    border-bottom:.16em solid currentColor;}
+  .mfrac{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    vertical-align:middle;line-height:1.16;margin:0 .2em;font-size:1em;position:relative;top:.05em;}
+  .mfrac .num{padding:0 .3em .09em;border-bottom:.06em solid currentColor;}
+  .mfrac .den{padding:.09em .3em 0;}
+  .mvar{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;font-style:italic;}
+  .eqbox{display:flex;align-items:center;justify-content:center;gap:.5vw;flex-wrap:wrap;
+    background:var(--accent-dark);color:#fff;border-radius:12px;padding:.7vh 1vw;margin:.5vh 0;
+    font-size:clamp(24px,2.7vh,34px);font-weight:800;line-height:1.4;text-align:center;}
+  .eqbox.green{background:var(--green);}
+  .eqbox.amber{background:var(--amber);}
+  .eqbox.red{background:var(--red);}
+  .eqbox.ghost{background:#fff;color:var(--ink);border:3px solid var(--accent);}
+  .eqbox .lbl{font-size:clamp(22px,2.1vh,24px);font-weight:700;}
+/* == /math typesetting == */
 </style>
 </head>
 <body>
@@ -486,7 +533,7 @@
     <div class="constbar">&Delta;Deposits = &Delta;Reserves &times; 1 / rr</div>
     <div class="two" style="flex:1 0 auto;">
       <div class="col">
-        <div class="card win"><h3>The numbers</h3><p>rr = 10% &rarr; multiplier = <b>10</b>. New reserves of $1,000 eventually support <b>$10,000</b> of deposits &mdash; $9,000 of them created by lending.</p></div>
+        <div class="card win"><h3>The numbers</h3><p><span class="ma">rr = 10% &rarr; multiplier =</span> <b>10</b>. New reserves of $1,000 eventually support <b>$10,000</b> of deposits &mdash; $9,000 of them created by lending.</p></div>
       </div>
       <div class="col">
         <div class="card"><h3>Read it both ways</h3><p>Same formula, two uses: how much money CAN a new reserve create &mdash; and how much does the money supply CHANGE when rr moves.</p></div>
@@ -512,69 +559,12 @@
     <div class="constbar">&Delta;Deposits = &Delta;Reserves &times; 1 / rr</div>
     <table style="flex:1 0 auto;margin-top:1vh;">
       <tr><th class="l">Case</th><th>&Delta;Reserves</th><th>rr</th><th class="l">Working</th><th>&Delta;Deposits</th></tr>
-      <tr><td class="l">The Fed <b>buys</b> bonds &mdash; injects reserves</td><td>+$1,000bn</td><td>10%</td><td class="l">1/rr = 1/0.10 = 10<br>1,000 &times; 10</td><td class="yes">+$10,000bn</td></tr>
-      <tr><td class="l">The Fed <b>sells</b> bonds &mdash; drains reserves</td><td>&minus;$200bn</td><td>5%</td><td class="l">1/rr = 1/0.05 = 20<br>&minus;200 &times; 20</td><td class="no">&minus;$4,000bn</td></tr>
+      <tr><td class="l">The Fed <b>buys</b> bonds &mdash; injects reserves</td><td>+$1,000bn</td><td>10%</td><td class="l"><span class="ma">1/rr = 1/0.10 = 10</span><br>1,000 &times; 10</td><td class="yes">+$10,000bn</td></tr>
+      <tr><td class="l">The Fed <b>sells</b> bonds &mdash; drains reserves</td><td>&minus;$200bn</td><td>5%</td><td class="l"><span class="ma">1/rr = 1/0.05 = 20</span><br>&minus;200 &times; 20</td><td class="no">&minus;$4,000bn</td></tr>
     </table>
     <div class="s-foot">
       <div class="hl amber" style="margin-bottom:.9vh;">Exam trap: the multiplier multiplies a <b>change in reserves</b> &mdash; never the whole money stock.</div>
       <div class="hl">And it is an <b>upper bound</b>: cash held outside banks and excess reserves both leak out, so the real expansion is smaller.</div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" id="s14">
-  <div class="tag">Unit 4 · Lesson 3 · Real world check</div>
-  <h2>What changed in 2020 &mdash; the multiplier went quiet</h2>
-  <div class="stage">
-    <div class="cards" style="flex:1 0 auto;">
-      <div class="card"><h3>March 2020</h3><p>The Fed cut the reserve requirement to <b>0%</b>. The textbook's rr is, right now, literally zero.</p></div>
-      <div class="card warn"><h3>Banks still hold trillions</h3><p>About <b>$3.2 trillion</b> of reserves &mdash; not because they must, but because the Fed <b>pays interest</b> on them.</p></div>
-      <div class="card win"><h3>So policy works differently</h3><p>The Fed steers with <b>interest rates</b>, not with a 10&times; multiplier &mdash; the "ample reserves" world (4.6 &mdash; detailed in 4.7).</p></div>
-    </div>
-    <p class="subline" style="margin-top:1.2vh;">The multiplier is still what the exam wants &mdash; and still the clearest story of how lending creates money.</p>
-    <div class="s-foot">
-      <div class="hl">Textbook first, real world second. Both matter on this exam.</div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" id="s14c">
-  <div class="tag">Unit 4 &middot; Lesson 4 &middot; Real world check</div>
-  <h2>Who still uses rr &mdash; and who dropped it</h2>
-  <div class="stage">
-    <div class="hl" style="line-height:1.4;">Not just the US. The Fed cut rr to <b>0%</b> in 2020 and steers lending by
-      <b>paying interest on reserves</b> &mdash; but the UK, Canada, Australia, New Zealand, Sweden, Norway and Hong Kong have had
-      <b>no rr at all</b> for decades. The US is the <b>newest</b> member, not the only one.</div>
-
-    <div class="two" style="flex:1 0 auto;margin-top:1vh;">
-      <div class="col">
-        <div class="card win" style="flex:0 0 auto;"><h3>Ample reserves &mdash; set the <i>price</i></h3>
-          <p>rr = 0% or none. The central bank <b>pays interest</b> on reserves, then moves that rate to steer lending.</p></div>
-        <table>
-          <tr><th>Economy</th><th>rr &middot; pays interest?</th></tr>
-          <tr><td><b>United States</b></td><td>0% (2020) &middot; IORB 3.65%</td></tr>
-          <tr><td>United Kingdom</td><td>none (1981) &middot; at Bank Rate</td></tr>
-          <tr><td>Canada</td><td>none (1992) &middot; yes</td></tr>
-          <tr><td>Australia &middot; New Zealand &middot; Sweden</td><td>none &middot; yes</td></tr>
-          <tr><td>Norway &middot; Hong Kong &middot; euro area &middot; Switzerland</td><td>none / low, fixed &middot; yes</td></tr>
-        </table>
-      </div>
-      <div class="col">
-        <div class="card warn" style="flex:0 0 auto;"><h3>Scarce reserves &mdash; set the <i>quantity</i></h3>
-          <p>rr is still a live dial: raise it to drain lending, cut it to release it.</p></div>
-        <table>
-          <tr><th>Economy</th><th>rr (late 2026)</th></tr>
-          <tr><td><b>China</b></td><td>7.5% &mdash; the main liquidity dial</td></tr>
-          <tr><td><b>Turkey</b> &middot; <b>Brazil</b></td><td>25% &middot; 21%</td></tr>
-          <tr><td>Indonesia &middot; Russia</td><td>9% &middot; 8.5%</td></tr>
-          <tr><td><b>India</b></td><td>3% (cut from 4% in 2025)</td></tr>
-          <tr><td colspan="2" style="color:var(--sub);">China, India, Brazil and Turkey raise and cut rr to steer credit &mdash; and India pays <b>no</b> interest on required reserves.</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="s-foot">
-      <div class="hl">Same instrument, two regimes: <b>advanced economies set the price of reserves; China, India, Brazil and Turkey set the quantity.</b> The exam still wants the textbook rr story.</div>
     </div>
   </div>
 </section>
@@ -589,13 +579,13 @@
 
       <div style="flex:1.55;min-width:0;display:flex;flex-direction:column;gap:.6vh;">
         <div style="display:flex;gap:.9vw;">
-          <div class="sliderbox" style="flex:1;min-width:0;margin-bottom:0;">
+          <div class="sliderbox sb-mpc" style="flex:1;min-width:0;margin-bottom:0;">
             <input type="range" id="amMpc" min="50" max="90" step="5" value="80" oninput="amUpdate()">
-            <div class="slideval" id="amMpcVal">MPC = 0.80 · MPS = 0.20</div>
+            <div class="slideval mas" id="amMpcVal">MPC = 0.80 · MPS = 0.20</div>
           </div>
-          <div class="sliderbox" style="flex:1;min-width:0;margin-bottom:0;">
+          <div class="sliderbox sb-rr" style="flex:1;min-width:0;margin-bottom:0;">
             <input type="range" id="amRr" min="0" max="20" step="5" value="10" oninput="amUpdate()">
-            <div class="slideval" id="amRrVal">rr = 10%</div>
+            <div class="slideval mas" id="amRrVal">rr = 10%</div>
           </div>
         </div>
 
@@ -604,7 +594,7 @@
             <th>Multiplier</th><th>Formula</th><th>Size</th>
           </tr>
           <tr>
-            <td><b>Spending</b> (expenditure)</td><td>1 / (1 &minus; MPC) = 1 / MPS</td>
+            <td><b>Spending</b> (expenditure)</td><td><span class="ma">1 / (1 &minus; MPC) = 1 / MPS</span></td>
             <td id="amSpend">5.0&times;</td>
           </tr>
           <tr>
@@ -612,8 +602,8 @@
             <td id="amTax">&minus;4.0&times;</td>
           </tr>
           <tr>
-            <td><b>Balanced budget</b></td><td>1 / MPS &minus; MPC / MPS = 1</td>
-            <td>1.0&times;</td>
+            <td><b>Balanced budget</b></td><td><span class="ma">1 / MPS &minus; MPC / MPS = 1</span></td>
+            <td class="fixed-size">1.0&times;</td>
           </tr>
           <tr>
             <td><b>Money</b></td><td>1 / rr</td>
@@ -626,7 +616,7 @@
 
       <div style="flex:0 0 30%;min-width:0;display:flex;flex-direction:column;gap:.8vh;">
         <div class="card"><h3>Same shape, different target</h3><p>All four are <b>1 &divide; the fraction that leaks out each round</b> &mdash; saving (MPS) for fiscal, required reserves (rr) for money. But fiscal multipliers move <b>aggregate demand &rarr; real GDP</b>; the money multiplier moves the <b>money supply</b>.</p></div>
-        <div class="card amber"><h3>One is a ceiling</h3><p>The simple money multiplier is a <b>maximum</b>: banks may sit on excess reserves and the public may hold cash &mdash; and since 2020, rr = 0%.</p></div>
+        <div class="card amber"><h3>One is a ceiling</h3><p>The simple money multiplier is a <b>maximum</b>: banks may sit on excess reserves and the public may hold cash.</p></div>
       </div>
 
     </div>
@@ -649,7 +639,7 @@
       <div class="drow"><span class="dn">1</span><p>Banks create money by <span class="fill" data-a="lending">____</span> — loans create <span class="fill" data-a="deposits">____</span>.</p></div>
       <div class="drow"><span class="dn">2</span><p><span class="fill" data-a="Required reserves">____</span> = <span class="fill" data-a="rr">____</span> × deposits. Only <span class="fill" data-a="excess reserves">____</span> can be lent.</p></div>
       <div class="drow"><span class="dn">3</span><p>ΔDeposits = ΔReserves × <span class="fill" data-a="1/rr">____</span> — that is the <span class="fill" data-a="money multiplier">____</span>. At rr = 10%, $1,000 of new reserves becomes <span class="fill" data-a="$10,000">____</span> of deposits.</p></div>
-      <div class="drow"><span class="dn">4</span><p>Since 2020, rr = <span class="fill" data-a="0%">____</span>. The Fed steers with <span class="fill" data-a="interest rates">____</span>.</p></div>
+      <div class="drow"><span class="dn">4</span><p>1/rr is an <span class="fill" data-a="upper bound">____</span> &mdash; cash held outside banks and <span class="fill" data-a="excess reserves">____</span> both leak out.</p></div>
     </div>
     <div class="btnrow" style="margin-top:1vh;justify-content:center;">
       <button class="btn" onclick="fillNext()">Reveal next answer</button>
@@ -673,7 +663,7 @@
 <nav>
   <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
   <div class="dots" id="dots"></div>
-  <div class="pageinfo" id="pageinfo">1 / 18</div>
+  <div class="pageinfo" id="pageinfo">1 / 16</div>
   <div class="copy">© 2026 Dr. Jia</div>
   <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
 </nav>
@@ -848,6 +838,82 @@ function amUpdate(){
   document.getElementById("amMoney").textContent  = rr > 0 ? (1 / rr).toFixed(1) + "\u00d7" : "\u221e \u2014 unused";
 }
 try{ amUpdate(); }catch(err){ console.error(err); }
+</script>
+<script>
+/* == math typesetting engine (math-typeset.py) == */
+/* Inside .ma / .eqbox / .mcell: a single Latin letter or a single lowercase Greek
+   letter is a variable, so it goes italic; runs of two or more letters are words or
+   abbreviations ("Deposits", "MPC", "MV") and stay upright. */
+var MATH_FN = { ln:1, log:1, exp:1, max:1, min:1, sin:1, cos:1, tan:1 };
+var MATH_IT = { rr:1 };
+function mathVar(t){
+  if(t.length === 1) return /^[A-Za-z]$/.test(t) || /^[\u03b1-\u03c9]$/.test(t);
+  return !!MATH_IT[t];
+}
+function wrapLetters(root){
+  if(!root || root.nodeType !== 1) return;
+  var walker = document.createTreeWalker(root, 4, null, false), texts = [], n;
+  while((n = walker.nextNode())) texts.push(n);
+  for(var i = 0; i < texts.length; i++){
+    var t = texts[i], p = t.parentNode;
+    if(!p || p.nodeType !== 1) continue;
+    if(/^(I|B|EM|STRONG|SUP|SUB)$/.test(p.tagName)) continue;
+    var cl = p.className ? String(p.className) : "";
+    if(cl && /(^|\s)(fn|lbl|mi)(\s|$)/.test(cl)) continue;
+    var s = t.nodeValue, changed = false;
+    if(!/[A-Za-z\u03b1-\u03c9]/.test(s)) continue;
+    var parts = s.split(/([A-Za-z\u03b1-\u03c9]+)/), frag = document.createDocumentFragment();
+    for(var j = 0; j < parts.length; j++){
+      var piece = parts[j];
+      if(!piece) continue;
+      if(/^([A-Za-z\u03b1-\u03c9]+)$/.test(piece)){
+        if(mathVar(piece)){
+          var e2 = document.createElement("i");
+          e2.textContent = piece;
+          frag.appendChild(e2);
+          changed = true;
+        } else if(MATH_FN[piece]){
+          var e3 = document.createElement("span");
+          e3.className = "fn";
+          e3.textContent = piece;
+          frag.appendChild(e3);
+          changed = true;
+        } else {
+          frag.appendChild(document.createTextNode(piece));
+        }
+      } else {
+        frag.appendChild(document.createTextNode(piece));
+      }
+    }
+    if(changed) p.replaceChild(frag, t);   /* idempotent: no change means no mutation */
+  }
+}
+function typesetMath(root){
+  root = root || document;
+  var list = [], i, found;
+  var cls = root.nodeType === 1 && root.getAttribute ? String(root.getAttribute("class") || "") : "";
+  if(/(^|\s)(ma|mas|eqbox|mcell)(\s|$)/.test(cls)) list.push(root);
+  found = root.querySelectorAll ? root.querySelectorAll(".ma,.mas,.eqbox,.mcell") : [];
+  for(i = 0; i < found.length; i++) list.push(found[i]);
+  for(i = 0; i < list.length; i++){ wrapLetters(list[i]); list[i].setAttribute("data-ts", "1"); }
+}
+typesetMath(document);
+/* decks that build markup later (chains, step reveals, dynamic tables) are covered here */
+/* Decks rewrite their own labels (slider values, step reveals). When that happens the
+   scope survives but its text is new, so the whole document is re-typeset once per frame.
+   wrapLetters is idempotent, so this settles instead of looping. */
+if(window.MutationObserver){
+  var mathQueued = false;
+  new MutationObserver(function(){
+    if(mathQueued) return;
+    mathQueued = true;
+    var run = function(){ mathQueued = false; typesetMath(document); };
+    if(window.requestAnimationFrame) requestAnimationFrame(run); else setTimeout(run, 0);
+  }).observe(document.body, { childList:true, subtree:true });
+}
+/* == /math typesetting engine == */
+
+
 </script>
 </body>
 </html>

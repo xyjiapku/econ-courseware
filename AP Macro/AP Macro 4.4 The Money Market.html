@@ -186,6 +186,43 @@
   .dn{flex:0 0 1.5em;font-weight:800;font-size:clamp(24px,2.7vh,30px);color:var(--accent-dark);}
   .drow p{font-size:clamp(22px,2.35vh,27px);line-height:1.5;margin:0;}
   .cover .q{font-size:clamp(28px,3.4vh,44px);color:#fff;font-weight:700;max-width:88%;line-height:1.35;}
+/* == math typesetting (math-typeset.py) == */
+  /* Formulas: source stays plain text. Wrap in .ma (inline) / .eqbox (block);
+     the engine italicises single-letter variables and leaves words upright. */
+  .ma,.eqbox,.mcell{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}
+  .ma{font-size:1.2em;line-height:1.22;}
+  .mas{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}   /* scope that keeps the host font-size */
+  .eqbox .ma,.mcell .ma,td .ma,th .ma,.hl .ma,.card .ma,.subline .ma,.cn .ma{font-size:1em;}
+  .ma i,.eqbox i,.mcell i{font-style:italic;font-weight:inherit;}
+  .ma .fn,.eqbox .fn,.mcell .fn{font-style:normal;}
+  .ma .fn::after,.eqbox .fn::after{content:"";display:inline-block;width:.15em;}
+  .ma sup,.ma sub,.eqbox sup,.eqbox sub,.mcell sup,.mcell sub{font-size:.82em;line-height:0;
+    font-style:normal;position:relative;vertical-align:baseline;}
+  .ma sup,.eqbox sup,.mcell sup{top:-.55em;}
+  .ma sub,.eqbox sub,.mcell sub{top:.14em;}
+  .bigop{font-size:1.32em;line-height:1;font-style:normal;position:relative;top:.08em;margin-right:.03em;}
+  .bar,.hat{position:relative;display:inline-block;}
+  .bar::after{content:"";position:absolute;left:-.05em;right:-.05em;bottom:1.05em;
+    height:.06em;background:currentColor;border-radius:.03em;}
+  .hat::after{content:"";position:absolute;left:50%;bottom:.98em;transform:translateX(-50%);
+    width:0;height:0;border-left:.15em solid transparent;border-right:.15em solid transparent;
+    border-bottom:.16em solid currentColor;}
+  .mfrac{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    vertical-align:middle;line-height:1.16;margin:0 .2em;font-size:1em;position:relative;top:.05em;}
+  .mfrac .num{padding:0 .3em .09em;border-bottom:.06em solid currentColor;}
+  .mfrac .den{padding:.09em .3em 0;}
+  .mvar{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;font-style:italic;}
+  .eqbox{display:flex;align-items:center;justify-content:center;gap:.5vw;flex-wrap:wrap;
+    background:var(--accent-dark);color:#fff;border-radius:12px;padding:.7vh 1vw;margin:.5vh 0;
+    font-size:clamp(24px,2.7vh,34px);font-weight:800;line-height:1.4;text-align:center;}
+  .eqbox.green{background:var(--green);}
+  .eqbox.amber{background:var(--amber);}
+  .eqbox.red{background:var(--red);}
+  .eqbox.ghost{background:#fff;color:var(--ink);border:3px solid var(--accent);}
+  .eqbox .lbl{font-size:clamp(22px,2.1vh,24px);font-weight:700;}
+/* == /math typesetting == */
 </style>
 </head>
 <body>
@@ -337,9 +374,9 @@
 
 <section class="slide" id="s5">
   <div class="tag">Unit 4 &middot; Lesson 6 &middot; Where money demand comes from</div>
-  <h2>MV = PY &mdash; the reason money demand moves</h2>
+  <h2><span class="ma">MV = PY</span> &mdash; the reason money demand moves</h2>
   <div class="stage">
-    <div class="constbar">MV = PY &nbsp;&rarr;&nbsp; M = PY / V</div>
+    <div class="constbar"><span class="ma">MV = PY &nbsp;&rarr;&nbsp; M = PY / V</span></div>
 
     <div class="cards" style="margin-top:1.2vh;">
       <div class="card"><h3>M</h3><p>the money people hold</p></div>
@@ -367,7 +404,7 @@
 
 <section class="slide" id="s5b">
   <div class="tag">Unit 4 &middot; Lesson 6 &middot; The same equation, read a second way</div>
-  <h2>MV = PY, in growth rates</h2>
+  <h2><span class="ma">MV = PY</span>, in growth rates</h2>
   <div class="stage">
     <div class="hl" style="padding:.5vh 1vw;line-height:1.4;">The last page read it as <b>money demand</b>. Read it in <b>growth rates</b> and it becomes a claim about <b>inflation</b>.</div>
     <div style="display:flex;flex-direction:column;gap:2vh;flex:1 0 auto;justify-content:center;margin-top:.6vh;">
@@ -450,7 +487,7 @@
 
     </div>
     <div class="s-foot">
-      <div class="hl amber">Long-run averages: <b>6.9 &minus; 3.1 = 3.8</b> &mdash; money growth minus real growth <b>is</b> inflation. In 2020 money growth hit <b>+24.5%</b> while V fell <b>&minus;23.8%</b> and inflation barely moved: the two cancelled. No single driver explains V (every correlation is under 0.5) &mdash; which is why the Fed <b>abandoned M2 targeting in 1993</b>.</div>
+      <div class="hl amber">Long-run averages: <b><span class="ma">6.9 &minus; 3.1 = 3.8</span></b> &mdash; money growth minus real growth <b>is</b> inflation. In 2020 money growth hit <b>+24.5%</b> while V fell <b>&minus;23.8%</b> and inflation barely moved: the two cancelled. No single driver explains V (every correlation is under 0.5) &mdash; which is why the Fed <b>abandoned M2 targeting in 1993</b>.</div>
     </div>
   </div>
 </section>
@@ -467,7 +504,7 @@
       <tr><td class="l">Faster payments, cards, e-wallets</td><td class="no">MD &larr;</td><td class="l">You need less cash sitting around</td></tr>
     </table>
     <div class="s-foot">
-      <div class="hl amber">Each row is one letter of <b>M = PY/V</b>. And careful: a change in <b>i</b> does not shift MD &mdash; it moves you <b>along</b> the curve.</div>
+      <div class="hl amber">Each row is one letter of <b><span class="ma">M = PY/V</span></b>. And careful: a change in <b>i</b> does not shift MD &mdash; it moves you <b>along</b> the curve.</div>
     </div>
   </div>
 </section>
@@ -980,6 +1017,82 @@ function fillReset(){
   fillEls.forEach(f=>{ f.classList.remove("done"); f.textContent = "____"; });
 }
 fillReset();
+</script>
+<script>
+/* == math typesetting engine (math-typeset.py) == */
+/* Inside .ma / .eqbox / .mcell: a single Latin letter or a single lowercase Greek
+   letter is a variable, so it goes italic; runs of two or more letters are words or
+   abbreviations ("Deposits", "MPC", "MV") and stay upright. */
+var MATH_FN = { ln:1, log:1, exp:1, max:1, min:1, sin:1, cos:1, tan:1 };
+var MATH_IT = { rr:1 };
+function mathVar(t){
+  if(t.length === 1) return /^[A-Za-z]$/.test(t) || /^[\u03b1-\u03c9]$/.test(t);
+  return !!MATH_IT[t];
+}
+function wrapLetters(root){
+  if(!root || root.nodeType !== 1) return;
+  var walker = document.createTreeWalker(root, 4, null, false), texts = [], n;
+  while((n = walker.nextNode())) texts.push(n);
+  for(var i = 0; i < texts.length; i++){
+    var t = texts[i], p = t.parentNode;
+    if(!p || p.nodeType !== 1) continue;
+    if(/^(I|B|EM|STRONG|SUP|SUB)$/.test(p.tagName)) continue;
+    var cl = p.className ? String(p.className) : "";
+    if(cl && /(^|\s)(fn|lbl|mi)(\s|$)/.test(cl)) continue;
+    var s = t.nodeValue, changed = false;
+    if(!/[A-Za-z\u03b1-\u03c9]/.test(s)) continue;
+    var parts = s.split(/([A-Za-z\u03b1-\u03c9]+)/), frag = document.createDocumentFragment();
+    for(var j = 0; j < parts.length; j++){
+      var piece = parts[j];
+      if(!piece) continue;
+      if(/^([A-Za-z\u03b1-\u03c9]+)$/.test(piece)){
+        if(mathVar(piece)){
+          var e2 = document.createElement("i");
+          e2.textContent = piece;
+          frag.appendChild(e2);
+          changed = true;
+        } else if(MATH_FN[piece]){
+          var e3 = document.createElement("span");
+          e3.className = "fn";
+          e3.textContent = piece;
+          frag.appendChild(e3);
+          changed = true;
+        } else {
+          frag.appendChild(document.createTextNode(piece));
+        }
+      } else {
+        frag.appendChild(document.createTextNode(piece));
+      }
+    }
+    if(changed) p.replaceChild(frag, t);   /* idempotent: no change means no mutation */
+  }
+}
+function typesetMath(root){
+  root = root || document;
+  var list = [], i, found;
+  var cls = root.nodeType === 1 && root.getAttribute ? String(root.getAttribute("class") || "") : "";
+  if(/(^|\s)(ma|mas|eqbox|mcell)(\s|$)/.test(cls)) list.push(root);
+  found = root.querySelectorAll ? root.querySelectorAll(".ma,.mas,.eqbox,.mcell") : [];
+  for(i = 0; i < found.length; i++) list.push(found[i]);
+  for(i = 0; i < list.length; i++){ wrapLetters(list[i]); list[i].setAttribute("data-ts", "1"); }
+}
+typesetMath(document);
+/* decks that build markup later (chains, step reveals, dynamic tables) are covered here */
+/* Decks rewrite their own labels (slider values, step reveals). When that happens the
+   scope survives but its text is new, so the whole document is re-typeset once per frame.
+   wrapLetters is idempotent, so this settles instead of looping. */
+if(window.MutationObserver){
+  var mathQueued = false;
+  new MutationObserver(function(){
+    if(mathQueued) return;
+    mathQueued = true;
+    var run = function(){ mathQueued = false; typesetMath(document); };
+    if(window.requestAnimationFrame) requestAnimationFrame(run); else setTimeout(run, 0);
+  }).observe(document.body, { childList:true, subtree:true });
+}
+/* == /math typesetting engine == */
+
+
 </script>
 </body>
 </html>
