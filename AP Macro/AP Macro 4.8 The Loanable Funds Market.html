@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 4.8 · Interest Rates and the Loanable Funds Market</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+    overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1 0 auto;min-height:44vh;overflow-y:auto;display:flex;flex-direction:column;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  .hidden{display:none !important;}
+  .steprow{display:flex;gap:.9vw;align-items:center;background:var(--accent-light);border-radius:10px;padding:.85vh 1vw;margin-bottom:.7vh;}
+  .steprow .sn{flex:0 0 auto;width:2.7vw;min-width:44px;height:2.7vw;min-height:44px;border-radius:50%;background:var(--accent-dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,2.3vh,26px);font-weight:800;}
+  .steprow .st{font-size:clamp(22px,2.3vh,26px);line-height:1.4;font-weight:600;}
+  .opt{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .opt.on{background:var(--accent);color:#fff;}
+.slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+.slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+.slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent,#1CADE4);border-radius:8px;border:3px solid #eef4f9;}
+/* == math typesetting (math-typeset.py) == */
+  /* Formulas: source stays plain text. Wrap in .ma (inline) / .eqbox (block);
+     the engine italicises single-letter variables and leaves words upright. */
+  .ma,.eqbox,.mcell{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}
+  .ma{font-size:1.2em;line-height:1.22;}
+  .mas{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}   /* scope that keeps the host font-size */
+  .eqbox .ma,.mcell .ma,td .ma,th .ma,.hl .ma,.card .ma,.subline .ma,.cn .ma{font-size:1em;}
+  .ma i,.eqbox i,.mcell i{font-style:italic;font-weight:inherit;}
+  .ma .fn,.eqbox .fn,.mcell .fn{font-style:normal;}
+  .ma .fn::after,.eqbox .fn::after{content:"";display:inline-block;width:.15em;}
+  .ma sup,.ma sub,.eqbox sup,.eqbox sub,.mcell sup,.mcell sub{font-size:.82em;line-height:0;
+    font-style:normal;position:relative;vertical-align:baseline;}
+  .ma sup,.eqbox sup,.mcell sup{top:-.55em;}
+  .ma sub,.eqbox sub,.mcell sub{top:.14em;}
+  .bigop{font-size:1.32em;line-height:1;font-style:normal;position:relative;top:.08em;margin-right:.03em;}
+  .bar,.hat{position:relative;display:inline-block;}
+  .bar::after{content:"";position:absolute;left:-.05em;right:-.05em;bottom:1.05em;
+    height:.06em;background:currentColor;border-radius:.03em;}
+  .hat::after{content:"";position:absolute;left:50%;bottom:.98em;transform:translateX(-50%);
+    width:0;height:0;border-left:.15em solid transparent;border-right:.15em solid transparent;
+    border-bottom:.16em solid currentColor;}
+  .mfrac{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    vertical-align:middle;line-height:1.16;margin:0 .2em;font-size:1em;position:relative;top:.05em;}
+  .mfrac .num{padding:0 .3em .09em;border-bottom:.06em solid currentColor;}
+  .mfrac .den{padding:.09em .3em 0;}
+  .mvar{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;font-style:italic;}
+  .eqbox{display:flex;align-items:center;justify-content:center;gap:.5vw;flex-wrap:wrap;
+    background:var(--accent-dark);color:#fff;border-radius:12px;padding:.7vh 1vw;margin:.5vh 0;
+    font-size:clamp(24px,2.7vh,34px);font-weight:800;line-height:1.4;text-align:center;}
+  .eqbox.green{background:var(--green);}
+  .eqbox.amber{background:var(--amber);}
+  .eqbox.red{background:var(--red);}
+  .eqbox.ghost{background:#fff;color:var(--ink);border:3px solid var(--accent);}
+  .eqbox .lbl{font-size:clamp(22px,2.1vh,24px);font-weight:700;}
+/* == /math typesetting == */
+
+
+  /* drill (progressive fill-in-the-blank summary) */
+  .drill{display:flex;flex-direction:column;gap:.9vh;flex:1 0 auto;}
+  .drow{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:9px solid var(--accent);border-radius:12px;padding:1.1vh 1.2vw;flex:1 1 auto;}
+  .dn{flex:0 0 1.5em;font-weight:800;font-size:clamp(24px,2.7vh,30px);color:var(--accent-dark);}
+  .fill{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent-dark);color:var(--accent-dark);font-weight:800;text-align:center;}
+  .fill.done{color:var(--green);border-color:var(--green);}
+  /* numbered vertical lists — shifter pages (p7/p9) and the tide episodes (p13) */
+  .vlist{display:flex;flex-direction:column;gap:.7vh;flex:1 1 auto;}
+  .vrow{display:flex;gap:1vw;align-items:center;background:var(--card);border:2px solid var(--line);border-left:9px solid var(--accent);border-radius:12px;padding:.9vh 1.1vw;flex:1 1 auto;}
+  .vrow .vn{flex:0 0 1.5em;font-weight:800;font-size:clamp(24px,2.6vh,30px);color:var(--accent-dark);text-align:center;}
+  .vrow.y .vn{flex:0 0 5.6em;font-size:clamp(22px,2.2vh,25px);}
+  .vbody{flex:1 1 auto;min-width:0;}
+  .vbody h3{margin:0 0 .3vh;font-size:clamp(23px,2.4vh,27px);color:var(--accent-dark);}
+  .vbody p{margin:0;font-size:clamp(22px,2.25vh,25px);line-height:1.32;}
+  /* page-scoped tightening (page numbers = the finished 17-page deck) */
+  #p2 .card,#p5 .card,#p6 .card,#p8 .card{padding:.8vh .9vw;}
+  #p2 .two,#p3 .two,#p5 .two,#p6 .two,#p8 .two,#p14 .two{flex:1 1 auto;}
+  #p2 .card,#p6 .card,#p8 .card{justify-content:center;}
+  #p5 td,#p5 th{padding:.55vh .5vw;}
+  #p5 svg{max-height:36vh;}
+  #p5 .card{flex:0 0 auto;}
+  #p6 svg{max-height:40vh;}   /* matches the inline cap on the demand figure */
+  #p6 td,#p6 th{padding:.42vh .6vw;}
+  #p6 .col{gap:.6vh;}
+  #p7 .vrow,#p9 .vrow{padding:.85vh 1.1vw;}
+  #p8 svg{max-height:40vh;}   /* matches the inline cap on the supply figure */
+  #p8 td,#p8 th{padding:.36vh .5vw;}
+  #p8 .card{padding:.7vh .9vw;flex:0 0 auto;}
+  #p8 table{flex:1 1 auto;}
+  #p12 .card h3{margin-bottom:.2vh;}
+  #p10 .card,#p11 .card{padding:1vh 1.1vw;}
+  #p10 .col,#p11 .col{justify-content:stretch;}
+  #p10 .rgrp,#p11 .rgrp{flex:1 1 auto;display:flex;flex-direction:column;gap:1.1vh;min-height:0;}
+  #p10 .card h3,#p11 .card h3{margin-bottom:.5vh;}
+  #p10 img{max-height:30vh;}
+  #p10 .piccap{margin-top:.4vh;}
+  #p13 svg{max-height:40vh;}
+  #p13 .two{flex:1 1 auto;}
+  #p13 .card{flex:1 1 auto;justify-content:center;}
+  #p14 .vbody p{font-size:clamp(22px,2.15vh,24px);}
+  #p14 .vrow{padding:.8vh 1.1vw;}
+  #p15 td,#p15 th{padding:.4vh .45vw;}
+  #p15 .hl{padding:.4vh .8vw;line-height:1.3;}
+  #p15 svg{max-height:none;}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+<section class="slide cover active" id="p1">
+  <div class="tag">AP Macroeconomics · Unit 4: Financial Sector</div>
+  <h1>Interest Rates and the Loanable Funds Market</h1>
+  <p>Nominal vs real · where saving meets investment · the dollar tide</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+<section class="slide" id="p2">
+  <div class="tag">Unit 4 · Lesson 12 · The two rates</div>
+  <h2>Two rates &mdash; and one of them is worked out from the other</h2>
+  <div class="stage">
+    <div class="two">
+      <div class="col" style="justify-content:flex-start;">
+        <div class="card"><h3>The nominal rate i</h3><p>The rate you are <b>quoted</b>: the number on the screen, <b>not adjusted</b> for inflation.</p></div>
+      </div>
+      <div class="col" style="justify-content:flex-start;">
+        <div class="card win"><h3>The real rate r</h3><p>What the loan actually <b>bought</b>. It is posted nowhere &mdash; you <b>work it out</b> by taking inflation off the nominal rate.</p></div>
+      </div>
+    </div>
+    <div class="eqbox">real = nominal &minus; actual inflation</div>
+    <table style="flex:0 0 auto;margin-top:1.2vh;">
+      <tr><th></th><th>Nominal rate i</th><th>Real rate r</th></tr>
+      <tr><td class="l">Where you see it</td><td>A <b>posted</b> rate &mdash; a mortgage, a bond, a savings account</td><td>Never posted &mdash; you compute it</td></tr>
+      <tr><td class="l">What sets it</td><td>The money market, steered by the Fed</td><td>Saving and investment &mdash; the market built below</td></tr>
+    </table>
+    <div class="s-foot">
+      <div class="hl">The real rate is the one you <b>calculate</b>: the quoted rate minus what prices actually did.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p3">
+  <div class="tag">Unit 4 · Lesson 12 · Ex ante</div>
+  <h2>The same relation, run forwards</h2>
+  <div class="stage">
+    <div class="eqbox">nominal = real + expected inflation</div>
+    <div class="two" style="flex:0 0 auto;margin-top:.6vh;">
+      <div class="col"><div class="hl" style="padding:.7vh 1vw;line-height:1.35;"><b>Ex post</b> &mdash; after the fact: the inflation that <b>actually</b> happened. Subtract it from the quoted rate and you have the real rate (the previous page).</div></div>
+      <div class="col"><div class="hl amber" style="padding:.7vh 1vw;line-height:1.35;"><b>Ex ante</b> &mdash; before the fact: the inflation both sides <b>expect</b>. Add it to the real return they want and you have the rate written into the contract.</div></div>
+    </div>
+    <div class="two" style="flex:1 1 auto;">
+      <div class="col" style="justify-content:center;"><svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;height:auto;align-self:center;">
+          <text x="260" y="60" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2d3d">nominal rate 5%</text>
+          <rect x="60" y="90" width="160" height="50" fill="#1CADE4"/>
+          <text x="140" y="121" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">real 2%</text>
+          <rect x="220" y="90" width="240" height="50" fill="#e6a23c"/>
+          <text x="340" y="121" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">inflation 3%</text>
+        </svg></div>
+      <div class="col" style="justify-content:center;">
+        <div class="hl" style="padding:1.2vh 1.2vw;line-height:1.4;">Nobody knows the future when a loan is signed, so both sides work with <b>expected</b> inflation: the real return they want, <b>plus</b> the inflation they think is coming.</div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Ex ante is the version written into the contract: <b>expected</b> real + <b>expected</b> inflation.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p4">
+  <div class="tag">Unit 4 · Lesson 12 · Can rates be negative?</div>
+  <h2>Can the rate go below zero?</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 1 auto;">
+      <div class="col" style="justify-content:center;"><svg id="zlbSvg" viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:42vh;">
+          <line x1="150" y1="200" x2="840" y2="200" stroke="#1f2d3d" stroke-width="3"/>
+          <text x="140" y="208" text-anchor="end" font-size="26" font-weight="800" fill="#1f2d3d">0%</text>
+          <text x="140" y="136" text-anchor="end" font-size="24" fill="#5b7288">+8</text>
+          <text x="140" y="172" text-anchor="end" font-size="24" fill="#5b7288">+4</text>
+          <text x="140" y="244" text-anchor="end" font-size="24" fill="#5b7288">&minus;4</text>
+          <text x="140" y="280" text-anchor="end" font-size="24" fill="#5b7288">&minus;8</text>
+          <text x="180" y="36" font-size="26" font-weight="800" fill="#0e7fae">nominal rate</text>
+          <text x="180" y="84" font-size="24" fill="#5b7288">the slider stops at 0%</text>
+          <rect id="zlbNom" x="180" y="200" width="110" height="0" fill="#1CADE4"/>
+          <text id="zlbNomV" x="0" y="0" font-size="30" font-weight="800" fill="#0e7fae"></text>
+          <text x="520" y="36" font-size="26" font-weight="800" fill="#b3382f">real rate</text>
+          <text x="520" y="84" font-size="24" fill="#5b7288">inflation eats through it</text>
+          <rect id="zlbReal" x="520" y="200" width="110" height="0" fill="#d9534f"/>
+          <text id="zlbRealV" x="0" y="0" font-size="30" font-weight="800" fill="#b3382f"></text>
+          <text x="150" y="356" font-size="24" fill="#5b7288">Both bars start at the 0% line and use the same scale.</text>
+        </svg></div>
+      <div class="col" style="justify-content:flex-start;">
+        <div class="hl amber" id="zlbNote" style="padding:.8vh 1vw;line-height:1.35;">&nbsp;</div>
+        <div class="hl" style="padding:.8vh 1vw;line-height:1.35;">
+          <b>Quick recall.</b> Earlier in this unit we met the <b>liquidity trap</b>. Was it about the <b>nominal</b> rate or the <b>real</b> rate?
+          <div class="btnrow" style="margin-top:.6vh;">
+            <button class="btn ghost" id="zlbBtn" onclick="zlbAnswer()">Show the answer</button>
+          </div>
+          <div id="zlbAns" style="display:none;margin-top:.6vh;">The <b>nominal</b> rate: at zero there is nowhere left to push, so the Fed&rsquo;s lever goes slack. The <b>real</b> rate has no floor &mdash; which is why the real rate, not the quoted one, is what actually bites on spending.</div>
+        </div>
+        <div class="sliderbox" style="margin-bottom:0;">
+          <input type="range" id="zlbNom2" min="0" max="8" step="0.5" value="3" oninput="zlbPaint()">
+          <div class="slideval" id="zlbNomV2" style="font-size:clamp(23px,2.4vh,28px);">Nominal rate: 3.0%</div>
+        </div>
+        <div class="sliderbox" style="margin-bottom:0;">
+          <input type="range" id="zlbInf" min="0" max="8" step="0.5" value="2" oninput="zlbPaint()">
+          <div class="slideval" id="zlbInfV" style="font-size:clamp(23px,2.4vh,28px);">Inflation: 2.0%</div>
+        </div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Set inflation to 0 and the two bars are the same height. Push inflation up and only one of them can follow &mdash; that is the whole point of the page.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p5">
+  <div class="tag">Unit 4 · Lesson 12 · Real data (DFII10, DGS10)</div>
+  <h2>Real rates right now</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 1 auto;">
+      <div class="col" style="justify-content:flex-start;">
+        <svg viewBox="0 0 520 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;height:auto;align-self:center;">
+          <text x="60" y="28" font-size="22" fill="#5b7288">10-year real yield, %</text>
+          <line x1="60" y1="230" x2="500" y2="230" stroke="#cfe0ee" stroke-width="2.5"/>
+          <text x="52" y="236" text-anchor="end" font-size="22" fill="#5b7288">0</text>
+          <text x="52" y="101" text-anchor="end" font-size="22" fill="#5b7288">3</text>
+          <text x="52" y="281" text-anchor="end" font-size="22" fill="#5b7288">-1</text>
+          <polyline points="60,216.5 104,207.5 148,189.5 192,216.5 236,266 280,270.5 324,185 368,153.5 412,140 456,126.5 500,99.5" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-linejoin="round"/>
+          <circle cx="500" cy="99.5" r="9" fill="#d9534f"/>
+          <text x="495" y="82" text-anchor="end" font-size="22" font-weight="700" fill="#a94442">2.9% — highest since 2008</text>
+          <text x="60" y="310" text-anchor="middle" font-size="22" fill="#5b7288">2016</text>
+          <text x="280" y="310" text-anchor="middle" font-size="22" fill="#5b7288">2021</text>
+          <text x="508" y="310" text-anchor="end" font-size="22" fill="#5b7288">2026</text>
+        </svg>
+        <div class="card win"><p>Ten-year average: about <b>0.8%</b>. Rates were <b>negative</b> through 2020&ndash;21; today a higher r means a genuinely higher cost of capital.</p></div>
+      </div>
+      <div class="col" style="justify-content:flex-start;">
+        <table>
+          <tr><th></th><th>Nominal</th><th>Inflation</th><th>Real</th></tr>
+          <tr><td class="l">Policy rate, Sept 2026</td><td>3.75&ndash;4.00%</td><td>3.8%</td><td>about <b>0%</b></td></tr>
+          <tr><td class="l">10-year Treasury</td><td>≈5.0%</td><td>≈2.2% expected</td><td>≈<b>2.9%</b></td></tr>
+          <tr><td class="l">Policy rate, 2022</td><td>≈1.7%</td><td>≈8.0%</td><td>about <b>&minus;6%</b></td></tr>
+        </table>
+        <div class="card win"><h3>Two horizons, two real rates</h3><p>The short real rate is set by the Fed; the long real rate is set by saving and investment. They need not agree.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">The 10-year real yield is about <b>2.9%</b> &mdash; a <b>17-year high</b>, against a ten-year average near zero. Never judge policy by the nominal rate alone: a <b>4%</b> policy rate with <b>3.8%</b> inflation is a <b>0%</b> real rate, and in 2022 it was about <b>&minus;6%</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p6">
+  <div class="tag">Unit 4 · Lesson 12 · Demand</div>
+  <h2>The demand curve &mdash; and why it slopes down</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 1 auto;">
+      <div class="col" style="justify-content:flex-start;">
+        <svg viewBox="0 0 580 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:40vh;"><line x1="80" y1="320" x2="500" y2="320" stroke="#1f2d3d" stroke-width="3"/>
+            <line x1="80" y1="320" x2="80" y2="60" stroke="#1f2d3d" stroke-width="3"/>
+            <text x="96" y="44" font-size="24" font-weight="800" fill="#1f2d3d">Real interest rate r (%)</text>
+            <text x="574" y="352" text-anchor="end" font-size="24" font-weight="800" fill="#1f2d3d">Quantity of loanable funds ($ trn)</text>
+            <text x="72" y="326" text-anchor="end" font-size="24" fill="#5b7288">0</text>
+            <text x="72" y="206" text-anchor="end" font-size="24" fill="#5b7288">4</text>
+            <text x="72" y="86" text-anchor="end" font-size="24" fill="#5b7288">8</text><polyline points="80.0,155.0 95.4,160.1 110.8,165.2 126.3,170.3 141.7,175.4 157.1,180.5 172.5,185.6 187.9,190.6 203.3,195.7 218.8,200.8 234.2,205.9 249.6,211.0 265.0,216.1 280.4,221.2 295.8,226.3 311.3,231.4 326.7,236.5 342.1,241.6 357.5,246.7 372.9,251.8 388.3,256.9 403.8,261.9 419.2,267.0 434.6,272.1 450.0,277.2" fill="none" stroke="#1CADE4" stroke-width="5"/><text x="462" y="272" font-size="26" font-weight="800" fill="#0e7fae">D</text><circle cx="141.7" cy="175.4" r="9" fill="#0e7fae"/><text x="159.7" y="163.4" font-size="24" fill="#0e7fae">few projects clear the bar</text><circle cx="388.3" cy="256.9" r="9" fill="#2e9e6b"/><text x="370.3" y="290.9" text-anchor="end" font-size="24" fill="#1f7a52">the next tier clears too</text></svg>
+        <div class="hl amber" style="padding:.5vh .8vw;line-height:1.28;">Real-world 2025&ndash;26: a wave of AI and data-centre capital spending &mdash; roughly <b>$200 billion</b> by the largest US tech firms &mdash; is genuine investment demand pushing on this curve.</div>
+      </div>
+      <div class="col" style="justify-content:flex-start;">
+        <div class="hl" style="padding:.4vh .8vw;line-height:1.28;">Borrowers &mdash; firms, government, households. A project pays only if its expected return <b>beats r</b>.</div>
+        <table>
+          <colgroup><col style="width:44%"><col style="width:26%"><col style="width:30%"></colgroup>
+          <tr><th>Project</th><th>Expected return</th><th>Worth investing?</th></tr>
+          <tr><td class="l">Warehouse robots</td><td>7.5%</td><td id="pjV0">&nbsp;</td></tr>
+          <tr><td class="l">A new delivery fleet</td><td>6.0%</td><td id="pjV1">&nbsp;</td></tr>
+          <tr><td class="l">A second production line</td><td>5.0%</td><td id="pjV2">&nbsp;</td></tr>
+          <tr><td class="l">Retail floor refit</td><td>3.5%</td><td id="pjV3">&nbsp;</td></tr>
+          <tr><td class="l">A new head office</td><td>2.5%</td><td id="pjV4">&nbsp;</td></tr>
+          <tr><td class="l">Repaint the lobby</td><td>1.0%</td><td id="pjV5">&nbsp;</td></tr>
+        </table>
+        <div class="sliderbox" style="margin-bottom:0;">
+          <input type="range" id="pjR" min="0" max="8" step="0.5" value="3" oninput="pjPaint()">
+          <div class="slideval" id="pjRv" style="font-size:clamp(23px,2.4vh,28px);">Real rate r = 3.0%</div>
+        </div>
+        <div class="hl amber" id="pjCount" style="padding:.5vh .8vw;line-height:1.28;"></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green">r is the <b>bar</b> every project must clear: raise it and fewer projects pay, so the quantity demanded falls.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p7">
+  <div class="tag">Unit 4 · Lesson 12 · What shifts demand</div>
+  <h2>What shifts the demand curve</h2>
+  <div class="stage">
+    <div class="vlist">
+      <div class="vrow"><span class="vn">1</span><div class="vbody"><h3>Government borrowing &uarr;</h3><p>A larger deficit means the government is in the queue too &rarr; <b>demand shifts right</b>, r rises.</p></div></div>
+      <div class="vrow"><span class="vn">2</span><div class="vbody"><h3>Policy encourages investment</h3><p>Any government policy that makes investing cheaper &mdash; an <b>investment tax credit</b>, an accelerated depreciation allowance, a subsidy &mdash; makes more projects pay &rarr; <b>demand shifts right</b>.</p></div></div>
+      <div class="vrow"><span class="vn">3</span><div class="vbody"><h3>Optimism rises &mdash; in firms <i>and</i> households</h3><p>Firms that expect higher returns green-light more projects; confident <b>households</b> borrow more for houses and cars. On this market <b>any borrower counts</b> &rarr; <b>demand shifts right</b>.</p></div></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green">Anything that changes how much borrowers want <b>at every given r</b> moves the whole curve &mdash; not a slide along it. All three push demand <b>right</b>, so r rises. A deficit is the classic case, and the squeeze it puts on private investment gets its own name later in the course: <b>crowding out</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p8">
+  <div class="tag">Unit 4 · Lesson 12 · Supply</div>
+  <h2>The supply curve &mdash; and why it slopes up</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 1 auto;">
+      <div class="col" style="justify-content:center;">
+        <svg viewBox="0 0 580 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:40vh;"><line x1="80" y1="320" x2="500" y2="320" stroke="#1f2d3d" stroke-width="3"/>
+            <line x1="80" y1="320" x2="80" y2="60" stroke="#1f2d3d" stroke-width="3"/>
+            <text x="96" y="44" font-size="24" font-weight="800" fill="#1f2d3d">Real interest rate r (%)</text>
+            <text x="574" y="352" text-anchor="end" font-size="24" font-weight="800" fill="#1f2d3d">Quantity of loanable funds ($ trn)</text>
+            <text x="72" y="326" text-anchor="end" font-size="24" fill="#5b7288">0</text>
+            <text x="72" y="206" text-anchor="end" font-size="24" fill="#5b7288">4</text>
+            <text x="72" y="86" text-anchor="end" font-size="24" fill="#5b7288">8</text><polyline points="80.0,305.0 95.4,299.9 110.8,294.8 126.3,289.7 141.7,284.6 157.1,279.5 172.5,274.4 187.9,269.4 203.3,264.3 218.8,259.2 234.2,254.1 249.6,249.0 265.0,243.9 280.4,238.8 295.8,233.7 311.3,228.6 326.7,223.5 342.1,218.4 357.5,213.3 372.9,208.2 388.3,203.1 403.8,198.1 419.2,193.0 434.6,187.9 450.0,182.8" fill="none" stroke="#e6a23c" stroke-width="5"/><text x="462" y="110" font-size="26" font-weight="800" fill="#a97422">S</text><circle cx="141.7" cy="284.6" r="9" fill="#a97422"/><text x="159.7" y="318.6" font-size="24" fill="#a97422">little reward for waiting</text><circle cx="388.3" cy="203.1" r="9" fill="#2e9e6b"/><text x="406.3" y="191.1" font-size="24" fill="#1f7a52">more saving comes in</text></svg>
+        <div class="hl" style="padding:.4vh .8vw;line-height:1.28;font-size:clamp(22px,2.1vh,25px);">Household saving rate, % of disposable income. Source: OECD, latest year; China from the national accounts (NBS, 2024).</div>
+      </div>
+      <div class="col" style="justify-content:flex-start;">
+        <div class="hl amber" style="padding:.4vh .8vw;line-height:1.28;">Savers &mdash; households, firms&rsquo; retained earnings, foreign capital.</div>
+        <div class="card"><h3>r is the reward for waiting</h3><p>Supplying funds means handing spending power to someone else today, and getting more back later. A higher r makes that wait pay better.</p></div>
+        <table>
+          <colgroup><col style="width:32%"><col style="width:18%"><col style="width:32%"><col style="width:18%"></colgroup>
+          <tr><th>Economy</th><th>Saving rate</th><th>Economy</th><th>Saving rate</th></tr>
+          <tr><td class="l">China</td><td><b>43.4%</b></td><td class="l">United States</td><td><b>4.9%</b></td></tr>
+          <tr><td class="l">France</td><td><b>12.8%</b></td><td class="l">United Kingdom</td><td><b>4.7%</b></td></tr>
+          <tr><td class="l">Germany</td><td><b>11.2%</b></td><td class="l">Japan</td><td><b>0.9%</b></td></tr>
+          <tr><td class="l">Korea</td><td><b>10.1%</b></td><td class="l">New Zealand</td><td><b>&minus;1.3%</b></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green">r is the <b>reward</b> for waiting, but how much a country saves at <i>any</i> r is a habit of its households &mdash; and the habit differs enormously.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p9">
+  <div class="tag">Unit 4 · Lesson 12 · What shifts supply</div>
+  <h2>What shifts the supply curve</h2>
+  <div class="stage">
+    <div class="vlist">
+      <div class="vrow"><span class="vn">1</span><div class="vbody"><h3>Willingness to save &uarr;</h3><p>Tax-advantaged retirement accounts, or a more cautious population &rarr; <b>supply shifts right</b>, r falls.</p></div></div>
+      <div class="vrow"><span class="vn">2</span><div class="vbody"><h3>Income and wealth &uarr;</h3><p>Richer households save more out of any income &rarr; <b>supply shifts right</b>.</p></div></div>
+      <div class="vrow"><span class="vn">3</span><div class="vbody"><h3>Capital inflows &uarr;</h3><p>Foreign savers buy US assets &rarr; <b>supply shifts right</b>, r falls.</p></div></div>
+      <div class="vrow"><span class="vn">4</span><div class="vbody"><h3>Public saving falls</h3><p>A bigger deficit is negative public saving &rarr; <b>supply shifts left</b>. The deficit can be drawn on <b>either</b> curve &mdash; both raise r.</p></div></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl green">More willingness to save, more income and wealth, or capital flowing in all push supply <b>right</b> &mdash; and r <b>down</b>. A bigger deficit is negative public saving, so it pulls supply <b>left</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p10">
+  <div class="tag">Unit 4 · Lesson 12 · National saving</div>
+  <h2>National saving = private + public</h2>
+  <div class="stage">
+    <div class="rgrp">
+      <div class="two" style="flex:1 1 auto;">
+        <div class="col"><div class="card"><h3>Private saving</h3><p>Households and firms. In the US this is the big positive term &mdash; but it is modest by historical standards.</p></div></div>
+        <div class="col"><div class="card"><h3>Public saving</h3><p>Tax revenue &minus; government spending. <b>Negative</b> whenever the budget is in deficit &mdash; which it has been every year since 2001.</p></div></div>
+    </div>
+    <div class="two" style="flex:1.35 1 auto;">
+        <div class="col" style="flex:1.45;">
+          <div class="card win"><h3>National saving &mdash; the two added together</h3><p><b>S = private saving + public saving.</b> US <b>net national saving &asymp; 0.7%</b> of national income (Q2 2026) &mdash; near its lowest on record.</p></div>
+        </div>
+        <div class="col" style="flex:1;">
+          <div class="pic" style="flex-direction:column;gap:.6vh;">
+            <img src="photos/us-treasury-building.jpg" alt="United States Treasury Building, Washington DC">
+            <div class="piccap">The U.S. Treasury &mdash; the world&rsquo;s largest single borrower</div>
+          </div>
+        </div>
+    </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl amber">A deficit is <b>negative public saving</b>: it eats out of the pool that private investment draws on.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p11">
+  <div class="tag">Unit 4 · Lesson 12 · Open economy</div>
+  <h2>In an open economy: I = S + NCI</h2>
+  <div class="stage">
+    <div class="rgrp">
+      <div class="two" style="flex:1 1 auto;">
+        <div class="col"><div class="card"><h3>Closed economy</h3><p>No borrowing or lending abroad: national saving is private saving + public saving, and it <b>must</b> equal domestic investment.</p></div></div>
+        <div class="col"><div class="card win"><h3>Open economy</h3><p>Investment = national saving + <b>net capital inflow</b>. Foreign saving fills whatever gap domestic saving leaves.</p></div></div>
+    </div>
+    <div class="two" style="flex:1 1 auto;">
+        <div class="col"><div class="card win"><h3>China &mdash; the world&rsquo;s big saver</h3><p>Saves about <b>42%</b> of GDP. Saving exceeds investment, so the surplus is <b>lent abroad</b> &mdash; a current-account <b>surplus of $735 bn</b> in 2025 (3.7% of GDP). A net <b>exporter</b> of capital: NCI is <b>negative</b>.</p></div></div>
+        <div class="col"><div class="card warn"><h3>United States &mdash; the big borrower</h3><p>Saves about <b>17%</b> of GDP, only <b>0.7%</b> net of depreciation. Investment exceeds saving, so the gap is <b>borrowed abroad</b> &mdash; a current-account deficit near <b>3% of GDP</b>. A net <b>importer</b> of capital: NCI is <b>positive</b>.</p></div></div>
+    </div>
+    </div>
+    <div class="hl" style="flex:0 0 auto;padding:.4vh .8vw;font-size:clamp(22px,2.1vh,24px);">National saving: World Bank, gross saving % of GDP, 2025 (China 42, US 17). Current account: SAFE 2025 (China); BEA Q2 2026 (US).</div>
+    <div class="s-foot">
+      <div class="hl">Foreign capital shifts the supply curve <b>right</b>, holding r below where a closed US economy would put it (Unit 6 returns to this).</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p12">
+  <div class="tag">Unit 4 · Lesson 12 · Beyond the exam · the dollar tide</div>
+  <h2>The dollar tide &mdash; how it works</h2>
+  <div class="stage">
+    <svg viewBox="0 0 1480 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:23vh;flex:0 0 auto;">
+      <rect x="20" y="16" width="300" height="96" rx="10" fill="#e3f4fb" stroke="#1CADE4" stroke-width="2"/>
+      <text x="170" y="54" text-anchor="middle" font-size="30" font-weight="800" fill="#0e7fae">US rate rises</text>
+      <text x="170" y="94" text-anchor="middle" font-size="26" fill="#5b7288">the Fed tightens</text>
+      <polygon points="332,64 356,64 356,52 380,64 356,76 356,64" fill="#a97422"/>
+      <rect x="400" y="16" width="400" height="96" rx="10" fill="#fdf3e3" stroke="#e6a23c" stroke-width="2"/>
+      <text x="600" y="54" text-anchor="middle" font-size="30" font-weight="800" fill="#a97422">US assets pay more</text>
+      <text x="600" y="94" text-anchor="middle" font-size="26" fill="#5b7288">higher yield on US debt</text>
+      <polygon points="812,64 836,64 836,52 860,64 836,76 836,64" fill="#a97422"/>
+      <rect x="880" y="16" width="580" height="96" rx="10" fill="#fdeaea" stroke="#d9534f" stroke-width="2"/>
+      <text x="1170" y="54" text-anchor="middle" font-size="30" font-weight="800" fill="#b3382f">Capital moves to the US</text>
+      <text x="1170" y="94" text-anchor="middle" font-size="26" fill="#5b7288">out of emerging markets</text>
+      <polyline points="1170,112 1170,142 170,142 170,162" fill="none" stroke="#d9534f" stroke-width="3"/>
+      <polygon points="156,160 184,160 170,182" fill="#d9534f"/>
+      <text x="470" y="210" text-anchor="middle" font-size="26" fill="#b3382f">their currency weakens, their dollar debt gets heavier</text>
+    </svg>
+    <div style="display:flex;gap:1.4vw;flex:1 1 auto;align-items:stretch;min-height:0;">
+      <div style="flex:1.1;min-width:0;display:flex;align-items:center;">
+        <svg id="tideGlobe" viewBox="0 0 640 470" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:40vh;flex:0 0 auto;touch-action:none;cursor:grab;">
+      <defs><clipPath id="gClip"><ellipse cx="320" cy="222" rx="205" ry="205"/></clipPath></defs>
+      <ellipse cx="320" cy="222" rx="205" ry="205" fill="#eaf4fb" stroke="#1CADE4" stroke-width="3"/>
+      <g clip-path="url(#gClip)">
+        <path id="gGrat" fill="none" stroke="#8fc0dd" stroke-width="1.3" opacity="0.55"/>
+        <path id="gLand" fill="#e6f0e2" stroke="#9dbb98" stroke-width="1.5" stroke-linejoin="round"/>
+        <path id="gT0" fill="none" stroke="#1CADE4" stroke-width="4" opacity="0"/>
+        <path id="gT1" fill="none" stroke="#1CADE4" stroke-width="4" opacity="0"/>
+        <path id="gT2" fill="none" stroke="#1CADE4" stroke-width="4" opacity="0"/>
+        <path id="gT3" fill="none" stroke="#1CADE4" stroke-width="4" opacity="0"/>
+        <path id="gUS" fill="#f8dcd8" stroke="#b3382f" stroke-width="2.8" stroke-linejoin="round"/>
+      </g>
+      <ellipse cx="320" cy="222" rx="205" ry="205" fill="none" stroke="#1CADE4" stroke-width="3"/>
+      <text id="gLb0" x="60" y="440" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2d3d" paint-order="stroke" stroke="#ffffff" stroke-width="7"></text>
+      <text id="gLb1" x="160" y="440" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2d3d" paint-order="stroke" stroke="#ffffff" stroke-width="7"></text>
+      <text id="gLb2" x="260" y="440" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2d3d" paint-order="stroke" stroke="#ffffff" stroke-width="7"></text>
+      <text id="gLb3" x="360" y="440" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2d3d" paint-order="stroke" stroke="#ffffff" stroke-width="7"></text>
+      <text id="gLb4" x="460" y="440" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2d3d" paint-order="stroke" stroke="#ffffff" stroke-width="7"></text>
+      <text id="gLb5" x="560" y="440" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2d3d" paint-order="stroke" stroke="#ffffff" stroke-width="7"></text>
+      <text x="320" y="452" text-anchor="middle" font-size="28" fill="#5b7288">Drag the globe to spin it</text>
+    </svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.9vh;justify-content:center;">
+        <div class="hl" id="tideNote" style="padding:.6vh .9vw;line-height:1.32;">&nbsp;</div>
+        <div class="btnrow" style="gap:.7vw;">
+          <button class="btn" id="tideHike" style="flex:1 1 0;" onclick="tideSet('hike')">US raises rates</button>
+          <button class="btn ghost" id="tideCut" style="flex:1 1 0;" onclick="tideSet('cut')">US cuts rates</button>
+        </div>
+        <div class="hl" style="padding:.6vh .9vw;line-height:1.3;font-size:clamp(24px,2.6vh,30px);">Fed funds rate: <span id="tideRate" style="font-weight:800;color:var(--accent-dark);">&nbsp;</span></div>
+        <div class="hl amber" style="padding:.5vh .9vw;line-height:1.28;font-size:clamp(22px,2.1vh,25px);">Tap <b>raise</b> and the rings pull <b>in</b> to the US; tap <b>cut</b> and they push <b>out</b> again. Drag the globe to spin it &mdash; the rings always spread from the United States.</div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Every arrow on that globe is the <b>capital-inflow</b> shifter of the supply curve &mdash; seen from the other side of the world.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p13">
+  <div class="tag">Unit 4 · Lesson 12 · Beyond the exam · the dollar tide</div>
+  <h2>The dollar tide &mdash; a fifty-year cycle</h2>
+  <div class="stage">
+    <svg viewBox="0 0 940 330" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:40vh;">
+      <line x1="80" y1="250" x2="905" y2="250" stroke="#1f2d3d" stroke-width="3"/>
+      <line x1="80" y1="250" x2="80" y2="46" stroke="#1f2d3d" stroke-width="3"/>
+      <text x="80" y="34" font-size="30" font-weight="800" fill="#1f2d3d">DXY</text>
+      <text x="70" y="225" text-anchor="end" font-size="28" fill="#5b7288">80</text>
+      <text x="70" y="157" text-anchor="end" font-size="28" fill="#5b7288">120</text>
+      <text x="70" y="89" text-anchor="end" font-size="28" fill="#5b7288">160</text>
+      <line x1="80" y1="182" x2="902" y2="182" stroke="#5b7288" stroke-width="2" stroke-dasharray="9 8" opacity="0.4"/>
+      <polyline points="83.1,182.0 267.2,72.0 374.0,219.4 520.9,146.3 624.6,231.8 848.9,156.8 892.3,187.1" fill="none" stroke="#1CADE4" stroke-width="5"/>
+      <circle cx="83.1" cy="182.0" r="8" fill="#5b7288"/>
+      <circle cx="267.2" cy="72.0" r="8" fill="#b3382f"/>
+      <circle cx="374.0" cy="219.4" r="8" fill="#5b7288"/>
+      <circle cx="520.9" cy="146.3" r="8" fill="#b3382f"/>
+      <circle cx="624.6" cy="231.8" r="8" fill="#5b7288"/>
+      <circle cx="848.9" cy="156.8" r="8" fill="#b3382f"/>
+      <circle cx="892.3" cy="187.1" r="8" fill="#a97422"/>
+      <text x="267" y="56" text-anchor="middle" font-size="28" font-weight="800" fill="#b3382f">164.7 &middot; Feb 1985</text>
+      <text x="521" y="126" text-anchor="middle" font-size="28" font-weight="800" fill="#b3382f">121 &middot; 2001</text>
+      <text x="862" y="140" text-anchor="end" font-size="28" font-weight="800" fill="#b3382f">114.8 &middot; Sep 2022</text>
+      <text x="638" y="214" font-size="28" font-weight="800" fill="#5b7288">70.7 &middot; Mar 2008</text>
+      <text x="372" y="192" text-anchor="middle" font-size="28" font-weight="800" fill="#5b7288">78 &middot; 1992</text>
+      <text x="92" y="172" font-size="28" fill="#5b7288">100 &middot; 1973</text>
+      <text x="110.9" y="278" text-anchor="middle" font-size="28" fill="#5b7288">1975</text>
+      <text x="265.7" y="278" text-anchor="middle" font-size="28" fill="#5b7288">1985</text>
+      <text x="420.4" y="278" text-anchor="middle" font-size="28" fill="#5b7288">1995</text>
+      <text x="575.1" y="278" text-anchor="middle" font-size="28" fill="#5b7288">2005</text>
+      <text x="729.8" y="278" text-anchor="middle" font-size="28" fill="#5b7288">2015</text>
+      <text x="884.5" y="278" text-anchor="middle" font-size="28" fill="#5b7288">2025</text>
+      <text x="80" y="316" font-size="26" fill="#5b7288">Plotted through the cycle peaks and troughs. Sources: DXY, Federal Reserve rate cycles.</text>
+    </svg>
+    <div class="two" style="flex:1 1 auto;">
+      <div class="col">
+        <div class="card"><h3>Why it happens</h3><p>When US rates rise above everyone else&rsquo;s, dollars are pulled home. That is the <b>capital inflow</b> shifter you met on the supply page &mdash; seen from the other side of the world.</p></div>
+      </div>
+      <div class="col">
+        <div class="card win"><h3>Where the tide is now</h3><p>It came in three times in fifty years. Since late 2022 it has been going out: the index has slipped from <b>114.8</b> back below <b>100</b>.</p></div>
+      </div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">A rising dollar is not just an American story &mdash; it makes every dollar-denominated debt on earth heavier to service.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p14">
+  <div class="tag">Unit 4 · Lesson 12 · Beyond the exam · the dollar tide</div>
+  <h2>Four times the tide broke something</h2>
+  <div class="stage">
+    <div class="vlist">
+      <div class="vrow y"><span class="vn">1980&ndash;82</span><div class="vbody"><p><b>The Volcker shock.</b> Fed funds went from 6% to <b>20%</b> and the index rose 50%, to a record <b>164.7</b>. On 12 Aug 1982 Mexico stopped servicing <b>$80bn</b> of dollar debt; the region&rsquo;s external debt had reached $327bn, and Latin American income per head did not recover until 1994.</p></div></div>
+      <div class="vrow y"><span class="vn">1997&ndash;98</span><div class="vbody"><p><b>Asia.</b> The dollar gained about 15% while the yen slid. Thailand floated the baht on 2 July 1997 and it fell 20% the same day; by January 1998 the rupiah was down <b>81%</b>, the baht <b>56%</b> and the won <b>55%</b>. Firms that had borrowed in dollars could not repay.</p></div></div>
+      <div class="vrow y"><span class="vn">2013</span><div class="vbody"><p><b>The taper tantrum.</b> Not one hike &mdash; only a hint, on 22 May. The US 10-year yield went from 1.6% to <b>3.0%</b>, and in four months the rupee fell <b>17%</b>, the real <b>13%</b>, the rupiah <b>11%</b> and the lira <b>10%</b>.</p></div></div>
+      <div class="vrow y"><span class="vn">2022&ndash;23</span><div class="vbody"><p><b>The fastest hikes in forty years</b> &mdash; +525bp in sixteen months. The index ran from 95.7 to <b>114.8</b> (Sep 2022), a 20-year high. Sri Lanka defaulted for the first time in its history; by September, 17 sovereigns traded at distressed levels, against 8 in January.</p></div></div>
+    </div>
+    <div class="s-foot">
+      <div class="hl">Same mechanism every time: the dollar rises, the local currency falls, and debt borrowed in dollars grows heavier in local money. Unit 6 studies the open economy properly.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p15">
+  <div class="tag">Unit 4 · Lesson 12 · Putting it together</div>
+  <h2>Two markets, side by side</h2>
+  <div class="stage">
+    <div class="two">
+      <div class="col" style="justify-content:flex-start;">
+        <svg viewBox="0 0 380 250" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:380px;height:auto;align-self:center;">
+          <line x1="40" y1="215" x2="350" y2="215" stroke="#1f2d3d" stroke-width="2"/>
+          <line x1="40" y1="215" x2="40" y2="30" stroke="#1f2d3d" stroke-width="2"/>
+          <text x="10" y="24" font-size="22" fill="#5b7288">nominal i</text>
+          <line x1="240" y1="45" x2="240" y2="215" stroke="#d9534f" stroke-width="4"/>
+          <text x="252" y="62" font-size="22" font-weight="700" fill="#a94442">MS</text>
+          <polyline points="70,60 330,195" fill="none" stroke="#1CADE4" stroke-width="4"/>
+          <text x="300" y="185" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">MD</text>
+        </svg>
+        <div class="hl" style="padding:.4vh .8vw;">Money market &mdash; the <b>nominal</b> rate i, short-term, Fed-steered.</div>
+      </div>
+      <div class="col" style="justify-content:flex-start;">
+        <svg viewBox="0 0 380 250" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:380px;height:auto;align-self:center;">
+          <line x1="40" y1="215" x2="350" y2="215" stroke="#1f2d3d" stroke-width="2"/>
+          <line x1="40" y1="215" x2="40" y2="30" stroke="#1f2d3d" stroke-width="2"/>
+          <text x="10" y="24" font-size="22" fill="#5b7288">real r</text>
+          <polyline points="70,195 330,60" fill="none" stroke="#2e9e6b" stroke-width="4"/>
+          <text x="338" y="58" text-anchor="end" font-size="22" font-weight="700" fill="#1e6e4a">S</text>
+          <polyline points="70,60 330,195" fill="none" stroke="#1CADE4" stroke-width="4"/>
+          <text x="338" y="202" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">D</text>
+        </svg>
+        <div class="hl amber" style="padding:.4vh .8vw;">Loanable funds &mdash; the <b>real</b> rate r, set by saving and investment.</div>
+      </div>
+    </div>
+    <table style="flex:0 0 auto;">
+      <tr><th></th><th>Money market</th><th>Loanable funds market</th></tr>
+      <tr><td class="l">What is traded</td><td class="l">Money &mdash; cash and reserves</td><td class="l">Funds for investment &mdash; saving</td></tr>
+      <tr><td class="l">Price on the vertical axis</td><td class="l"><b>Nominal</b> interest rate i</td><td class="l"><b>Real</b> interest rate r</td></tr>
+      <tr><td class="l">Demand comes from</td><td class="l">People and banks holding money</td><td class="l">Borrowers: firms, government, households</td></tr>
+      <tr><td class="l">Supply comes from</td><td class="l">The central bank (a vertical line)</td><td class="l">Savers, including foreign capital</td></tr>
+      <tr><td class="l">Who sets the price</td><td class="l">Mostly the Fed</td><td class="l">Saving and investment &mdash; not the Fed</td></tr>
+      
+    </table>
+    <div class="s-foot">
+      <div class="hl">The bridge between the two rates is the Fisher relation: <b>nominal = real + expected inflation</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="p16">
+  <div class="tag">Unit 4 · Lesson 12 · Key takeaways</div>
+  <h2>What to walk out with &mdash; fill the blanks</h2>
+  <div class="stage">
+    <div class="drill">
+      <div class="drow"><span class="dn">1</span><p>This market prices the <span class="fill" data-a="real">____</span> rate &mdash; <span class="fill" data-a="savers">____</span> supply the funds and borrowers demand them.</p></div>
+      <div class="drow"><span class="dn">2</span><p>Demand slopes <span class="fill" data-a="down">____</span> &mdash; a ranking of projects; supply slopes <span class="fill" data-a="up">____</span> &mdash; the reward for waiting.</p></div>
+      <div class="drow"><span class="dn">3</span><p>A deficit shifts demand to the <span class="fill" data-a="right">____</span>, so the equilibrium real rate <span class="fill" data-a="rises">____</span>.</p></div>
+      <div class="drow"><span class="dn">4</span><p><b>real</b> = <span class="fill" data-a="nominal">____</span> &minus; actual inflation; the forward-looking version uses <span class="fill" data-a="expected">____</span> inflation instead.</p></div>
+      <div class="drow"><span class="dn">5</span><p>Every posted rate is <span class="fill" data-a="nominal">____</span>; anything you worked out by subtracting inflation is <span class="fill" data-a="real">____</span>.</p></div>
+    </div>
+    <div class="btnrow" style="margin-top:1vh;justify-content:center;">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+    <div class="s-foot">
+      <div class="hl amber">Unit 4 continues: bond prices, opportunity cost, and then the unit review.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide cover" id="p17">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <p>One market prices the real rate · one relation converts it into the quoted one</p>
+  <div class="meta">Dr. Jia · © 2026</div>
+</section>
+
+</main>
+
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 17</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+
+/* ═══════════ 翻页 ═══════════ */
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+function goTo(i){ gotoSlide(i); }
+window.goTo = goTo;
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+/* 翻页只走左右下角按键：方向键/空格翻页已移除（2026-10-08 硬规矩） */
+
+
+
+
+
+/* ═══════════ p4 零下限：两根条同一原点、同一比例 ═══════════
+   real = nominal − inflation；名义利率的滑块下限就是 0（现金地板）。 */
+const ZLB_K = 9, ZLB_ZERO = 200;
+function zlbPaint(){
+  const nom = +document.getElementById("zlbNom2").value;
+  const inf = +document.getElementById("zlbInf").value;
+  const real = nom - inf;
+  const nh = nom * ZLB_K;
+  const nr = document.getElementById("zlbNom");
+  nr.setAttribute("y", ZLB_ZERO - nh); nr.setAttribute("height", Math.max(1, nh));
+  const nv = document.getElementById("zlbNomV");
+  nv.setAttribute("x", 302); nv.setAttribute("y", ZLB_ZERO - nh - 12);
+  nv.textContent = nom.toFixed(1) + "%";
+  const rh = Math.abs(real) * ZLB_K;
+  const rr = document.getElementById("zlbReal");
+  rr.setAttribute("y", real >= 0 ? ZLB_ZERO - rh : ZLB_ZERO);
+  rr.setAttribute("height", Math.max(1, rh));
+  const rv = document.getElementById("zlbRealV");
+  rv.setAttribute("x", 642);
+  rv.setAttribute("y", real >= 0 ? ZLB_ZERO - rh - 12 : ZLB_ZERO + rh + 34);
+  rv.textContent = (real >= 0 ? "+" : "") + real.toFixed(1) + "%";
+  document.getElementById("zlbNomV2").textContent = "Nominal rate: " + nom.toFixed(1) + "%";
+  document.getElementById("zlbInfV").textContent = "Inflation: " + inf.toFixed(1) + "%";
+  const note = document.getElementById("zlbNote");
+  if (Math.abs(real) < 0.05) {
+    note.innerHTML = "Inflation and the nominal rate are the same, so the real rate is <b>0%</b> &mdash; the lender neither gains nor loses purchasing power.";
+  } else if (real > 0) {
+    note.innerHTML = "Real rate = " + nom.toFixed(1) + "% &minus; " + inf.toFixed(1) + "% = <b>+" + real.toFixed(1) + "%</b>. Inflation is below the nominal rate, so the lender is still ahead.";
+  } else {
+    note.innerHTML = "Real rate = " + nom.toFixed(1) + "% &minus; " + inf.toFixed(1) + "% = <b>" + real.toFixed(1) + "%</b>. The nominal rate cannot fall below zero to help &mdash; that is the trap.";
+  }
+}
+function zlbAnswer(){
+  const a = document.getElementById("zlbAns");
+  a.style.display = a.style.display === "none" ? "" : "none";
+  document.getElementById("zlbBtn").textContent = a.style.display === "none" ? "Show the answer" : "Hide the answer";
+  typesetMath(document);
+}
+
+/* ═══════════ p6 项目清单：拖 r，看哪些项目还值得投 ═══════════
+   每一行是一个真实资本支出决策：预期收益率是数据，最后一列由 r 算出来。
+   r 越高，能过线的项目越少 —— 这本身就是需求曲线。 */
+const PJ_RET = [7.5, 6.0, 5.0, 3.5, 2.5, 1.0];
+function pjPaint(){
+  const r = parseFloat(document.getElementById("pjR").value);
+  let n = 0;
+  PJ_RET.forEach(function(v, i){
+    const ok = v > r, cell = document.getElementById("pjV" + i);
+    if (ok) n++;
+    cell.textContent = ok ? "Yes" : "No";
+    cell.className = ok ? "yes" : "no";
+  });
+  document.getElementById("pjRv").textContent = "Real rate r = " + r.toFixed(1) + "%";
+  document.getElementById("pjCount").innerHTML =
+    "<b>" + n + " of " + PJ_RET.length + "</b> projects clear the bar at r = " + r.toFixed(1) +
+    "% &mdash; that is the <b>quantity of loanable funds demanded</b>.";
+}
+
+/* ═══════════ p12 地球：可拖动旋转 + 潮汐圆环 ═══════════
+   正射投影。**关键技巧**：不做几何裁剪 —— 把背面的点也照常投影（它们会落到圆盘外），
+   再用 SVG clipPath 裁成圆盘，可见半球就自动正确了（背面的陆地折叠到盘外被裁掉）。
+   潮汐 = 以美国为中心、角半径 rho 的"帽子"边界圆：加息时 rho 由大到小（往里收），
+   减息时由小到大（往外扩）。 */
+const G_D2R = Math.PI / 180;
+const G_CX = 320, G_CY = 222, G_R = 205;
+const G_LAND = [[-1800,-845,-1430,-850,-1535,-835,-1530,-820,-1570,-810,-1465,-805,-1575,-785,-1585,-770,-1515,-775,-1460,-765,-1465,-755,-1450,-750,-1140,-735,-1005,-755,-1035,-725,-975,-735,-890,-725,-815,-740,-805,-730,-760,-740,-680,-730,-670,-720,-685,-700,-675,-670,-590,-635,-570,-635,-615,-645,-655,-675,-615,-710,-605,-730,-620,-745,-770,-765,-735,-780,-780,-790,-755,-805,-570,-830,-285,-805,-360,-785,-165,-750,-155,-730,-70,-710,280,-705,340,-685,385,-700,520,-660,570,-660,585,-675,690,-680,680,-720,700,-725,740,-700,880,-660,960,-675,1030,-655,1060,-670,1145,-660,1200,-675,1355,-655,1365,-670,1460,-670,1490,-685,1710,-715,1695,-735,1635,-760,1670,-790,1620,-790,1600,-810,1695,-840,1785,-845],[-680,-540,-650,-545,-690,-555,-745,-530,-710,-540,-685,-525],[1730,-410,1740,-410,1730,-440,1715,-440,1700,-465,1665,-460],[1745,-360,1770,-380,1785,-375,1760,-415,1745,-415,1745,-365,1725,-345],[500,-135,505,-155,495,-155,475,-240,450,-255,435,-235,445,-160,465,-160,490,-120],[1435,-140,1455,-150,1460,-185,1530,-255,1530,-315,1495,-380,1415,-385,1380,-345,1370,-355,1380,-330,1360,-350,1345,-325,1315,-315,1180,-350,1150,-340,1160,-320,1135,-265,1140,-220,1210,-195,1255,-140,1295,-150,1325,-110,1365,-120,1355,-150,1395,-175,1415,-165,1425,-105],[1085,-70,1110,-65,1155,-85,1055,-70,1060,-60],[1340,-10,1355,-35,1385,-15,1455,-45,1480,-65,1470,-75,1510,-105,1445,-75,1425,-95,1375,-85,1385,-60,1330,-40,1320,-30,1340,-25,1305,-10],[1250,15,1235,0,1200,0,1210,-15,1235,-10,1215,-20,1230,-55,1215,-50,1210,-25,1195,-55,1200,5],[1060,-60,1015,-30,955,55,1040,0,1060,-30],[1180,20,1190,10,1160,-40,1100,-30,1090,15,1130,30,1165,70,1190,55],[-795,230,-740,205,-780,200,-770,205,-800,220,-850,220],[1410,370,1405,350,1360,335,1310,340,1315,315,1300,315,1295,335,1395,380,1415,415],[1435,505,1445,490,1430,495,1435,460,1420,460,1415,535,1425,545],[-30,585,-40,575,-20,575,-30,560,15,515,-60,500,-35,515,-50,515,-40,525,-50,530,-30,535,-55,555,-60,580],[-145,665,-135,650,-180,635,-230,640,-220,645,-240,650,-220,655,-245,655],[-1800,690,-1750,665,-1700,660,-1745,645,-1800,660,-1800,650,1800,650,1775,645,1795,625,1705,600,1635,600,1620,580,1630,560,1570,510,1560,570,1645,625,1600,605,1595,620,1565,615,1540,600,1550,590,1420,590,1350,545,1390,545,1415,520,1370,450,1275,400,1295,355,1265,345,1270,370,1245,380,1255,395,1210,390,1215,410,1180,390,1195,370,1225,375,1190,350,1220,315,1215,280,1175,235,1060,200,1055,190,1095,135,1065,95,1050,85,1050,100,1000,135,990,90,1035,50,1035,10,980,85,990,115,970,170,955,155,940,160,945,180,915,230,870,215,805,160,800,105,775,80,735,160,725,215,705,210,665,255,575,255,570,270,545,265,500,300,480,300,500,255,515,260,515,240,540,240,565,265,570,240,600,225,555,170,435,125,425,175,345,280,350,295,340,275,325,300,370,220,375,185,435,125,425,115,455,105,510,120,510,105,475,40,390,-45,410,-145,350,-195,355,-240,325,-255,325,-285,280,-330,195,-350,180,-340,180,-315,145,-255,145,-220,115,-175,135,-105,125,-60,90,-10,100,30,85,50,65,40,45,65,-20,45,-80,45,-110,60,-170,130,-160,180,-170,220,-145,265,-95,300,-95,325,-60,360,-20,350,5,365,95,375,110,370,100,345,115,330,165,310,195,305,215,330,250,315,345,310,360,365,275,365,260,395,335,420,405,410,415,425,365,450,390,475,350,465,365,450,340,445,325,455,335,460,305,465,275,425,290,410,225,405,240,380,225,365,190,425,125,455,125,440,185,405,170,405,160,380,155,400,90,445,30,430,-20,365,-90,370,-95,430,-20,435,-10,460,-45,485,-15,485,-20,500,15,500,45,530,90,540,85,570,105,575,95,555,110,540,195,545,215,550,215,575,240,570,235,590,290,600,215,605,210,625,255,650,220,655,170,615,190,600,160,560,130,555,105,595,55,585,50,620,190,700,245,710,405,680,410,670,385,660,330,665,370,640,365,650,440,660,435,685,465,680,455,675,465,665,535,690,545,690,535,680,600,685,605,700,685,680,665,710,690,730,725,730,735,685,715,665,725,660,750,680,730,715,750,720,745,730,765,710,760,720,775,725,815,715,805,735,1020,775,1140,760,1095,740,1270,735,1295,710,1400,715,1390,725,1405,730,1695,685,1710,690,1705,700,1785,695],[-905,695,-905,685,-890,695,-875,670,-855,700,-810,685,-815,670,-860,665,-920,630,-945,600,-925,570,-825,550,-800,510,-785,525,-800,545,-765,565,-785,590,-780,625,-740,625,-695,610,-695,590,-675,580,-645,605,-620,565,-580,550,-555,520,-600,500,-655,505,-710,470,-650,490,-640,485,-645,460,-605,470,-600,460,-655,435,-645,455,-660,455,-710,430,-700,415,-740,410,-760,370,-765,390,-755,355,-815,315,-805,250,-835,300,-890,305,-895,290,-930,300,-965,285,-980,230,-965,195,-945,180,-920,185,-905,210,-870,215,-890,160,-835,155,-840,110,-820,90,-770,85,-720,125,-710,120,-720,115,-715,90,-705,120,-655,100,-620,105,-570,60,-530,55,-500,15,-505,0,-385,-35,-355,-50,-345,-75,-390,-140,-410,-220,-465,-240,-540,-345,-585,-340,-565,-365,-575,-380,-625,-390,-625,-410,-650,-410,-635,-425,-675,-455,-655,-470,-690,-505,-680,-525,-710,-540,-750,-525,-755,-485,-740,-470,-755,-465,-725,-425,-745,-430,-715,-325,-700,-200,-765,-140,-815,-60,-800,-25,-810,-10,-770,40,-780,85,-795,90,-810,70,-860,100,-875,135,-1040,185,-1055,225,-1150,320,-1095,230,-1120,245,-1150,275,-1140,285,-1170,325,-1205,345,-1245,405,-1245,485,-1225,470,-1230,490,-1275,510,-1340,580,-1470,610,-1515,590,-1505,615,-1540,595,-1540,580,-1650,545,-1575,575,-1570,590,-1620,585,-1625,600,-1655,605,-1660,615,-1615,635,-1610,650,-1680,655,-1615,660,-1670,685,-1565,715,-1375,690,-1280,705,-1215,700,-1150,690,-1140,685,-1155,680,-1135,675,-1060,690,-960,675,-940,690,-965,700,-950,720,-915,700,-925,695],[-1140,730,-1100,730,-1080,715,-1085,730,-1065,730,-1010,695,-1135,685,-1175,700,-1125,705,-1195,715],[-865,730,-825,740,-810,720,-780,730,-720,715,-670,690,-690,685,-620,670,-620,660,-640,650,-680,665,-645,635,-650,625,-690,635,-660,620,-750,645,-775,640,-780,655,-740,655,-725,675,-775,700,-900,710,-895,730,-860,740],[-1205,715,-1260,720,-1240,735,-1250,745,-1155,735],[575,705,515,720,555,750,610,765,690,765,585,745,555,725],[-870,795,-860,795,-910,780,-965,800,-925,815],[-685,830,-620,825,-770,795,-755,785,-805,760,-895,765,-880,770,-885,780,-850,775,-880,785,-850,795,-870,805,-820,805,-915,815,-825,830],[-270,835,-210,825,-320,820,-120,815,-200,800,-175,800,-195,790,-185,770,-215,765,-195,745,-235,735,-225,720,-250,725,-220,705,-255,715,-265,700,-225,700,-400,655,-430,625,-435,600,-485,610,-515,635,-540,670,-510,700,-545,695,-545,710,-515,705,-560,715,-545,725,-585,755,-685,760,-715,770,-670,775,-735,780,-655,795,-680,800,-625,820,-445,815,-470,825]];
+const G_US = [[-1228,490,-948,495,-948,488,-885,482,-850,470,-825,452,-830,418,-748,450,-715,450,-692,475,-678,470,-670,448,-700,438,-708,430,-700,418,-738,410,-720,410,-740,408,-750,390,-755,395,-750,385,-760,372,-762,392,-762,380,-770,382,-758,355,-815,308,-800,270,-808,250,-838,300,-865,305,-895,302,-892,292,-902,290,-948,295,-972,278,-975,258,-990,262,-1010,295,-1040,292,-1065,318,-1110,312,-1148,328,-1172,325,-1185,340,-1205,345,-1245,402,-1240,468,-1248,482,-1230,480,-1225,470],[-1410,698,-1410,602,-1375,590,-1355,598,-1300,560,-1305,548,-1340,580,-1408,598,-1470,610,-1518,592,-1505,612,-1540,592,-1532,588,-1595,555,-1650,545,-1578,575,-1570,590,-1620,588,-1618,598,-1652,605,-1660,615,-1645,632,-1608,638,-1615,645,-1608,648,-1650,645,-1680,658,-1645,665,-1618,660,-1668,682,-1662,690,-1565,712]];
+const G_LABS = [[58, -100, "Canada"], [40, -99, "United States"], [50, 14, "Europe"],
+                [3, 20, "Africa"], [42, 92, "Asia"], [-18, -62, "Latin America"]];
+const G_USPT = [39.5, -98.5];
+const G_TN = 4, G_THMAX = 118 * G_D2R;
+let gLon = -98.5, gLat = 34, gPhase = 0, gMode = "hike", gDrag = null;
+
+function gVec(lon, lat){
+  const ph = lat * G_D2R, cl = Math.cos(lon * G_D2R), sl = Math.sin(lon * G_D2R);
+  return [Math.cos(ph) * cl, Math.cos(ph) * sl, Math.sin(ph)];
+}
+function gView(v){
+  const c0 = Math.cos(gLat * G_D2R), s0 = Math.sin(gLat * G_D2R);
+  const cl = Math.cos(gLon * G_D2R), sl = Math.sin(gLon * G_D2R);
+  const a = v[0] * cl + v[1] * sl;
+  return [v[1] * cl - v[0] * sl, c0 * v[2] - s0 * a, s0 * v[2] + c0 * a];
+}
+function gPix(lon, lat){
+  const p = gView(gVec(lon, lat));
+  return [G_CX + G_R * p[0], G_CY - G_R * p[1], p[2]];
+}
+function gRing(flat){
+  let d = "";
+  const n = flat.length >> 1;
+  for (let i = 0; i < n; i++){
+    const p = gPix(flat[2 * i] / 10, flat[2 * i + 1] / 10);
+    d += (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1);
+  }
+  return d + "Z";
+}
+function gAll(rings){
+  let d = "";
+  for (let i = 0; i < rings.length; i++) d += gRing(rings[i]);
+  return d;
+}
+function gGrat(){
+  let d = "";
+  for (let lon = -180; lon < 180; lon += 30){
+    for (let lat = -88; lat <= 88; lat += 4){
+      const p = gPix(lon, lat);
+      d += (lat <= -88 ? "M" : "L") + p[0].toFixed(0) + " " + p[1].toFixed(0);
+    }
+  }
+  for (let lat = -60; lat <= 60; lat += 30){
+    for (let lon = -180; lon <= 180; lon += 4){
+      const p = gPix(lon, lat);
+      d += (lon <= -180 ? "M" : "L") + p[0].toFixed(0) + " " + p[1].toFixed(0);
+    }
+  }
+  return d;
+}
+function gCap(rho, seg){
+  const c = gVec(G_USPT[1], G_USPT[0]);
+  const up = Math.abs(c[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
+  let u = [c[1] * up[2] - c[2] * up[1], c[2] * up[0] - c[0] * up[2], c[0] * up[1] - c[1] * up[0]];
+  const un = Math.hypot(u[0], u[1], u[2]);
+  u = [u[0] / un, u[1] / un, u[2] / un];
+  const v = [c[1] * u[2] - c[2] * u[1], c[2] * u[0] - c[0] * u[2], c[0] * u[1] - c[1] * u[0]];
+  const ct = Math.cos(rho), st = Math.sin(rho);
+  let d = "";
+  for (let i = 0; i <= seg; i++){
+    const t = i / seg * 2 * Math.PI, ca = Math.cos(t), sa = Math.sin(t);
+    const p = gView([ct * c[0] + st * (ca * u[0] + sa * v[0]),
+                     ct * c[1] + st * (ca * u[1] + sa * v[1]),
+                     ct * c[2] + st * (ca * u[2] + sa * v[2])]);
+    const X = G_CX + G_R * p[0], Y = G_CY - G_R * p[1];
+    d += (i ? "L" : "M") + X.toFixed(1) + " " + Y.toFixed(1);
+  }
+  return d;
+}
+function gTides(){
+  const hike = gMode === "hike";
+  for (let i = 0; i < G_TN; i++){
+    const t = (gPhase + i / G_TN) % 1;
+    const rho = hike ? 1 - t : t;
+    const el = document.getElementById("gT" + i);
+    if (!el) continue;
+    el.setAttribute("d", gCap(rho * G_THMAX, 72));
+    el.setAttribute("stroke", hike ? "#1CADE4" : "#e6a23c");
+    el.setAttribute("stroke-width", (4.5 - 2.5 * rho).toFixed(1));
+    el.setAttribute("opacity", (0.12 + 0.72 * (1 - rho)).toFixed(3));
+  }
+}
+function gBase(){
+  const land = document.getElementById("gLand"), us = document.getElementById("gUS");
+  if (!land) return;
+  land.setAttribute("d", gAll(G_LAND));
+  us.setAttribute("d", gAll(G_US));
+  document.getElementById("gGrat").setAttribute("d", gGrat());
+  for (let i = 0; i < G_LABS.length; i++){
+    const L = G_LABS[i], p = gPix(L[1], L[0]), el = document.getElementById("gLb" + i);
+    if (!el) continue;
+    if (p[2] > 0.18){                       // 正面：放上名字
+      el.textContent = L[2];
+      el.setAttribute("x", p[0].toFixed(1));
+      el.setAttribute("y", p[1].toFixed(1));
+      el.setAttribute("opacity", "1");
+    } else {                                // 背面：清空并停到画布内的安全位（看不见）
+      el.textContent = "";
+      el.setAttribute("x", 60 + i * 100);
+      el.setAttribute("y", 440);
+      el.setAttribute("opacity", "0");
+    }
+  }
+  gTides();
+}
+function tideSet(kind){
+  gMode = kind;
+  const hike = kind === "hike";
+  const hb = document.getElementById("tideHike"), cb = document.getElementById("tideCut");
+  if (hb) hb.className = "btn" + (hike ? "" : " ghost");
+  if (cb) cb.className = "btn" + (hike ? " ghost" : "");
+  const rate = document.getElementById("tideRate");
+  if (rate) rate.textContent = hike ? "0.25% → 5.50%" : "5.50% → 0.25%";
+  const note = document.getElementById("tideNote");
+  if (note) note.innerHTML = hike
+    ? "<b>Tightening.</b> US yields jump above everyone else&rsquo;s, so the tide runs <b>in</b>: capital is pulled towards the US. Emerging-market currencies weaken and their dollar debt grows heavier."
+    : "<b>Easing.</b> US yields fall, so the tide runs <b>out</b>: capital goes looking for yield elsewhere and emerging-market currencies recover.";
+  gTides();
+}
+function gTick(ts){
+  const pg = document.getElementById("p12");
+  if (pg && pg.classList.contains("active")){
+    gPhase = (gPhase + 0.0032) % 1;
+    gTides();
+  }
+  requestAnimationFrame(gTick);
+}
+function gReset(){
+  gLon = -98.5; gLat = 34; gBase();
+}
+function gBind(){
+  const sv = document.getElementById("tideGlobe");
+  if (!sv) return;
+  sv.addEventListener("pointerdown", function(e){
+    gDrag = [e.clientX, e.clientY, gLon, gLat];
+    try { sv.setPointerCapture(e.pointerId); } catch (err) {}
+    sv.style.cursor = "grabbing";
+  });
+  sv.addEventListener("pointermove", function(e){
+    if (!gDrag) return;
+    gLon = gDrag[2] - (e.clientX - gDrag[0]) * 0.45;
+    gLat = Math.max(-78, Math.min(78, gDrag[3] + (e.clientY - gDrag[1]) * 0.45));
+    gBase();
+  });
+  const stop = function(e){
+    if (!gDrag) return;
+    gDrag = null; sv.style.cursor = "grab";
+    try { sv.releasePointerCapture(e.pointerId); } catch (err) {}
+  };
+  sv.addEventListener("pointerup", stop);
+  sv.addEventListener("pointercancel", stop);
+  sv.addEventListener("dblclick", gReset);
+}
+
+/* ═══════════ p16 总结填空 ═══════════ */
+const fillEls = Array.from(document.querySelectorAll(".fill"));
+let fillIdx = 0;
+function fillNext(){
+  if (fillIdx >= fillEls.length) return;
+  fillEls[fillIdx].textContent = fillEls[fillIdx].dataset.a;
+  fillEls[fillIdx].classList.add("done");
+  fillIdx++;
+}
+function fillAll(){ fillEls.forEach(function(f){ f.textContent = f.dataset.a; f.classList.add("done"); }); fillIdx = fillEls.length; }
+function fillReset(){ fillIdx = 0; fillEls.forEach(function(f){ f.classList.remove("done"); f.textContent = "____"; }); }
+
+/* ═══════════ init ═══════════ */
+zlbPaint();
+pjPaint();
+tideSet("hike");
+gBind();
+gBase();
+fillReset();
+const _noMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+try { if (!_noMotion) requestAnimationFrame(gTick); } catch (e) { /* no rAF (headless) */ }
+
+try{
+  const hashInit = parseInt(location.hash.slice(1)||"0",10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+}catch(err){ console.error(err); gotoSlide(0); }
+</script>
+<script>
+/* == math typesetting engine (math-typeset.py) == */
+/* Inside .ma / .eqbox / .mcell: a single Latin letter or a single lowercase Greek
+   letter is a variable, so it goes italic; runs of two or more letters are words or
+   abbreviations ("Deposits", "MPC", "MV") and stay upright. */
+var MATH_FN = { ln:1, log:1, exp:1, max:1, min:1, sin:1, cos:1, tan:1 };
+var MATH_IT = { rr:1 };
+function mathVar(t){
+  if(t.length === 1) return /^[A-Za-z]$/.test(t) || /^[\u03b1-\u03c9]$/.test(t);
+  return !!MATH_IT[t];
+}
+function wrapLetters(root){
+  if(!root || root.nodeType !== 1) return;
+  var walker = document.createTreeWalker(root, 4, null, false), texts = [], n;
+  while((n = walker.nextNode())) texts.push(n);
+  for(var i = 0; i < texts.length; i++){
+    var t = texts[i], p = t.parentNode;
+    if(!p || p.nodeType !== 1) continue;
+    if(/^(I|B|EM|STRONG|SUP|SUB)$/.test(p.tagName)) continue;
+    var cl = p.className ? String(p.className) : "";
+    if(cl && /(^|\s)(fn|lbl|mi)(\s|$)/.test(cl)) continue;
+    var s = t.nodeValue, changed = false;
+    if(!/[A-Za-z\u03b1-\u03c9]/.test(s)) continue;
+    var parts = s.split(/([A-Za-z\u03b1-\u03c9]+)/), frag = document.createDocumentFragment();
+    for(var j = 0; j < parts.length; j++){
+      var piece = parts[j];
+      if(!piece) continue;
+      if(/^([A-Za-z\u03b1-\u03c9]+)$/.test(piece)){
+        if(mathVar(piece)){
+          var e2 = document.createElement("i");
+          e2.textContent = piece;
+          frag.appendChild(e2);
+          changed = true;
+        } else if(MATH_FN[piece]){
+          var e3 = document.createElement("span");
+          e3.className = "fn";
+          e3.textContent = piece;
+          frag.appendChild(e3);
+          changed = true;
+        } else {
+          frag.appendChild(document.createTextNode(piece));
+        }
+      } else {
+        frag.appendChild(document.createTextNode(piece));
+      }
+    }
+    if(changed) p.replaceChild(frag, t);   /* idempotent: no change means no mutation */
+  }
+}
+function typesetMath(root){
+  root = root || document;
+  var list = [], i, found;
+  var cls = root.nodeType === 1 && root.getAttribute ? String(root.getAttribute("class") || "") : "";
+  if(/(^|\s)(ma|mas|eqbox|mcell)(\s|$)/.test(cls)) list.push(root);
+  found = root.querySelectorAll ? root.querySelectorAll(".ma,.mas,.eqbox,.mcell") : [];
+  for(i = 0; i < found.length; i++) list.push(found[i]);
+  for(i = 0; i < list.length; i++){ wrapLetters(list[i]); list[i].setAttribute("data-ts", "1"); }
+}
+typesetMath(document);
+/* decks that build markup later (chains, step reveals, dynamic tables) are covered here */
+/* Decks rewrite their own labels (slider values, step reveals). When that happens the
+   scope survives but its text is new, so the whole document is re-typeset once per frame.
+   wrapLetters is idempotent, so this settles instead of looping. */
+if(window.MutationObserver){
+  var mathQueued = false;
+  new MutationObserver(function(){
+    if(mathQueued) return;
+    mathQueued = true;
+    var run = function(){ mathQueued = false; typesetMath(document); };
+    if(window.requestAnimationFrame) requestAnimationFrame(run); else setTimeout(run, 0);
+  }).observe(document.body, { childList:true, subtree:true });
+}
+/* == /math typesetting engine == */
+
+
+
+</script>
+</body>
+</html>
