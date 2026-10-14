@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 5.1 · Policy and the Phillips Curve</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+    overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1 0 auto;min-height:44vh;overflow-y:auto;display:flex;flex-direction:column;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  .hidden{display:none !important;}
+  .steprow{display:flex;gap:.9vw;align-items:center;background:var(--accent-light);border-radius:10px;padding:.85vh 1vw;margin-bottom:.7vh;}
+  .steprow .sn{flex:0 0 auto;width:2.7vw;min-width:44px;height:2.7vw;min-height:44px;border-radius:50%;background:var(--accent-dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,2.3vh,26px);font-weight:800;}
+  .steprow .st{font-size:clamp(22px,2.3vh,26px);line-height:1.4;font-weight:600;}
+  .opt{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .opt.on{background:var(--accent);color:#fff;}
+.bk{display:inline-block;min-width:5.2em;border-bottom:2.5px solid var(--accent);
+      text-align:center;color:#b9c9d6;font-weight:700;padding:0 .2em;}
+  .bk.on{color:var(--green);border-bottom-color:var(--green);}
+.slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+.slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+.slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent,#1CADE4);border-radius:8px;border:3px solid #eef4f9;}
+/* 总结页（s19）：表格从 1 行变 2 行后纵向超了 30px → 这一页的行距/表内边距各收一档
+   （只作用于 #s19，不动全 deck 的 .steprow / table 观感）。 */
+#s19 .steprow{padding:.55vh 1vw;margin-bottom:.45vh;}
+#s19 table th,#s19 table td{padding:.6vh .8vw;}
+/* == math typesetting (math-typeset.py) == */
+  /* Formulas: source stays plain text. Wrap in .ma (inline) / .eqbox (block);
+     the engine italicises single-letter variables and leaves words upright. */
+  .ma,.eqbox,.mcell{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}
+  .ma{font-size:1.2em;line-height:1.22;}
+  .mas{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}   /* scope that keeps the host font-size */
+  .eqbox .ma,.mcell .ma,td .ma,th .ma,.hl .ma,.card .ma,.subline .ma,.cn .ma{font-size:1em;}
+  .ma i,.eqbox i,.mcell i{font-style:italic;font-weight:inherit;}
+  .ma .fn,.eqbox .fn,.mcell .fn{font-style:normal;}
+  .ma .fn::after,.eqbox .fn::after{content:"";display:inline-block;width:.15em;}
+  .ma sup,.ma sub,.eqbox sup,.eqbox sub,.mcell sup,.mcell sub{font-size:.82em;line-height:0;
+    font-style:normal;position:relative;vertical-align:baseline;}
+  .ma sup,.eqbox sup,.mcell sup{top:-.55em;}
+  .ma sub,.eqbox sub,.mcell sub{top:.14em;}
+  .bigop{font-size:1.32em;line-height:1;font-style:normal;position:relative;top:.08em;margin-right:.03em;}
+  .bar,.hat{position:relative;display:inline-block;}
+  .bar::after{content:"";position:absolute;left:-.05em;right:-.05em;bottom:1.05em;
+    height:.06em;background:currentColor;border-radius:.03em;}
+  .hat::after{content:"";position:absolute;left:50%;bottom:.98em;transform:translateX(-50%);
+    width:0;height:0;border-left:.15em solid transparent;border-right:.15em solid transparent;
+    border-bottom:.16em solid currentColor;}
+  .mfrac{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    vertical-align:middle;line-height:1.16;margin:0 .2em;font-size:1em;position:relative;top:.05em;}
+  .mfrac .num{padding:0 .3em .09em;border-bottom:.06em solid currentColor;}
+  .mfrac .den{padding:.09em .3em 0;}
+  .mvar{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;font-style:italic;}
+  .eqbox{display:flex;align-items:center;justify-content:center;gap:.5vw;flex-wrap:wrap;
+    background:var(--accent-dark);color:#fff;border-radius:12px;padding:.7vh 1vw;margin:.5vh 0;
+    font-size:clamp(24px,2.7vh,34px);font-weight:800;line-height:1.4;text-align:center;}
+  .eqbox.green{background:var(--green);}
+  .eqbox.amber{background:var(--amber);}
+  .eqbox.red{background:var(--red);}
+  .eqbox.ghost{background:#fff;color:var(--ink);border:3px solid var(--accent);}
+  .eqbox .lbl{font-size:clamp(22px,2.1vh,24px);font-weight:700;}
+/* == /math typesetting == */
+
+
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main><section class="slide cover active" id="s1">
+  <div class="tag">AP Macroeconomics &middot; Unit 5: Long-Run Consequences &middot; Part 1 of 2</div>
+  <h1>Policy and the Phillips Curve</h1>
+  <p>The two toolboxes &middot; the trade-off &middot; the long run</p>
+  <p style="font-size:clamp(23px,2.6vh,30px);">Build the SRPC yourself &mdash; then watch the 1970s break it, and see what is left standing</p>
+  <div class="meta">Dr. Jia &middot; &copy; 2026 &middot; Part 1 of 2 &middot; the model</div>
+</section>
+<section class="slide" id="s2">
+  <div class="tag">Unit 5 &middot; Lesson 1 &middot; Already yours &middot; the multiplier</div>
+  <h2>The gap decides the direction</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
+      <div style="flex:1.15;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah12c5f96" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#2c5f96"/></marker><marker id="ah1a94442" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#a94442"/></marker></defs><line x1="76" y1="330" x2="548" y2="330" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="330" x2="76" y2="46" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Price level</text><text x="312.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Real GDP (Y)</text><text x="217.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="335.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="453.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">110</text><text x="68.0" y="284.8" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="68.0" y="196.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="68.0" y="107.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">110</text><line x1="146.8" y1="330.0" x2="194.0" y2="294.5" stroke="#e6a23c" stroke-width="4.5"/><line x1="194.0" y1="294.5" x2="253.0" y2="250.1" stroke="#e6a23c" stroke-width="4.5"/><line x1="253.0" y1="250.1" x2="312.0" y2="205.8" stroke="#e6a23c" stroke-width="4.5"/><line x1="312.0" y1="205.8" x2="371.0" y2="161.4" stroke="#e6a23c" stroke-width="4.5"/><line x1="371.0" y1="161.4" x2="430.0" y2="117.0" stroke="#e6a23c" stroke-width="4.5"/><line x1="430.0" y1="117.0" x2="489.0" y2="72.6" stroke="#e6a23c" stroke-width="4.5"/><line x1="489.0" y1="72.6" x2="524.4" y2="46.0" stroke="#e6a23c" stroke-width="4.5"/><line x1="76.0" y1="99.2" x2="135.0" y2="143.6" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="135.0" y1="143.6" x2="194.0" y2="188.0" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="194.0" y1="188.0" x2="253.0" y2="232.4" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="253.0" y1="232.4" x2="312.0" y2="276.8" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="312.0" y1="276.8" x2="371.0" y2="321.1" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="371.0" y1="321.1" x2="382.8" y2="330.0" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="146.8" y1="46.0" x2="194.0" y2="81.5" stroke="#1f2d3d" stroke-width="4.5"/><line x1="194.0" y1="81.5" x2="253.0" y2="125.9" stroke="#1f2d3d" stroke-width="4.5"/><line x1="253.0" y1="125.9" x2="312.0" y2="170.2" stroke="#1f2d3d" stroke-width="4.5"/><line x1="312.0" y1="170.2" x2="371.0" y2="214.6" stroke="#1f2d3d" stroke-width="4.5"/><line x1="371.0" y1="214.6" x2="430.0" y2="259.0" stroke="#1f2d3d" stroke-width="4.5"/><line x1="430.0" y1="259.0" x2="489.0" y2="303.4" stroke="#1f2d3d" stroke-width="4.5"/><line x1="489.0" y1="303.4" x2="524.4" y2="330.0" stroke="#1f2d3d" stroke-width="4.5"/><line x1="288.4" y1="46.0" x2="312.0" y2="63.8" stroke="#1CADE4" stroke-width="4.5"/><line x1="312.0" y1="63.8" x2="371.0" y2="108.1" stroke="#1CADE4" stroke-width="4.5"/><line x1="371.0" y1="108.1" x2="430.0" y2="152.5" stroke="#1CADE4" stroke-width="4.5"/><line x1="430.0" y1="152.5" x2="489.0" y2="196.9" stroke="#1CADE4" stroke-width="4.5"/><line x1="489.0" y1="196.9" x2="548.0" y2="241.2" stroke="#1CADE4" stroke-width="4.5"/><line x1="335.6" y1="330.0" x2="335.6" y2="46.0" stroke="#2e9e6b" stroke-width="4.5"/><circle cx="264.8" cy="241.2" r="9" fill="#6b7c8d"/><circle cx="335.6" cy="188.0" r="9" fill="#1f2d3d"/><circle cx="406.4" cy="134.8" r="9" fill="#0e7fae"/><text x="341.5" y="72.6" text-anchor="start" font-size="22" fill="#1e6e4a" font-weight="700">LRAS</text><text x="123.2" y="326.4" text-anchor="start" font-size="22" fill="#a04000" font-weight="700">SRAS</text><text x="235.3" y="89.5" text-anchor="start" font-size="22" fill="#1f2d3d" font-weight="700">AD₀</text><text x="494.9" y="178.2" text-anchor="start" font-size="22" fill="#0e7fae" font-weight="700">AD₁</text><text x="129.1" y="116.1" text-anchor="start" font-size="22" fill="#6b7c8d" font-weight="700">AD₂</text><line x1="264.8" y1="285.6" x2="300.2" y2="285.6" stroke="#2c5f96" stroke-width="3" marker-end="url(#ah12c5f96)"/><line x1="335.6" y1="285.6" x2="300.2" y2="285.6" stroke="#2c5f96" stroke-width="3" marker-end="url(#ah12c5f96)"/><line x1="335.6" y1="315.8" x2="371.0" y2="315.8" stroke="#a94442" stroke-width="3" marker-end="url(#ah1a94442)"/><line x1="406.4" y1="315.8" x2="371.0" y2="315.8" stroke="#a94442" stroke-width="3" marker-end="url(#ah1a94442)"/><text x="300.2" y="271.4" text-anchor="middle" font-size="22" fill="#2c5f96" font-weight="700">recessionary</text><text x="371.0" y="303.4" text-anchor="middle" font-size="22" fill="#a94442" font-weight="700">inflationary</text></svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.9vh;">
+        <div class="card warn"><h3>Recessionary gap</h3><p>AD sits left of LRAS: output <b>below</b> potential, unemployment <b>above</b> the natural rate &rarr; <b>expansionary</b> policy (AD&#8321;).</p></div>
+        <div class="card lose"><h3>Inflationary gap</h3><p>AD sits right of LRAS: output <b>above</b> potential, unemployment <b>below</b> the natural rate &rarr; <b>contractionary</b> policy.</p></div>
+        <div class="hl amber" style="margin-top:.6vh;">Whole unit starts here: find the gap, then pick a direction.</div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">AD-AS tells you where the economy is. The rest of the unit asks how long policy can keep it there.</div></div>
+  </div>
+</section>
+<section class="slide" id="s3">
+  <div class="tag">Unit 5 &middot; Lesson 1 &middot; Already yours &middot; the fiscal multiplier</div>
+  <h2>The two toolboxes you already own</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.6vw;flex:1 0 auto;flex-wrap:nowrap;">
+      <div style="flex:1.05;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
+        <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah2d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="330" x2="548" y2="330" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="330" x2="76" y2="46" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Price level</text><text x="312.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Real GDP (Y)</text><text x="217.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="335.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="453.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">110</text><text x="68.0" y="284.8" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="68.0" y="196.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="68.0" y="107.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">110</text><line x1="146.8" y1="330.0" x2="194.0" y2="294.5" stroke="#e6a23c" stroke-width="4.5"/><line x1="194.0" y1="294.5" x2="253.0" y2="250.1" stroke="#e6a23c" stroke-width="4.5"/><line x1="253.0" y1="250.1" x2="312.0" y2="205.8" stroke="#e6a23c" stroke-width="4.5"/><line x1="312.0" y1="205.8" x2="371.0" y2="161.4" stroke="#e6a23c" stroke-width="4.5"/><line x1="371.0" y1="161.4" x2="430.0" y2="117.0" stroke="#e6a23c" stroke-width="4.5"/><line x1="430.0" y1="117.0" x2="489.0" y2="72.6" stroke="#e6a23c" stroke-width="4.5"/><line x1="489.0" y1="72.6" x2="524.4" y2="46.0" stroke="#e6a23c" stroke-width="4.5"/><line x1="146.8" y1="46.0" x2="194.0" y2="81.5" stroke="#1f2d3d" stroke-width="4.5"/><line x1="194.0" y1="81.5" x2="253.0" y2="125.9" stroke="#1f2d3d" stroke-width="4.5"/><line x1="253.0" y1="125.9" x2="312.0" y2="170.2" stroke="#1f2d3d" stroke-width="4.5"/><line x1="312.0" y1="170.2" x2="371.0" y2="214.6" stroke="#1f2d3d" stroke-width="4.5"/><line x1="371.0" y1="214.6" x2="430.0" y2="259.0" stroke="#1f2d3d" stroke-width="4.5"/><line x1="430.0" y1="259.0" x2="489.0" y2="303.4" stroke="#1f2d3d" stroke-width="4.5"/><line x1="489.0" y1="303.4" x2="524.4" y2="330.0" stroke="#1f2d3d" stroke-width="4.5"/><line x1="382.8" y1="46.0" x2="430.0" y2="81.5" stroke="#1CADE4" stroke-width="4.5"/><line x1="430.0" y1="81.5" x2="489.0" y2="125.9" stroke="#1CADE4" stroke-width="4.5"/><line x1="489.0" y1="125.9" x2="548.0" y2="170.2" stroke="#1CADE4" stroke-width="4.5"/><line x1="335.6" y1="330.0" x2="335.6" y2="46.0" stroke="#2e9e6b" stroke-width="4.5"/><circle cx="335.6" cy="188.0" r="9" fill="#1f2d3d"/><circle cx="453.6" cy="99.2" r="9" fill="#0e7fae"/><line x1="276.6" y1="143.6" x2="512.6" y2="143.6" stroke="#d9534f" stroke-width="4" marker-end="url(#ah2d9534f)"/><text x="406.4" y="285.6" text-anchor="start" font-size="22" fill="#1f2d3d" font-weight="700">AD₀</text><text x="524.4" y="214.6" text-anchor="end" font-size="22" fill="#0e7fae" font-weight="700">AD₁</text><text x="146.8" y="308.7" text-anchor="start" font-size="22" fill="#a04000" font-weight="700">SRAS</text><text x="340.3" y="298.9" text-anchor="start" font-size="22" fill="#1e6e4a" font-weight="700">LRAS</text><text x="382.8" y="69.1" text-anchor="middle" font-size="22" fill="#a94442" font-weight="700">expansionary policy</text><text x="382.8" y="109.0" text-anchor="middle" font-size="22" fill="#a94442" font-weight="400">fiscal or monetary</text></svg>
+        <div class="hl" style="text-align:center;">Both toolboxes do the same thing to this diagram: <b>AD shifts right.</b></div>
+      </div>
+      <div class="col" style="flex:1;min-width:0;justify-content:center;">
+        <div class="card"><h3>Fiscal policy (Unit 3)</h3><p><b>Higher spending</b> on roads, schools or transfers, or <b>lower taxes</b>.</p></div>
+        <div class="card"><p>The package is <b>multiplied</b>: $1 of spending moves AD by more than $1.</p></div>
+        <div class="card win"><h3>Monetary policy (Unit 4)</h3><p><b>Lowering the target range</b> so IORB falls, plus asset purchases.</p></div>
+        <div class="card win"><p>The rate falls &rarr; investment and durables rise &rarr; <b>AD right</b>.</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">Unit 5 asks the next question: <b>what happens after you use them?</b></div></div>
+  </div>
+</section>
+<section class="slide" id="s4">
+  <div class="tag">Unit 5 &middot; Lesson 1 &middot; Two tools together</div>
+  <h2>When the two tools point the same way</h2>
+  <div class="stage">
+    <table style="flex:0 0 auto;">
+      <tr><th>Combination</th><th>In practice</th><th>AD</th><th>Real output</th><th>Price level</th></tr>
+      <tr><td class="l">Fiscal <b>+</b> &middot; Monetary <b>+</b></td><td class="l">A big spending package plus a rate cut &mdash; the 2020 response</td><td>right &uarr;&uarr;</td><td class="yes">up</td><td class="no">up</td></tr>
+      <tr><td class="l">Fiscal <b>&minus;</b> &middot; Monetary <b>&minus;</b></td><td class="l">Spending cuts or tax rises plus rate rises &mdash; the 2022&ndash;23 slowdown</td><td>left &darr;&darr;</td><td class="no">down</td><td class="yes">down</td></tr>
+    </table>
+    <div class="hl amber" style="margin-top:.5vh;flex:0 0 auto;">Same direction &rarr; <b>AD, output and the price level all move predictably.</b> So why do the two tools so often point <b>opposite</b> ways in practice?</div>
+    <div class="two" style="flex:1 1 auto;flex-wrap:nowrap;gap:1.4vw;margin-top:.6vh;min-height:0;">
+      <div class="col" style="min-width:0;">
+        <div class="card warn"><h3>Two different decision-makers</h3><p>The <b>Fed is independent</b> and answers to its inflation mandate; the <b>government</b> answers to voters and carries the debt.</p></div>
+      </div>
+      <div class="col" style="min-width:0;">
+        <div class="card"><h3>Two different clocks</h3><p>A budget passes once a year and is hard to reverse; the Fed meets eight times. By the time inflation arrives, <b>the spending is already law</b>.</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">2022&ndash;23 is the textbook case: the Fed went to 5.25&ndash;5.50% while the deficit stayed near 5&ndash;6% of GDP. Tight money, loose fiscal.</div></div>
+  </div>
+</section>
+<section class="slide" id="s5">
+  <div class="tag">Unit 5 &middot; Lesson 1 &middot; Already yours &middot; the loanable funds market</div>
+  <h2>Both policies, one market: the real interest rate</h2>
+  <div class="stage">
+    <svg viewBox="0 0 1140 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1140px;height:auto;align-self:center;"><defs><marker id="ah3d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker><marker id="ah4d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="274" x2="540" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="274" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Real interest rate (%)</text><text x="308.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Quantity of loanable funds ($ trillions)</text><text x="192.0" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="308.0" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="424.0" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="68.0" y="204.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="68.0" y="127.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="68.0" y="50.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="530.7" y="52.8" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Fiscal expansion</text><line x1="76.0" y1="202.6" x2="134.0" y2="189.5" stroke="#2e9e6b" stroke-width="4.5"/><line x1="134.0" y1="189.5" x2="192.0" y2="176.4" stroke="#2e9e6b" stroke-width="4.5"/><line x1="192.0" y1="176.4" x2="250.0" y2="163.3" stroke="#2e9e6b" stroke-width="4.5"/><line x1="250.0" y1="163.3" x2="308.0" y2="150.1" stroke="#2e9e6b" stroke-width="4.5"/><line x1="308.0" y1="150.1" x2="366.0" y2="137.0" stroke="#2e9e6b" stroke-width="4.5"/><line x1="366.0" y1="137.0" x2="424.0" y2="123.9" stroke="#2e9e6b" stroke-width="4.5"/><line x1="424.0" y1="123.9" x2="482.0" y2="110.7" stroke="#2e9e6b" stroke-width="4.5"/><line x1="482.0" y1="110.7" x2="540.0" y2="97.6" stroke="#2e9e6b" stroke-width="4.5"/><line x1="76.0" y1="113.4" x2="134.0" y2="126.5" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="134.0" y1="126.5" x2="192.0" y2="139.6" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="192.0" y1="139.6" x2="250.0" y2="152.7" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="250.0" y1="152.7" x2="308.0" y2="165.9" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="308.0" y1="165.9" x2="366.0" y2="179.0" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="366.0" y1="179.0" x2="424.0" y2="192.1" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="424.0" y1="192.1" x2="482.0" y2="205.3" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="482.0" y1="205.3" x2="540.0" y2="218.4" stroke="#1CADE4" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="76.0" y1="63.5" x2="134.0" y2="76.6" stroke="#1CADE4" stroke-width="4.5"/><line x1="134.0" y1="76.6" x2="192.0" y2="89.7" stroke="#1CADE4" stroke-width="4.5"/><line x1="192.0" y1="89.7" x2="250.0" y2="102.9" stroke="#1CADE4" stroke-width="4.5"/><line x1="250.0" y1="102.9" x2="308.0" y2="116.0" stroke="#1CADE4" stroke-width="4.5"/><line x1="308.0" y1="116.0" x2="366.0" y2="129.1" stroke="#1CADE4" stroke-width="4.5"/><line x1="366.0" y1="129.1" x2="424.0" y2="142.2" stroke="#1CADE4" stroke-width="4.5"/><line x1="424.0" y1="142.2" x2="482.0" y2="155.4" stroke="#1CADE4" stroke-width="4.5"/><line x1="482.0" y1="155.4" x2="540.0" y2="168.5" stroke="#1CADE4" stroke-width="4.5"/><text x="493.6" y="98.1" text-anchor="start" font-size="22" fill="#1e6e4a" font-weight="700">S</text><text x="192.0" y="78.1" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">D + G</text><text x="366.0" y="191.4" text-anchor="start" font-size="22" fill="#1c5d8c" font-weight="700">D</text><line x1="273.2" y1="158.0" x2="383.4" y2="158.0" stroke="#b2bec3" stroke-width="2.5" stroke-dasharray="7 5"/><line x1="418.2" y1="158.0" x2="418.2" y2="126.9" stroke="#d9534f" stroke-width="3.5" marker-end="url(#ah3d9534f)"/><circle cx="273.2" cy="158.0" r="9" fill="#0e7fae"/><circle cx="383.4" cy="133.1" r="9" fill="#a94442"/><line x1="650" y1="274" x2="1114" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="650" y1="274" x2="650" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="650.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Real interest rate (%)</text><text x="882.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Quantity of loanable funds ($ trillions)</text><text x="766.0" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="882.0" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="998.0" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="642.0" y="204.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="642.0" y="127.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="642.0" y="50.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="1104.7" y="52.8" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Monetary expansion</text><line x1="650.0" y1="202.6" x2="708.0" y2="189.5" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="708.0" y1="189.5" x2="766.0" y2="176.4" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="766.0" y1="176.4" x2="824.0" y2="163.3" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="824.0" y1="163.3" x2="882.0" y2="150.1" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="882.0" y1="150.1" x2="940.0" y2="137.0" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="940.0" y1="137.0" x2="998.0" y2="123.9" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="998.0" y1="123.9" x2="1056.0" y2="110.7" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="1056.0" y1="110.7" x2="1114.0" y2="97.6" stroke="#2e9e6b" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="650.0" y1="252.5" x2="708.0" y2="239.4" stroke="#2e9e6b" stroke-width="4.5"/><line x1="708.0" y1="239.4" x2="766.0" y2="226.3" stroke="#2e9e6b" stroke-width="4.5"/><line x1="766.0" y1="226.3" x2="824.0" y2="213.1" stroke="#2e9e6b" stroke-width="4.5"/><line x1="824.0" y1="213.1" x2="882.0" y2="200.0" stroke="#2e9e6b" stroke-width="4.5"/><line x1="882.0" y1="200.0" x2="940.0" y2="186.9" stroke="#2e9e6b" stroke-width="4.5"/><line x1="940.0" y1="186.9" x2="998.0" y2="173.8" stroke="#2e9e6b" stroke-width="4.5"/><line x1="998.0" y1="173.8" x2="1056.0" y2="160.6" stroke="#2e9e6b" stroke-width="4.5"/><line x1="1056.0" y1="160.6" x2="1114.0" y2="147.5" stroke="#2e9e6b" stroke-width="4.5"/><line x1="650.0" y1="113.4" x2="708.0" y2="126.5" stroke="#1CADE4" stroke-width="4.5"/><line x1="708.0" y1="126.5" x2="766.0" y2="139.6" stroke="#1CADE4" stroke-width="4.5"/><line x1="766.0" y1="139.6" x2="824.0" y2="152.7" stroke="#1CADE4" stroke-width="4.5"/><line x1="824.0" y1="152.7" x2="882.0" y2="165.9" stroke="#1CADE4" stroke-width="4.5"/><line x1="882.0" y1="165.9" x2="940.0" y2="179.0" stroke="#1CADE4" stroke-width="4.5"/><line x1="940.0" y1="179.0" x2="998.0" y2="192.1" stroke="#1CADE4" stroke-width="4.5"/><line x1="998.0" y1="192.1" x2="1056.0" y2="205.3" stroke="#1CADE4" stroke-width="4.5"/><line x1="1056.0" y1="205.3" x2="1114.0" y2="218.4" stroke="#1CADE4" stroke-width="4.5"/><text x="1067.6" y="196.3" text-anchor="start" font-size="22" fill="#1c5d8c" font-weight="700">D</text><text x="713.8" y="251.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">S + Fed</text><text x="980.6" y="115.4" text-anchor="start" font-size="22" fill="#6e8b7a" font-weight="700">S</text><line x1="847.2" y1="158.0" x2="957.4" y2="158.0" stroke="#b2bec3" stroke-width="2.5" stroke-dasharray="7 5"/><line x1="992.2" y1="158.0" x2="992.2" y2="189.1" stroke="#d9534f" stroke-width="3.5" marker-end="url(#ah4d9534f)"/><circle cx="847.2" cy="158.0" r="9" fill="#0e7fae"/><circle cx="957.4" cy="182.9" r="9" fill="#a94442"/></svg>
+    <div class="two" style="flex:0 0 auto;flex-wrap:nowrap;gap:1.4vw;margin-top:.5vh;">
+      <div class="col" style="min-width:0;">
+        <div class="aim" style="margin-bottom:0;"><div class="no">1</div><div><div class="at">Fiscal expansion pushes r up</div><div class="ad">Selling bonds to fund the spending shifts <b>demand</b> right: the real rate <b>rises to 3.65%</b>.</div></div></div>
+      </div>
+      <div class="col" style="min-width:0;">
+        <div class="aim" style="margin-bottom:0;"><div class="no">2</div><div><div class="at">Monetary expansion pulls r down</div><div class="ad">Buying securities creates reserves, so <b>supply</b> shifts right: the real rate <b>falls to 2.36%</b>.</div></div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber"><b>3 &middot; Same axes, same rate, opposite pressure.</b> One tool pushes the real interest rate up, the other pulls it down &mdash; so together the answer is <b>indeterminate</b>. (In 4.4 the Fed's move showed up in the <i>money</i> market and in the <i>nominal</i> rate; here both policies are drawn in the loanable funds market so that the rate being compared is the same one.)</div></div>
+  </div>
+</section>
+<section class="slide" id="s6">
+  <div class="tag">Unit 5 &middot; Lesson 1 &middot; Real world</div>
+  <h2>2020 versus 2022&ndash;26: both tools, opposite directions</h2>
+  <div class="stage">
+    <div class="split">
+      <div class="txt">
+        <div class="card win"><h3>2020 &mdash; double expansion</h3><p>Emergency fiscal packages plus a cut to <b>0&ndash;0.25%</b> and quantitative easing. Output recovered fast; inflation followed with a lag.</p></div>
+        <div class="card lose"><h3>2022&ndash;23 &mdash; double contraction</h3><p>The Fed raised the target range to <b>5.25&ndash;5.50%</b> in sixteen months while pandemic fiscal support expired.</p></div>
+        <div class="card warn"><h3>2026 &mdash; a mixed stance</h3><p>Policy rate back at <b>3.75&ndash;4.00%</b> with CPI near 3.8%, while the federal deficit is still <b>5.8% of GDP</b>: tight money, loose fiscal.</p></div>
+      </div>
+      <div class="pic"><div style="display:flex;flex-direction:column;align-items:center;gap:.6vh;">
+        <img src="photos/fed-eccles-building.jpg" alt="Marriner S. Eccles Federal Reserve Board Building, Washington DC">
+        <div class="piccap">The Eccles Building &mdash; where one half of the mix is decided</div>
+      </div></div>
+    </div>
+    <div class="s-foot"><div class="hl">The mix matters: two tools can pull in opposite directions at the same time.</div></div>
+  </div>
+</section>
+<section class="slide" id="s7">
+  <div class="tag">Unit 5 &middot; Lesson 1 &middot; How another government says it</div>
+  <h2>Beijing names its policy stance &mdash; and the names change</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;flex-wrap:nowrap;align-items:stretch;">
+      <div class="zhbox" style="flex:1.55;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+        <table style="flex:1 1 auto;">
+          <tr><th>时间</th><th>财政政策</th><th>货币政策</th><th>背景</th></tr>
+          <tr><td>1998&ndash;2004</td><td><b>积极的</b>财政政策</td><td>稳健的货币政策</td><td>应对亚洲金融危机</td></tr>
+          <tr><td>2005&ndash;2007</td><td>稳健的财政政策</td><td>稳健的货币政策</td><td>经济偏热，财政转中性</td></tr>
+          <tr><td>2008&ndash;2010</td><td><b>积极的</b>财政政策</td><td><b>适度宽松的</b>货币政策</td><td>全球金融危机</td></tr>
+          <tr><td>2011&ndash;2024</td><td><b>积极的</b>财政政策</td><td>稳健的货币政策</td><td>2010 后货币回归稳健，沿用 <b>14 年</b></td></tr>
+          <tr><td>2025&ndash;2026</td><td><b>更加积极的</b>财政政策</td><td><b>适度宽松的</b>货币政策</td><td>时隔 14 年重回"适度宽松"</td></tr>
+        </table>
+        <p class="cn" style="margin-top:.6vh;">货币政策的五种总基调：<strong>宽松 &middot; 适度宽松 &middot; 稳健 &middot; 适度从紧 &middot; 紧缩</strong>——和美国的"扩张 / 紧缩"是同一件事，只是分得更细。</p>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <img src="photos/great-hall-of-the-people.jpg" alt="The Great Hall of the People, Beijing, seat of the National People's Congress" style="max-width:100%;max-height:100%;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;">
+        <div class="piccap">Great Hall of the People, Beijing &mdash; the government work report read here names both stances</div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">Reading the label is most of the game: <b>"积极" means AD right; "适度宽松" means AD right.</b> The words <b>are</b> the policy.</div></div>
+  </div>
+</section>
+<section class="slide" id="s8">
+  <div class="tag">Unit 5 &middot; Lesson 1 &middot; Practice</div>
+  <h2>Which combination, and what happens?</h2>
+  <div class="stage">
+    <div class="game-meta"><span id="pcProg">Scenario 1 of 5</span></div>
+    <div class="game-card" id="pcQ">&nbsp;</div>
+    <div class="ds-btns" id="pcBtns" style="margin-top:1.1vh;"></div>
+    <div class="game-fb" id="pcFb" style="min-height:6.5vh;">&nbsp;</div>
+    <div class="btnrow"><button class="btn" id="pcNext" onclick="pcNext()" disabled>Next scenario &#9654;</button></div>
+  </div>
+</section>
+<section class="slide" id="s9">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Build it yourself</div>
+  <h2>Drag AD &mdash; watch the point move along the curve</h2>
+  <div class="stage">
+    <svg id="dgSvg" viewBox="0 0 1140 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1140px;height:auto;align-self:center;"><line x1="76" y1="274" x2="540" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="274" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Price level</text><text x="308.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Real GDP (Y)</text><text x="215.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="331.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="447.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">110</text><text x="68.0" y="238.5" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="68.0" y="166.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="68.0" y="93.5" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">110</text><line x1="145.6" y1="274.0" x2="192.0" y2="245.0" stroke="#e6a23c" stroke-width="4.5"/><line x1="192.0" y1="245.0" x2="250.0" y2="208.8" stroke="#e6a23c" stroke-width="4.5"/><line x1="250.0" y1="208.8" x2="308.0" y2="172.5" stroke="#e6a23c" stroke-width="4.5"/><line x1="308.0" y1="172.5" x2="366.0" y2="136.2" stroke="#e6a23c" stroke-width="4.5"/><line x1="366.0" y1="136.2" x2="424.0" y2="100.0" stroke="#e6a23c" stroke-width="4.5"/><line x1="424.0" y1="100.0" x2="482.0" y2="63.8" stroke="#e6a23c" stroke-width="4.5"/><line x1="482.0" y1="63.8" x2="516.8" y2="42.0" stroke="#e6a23c" stroke-width="4.5"/><line x1="331.2" y1="274.0" x2="331.2" y2="42.0" stroke="#2e9e6b" stroke-width="4.5"/><line x1="145.6" y1="42.0" x2="192.0" y2="71.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="192.0" y1="71.0" x2="250.0" y2="107.2" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="250.0" y1="107.2" x2="308.0" y2="143.5" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="308.0" y1="143.5" x2="366.0" y2="179.8" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="366.0" y1="179.8" x2="424.0" y2="216.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="424.0" y1="216.0" x2="482.0" y2="252.2" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="482.0" y1="252.2" x2="516.8" y2="274.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><text x="337.0" y="248.6" text-anchor="start" font-size="22" fill="#1e6e4a" font-weight="700">LRAS</text><text x="145.6" y="256.6" text-anchor="start" font-size="22" fill="#a04000" font-weight="700">SRAS</text><text x="192.0" y="118.1" text-anchor="start" font-size="22" fill="#8a9aab" font-weight="700">AD₀ (start)</text><line id="dgAD" x1="145.6" y1="42.0" x2="516.8" y2="274.0" stroke="#1CADE4" stroke-width="4.5"/><line id="dgGx" x1="331.2" y1="274.0" x2="331.2" y2="158.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><line id="dgGy" x1="76.0" y1="158.0" x2="331.2" y2="158.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><circle id="dgE" cx="331.2" cy="158.0" r="11" fill="#0e7fae"/><text id="dgEt" x="345.2" y="148.0" font-size="22" fill="#0e7fae" font-weight="700">E</text><line x1="650" y1="274" x2="1114" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="650" y1="274" x2="650" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="650.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="882.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="742.8" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="835.6" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="928.4" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="1021.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="642.0" y="224.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="642.0" y="166.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="642.0" y="108.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="642.0" y="50.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="659.3" y1="42.0" x2="708.0" y2="67.4" stroke="#8B5CF6" stroke-width="4.5"/><line x1="708.0" y1="67.4" x2="766.0" y2="97.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="766.0" y1="97.6" x2="824.0" y2="127.8" stroke="#8B5CF6" stroke-width="4.5"/><line x1="824.0" y1="127.8" x2="882.0" y2="158.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="882.0" y1="158.0" x2="940.0" y2="188.2" stroke="#8B5CF6" stroke-width="4.5"/><line x1="940.0" y1="188.2" x2="998.0" y2="218.4" stroke="#8B5CF6" stroke-width="4.5"/><line x1="998.0" y1="218.4" x2="1056.0" y2="248.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="1056.0" y1="248.6" x2="1104.7" y2="274.0" stroke="#8B5CF6" stroke-width="4.5"/><text x="1067.6" y="198.6" text-anchor="start" font-size="22" fill="#6d28d9" font-weight="700">SRPC</text><line id="dgPx" x1="882.0" y1="274.0" x2="882.0" y2="158.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><line id="dgPy" x1="650.0" y1="158.0" x2="882.0" y2="158.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><circle id="dgP" cx="882.0" cy="158.0" r="11" fill="#d9534f"/><text id="dgPt" x="896.0" y="148.0" font-size="22" fill="#a94442" font-weight="700">A</text></svg>
+    <div style="display:flex;align-items:center;gap:1.2vw;flex:0 0 auto;margin-top:.5vh;">
+      <div class="sliderbox" style="flex:1;margin-bottom:0;">
+        <input type="range" id="dgA" min="-30" max="30" step="1" value="0" oninput="dgSlide(this.value)">
+      </div>
+      <div class="hl" id="dgRead" style="flex:1.2;text-align:center;">AD shift +0 &middot; Y 100.0 &middot; P 100.0 &middot; u 5.0% &middot; &pi; 6.0%</div>
+    </div>
+    <div class="note" style="text-align:center;flex:0 0 auto;margin-top:.4vh;">Both panels are the same model: the left one sets (Y, P); the mapping <b><span class="ma">u = 5 &minus; 0.2(Y &minus; 100)</span></b> and <b><span class="ma">&pi; = 6 + 0.25(P &minus; 100)</span></b> turns that into one point on the right.</div>
+    <div class="s-foot"><div class="hl amber">Drag the <b>AD</b> line left or right (or use the slider). The left panel moves the equilibrium; the right panel shows the same event as one point. Note what does <b>not</b> move: the SRPC itself. <b>There is no long-run curve on this page</b> &mdash; hold that thought.</div></div>
+  </div>
+</section>
+<section class="slide" id="s10">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Already yours &middot; demand and supply</div>
+  <h2>Why is there a trade-off at all?</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.5vw;flex:0 0 auto;flex-wrap:nowrap;align-items:center;">
+      <div style="flex:1.05;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah7d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Price level</text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Real GDP (Y)</text><text x="217.6" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="335.6" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="453.6" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">110</text><text x="68.0" y="204.8" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="68.0" y="146.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="68.0" y="87.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">110</text><line x1="146.8" y1="232.0" x2="194.0" y2="208.5" stroke="#e6a23c" stroke-width="6"/><line x1="194.0" y1="208.5" x2="253.0" y2="179.1" stroke="#e6a23c" stroke-width="6"/><line x1="253.0" y1="179.1" x2="312.0" y2="149.8" stroke="#e6a23c" stroke-width="6"/><line x1="312.0" y1="149.8" x2="371.0" y2="120.4" stroke="#e6a23c" stroke-width="6"/><line x1="371.0" y1="120.4" x2="430.0" y2="91.0" stroke="#e6a23c" stroke-width="6"/><line x1="430.0" y1="91.0" x2="489.0" y2="61.6" stroke="#e6a23c" stroke-width="6"/><line x1="489.0" y1="61.6" x2="524.4" y2="44.0" stroke="#e6a23c" stroke-width="6"/><line x1="146.8" y1="44.0" x2="194.0" y2="67.5" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="194.0" y1="67.5" x2="253.0" y2="96.9" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="253.0" y1="96.9" x2="312.0" y2="126.2" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="312.0" y1="126.2" x2="371.0" y2="155.6" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="371.0" y1="155.6" x2="430.0" y2="185.0" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="430.0" y1="185.0" x2="489.0" y2="214.4" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="489.0" y1="214.4" x2="524.4" y2="232.0" stroke="#8a9aab" stroke-width="4" stroke-dasharray="12 8"/><line x1="335.6" y1="232.0" x2="335.6" y2="44.0" stroke="#2e9e6b" stroke-width="4.5"/><circle cx="335.6" cy="138.0" r="9" fill="#8a9aab"/><text x="341.5" y="208.5" text-anchor="start" font-size="22" fill="#1e6e4a" font-weight="700">LRAS</text><text x="146.8" y="217.9" text-anchor="start" font-size="22" fill="#a04000" font-weight="700">SRAS</text><text x="170.4" y="75.7" text-anchor="start" font-size="22" fill="#6b7c8d" font-weight="700">AD₀</text><text x="326.2" y="147.4" text-anchor="end" font-size="22" fill="#5b7288" font-weight="700">E₀</text><g id="srG1" opacity="0"><line x1="382.8" y1="44.0" x2="430.0" y2="67.5" stroke="#1CADE4" stroke-width="4.5"/><line x1="430.0" y1="67.5" x2="489.0" y2="96.9" stroke="#1CADE4" stroke-width="4.5"/><line x1="489.0" y1="96.9" x2="548.0" y2="126.2" stroke="#1CADE4" stroke-width="4.5"/><circle cx="453.6" cy="79.2" r="9" fill="#d9534f"/><text x="524.4" y="155.6" text-anchor="end" font-size="22" fill="#0e7fae" font-weight="700">AD₁</text><text x="460.7" y="59.3" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">E₁</text></g><g id="srG2" opacity="0"><line x1="352.1" y1="129.8" x2="437.1" y2="87.5" stroke="#d9534f" stroke-width="5" marker-end="url(#ah7d9534f)"/><text x="444.2" y="76.9" text-anchor="end" font-size="22" fill="#a94442" font-weight="700">move along SRAS</text></g></svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+        <div class="card win hidden" id="srCard"><h3>Step 1 &mdash; more output means more jobs</h3><p>&ldquo;Moving along the SRAS curve&hellip; employment must rise&hellip; unemployment will fall&rdquo;. <b>That is the trade-off.</b></p></div>
+        <div class="key hidden" id="srK1" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">Sticky wages</div><div class="kd">Fixed by contracts, so a higher price level cuts the real wage.</div></div></div>
+        <div class="key hidden" id="srK2" style="margin:0;"><div class="no">2</div><div><div class="kw">Sticky prices</div><div class="kd">Menu costs: a firm that has not re-priced sees its relative price rise.</div></div></div>
+        <div class="key hidden" id="srK3" style="margin:0;"><div class="no">3</div><div><div class="kw">Misperceptions</div><div class="kd">Suppliers mistake a general price rise for a rise in their own price.</div></div></div>
+      </div>
+    </div>
+    <div class="qtext" id="srText" style="margin-top:.6vh;flex:0 0 auto;">Press <b>Next step</b> to build the answer.</div>
+    <div class="s-foot">
+      <div class="btnrow" style="margin-top:0;">
+        <button class="btn" id="srBtn" onclick="srNext()">Next step &#9654;</button>
+        <button class="btn ghost" onclick="srReset()">Reset</button>
+      </div>
+      <div class="hl amber" style="margin-top:.6vh;">The exam names the first two (&ldquo;upward-sloping because of sticky wages and prices&rdquo;); Mankiw adds the third. And the economy only ever <b>moves along</b> the curve or the curve <b>itself shifts</b>.</div>
+    </div>
+  </div>
+</section>
+<section class="slide" id="s11">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Real data I &middot; FRED / BLS, 1961&ndash;69</div>
+  <h2>The trade-off was there</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
+      <div style="flex:1.1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.5vh;">
+        <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><line x1="76" y1="330" x2="548" y2="330" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="330" x2="76" y2="46" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="312.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="194.0" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="312.0" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="430.0" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="243.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="68.0" y="148.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="68.0" y="54.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><line id="pcFit" x1="76.0" y1="122.4" x2="525.6" y2="330.0" stroke="#d9534f" stroke-width="4.5" opacity="0"/><circle id="pcD1" cx="512.6" cy="279.3" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD2" cx="382.8" cy="274.4" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD3" cx="382.8" cy="270.5" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD4" cx="335.6" cy="267.4" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD5" cx="253.0" cy="255.3" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD6" cx="170.4" cy="188.4" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD7" cx="170.4" cy="198.2" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD8" cx="146.8" cy="129.0" r="8" fill="#0e7fae" opacity="0"/><circle id="pcD9" cx="135.0" cy="72.7" r="8" fill="#0e7fae" opacity="0"/><text id="pcEqA" x="253.0" y="60.2" font-size="22" fill="#a94442" font-weight="700" opacity="0">π = 7.84 − 1.15 u</text><text id="pcEqB" x="253.0" y="102.8" font-size="22" fill="#a94442" opacity="0">R² = 0.69  (9 years)</text><text id="pcY1" x="164.5" y="69.7" font-size="22" fill="#1c5d8c" font-weight="700" opacity="0">1969</text><text id="pcY2" x="530.3" y="254.3" text-anchor="end" font-size="22" fill="#1c5d8c" font-weight="700" opacity="0">1961</text></svg>
+        <div class="btnrow" style="justify-content:center;margin-top:.3vh;">
+          <button class="btn" id="rxBtn" onclick="rxPlay()">&#9654; Play the years</button>
+          <button class="btn ghost" onclick="rxReset()">Reset</button>
+          <span class="slidenote" id="rxYear" style="margin-left:.4vw;">Year: &mdash;</span>
+        </div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.8vh;">
+        <div class="card"><h3>Nine years of American data</h3><p>One dot per year, 1961&ndash;1969: unemployment on the x-axis, CPI inflation on the y-axis.</p></div>
+        <div class="card win"><h3>And a line fits them</h3><p>The best-fitting straight line slopes <b>down</b>: <b><span class="ma">&pi; = 7.84 &minus; 1.15u</span></b>, with R&sup2; = 0.69. Lower unemployment really did come with higher inflation.</p></div>
+        <div class="card warn"><h3>Mankiw&rsquo;s Tenth Principle</h3><p>&ldquo;Society faces a <b style="color:#b9c9d6;letter-spacing:.1em;">_________</b> trade-off between inflation and unemployment.&rdquo;</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">Nine years is not proof, but it is what a menu looks like: more inflation buys less unemployment. <b>One word of that principle is still missing.</b></div></div>
+  </div>
+</section>
+<section class="slide" id="s12">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Real data II &middot; FRED / BLS, 1961&ndash;2024</div>
+  <h2>Then the curve disappeared</h2>
+  <div class="stage">
+    <div class="svgwrap">
+      <svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;height:auto;align-self:center;"><line x1="80" y1="362" x2="860" y2="362" stroke="#1f2d3d" stroke-width="2.5"/><line x1="80" y1="362" x2="80" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="80.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="470.0" y="416.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="184.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="288.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="392.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="496.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">7</text><text x="600.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="704.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="808.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">10</text><text x="72.0" y="370.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="72.0" y="324.6" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="72.0" y="279.1" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="72.0" y="233.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="72.0" y="188.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="72.0" y="142.9" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">10</text><text x="72.0" y="97.4" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><text x="72.0" y="52.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">14</text><line x1="80.0" y1="262.4" x2="177.5" y2="286.9" stroke="#8a9aab" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="177.5" y1="286.9" x2="275.0" y2="311.4" stroke="#8a9aab" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="275.0" y1="311.4" x2="372.5" y2="335.9" stroke="#8a9aab" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="372.5" y1="335.9" x2="470.0" y2="360.4" stroke="#8a9aab" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="470.0" y1="360.4" x2="476.3" y2="362.0" stroke="#8a9aab" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="80.0" y1="300.3" x2="177.5" y2="304.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="177.5" y1="304.3" x2="275.0" y2="308.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="275.0" y1="308.3" x2="372.5" y2="312.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="372.5" y1="312.3" x2="470.0" y2="316.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="470.0" y1="316.3" x2="567.5" y2="320.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="567.5" y1="320.3" x2="665.0" y2="324.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="665.0" y1="324.3" x2="762.5" y2="328.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="762.5" y1="328.3" x2="860.0" y2="332.3" stroke="#b8791f" stroke-width="3.5" stroke-dasharray="12 8"/><g id="scatter"><circle cx="464.8" cy="337.7" r="6" fill="#0e7fae"/><circle cx="350.4" cy="335.3" r="6" fill="#0e7fae"/><circle cx="350.4" cy="333.5" r="6" fill="#0e7fae"/><circle cx="308.8" cy="332.0" r="6" fill="#0e7fae"/><circle cx="236.0" cy="326.1" r="6" fill="#0e7fae"/><circle cx="163.2" cy="294.1" r="6" fill="#0e7fae"/><circle cx="163.2" cy="298.8" r="6" fill="#0e7fae"/><circle cx="142.4" cy="265.6" r="6" fill="#0e7fae"/><circle cx="132.0" cy="238.5" r="6" fill="#0e7fae"/><circle cx="288.0" cy="228.3" r="6" fill="#d9534f"/><circle cx="392.0" cy="266.0" r="6" fill="#d9534f"/><circle cx="350.4" cy="287.7" r="6" fill="#d9534f"/><circle cx="277.6" cy="219.8" r="6" fill="#d9534f"/><circle cx="350.4" cy="111.9" r="6" fill="#d9534f"/><circle cx="652.0" cy="154.4" r="6" fill="#d9534f"/><circle cx="568.8" cy="230.8" r="6" fill="#d9534f"/><circle cx="506.4" cy="215.0" r="6" fill="#d9534f"/><circle cx="402.4" cy="188.7" r="6" fill="#d9534f"/><circle cx="381.6" cy="106.4" r="6" fill="#d9534f"/><circle cx="516.8" cy="55.3" r="6" fill="#d9534f"/><circle cx="558.4" cy="126.3" r="6" fill="#d9534f"/><circle cx="776.8" cy="222.1" r="6" fill="#d9534f"/><circle cx="766.4" cy="290.2" r="6" fill="#d9534f"/><circle cx="548.0" cy="262.8" r="6" fill="#8a9aab"/><circle cx="516.8" cy="281.9" r="6" fill="#8a9aab"/><circle cx="496.0" cy="317.8" r="6" fill="#8a9aab"/><circle cx="412.8" cy="280.7" r="6" fill="#8a9aab"/><circle cx="340.0" cy="268.9" r="6" fill="#8a9aab"/><circle cx="319.2" cy="253.2" r="6" fill="#8a9aab"/><circle cx="350.4" cy="238.9" r="6" fill="#8a9aab"/><circle cx="485.6" cy="266.2" r="6" fill="#8a9aab"/><circle cx="548.0" cy="292.9" r="6" fill="#8a9aab"/><circle cx="485.6" cy="294.5" r="6" fill="#8a9aab"/><circle cx="402.4" cy="303.0" r="6" fill="#8a9aab"/><circle cx="350.4" cy="298.3" r="6" fill="#8a9aab"/><circle cx="329.6" cy="295.3" r="6" fill="#8a9aab"/><circle cx="277.6" cy="308.9" r="6" fill="#8a9aab"/><circle cx="236.0" cy="326.9" r="6" fill="#8a9aab"/><circle cx="204.8" cy="312.2" r="6" fill="#8a9aab"/><circle cx="184.0" cy="285.5" r="6" fill="#8a9aab"/><circle cx="256.8" cy="298.0" r="6" fill="#8a9aab"/><circle cx="371.2" cy="325.8" r="6" fill="#8a9aab"/><circle cx="392.0" cy="309.8" r="6" fill="#8a9aab"/><circle cx="340.0" cy="301.4" r="6" fill="#8a9aab"/><circle cx="298.4" cy="285.5" r="6" fill="#8a9aab"/><circle cx="246.4" cy="288.8" r="6" fill="#8a9aab"/><circle cx="246.4" cy="296.8" r="6" fill="#8a9aab"/><circle cx="371.2" cy="275.3" r="6" fill="#8a9aab"/><circle cx="735.2" cy="369.3" r="6" fill="#8a9aab"/><circle cx="766.4" cy="324.8" r="6" fill="#8a9aab"/><circle cx="693.6" cy="290.7" r="6" fill="#8a9aab"/><circle cx="610.4" cy="314.9" r="6" fill="#8a9aab"/><circle cx="537.6" cy="328.7" r="6" fill="#8a9aab"/><circle cx="412.8" cy="325.3" r="6" fill="#8a9aab"/><circle cx="319.2" cy="359.2" r="6" fill="#8a9aab"/><circle cx="277.6" cy="333.2" r="6" fill="#8a9aab"/><circle cx="225.6" cy="313.6" r="6" fill="#8a9aab"/><circle cx="173.6" cy="306.6" r="6" fill="#8a9aab"/><circle cx="152.8" cy="320.8" r="6" fill="#8a9aab"/><circle cx="610.4" cy="333.5" r="6" fill="#2e9e6b"/><circle cx="329.6" cy="255.7" r="6" fill="#2e9e6b"/><circle cx="152.8" cy="180.5" r="6" fill="#2e9e6b"/><circle cx="142.4" cy="268.3" r="6" fill="#2e9e6b"/><circle cx="184.0" cy="294.9" r="6" fill="#2e9e6b"/></g><text x="362.9" y="108.5" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1974</text><text x="529.3" y="51.9" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1980</text><text x="165.3" y="177.1" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">2022</text><text x="111.2" y="241.6" text-anchor="start" font-size="22" fill="#5b7288" font-weight="700">1961–69 fit</text><text x="511.6" y="257.5" text-anchor="start" font-size="22" fill="#b8791f" font-weight="700">1995–2019 fit</text><text x="672.8" y="57.6" text-anchor="start" font-size="22" fill="#0e7fae" font-weight="700">1961–69</text><text x="672.8" y="91.7" text-anchor="start" font-size="22" fill="#d9534f" font-weight="700">1970–83</text><text x="672.8" y="125.8" text-anchor="start" font-size="22" fill="#8a9aab" font-weight="700">1984–2019</text><text x="672.8" y="159.8" text-anchor="start" font-size="22" fill="#2e9e6b" font-weight="700">2020–24</text></svg>
+    </div>
+    <div class="s-foot"><div class="hl">Same axes, sixty-four years. The <b>grey dashed</b> line is the 1961&ndash;69 fit. After 1970 the points leave it and never return: 1974&ndash;83 sits <b>far above</b> it, and 1995&ndash;2019 sits on a new line that is <b>almost flat</b>.</div></div>
+  </div>
+</section>
+<section class="slide" id="s13">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Where did it go</div>
+  <h2>Where did it go? The long run</h2>
+  <div class="stage">
+    <svg id="lrSvg" viewBox="0 0 1140 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1140px;height:auto;align-self:center;"><line x1="76" y1="274" x2="540" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="274" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Price level</text><text x="308.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Real GDP (Y)</text><text x="215.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">90</text><text x="331.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="447.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">110</text><text x="68.0" y="248.9" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">80</text><text x="68.0" y="166.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="68.0" y="83.1" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">120</text><line id="lrLras" x1="331.2" y1="274.0" x2="331.2" y2="42.0" stroke="#2e9e6b" stroke-width="4.5"/><line x1="76.0" y1="249.1" x2="134.0" y2="228.4" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="134.0" y1="228.4" x2="192.0" y2="207.7" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="192.0" y1="207.7" x2="250.0" y2="187.0" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="250.0" y1="187.0" x2="308.0" y2="166.3" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="308.0" y1="166.3" x2="366.0" y2="145.6" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="366.0" y1="145.6" x2="424.0" y2="124.9" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="424.0" y1="124.9" x2="482.0" y2="104.1" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="482.0" y1="104.1" x2="540.0" y2="83.4" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="76.0" y1="66.9" x2="134.0" y2="87.6" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="134.0" y1="87.6" x2="192.0" y2="108.3" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="192.0" y1="108.3" x2="250.0" y2="129.0" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="250.0" y1="129.0" x2="308.0" y2="149.7" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="308.0" y1="149.7" x2="366.0" y2="170.4" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="366.0" y1="170.4" x2="424.0" y2="191.1" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="424.0" y1="191.1" x2="482.0" y2="211.9" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="482.0" y1="211.9" x2="540.0" y2="232.6" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><text x="337.0" y="240.9" text-anchor="start" font-size="22" fill="#1e6e4a" font-weight="700">LRAS</text><text x="477.4" y="90.1" text-anchor="end" font-size="22" fill="#8a9aab" font-weight="700">SRAS₀</text><text x="145.6" y="80.9" text-anchor="start" font-size="22" fill="#8a9aab" font-weight="700">AD₀</text><line id="lrAD" x1="76.0" y1="66.9" x2="540.0" y2="232.6" stroke="#1CADE4" stroke-width="4.5"/><line id="lrSRAS" x1="76.0" y1="249.1" x2="540.0" y2="83.4" stroke="#e6a23c" stroke-width="4.5"/><line id="lrGx" x1="331.2" y1="274.0" x2="331.2" y2="158.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><line id="lrGy" x1="76.0" y1="158.0" x2="331.2" y2="158.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><circle id="lrE" cx="331.2" cy="158.0" r="11" fill="#a97422"/><text id="lrEt" x="345.2" y="148.0" font-size="22" fill="#8a6b1f" font-weight="700">E</text><line x1="650" y1="274" x2="1114" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="650" y1="274" x2="650" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="650.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="882.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="742.8" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="835.6" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="928.4" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="1021.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="642.0" y="232.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="642.0" y="182.6" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="642.0" y="132.9" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="642.0" y="83.1" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line id="lrLrpc" x1="882.0" y1="274.0" x2="882.0" y2="42.0" stroke="#34495e" stroke-width="4.5"/><line x1="650.0" y1="71.0" x2="708.0" y2="96.9" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="708.0" y1="96.9" x2="766.0" y2="122.8" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="766.0" y1="122.8" x2="824.0" y2="148.7" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="824.0" y1="148.7" x2="882.0" y2="174.6" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="882.0" y1="174.6" x2="940.0" y2="200.5" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="940.0" y1="200.5" x2="998.0" y2="226.4" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="998.0" y1="226.4" x2="1056.0" y2="252.2" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><line x1="1056.0" y1="252.2" x2="1104.7" y2="274.0" stroke="#b2bec3" stroke-width="3" stroke-dasharray="12 8"/><text x="891.3" y="65.2" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="1067.6" y="214.3" text-anchor="end" font-size="22" fill="#8a9aab" font-weight="700">SRPC₀</text><text x="891.3" y="204.4" text-anchor="start" font-size="22" fill="#a97422" font-weight="700">u* = 5%</text><line id="lrSRPC" x1="650.0" y1="71.0" x2="1104.7" y2="274.0" stroke="#8B5CF6" stroke-width="4.5"/><line id="lrPx" x1="882.0" y1="274.0" x2="882.0" y2="174.6" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><line id="lrPy" x1="650.0" y1="174.6" x2="882.0" y2="174.6" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 5"/><circle id="lrP" cx="882.0" cy="174.6" r="11" fill="#d9534f"/><text id="lrPt" x="896.0" y="164.6" font-size="22" fill="#a94442" font-weight="700">A</text><text id="lrSt" x="1086.2" y="217.7" font-size="22" fill="#6d28d9" font-weight="700">SRPC</text></svg>
+    <div style="display:flex;gap:1.2vw;align-items:center;flex:0 0 auto;margin-top:.4vh;">
+      <div class="sliderbox" style="flex:0 0 30%;margin-bottom:0;padding:.8vh 1vw;">
+        <input type="range" id="lpT" min="0" max="1" step="0.01" value="0" oninput="lpDraw(this.value)">
+      </div>
+      <div class="slidenote" id="lpRead" style="flex:1.15;font-weight:700;">Long-run equilibrium &middot; Y 100.0 &middot; P 100.0 &middot; u 5.0% &middot; &pi; 6.0%</div>
+      <div class="btnrow" style="margin-top:0;flex:0 0 auto;">
+        <button class="btn" id="lpBtn" onclick="lpPlay()">&#9654; Let it adjust</button>
+        <button class="btn ghost" onclick="lpReset()">Reset</button>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">&ldquo;Society faces a <b>short-run</b> trade-off&hellip;&rdquo; &mdash; the missing word is <b>in the short run</b>: wages catch up, SRAS shifts left, unemployment returns to u*. Every resting point has u = 5%, which is exactly why the <b>LRPC is vertical</b>.</div></div>
+  </div>
+</section>
+<section class="slide" id="s14">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; The SRPC and expectations &middot; new</div>
+  <h2>What exactly moves the SRPC? Expected inflation</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah12d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="330" x2="548" y2="330" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="330" x2="76" y2="46" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="312.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="170.4" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="264.8" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="359.2" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="453.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="267.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="68.0" y="196.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="125.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="68.0" y="54.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="85.4" y1="46.0" x2="135.0" y2="77.1" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="135.0" y1="77.1" x2="194.0" y2="114.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="194.0" y1="114.0" x2="253.0" y2="151.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="253.0" y1="151.0" x2="312.0" y2="188.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="312.0" y1="188.0" x2="371.0" y2="225.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="371.0" y1="225.0" x2="430.0" y2="262.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="430.0" y1="262.0" x2="489.0" y2="298.9" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="489.0" y1="298.9" x2="538.6" y2="330.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="274.2" y1="46.0" x2="312.0" y2="69.7" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="69.7" x2="371.0" y2="106.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="371.0" y1="106.6" x2="430.0" y2="143.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="430.0" y1="143.6" x2="489.0" y2="180.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="489.0" y1="180.6" x2="548.0" y2="217.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="330.0" x2="312.0" y2="46.0" stroke="#34495e" stroke-width="4"/><circle cx="312.0" cy="188.0" r="9" fill="#8a9aab"/><circle cx="312.0" cy="69.7" r="9" fill="#a97422"/><line x1="472.5" y1="280.3" x2="472.5" y2="178.5" stroke="#d9534f" stroke-width="4" marker-end="url(#ah12d9534f)"/><text x="132.6" y="69.7" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">πᵉ ↑ 5pp →</text><text x="132.6" y="105.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">the whole curve</text><text x="132.6" y="140.7" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">shifts up 5pp</text><text x="515.0" y="273.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="700">SRPC (πᵉ = 6%)</text><text x="515.0" y="150.1" text-anchor="end" font-size="22" fill="#6d28d9" font-weight="700">SRPC (πᵉ = 11%)</text><text x="320.5" y="36.5" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="321.4" y="225.9" text-anchor="start" font-size="22" fill="#a97422" font-weight="700">u* = 5%</text></svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.8vh;">
+        <div class="card"><h3>Expected inflation is the intercept</h3><p>The SRPC is <b>&pi; = &pi;<sup>e</sup> &minus; 1.25(u &minus; 5)</b>. Change &pi;<sup>e</sup> and the <b>whole curve</b> moves up or down by that much &mdash; it does not tilt or slide sideways.</p></div>
+        <div class="card win"><h3>Along vs. shift</h3><p>Actual inflation changes with &pi;<sup>e</sup> fixed &rarr; <b>move along</b>. &pi;<sup>e</sup> itself changes &rarr; the <b>SRPC shifts</b>.</p></div>
+        <div class="card warn"><h3>Which is why the LRPC is vertical</h3><p>Every SRPC crosses the LRPC at u = 5%, so the LRPC is the set of <b>all</b> the long-run resting points.</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">The 1970s were not a move along the old curve &mdash; <b>&pi;<sup>e</sup> rose, so the whole curve went up</b>. That is the difference between a bad year and a broken model.</div></div>
+  </div>
+</section>
+<section class="slide" id="s15">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; foundations</div>
+  <h2>Why is expected inflation the intercept?</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
+      <div style="flex:1.02;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation surprise: π − πᵉ</text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="170.4" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="264.8" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="359.2" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="453.6" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="240.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">-4</text><text x="68.0" y="193.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">-2</text><text x="68.0" y="146.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="99.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="68.0" y="52.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4</text><line x1="76.0" y1="138.0" x2="548.0" y2="138.0" stroke="#cfe0ee" stroke-width="2.5"/><line x1="76.0" y1="138.0" x2="548.0" y2="138.0" stroke="#cfe0ee" stroke-width="2.5"/><line x1="312.0" y1="232.0" x2="312.0" y2="44.0" stroke="#8a9aab" stroke-width="2" stroke-dasharray="7 5"/><line x1="161.0" y1="44.0" x2="194.0" y2="64.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="194.0" y1="64.6" x2="253.0" y2="101.3" stroke="#8B5CF6" stroke-width="4.5"/><line x1="253.0" y1="101.3" x2="312.0" y2="138.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="138.0" x2="371.0" y2="174.7" stroke="#8B5CF6" stroke-width="4.5"/><line x1="371.0" y1="174.7" x2="430.0" y2="211.4" stroke="#8B5CF6" stroke-width="4.5"/><line x1="430.0" y1="211.4" x2="463.0" y2="232.0" stroke="#8B5CF6" stroke-width="4.5"/><circle cx="217.6" cy="79.2" r="9" fill="#d9534f"/><circle cx="312.0" cy="138.0" r="9" fill="#a97422"/><circle cx="406.4" cy="196.8" r="9" fill="#d9534f"/><text x="123.2" y="62.8" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">u below u*</text><text x="123.2" y="213.2" text-anchor="start" font-size="22" fill="#1c5d8c" font-weight="700">u above u*</text><text x="519.7" y="125.1" text-anchor="end" font-size="22" fill="#5b7288" font-weight="700">π − πᵉ = 0</text><text x="319.1" y="72.2" text-anchor="start" font-size="22" fill="#5b7288" font-weight="700">u*</text></svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
+        <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">Wages are fixed in advance</div><div class="kd">A contract sets <b><span class="ma">W = w&#772; &times; P</span><sup>e</sup></b> &mdash; so expected inflation is already inside the wage.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">Firms price over that wage</div><div class="kd">If P ends up <b>above</b> P<sup>e</sup>, the real wage fell without anyone agreeing &mdash; so firms hire more.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">3</div><div><div class="kw">Only the surprise moves u</div><div class="kd"><span class="ma">u &minus; u* = &minus;(&pi; &minus; &pi;<sup>e</sup>)/1.25</span> &nbsp;&rArr;&nbsp; at u = u* the only possible &pi; is &pi;<sup>e</sup>.</div></div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">&pi;<sup>e</sup> sits in the intercept because it is already inside the wage that was signed. The <b>slope</b> comes from how strongly hiring responds to a real-wage surprise &mdash; so change the rigidity and the line tilts; change &pi;<sup>e</sup> and the whole line moves.</div></div>
+  </div>
+</section>
+<section class="slide" id="s16">
+  <div class="tag">Unit 5 &middot; Lesson 2</div>
+  <h2>Long-run equilibrium, the two gaps, and demand shocks</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah130e7fae" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#0e7fae"/></marker><marker id="ah13d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><rect data-bg="1" x="76.0" y="46.0" width="236.0" height="284.0" fill="#fdeaea"/><rect data-bg="1" x="312.0" y="46.0" width="236.0" height="284.0" fill="#e8f6ef"/><line x1="76" y1="330" x2="548" y2="330" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="330" x2="76" y2="46" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="312.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="170.4" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="264.8" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="359.2" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="453.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="267.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="68.0" y="196.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="125.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="68.0" y="54.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="85.4" y1="46.0" x2="135.0" y2="77.1" stroke="#8B5CF6" stroke-width="4.5"/><line x1="135.0" y1="77.1" x2="194.0" y2="114.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="194.0" y1="114.0" x2="253.0" y2="151.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="253.0" y1="151.0" x2="312.0" y2="188.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="188.0" x2="371.0" y2="225.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="371.0" y1="225.0" x2="430.0" y2="262.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="430.0" y1="262.0" x2="489.0" y2="298.9" stroke="#8B5CF6" stroke-width="4.5"/><line x1="489.0" y1="298.9" x2="538.6" y2="330.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="330.0" x2="312.0" y2="46.0" stroke="#34495e" stroke-width="4.5"/><circle cx="312.0" cy="188.0" r="24" fill="none" stroke="#a97422" stroke-width="4"/><circle cx="312.0" cy="188.0" r="9" fill="#a97422"/><line x1="297.8" y1="179.7" x2="234.1" y2="147.8" stroke="#d9534f" stroke-width="4" marker-end="url(#ah13d9534f)"/><line x1="326.2" y1="196.3" x2="389.9" y2="228.2" stroke="#0e7fae" stroke-width="4" marker-end="url(#ah130e7fae)"/><text x="194.0" y="121.7" text-anchor="middle" font-size="22" fill="#a94442" font-weight="700">inflationary gap</text><text x="430.0" y="98.1" text-anchor="middle" font-size="22" fill="#1c5d8c" font-weight="700">recessionary gap</text><text x="320.5" y="150.1" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="170.4" y="159.6" text-anchor="middle" font-size="22" fill="#a94442" font-weight="400">AD → right</text><text x="472.5" y="304.0" text-anchor="middle" font-size="22" fill="#1c5d8c" font-weight="400">AD → left</text><text x="312.0" y="228.2" text-anchor="start" font-size="22" fill="#a97422" font-weight="700">the intersection</text><text x="123.2" y="74.4" text-anchor="start" font-size="22" fill="#6d28d9" font-weight="700">SRPC</text></svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.8vh;">
+        <div class="card"><h3>The intersection</h3><p>&ldquo;Long-run equilibrium corresponds to the <b>intersection of the SRPC and the LRPC</b>&rdquo;: u equals the natural rate and actual inflation equals expected.</p></div>
+        <div class="card lose"><h3>The two gaps</h3><p><b>Left</b>: u below u* &mdash; <b>inflationary gap</b>. <b>Right</b>: u above u* &mdash; <b>recessionary gap</b>.</p></div>
+        <div class="card win"><h3>Demand shocks</h3><p>AD right &rarr; up and to the left along the SRPC. The curve itself does <b>not</b> move, because &pi;<sup>e</sup> has not changed yet.</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">Only a change in the <b>natural rate of unemployment</b> shifts the LRPC itself &mdash; longer job search, a higher minimum wage, stronger unions, or skills that no longer match the jobs.</div></div>
+  </div>
+</section>
+<section class="slide" id="s17">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Real data III</div>
+  <h2>Supply shocks: the whole curve shifts &mdash; and here is the oil</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:0 0 auto;flex-wrap:nowrap;align-items:center;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah14d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="170.4" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="264.8" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="359.2" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="453.6" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="193.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="68.0" y="146.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="99.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="68.0" y="52.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="85.4" y1="44.0" x2="135.0" y2="64.6" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="135.0" y1="64.6" x2="194.0" y2="89.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="194.0" y1="89.0" x2="253.0" y2="113.5" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="253.0" y1="113.5" x2="312.0" y2="138.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="312.0" y1="138.0" x2="371.0" y2="162.5" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="371.0" y1="162.5" x2="430.0" y2="187.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="430.0" y1="187.0" x2="489.0" y2="211.4" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="489.0" y1="211.4" x2="538.6" y2="232.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="179.8" y1="44.0" x2="194.0" y2="49.9" stroke="#8B5CF6" stroke-width="4.5"/><line x1="194.0" y1="49.9" x2="253.0" y2="74.4" stroke="#8B5CF6" stroke-width="4.5"/><line x1="253.0" y1="74.4" x2="312.0" y2="98.8" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="98.8" x2="371.0" y2="123.3" stroke="#8B5CF6" stroke-width="4.5"/><line x1="371.0" y1="123.3" x2="430.0" y2="147.8" stroke="#8B5CF6" stroke-width="4.5"/><line x1="430.0" y1="147.8" x2="489.0" y2="172.3" stroke="#8B5CF6" stroke-width="4.5"/><line x1="489.0" y1="172.3" x2="548.0" y2="196.8" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="232.0" x2="312.0" y2="44.0" stroke="#34495e" stroke-width="4.5"/><line x1="227.0" y1="98.8" x2="227.0" y2="67.5" stroke="#d9534f" stroke-width="4" marker-end="url(#ah14d9534f)"/><circle cx="312.0" cy="138.0" r="8" fill="#8a9aab"/><circle cx="359.2" cy="118.4" r="9" fill="#d9534f"/><text x="319.1" y="56.5" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="524.4" y="213.2" text-anchor="end" font-size="22" fill="#8a9aab" font-weight="700">SRPC (old)</text><text x="524.4" y="170.9" text-anchor="end" font-size="22" fill="#6d28d9" font-weight="700">SRPC (new)</text><text x="375.7" y="102.8" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">stagflation</text></svg>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><rect data-bg="1" x="164.5" y="44.0" width="59.0" height="188.0" fill="#fdeaea"/><rect data-bg="1" x="341.5" y="44.0" width="59.0" height="188.0" fill="#fdeaea"/><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Oil price ($/barrel, WTI)</text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Year</text><text x="135.0" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1972</text><text x="253.0" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1976</text><text x="371.0" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1980</text><text x="489.0" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1984</text><text x="68.0" y="240.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="193.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">10</text><text x="68.0" y="146.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">20</text><text x="68.0" y="99.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">30</text><text x="68.0" y="52.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">40</text><line x1="76.0" y1="216.3" x2="105.5" y2="215.3" stroke="#d9534f" stroke-width="4"/><line x1="105.5" y1="215.3" x2="135.0" y2="215.3" stroke="#d9534f" stroke-width="4"/><line x1="135.0" y1="215.3" x2="164.5" y2="213.8" stroke="#d9534f" stroke-width="4"/><line x1="164.5" y1="213.8" x2="194.0" y2="183.2" stroke="#d9534f" stroke-width="4"/><line x1="194.0" y1="183.2" x2="223.5" y2="179.5" stroke="#d9534f" stroke-width="4"/><line x1="223.5" y1="179.5" x2="253.0" y2="172.6" stroke="#d9534f" stroke-width="4"/><line x1="253.0" y1="172.6" x2="282.5" y2="164.8" stroke="#d9534f" stroke-width="4"/><line x1="282.5" y1="164.8" x2="312.0" y2="162.2" stroke="#d9534f" stroke-width="4"/><line x1="312.0" y1="162.2" x2="341.5" y2="126.7" stroke="#d9534f" stroke-width="4"/><line x1="341.5" y1="126.7" x2="371.0" y2="56.3" stroke="#d9534f" stroke-width="4"/><line x1="371.0" y1="56.3" x2="400.5" y2="59.7" stroke="#d9534f" stroke-width="4"/><line x1="400.5" y1="59.7" x2="430.0" y2="73.9" stroke="#d9534f" stroke-width="4"/><line x1="430.0" y1="73.9" x2="459.5" y2="89.1" stroke="#d9534f" stroke-width="4"/><line x1="459.5" y1="89.1" x2="489.0" y2="94.4" stroke="#d9534f" stroke-width="4"/><line x1="489.0" y1="94.4" x2="518.5" y2="100.5" stroke="#d9534f" stroke-width="4"/><line x1="518.5" y1="100.5" x2="548.0" y2="161.3" stroke="#d9534f" stroke-width="4"/><circle cx="76.0" cy="216.3" r="4" fill="#a94442"/><circle cx="105.5" cy="215.3" r="4" fill="#a94442"/><circle cx="135.0" cy="215.3" r="4" fill="#a94442"/><circle cx="164.5" cy="213.8" r="4" fill="#a94442"/><circle cx="194.0" cy="183.2" r="4" fill="#a94442"/><circle cx="223.5" cy="179.5" r="4" fill="#a94442"/><circle cx="253.0" cy="172.6" r="4" fill="#a94442"/><circle cx="282.5" cy="164.8" r="4" fill="#a94442"/><circle cx="312.0" cy="162.2" r="4" fill="#a94442"/><circle cx="341.5" cy="126.7" r="4" fill="#a94442"/><circle cx="371.0" cy="56.3" r="4" fill="#a94442"/><circle cx="400.5" cy="59.7" r="4" fill="#a94442"/><circle cx="430.0" cy="73.9" r="4" fill="#a94442"/><circle cx="459.5" cy="89.1" r="4" fill="#a94442"/><circle cx="489.0" cy="94.4" r="4" fill="#a94442"/><circle cx="518.5" cy="100.5" r="4" fill="#a94442"/><circle cx="548.0" cy="161.3" r="4" fill="#a94442"/><text x="140.9" y="166.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1973–74 embargo</text><text x="205.8" y="203.8" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">×2.7</text><text x="341.5" y="76.9" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1979–80</text><text x="341.5" y="112.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">×9.7</text></svg>
+      </div>
+    </div>
+    <div class="two" style="flex:0 0 auto;flex-wrap:nowrap;gap:1.4vw;margin-top:.6vh;">
+      <div class="col" style="min-width:0;">
+        <div class="card lose" style="margin-bottom:0;"><h3>An adverse supply shock</h3><p>Oil spikes, SRAS shifts left, so output falls <b>and</b> prices rise together &mdash; the whole SRPC shifts <b>up</b>. That combination is <b>stagflation</b>.</p></div>
+      </div>
+      <div class="col" style="min-width:0;">
+        <div class="card win" style="margin-bottom:0;"><h3>The evidence, 1973&ndash;1982</h3><p>Oil went from <b>$3.87</b> (1973) to <b>$37.38</b> (1980) &mdash; <b>&times;9.7</b>. Inflation hit 11.0% (1974) and 13.5% (1980) while unemployment reached 8.5% (1975) and 9.7% (1982).</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">A favourable shock does the reverse: SRAS right, prices down, SRPC shifts <b>down</b>. Oil fell to $15 by 1986 &mdash; but was oil the whole story?</div></div>
+  </div>
+</section>
+<section class="slide" id="s18">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; The shock simulator</div>
+  <h2>One shock, two graphs, three moments</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;flex:1 0 auto;flex-wrap:nowrap;">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 900 430" xmlns="http://www.w3.org/2000/svg" id="smSvg" style="width:100%;max-width:900px;height:auto;"><text x="230" y="26" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2d3d">AD–AS model</text><text x="650" y="26" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2d3d">The Phillips curve</text><text x="54" y="58" text-anchor="end" font-size="22" fill="#5b7288">PL</text><text x="462" y="58" text-anchor="end" font-size="22" fill="#5b7288">π (%)</text><line x1="60" y1="356" x2="400" y2="356" stroke="#1f2d3d" stroke-width="2.5"/><line x1="60" y1="356" x2="60" y2="76" stroke="#1f2d3d" stroke-width="2.5"/><line x1="470" y1="356" x2="830" y2="356" stroke="#1f2d3d" stroke-width="2.5"/><line x1="470" y1="356" x2="470" y2="76" stroke="#1f2d3d" stroke-width="2.5"/><text x="230" y="410" text-anchor="middle" font-size="22" fill="#5b7288">Real GDP (Y)</text><text x="650" y="410" text-anchor="middle" font-size="22" fill="#5b7288">Unemployment rate (%)</text><text x="162" y="378" text-anchor="middle" font-size="22" fill="#5b7288">80</text><text x="54" y="280" text-anchor="end" font-size="22" fill="#5b7288">80</text><text x="230" y="378" text-anchor="middle" font-size="22" fill="#5b7288">100</text><text x="54" y="224" text-anchor="end" font-size="22" fill="#5b7288">100</text><text x="298" y="378" text-anchor="middle" font-size="22" fill="#5b7288">120</text><text x="54" y="168" text-anchor="end" font-size="22" fill="#5b7288">120</text><text x="542" y="378" text-anchor="middle" font-size="22" fill="#5b7288">2</text><text x="650" y="378" text-anchor="middle" font-size="22" fill="#5b7288">5</text><text x="758" y="378" text-anchor="middle" font-size="22" fill="#5b7288">8</text><text x="462" y="329" text-anchor="end" font-size="22" fill="#5b7288">0</text><text x="462" y="242" text-anchor="end" font-size="22" fill="#5b7288">5</text><text x="462" y="154" text-anchor="end" font-size="22" fill="#5b7288">10</text><line id="smLras" x1="230" y1="76" x2="230" y2="356" stroke="#2e9e6b" stroke-width="4"/><text x="237" y="98" font-size="22" fill="#1e6e4a" font-weight="700">LRAS</text><line id="smLrpc" x1="650" y1="76" x2="650" y2="356" stroke="#34495e" stroke-width="4"/><text x="657" y="98" font-size="22" fill="#34495e" font-weight="700">LRPC</text><line id="smRefAD" x1="60.0" y1="76.0" x2="400.0" y2="356.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 6"/><line id="smRefSRAS" x1="60.0" y1="356.0" x2="400.0" y2="76.0" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 6"/><polyline id="smRefSrpc" points="488.0,117.6 497.0,123.0 506.0,128.5 515.0,134.0 524.0,139.4 533.0,144.9 542.0,150.4 551.0,155.8 560.0,161.3 569.0,166.8 578.0,172.2 587.0,177.7 596.0,183.2 605.0,188.7 614.0,194.1 623.0,199.6 632.0,205.1 641.0,210.5 650.0,216.0 659.0,221.5 668.0,226.9 677.0,232.4 686.0,237.9 695.0,243.3 704.0,248.8 713.0,254.3 722.0,259.8 731.0,265.2 740.0,270.7 749.0,276.2 758.0,281.6 767.0,287.1 776.0,292.6 785.0,298.0 794.0,303.5 803.0,309.0 812.0,314.4 821.0,319.9" fill="none" stroke="#b2bec3" stroke-width="2" stroke-dasharray="7 6" stroke-linejoin="round"/><line id="smAD" x1="60.0" y1="76.0" x2="400.0" y2="356.0" stroke="#2980b9" stroke-width="4.5" stroke-linecap="round"/><text id="smADt" x="77" y="91" font-size="22" font-weight="700" fill="#1c5d8c">AD</text><line id="smSRAS" x1="60.0" y1="356.0" x2="400.0" y2="76.0" stroke="#d35400" stroke-width="4.5" stroke-linecap="round"/><text id="smSRASt" x="75" y="340" font-size="22" font-weight="700" fill="#a04000">SRAS</text><circle id="smDot1" cx="230.0" cy="216.0" r="11" fill="#e74c3c"/><text id="smE" x="248.0" y="200.0" font-size="22" font-weight="700" fill="#c0392b">E</text><polyline id="smSrpc" points="488.0,117.6 497.0,123.0 506.0,128.5 515.0,134.0 524.0,139.4 533.0,144.9 542.0,150.4 551.0,155.8 560.0,161.3 569.0,166.8 578.0,172.2 587.0,177.7 596.0,183.2 605.0,188.7 614.0,194.1 623.0,199.6 632.0,205.1 641.0,210.5 650.0,216.0 659.0,221.5 668.0,226.9 677.0,232.4 686.0,237.9 695.0,243.3 704.0,248.8 713.0,254.3 722.0,259.8 731.0,265.2 740.0,270.7 749.0,276.2 758.0,281.6 767.0,287.1 776.0,292.6 785.0,298.0 794.0,303.5 803.0,309.0 812.0,314.4 821.0,319.9" fill="none" stroke="#8B5CF6" stroke-width="4.5" stroke-linejoin="round"/><text id="smSRPCt" x="716.0" y="302.4" font-size="22" font-weight="700" fill="#6d28d9">SRPC</text><circle id="smDot2" cx="650.0" cy="216.0" r="11" fill="#e74c3c"/><text id="smA" x="668.0" y="200.0" font-size="22" font-weight="700" fill="#c0392b">A</text></svg>
+      </div>
+      <div style="flex:0 0 21%;min-width:196px;display:flex;flex-direction:column;justify-content:center;gap:.9vh;">
+        <div class="ds-btns" id="smBtns" style="flex-direction:column;"></div>
+        <div class="sliderbox" style="margin:0;padding:.8vh .9vw;">
+          <input type="range" id="smT" min="0" max="2" step="0.02" value="0" oninput="smDraw()">
+          <div class="slidenote" style="margin-top:.2vh;"><span class="ma">t =</span> <b id="smTv">0.00</b></div>
+        </div>
+        <div class="slidenote" id="smPhase" style="font-weight:700;">Long-Run Equilibrium</div>
+        <div class="slidenote" id="smRead">Y 100.0 &middot; P 100.0 &middot; u 5.0% &middot; &pi; 6.0%</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide" id="s19">
+  <div class="tag">Unit 5 &middot; Part 1 close &middot; Check yourself</div>
+  <h2>Say it in your own words</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.2vw;align-items:center;flex:0 0 auto;">
+      <div class="ds-btns" style="flex:0 0 auto;">
+        <button class="ds-btn on" id="gapRec" onclick="gapSet('rec')">Recessionary gap</button>
+        <button class="ds-btn" id="gapInf" onclick="gapSet('inf')">Inflationary gap</button>
+      </div>
+      <div class="note" id="gapWhy" style="flex:1;">AD <b>right</b> &rarr; output <b>rises</b>; the real rate is <b>indeterminate</b>: fiscal pushes it up, monetary down.</div>
+    </div>
+    <table style="flex:0 0 auto;margin-top:.5vh;">
+      <tr><th>Tool</th><th>Policy direction</th><th>Real output</th><th>Real interest rate</th></tr>
+      <tr>
+        <td class="l"><b>Fiscal policy</b></td>
+        <td><span class="bk" id="bk1">________</span></td>
+        <td><span class="bk" id="bk2">________</span></td>
+        <td><span class="bk" id="bk3">________</span></td>
+      </tr>
+      <tr>
+        <td class="l"><b>Monetary policy</b></td>
+        <td><span class="bk" id="bk4">________</span></td>
+        <td><span class="bk" id="bk5">________</span></td>
+        <td><span class="bk" id="bk6">________</span></td>
+      </tr>
+    </table>
+    <div style="display:flex;flex-direction:column;flex:0 0 auto;margin-top:.5vh;">
+        <div class="steprow"><div class="sn">1</div><div class="st">The trade-off appears because the economy slides <span class="bk" id="bk7">________</span> the SRAS curve, which slopes <span class="bk" id="bk8">________</span>.</div></div>
+        <div class="steprow"><div class="sn">2</div><div class="st">Read off (u, &pi;) at every point on SRAS and you trace the <span class="bk" id="bk9">________</span>: a <span class="bk" id="bk10">________</span>-sloping curve.</div></div>
+        <div class="steprow"><div class="sn">3</div><div class="st">Wages catch up and unemployment returns to u*, so the LRPC is <span class="bk" id="bk11">________</span> at the natural rate and there is <span class="bk" id="bk12">________</span> long-run trade-off.</div></div>
+        <div class="steprow"><div class="sn">4</div><div class="st">The SRPC shifts only when <span class="bk" id="bk13">________</span> inflation changes: 1pp higher &pi;<sup>e</sup> moves the whole curve up by <span class="bk" id="bk14">________</span>.</div></div>
+        <div class="steprow"><div class="sn">5</div><div class="st">A demand shock moves the economy <span class="bk" id="bk15">________</span> the SRPC; a supply shock <span class="bk" id="bk16">________</span> the whole curve.</div></div>
+    </div>
+    <div class="s-foot">
+      <div class="btnrow" style="margin-top:.5vh;">
+        <button class="btn" id="bkBtn" onclick="bkNext()">Reveal answer &#9654;</button>
+        <button class="btn ghost" onclick="bkAll()">Show all</button>
+        <button class="btn ghost" onclick="bkReset()">Reset</button>
+        <span class="slidenote" id="bkProg" style="margin-left:.5vw;">0 / 16</span>
+      </div>
+      <div class="hl amber" style="margin-top:.5vh;">Next: <b>the history of the idea</b> &mdash; who built this curve, who broke it, and who argues the familiar story is wrong.</div>
+    </div>
+  </div>
+</section>
+<section class="slide cover" id="s20">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <p>In the short run a gap moves you along the curve. In the long run the curve itself is the only thing that stays put.</p>
+  <div class="meta">Dr. Jia &middot; &copy; 2026</div>
+</section>
+</main>
+
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 20</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+/* ═══════════ 翻页 ═══════════ */
+
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+function goTo(i){ gotoSlide(i); }
+window.goTo = goTo;
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+/* 翻页只走左右下角按键：方向键/空格翻页已移除（2026-10-08 硬规矩） */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ═══════════ s6 组合政策练习 ═══════════ */
+
+const PCQ = [
+  { q: "A recessionary gap. The government raises spending and the Fed cuts its policy rate. Real output and the price level will...",
+    opts: ["both rise", "both fall", "output rises, prices fall"], a: 0,
+    why: "Both tools push AD right \u2014 the top-left cell of the mix." },
+  { q: "An inflationary gap, and only fiscal policy acts. What happens to real output?",
+    opts: ["It rises", "It falls", "It is unchanged"], a: 1,
+    why: "Contractionary fiscal policy shifts AD left, closing the gap and pulling output back to potential." },
+  { q: "Fiscal policy is contractionary while monetary policy is expansionary. What happens to AD?",
+    opts: ["It shifts right", "It shifts left", "It barely moves"], a: 2,
+    why: "The two tools cancel each other out, so AD is roughly unchanged \u2014 only the mix differs." },
+  { q: "Expansionary fiscal policy paired with expansionary monetary policy. What can we NOT predict?",
+    opts: ["Real output", "The price level", "The interest rate"], a: 2,
+    why: "Fiscal expansion raises r; monetary expansion lowers it. Output and prices rise either way, but the rate is ambiguous." },
+  { q: "A government wants to shrink a recessionary gap and is worried about the interest rate rising. Which mix fits best?",
+    opts: ["Fiscal expansionary + monetary expansionary", "Fiscal expansionary only", "Monetary expansionary only"], a: 0,
+    why: "Adding monetary expansion offsets the upward pressure on r that fiscal expansion creates, while both still push AD right." }
+];
+let pcI = 0;
+function pcPaint(){
+  const it = PCQ[pcI];
+  document.getElementById("pcProg").textContent = "Scenario " + (pcI + 1) + " of " + PCQ.length;
+  document.getElementById("pcQ").textContent = it.q;
+  const box = document.getElementById("pcBtns");
+  box.innerHTML = "";
+  it.opts.forEach((lab, k) => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = lab;
+    b.onclick = () => pcPick(k);
+    box.appendChild(b);
+  });
+  const fb = document.getElementById("pcFb");
+  fb.className = "game-fb"; fb.textContent = " ";
+  document.getElementById("pcNext").disabled = true;
+}
+function pcPick(k){
+  const it = PCQ[pcI];
+  const fb = document.getElementById("pcFb");
+  if (k === it.a) { fb.className = "game-fb good"; fb.textContent = "Correct \u2014 " + it.why; }
+  else { fb.className = "game-fb bad"; fb.textContent = "Not quite. The right answer is \u201c" + it.opts[it.a] + "\u201d: " + it.why; }
+  document.getElementById("pcNext").disabled = false;
+}
+function pcNext(){ pcI = (pcI + 1) % PCQ.length; pcPaint(); }
+
+
+/* ═══════════ s10 拖动 AD，看点在 SRPC 上移动 ═══════════ */
+
+/* 几何：与 Python 生成 SVG 时用的 box / 数据范围一致 */
+const DGG = { AB:[76,42,540,274], AX:[78,118], AY:[84,116],
+              BB:[650,42,1114,274], BX:[0,10], BY:[0,12] };
+function dgXA(Y){ const b=DGG.AB,x=DGG.AX; return b[0]+(Y-x[0])/(x[1]-x[0])*(b[2]-b[0]); }
+function dgYA(P){ const b=DGG.AB,y=DGG.AY; return b[3]-(P-y[0])/(y[1]-y[0])*(b[3]-b[1]); }
+function dgXB(u){ const b=DGG.BB,x=DGG.BX; return b[0]+(u-x[0])/(x[1]-x[0])*(b[2]-b[0]); }
+function dgYB(p){ const b=DGG.BB,y=DGG.BY; return b[3]-(p-y[0])/(y[1]-y[0])*(b[3]-b[1]); }
+function dgClip(ax,ay,bx,by,box){
+  const x0=box[0],y0=box[1],x1=box[2],y1=box[3];
+  const dx=bx-ax, dy=by-ay; let t0=0,t1=1;
+  const T=[[-dx,ax-x0],[dx,x1-ax],[-dy,ay-y0],[dy,y1-ay]];
+  for(let k=0;k<4;k++){ const pp=T[k][0], qq=T[k][1];
+    if(pp===0){ if(qq<0) return null; }
+    else { const r=qq/pp;
+      if(pp<0){ if(r>t1) return null; if(r>t0) t0=r; }
+      else { if(r<t0) return null; if(r<t1) t1=r; } } }
+  return [ax+t0*dx, ay+t0*dy, ax+t1*dx, ay+t1*dy];
+}
+function dgSetLine(id,p,q,box){
+  const el=document.getElementById(id); if(!el) return;
+  const c=dgClip(p[0],p[1],q[0],q[1],box);
+  if(!c){ el.setAttribute("opacity","0"); return; }
+  el.setAttribute("opacity","1");
+  el.setAttribute("x1",c[0].toFixed(1)); el.setAttribute("y1",c[1].toFixed(1));
+  el.setAttribute("x2",c[2].toFixed(1)); el.setAttribute("y2",c[3].toFixed(1));
+}
+/* 模型与全 deck 一致：AD: P=(200+A)-Y ; SRAS: P=Y ; Y*=100+A/2 ; u=5-0.2(Y-100) ; pi=6+0.25(P-100) */
+function dgCalc(A){ const Y=100+A/2, P=100+A/2;
+  return { Y:Y, P:P, u:5-0.2*(Y-100), pi:6+0.25*(P-100) }; }
+let dgA = 0, dgDrag = null;
+function dgDraw(){
+  const e = dgCalc(dgA);
+  dgSetLine("dgAD", [dgXA(DGG.AX[0]), dgYA(200+dgA-DGG.AX[0])],
+                    [dgXA(DGG.AX[1]), dgYA(200+dgA-DGG.AX[1])], DGG.AB);
+  const ex = dgXA(e.Y), ey = dgYA(e.P);
+  dgSetLine("dgGx", [ex, dgYA(DGG.AY[0])], [ex, ey], DGG.AB);
+  dgSetLine("dgGy", [dgXA(DGG.AX[0]), ey], [ex, ey], DGG.AB);
+  let el = document.getElementById("dgE");
+  if(el){ el.setAttribute("cx", ex.toFixed(1)); el.setAttribute("cy", ey.toFixed(1)); }
+  el = document.getElementById("dgEt");
+  if(el){ el.setAttribute("x",(ex+14).toFixed(1)); el.setAttribute("y",(ey-10).toFixed(1)); }
+  const px = dgXB(e.u), py = dgYB(e.pi);
+  dgSetLine("dgPx", [px, dgYB(DGG.BY[0])], [px, py], DGG.BB);
+  dgSetLine("dgPy", [dgXB(DGG.BX[0]), py], [px, py], DGG.BB);
+  el = document.getElementById("dgP");
+  if(el){ el.setAttribute("cx", px.toFixed(1)); el.setAttribute("cy", py.toFixed(1)); }
+  el = document.getElementById("dgPt");
+  if(el){ el.setAttribute("x",(px+14).toFixed(1)); el.setAttribute("y",(py-10).toFixed(1)); }
+  el = document.getElementById("dgRead");
+  if(el) el.textContent = "AD shift " + (dgA>0?"+":"") + dgA + "   \u00b7   Y " + e.Y.toFixed(1) +
+    "  \u00b7  P " + e.P.toFixed(1) + "  \u00b7  u " + e.u.toFixed(1) + "%  \u00b7  \u03c0 " + e.pi.toFixed(1) + "%";
+}
+function dgSlide(v){ dgA = +v; const s=document.getElementById("dgA"); if(s) s.value = dgA; dgDraw(); }
+function dgVX(ev,svg){ const r = svg.getBoundingClientRect(); return (ev.clientX-r.left)/r.width*1140; }
+function dgYAt(vx){ const b=DGG.AB,x=DGG.AX; return x[0]+(vx-b[0])/(b[2]-b[0])*(x[1]-x[0]); }
+function dgDown(ev){
+  const svg = ev.currentTarget, vx = dgVX(ev,svg);
+  if(vx < DGG.AB[0]-40 || vx > DGG.AB[2]+40) return;      /* 只在左图起拖 */
+  dgDrag = dgCalc(dgA).Y - dgYAt(vx);
+  try{ svg.setPointerCapture(ev.pointerId); }catch(err){}
+  svg.style.cursor = "grabbing";
+  ev.preventDefault();
+}
+function dgMove(ev){
+  if(dgDrag === null) return;
+  const svg = ev.currentTarget, vx = dgVX(ev,svg);
+  let Ys = dgYAt(vx) + dgDrag;
+  Ys = Math.max(85, Math.min(115, Ys));
+  dgA = Math.round(2*(Ys-100));
+  const s = document.getElementById("dgA"); if(s) s.value = dgA;
+  dgDraw();
+  ev.preventDefault();
+}
+function dgUp(){
+  dgDrag = null;
+  const s = document.getElementById("dgSvg"); if(s) s.style.cursor = "grab";
+}
+function dgInit(){
+  const s = document.getElementById("dgSvg");
+  if(s){
+    s.style.cursor = "grab"; s.style.touchAction = "none";
+    s.addEventListener("pointerdown", dgDown);
+    s.addEventListener("pointermove", dgMove);
+    s.addEventListener("pointerup", dgUp);
+    s.addEventListener("pointercancel", dgUp);
+  }
+  dgDraw();
+}
+
+
+/* ═══════════ s13 LRPC 是怎么来的（滑块 + 播放） ═══════════ */
+
+const LPG = { AB:[76,42,540,274], AX:[78,118], AY:[72,128],
+              BB:[650,42,1114,274], BX:[0,10], BY:[0,14] };
+function lx(Y){ return 76 + (Y - 78) / 40 * 464; }
+function ly(P){ return 274 - (P - 72) / 56 * 232; }
+function lux(u){ return 650 + u / 10 * 464; }
+function luy(pi){ return 274 - pi / 14 * 232; }
+/* 模型：AD: P=(200+A)-Y ; SRAS: P=B+Y ; u=5-0.2(Y-100) ; pi=6+0.25(P-100)
+   前半段 AD 右移 0→20；后半段 SRAS 上移 0→20（工资追上来） */
+function lpCalc(t){
+  const A = 20 * Math.min(t / 0.5, 1);
+  const B = 20 * Math.max(0, (t - 0.5)) / 0.5;
+  const Y = 100 + (A - B) / 2, P = 100 + (A + B) / 2;
+  return { t: t, A: A, B: B, Y: Y, P: P, u: 5 - 0.2 * (Y - 100), pi: 6 + 0.25 * (P - 100) };
+}
+function lpDraw(v){
+  const t = (v === undefined) ? +document.getElementById("lpT").value : +v;
+  const e = lpCalc(t);
+  dgSetLine("lrAD", [lx(LPG.AX[0]), ly(200 + e.A - LPG.AX[0])],
+                    [lx(LPG.AX[1]), ly(200 + e.A - LPG.AX[1])], LPG.AB);
+  dgSetLine("lrSRAS", [lx(LPG.AX[0]), ly(e.B + LPG.AX[0])],
+                      [lx(LPG.AX[1]), ly(e.B + LPG.AX[1])], LPG.AB);
+  const ex = lx(e.Y), ey = ly(e.P);
+  dgSetLine("lrGx", [ex, ly(LPG.AY[0])], [ex, ey], LPG.AB);
+  dgSetLine("lrGy", [lx(LPG.AX[0]), ey], [ex, ey], LPG.AB);
+  let el = document.getElementById("lrE");
+  if(el){ el.setAttribute("cx", ex.toFixed(1)); el.setAttribute("cy", ey.toFixed(1)); }
+  el = document.getElementById("lrEt");
+  if(el){ el.setAttribute("x", (ex + 14).toFixed(1)); el.setAttribute("y", (ey - 10).toFixed(1)); }
+  /* SRPC: pi = (6+0.25B) - 1.25(u-5) */
+  const k = 6 + 0.25 * e.B;
+  const f = u => k - 1.25 * (u - 5);
+  const c = dgClip(lux(LPG.BX[0]), luy(f(LPG.BX[0])), lux(LPG.BX[1]), luy(f(LPG.BX[1])), LPG.BB);
+  const ln = document.getElementById("lrSRPC");
+  if(ln){
+    if(c){
+      ln.setAttribute("opacity", "1");
+      ln.setAttribute("x1", c[0].toFixed(1)); ln.setAttribute("y1", c[1].toFixed(1));
+      ln.setAttribute("x2", c[2].toFixed(1)); ln.setAttribute("y2", c[3].toFixed(1));
+    } else ln.setAttribute("opacity", "0");
+  }
+  const px = lux(e.u), py = luy(e.pi);
+  dgSetLine("lrPx", [px, luy(LPG.BY[0])], [px, py], LPG.BB);
+  dgSetLine("lrPy", [lux(LPG.BX[0]), py], [px, py], LPG.BB);
+  el = document.getElementById("lrP");
+  if(el){ el.setAttribute("cx", px.toFixed(1)); el.setAttribute("cy", py.toFixed(1)); }
+  el = document.getElementById("lrPt");
+  if(el){ el.setAttribute("x", (px + 14).toFixed(1)); el.setAttribute("y", (py - 10).toFixed(1)); }
+  el = document.getElementById("lrSt");
+  if(el){ el.setAttribute("x", lux(9.4).toFixed(1)); el.setAttribute("y", (luy(f(9.4)) + 7).toFixed(1)); }
+  let phase = "Long-run equilibrium: u = u*, no gap";
+  if(t > 0.99)      phase = "New long-run equilibrium: back at u*, higher P";
+  else if(t > 0.52) phase = "Wages catch up: SRAS shifts left, u rises back to u*";
+  else if(t > 0.02) phase = "AD shifts right: boom (u below u*, \u03c0 above expected)";
+  el = document.getElementById("lpRead");
+  if(el) el.textContent = phase + "  \u00b7  Y " + e.Y.toFixed(1) + " \u00b7 P " + e.P.toFixed(1) +
+        " \u00b7 u " + e.u.toFixed(1) + "% \u00b7 \u03c0 " + e.pi.toFixed(1) + "%";
+}
+let lpTimer = null;
+function lpPlay(){
+  if(lpTimer){ clearInterval(lpTimer); lpTimer = null; }
+  const btn = document.getElementById("lpBtn");
+  let t = 0;
+  document.getElementById("lpT").value = 0;
+  lpDraw(0);
+  if(btn) btn.disabled = true;
+  lpTimer = setInterval(() => {
+    t = Math.min(1, t + 0.025);
+    document.getElementById("lpT").value = t.toFixed(2);
+    lpDraw(t);
+    if(t >= 1){ clearInterval(lpTimer); lpTimer = null; if(btn) btn.disabled = false; }
+  }, 45);
+}
+function lpReset(){
+  if(lpTimer){ clearInterval(lpTimer); lpTimer = null; }
+  const btn = document.getElementById("lpBtn"); if(btn) btn.disabled = false;
+  document.getElementById("lpT").value = 0;
+  lpDraw(0);
+}
+
+
+/* ═══════════ s18 冲击模拟器（几何按同一模型算；t=0 实线与虚线重合） ═══════════ */
+
+function sx(Y){ return 60 + (Y - 50) / 100 * 340; }
+function sy(P){ return 356 - (P - 50) / 100 * 280; }
+function ux(u){ return 470 + u / 10 * 360; }
+function uy(pi){ return 356 - (pi + 2) / 16 * 280; }
+const SMBOX_A = [60, 76, 400, 356], SMBOX_B = [470, 76, 830, 356];
+const AMP = 30;
+function smCalc(type, s){
+  let A = 200, B = 0, phase = "Long-Run Equilibrium";
+  if (s <= 1.0) {
+    if (type === "posAD")        { A = 200 + AMP * s; if (s > 0) phase = "Short-Run Inflationary Gap"; }
+    else if (type === "negAD")   { A = 200 - AMP * s; if (s > 0) phase = "Short-Run Recessionary Gap"; }
+    else if (type === "negSRAS") { B = AMP * s;       if (s > 0) phase = "Short-Run Stagflation Crisis"; }
+    else if (type === "posSRAS") { B = -AMP * s;      if (s > 0) phase = "Short-Run Supply-Side Boom"; }
+  } else {
+    const rem = s - 1.0;
+    if (type === "posAD")        { A = 200 + AMP; B = AMP * rem;         phase = "LR Self-Correction: Wages Rise"; }
+    else if (type === "negAD")   { A = 200 - AMP; B = -AMP * rem;        phase = "LR Self-Correction: Wages Fall"; }
+    else if (type === "negSRAS") { A = 200; B = AMP - AMP * rem;         phase = "LR Self-Correction: Supply Adjustment"; }
+    else if (type === "posSRAS") { A = 200; B = -AMP + AMP * rem;        phase = "LR Self-Correction: Supply Normalization"; }
+    if (s >= 1.999) phase = "New Long-Run Equilibrium";
+  }
+  const Y = (A - B) / 2, P = B + Y;
+  let u = 5.0 - 0.2 * (Y - 100); if (u < 0.5) u = 0.5;
+  const pi = 6.0 + 0.25 * (P - 100);
+  return { A, B, Y, P, u, pi, phase };
+}
+function smSrpcPts(B){
+  const pts = [];
+  for (let u = 0.5; u <= 9.9001; u += 0.25) {
+    const yv = 100 - (u - 5) / 0.2;
+    pts.push(ux(u).toFixed(1) + "," + uy(6 + 0.25 * (B + yv - 100)).toFixed(1));
+  }
+  return pts.join(" ");
+}
+const SM_LAB = { posAD: "+AD Shock (Expansion)", negAD: "\u2212AD Shock (Recession)",
+                 negSRAS: "\u2212SRAS Shock (Stagflation)", posSRAS: "+SRAS Shock (Boom)" };
+let smKey = "posAD";
+function smPaintBtns(){
+  const box = document.getElementById("smBtns");
+  box.innerHTML = "";
+  Object.keys(SM_LAB).forEach(k => {
+    const b = document.createElement("button");
+    b.className = "ds-btn" + (k === smKey ? " on" : "");
+    b.textContent = SM_LAB[k];
+    b.onclick = () => { smKey = k; document.getElementById("smT").value = 0; smPaintBtns(); smDraw(); };
+    box.appendChild(b);
+  });
+}
+function smDraw(){
+  const t = +document.getElementById("smT").value;
+  const e = smCalc(smKey, t);
+  document.getElementById("smTv").textContent = t.toFixed(2);
+  dgSetLine("smAD", [sx(50), sy(e.A - 50)], [sx(150), sy(e.A - 150)], SMBOX_A);
+  dgSetLine("smSRAS", [sx(50), sy(e.B + 50)], [sx(150), sy(e.B + 150)], SMBOX_A);
+  let el = document.getElementById("smDot1");
+  if(el){ el.setAttribute("cx", sx(e.Y).toFixed(1)); el.setAttribute("cy", sy(e.P).toFixed(1)); }
+  el = document.getElementById("smE");
+  if(el){ el.setAttribute("x", (sx(e.Y) + 14).toFixed(1)); el.setAttribute("y", (sy(e.P) - 10).toFixed(1)); }
+  el = document.getElementById("smSrpc");
+  if(el) el.setAttribute("points", smSrpcPts(e.B));
+  el = document.getElementById("smDot2");
+  if(el){ el.setAttribute("cx", ux(e.u).toFixed(1)); el.setAttribute("cy", uy(e.pi).toFixed(1)); }
+  el = document.getElementById("smA");
+  if(el){ el.setAttribute("x", (ux(e.u) + 14).toFixed(1)); el.setAttribute("y", (uy(e.pi) - 10).toFixed(1)); }
+  el = document.getElementById("smSRPCt");
+  if(el){ el.setAttribute("x", (ux(9.5) - 90).toFixed(1));
+          el.setAttribute("y", (uy(6 + 0.25 * e.B - 1.25 * 4.5) + 7).toFixed(1)); }
+  document.getElementById("smPhase").textContent = e.phase;
+  document.getElementById("smRead").textContent =
+    "Y " + e.Y.toFixed(1) + " \u00b7 P " + e.P.toFixed(1) + " \u00b7 u " + e.u.toFixed(1) +
+    "% \u00b7 \u03c0 " + e.pi.toFixed(1) + "%";
+}
+
+
+/* ═══════════ s11 真实数据 I：逐点播放，最后出拟合线 ═══════════ */
+
+const RX_YEARS = [1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969];
+let rxTimer = null;
+function rxShow(k){
+  for(let i = 1; i <= 9; i++){
+    const e = document.getElementById("pcD" + i);
+    if(e) e.setAttribute("opacity", i <= k ? "1" : "0");
+  }
+  const fit = document.getElementById("pcFit");
+  if(fit) fit.setAttribute("opacity", k >= 9 ? "1" : "0");
+  ["pcEqA", "pcEqB", "pcY1", "pcY2"].forEach(id => {
+    const e = document.getElementById(id);
+    if(e) e.setAttribute("opacity", k >= 9 ? "1" : "0");
+  });
+  const y = document.getElementById("rxYear");
+  if(y) y.textContent = (k === 0) ? "Year: \u2014"
+      : (k >= 9 ? "1961\u20131969 \u00b7 line fitted" : "Year: " + RX_YEARS[k - 1]);
+}
+function rxPlay(){
+  if(rxTimer){ clearInterval(rxTimer); rxTimer = null; }
+  const btn = document.getElementById("rxBtn");
+  let k = 1; rxShow(1);
+  rxTimer = setInterval(() => {
+    k++;
+    if(k >= 9){ clearInterval(rxTimer); rxTimer = null; rxShow(9); if(btn) btn.disabled = false; return; }
+    rxShow(k);
+  }, 420);
+  if(btn) btn.disabled = true;
+}
+function rxReset(){
+  if(rxTimer){ clearInterval(rxTimer); rxTimer = null; }
+  const btn = document.getElementById("rxBtn"); if(btn) btn.disabled = false;
+  rxShow(0);
+}
+
+
+/* ═══════════ s10 分步显示 ═══════════ */
+
+const SR_IDS = ["srG1", "srCard", "srK1", "srK2", "srK3"];
+const SR_AT  = [1, 1, 2, 3, 4];          /* 第几步之后出现 */
+const SR_MAX = 4;                        /* 一共 4 步（AD 位移与 Step-1 卡同步） */
+const SR_TXT = [
+  "Press Next step to build the answer.",
+  "Step 1 \u2014 AD shifts right, so the economy slides UP the SRAS curve. More output means more employment, so unemployment falls while inflation rises.",
+  "Reason 1 \u2014 sticky wages: nominal wages are locked by contracts, so a higher price level cuts the real wage and firms hire more.",
+  "Reason 2 \u2014 sticky prices: menu costs keep some prices fixed, so a firm that has not re-priced finds its relative price has risen, and produces more.",
+  "Reason 3 \u2014 misperceptions: suppliers mistake a rise in the general price level for a rise in the price of their own product."
+];
+let srN = 0;
+function srPaint(){
+  for(let k = 0; k < SR_IDS.length; k++){
+    const el = document.getElementById(SR_IDS[k]);
+    if(!el) continue;
+    const on = srN >= SR_AT[k];
+    if(SR_IDS[k] === "srG1") el.setAttribute("opacity", on ? "1" : "0");
+    else el.classList.toggle("hidden", !on);
+  }
+  const g2 = document.getElementById("srG2");
+  if(g2) g2.setAttribute("opacity", srN >= 1 ? "1" : "0");
+  const t = document.getElementById("srText");
+  if(t) t.textContent = SR_TXT[Math.min(srN, SR_TXT.length - 1)];
+  const b = document.getElementById("srBtn");
+  if(b){
+    b.disabled = srN >= SR_MAX;
+    b.textContent = srN >= SR_MAX ? "All steps shown" : "Next step \u25b6";
+  }
+}
+function srNext(){ if(srN < SR_MAX){ srN++; srPaint(); } }
+function srReset(){ srN = 0; srPaint(); }
+
+
+/* ═══════════ Part 1 总结填空（逐步揭晓） ═══════════ */
+
+/* 14 空 = 表格 4 空（**随缺口切换**）+ 5 条分步总结 10 空。
+   老师 2026-10-14：表格改成两态 —— 先看衰退缺口要什么政策、对产出与实际利率的影响，
+   再切到通胀缺口看同一张表。实际利率那格两个方向都是 indeterminate：
+   财政与货币把 r 往相反方向拉，符号是唯一测不准的量（这正是 s6 练习考的点）。
+   原第 4 条（SRAS 上斜三原因）与原第 6 条（1961–69 数据）已按老师要求删除。 */
+const BK_GAP = {
+  rec: { label: "Recessionary gap",
+         why: "AD <b>right</b> &rarr; output <b>rises</b>; the real rate is <b>indeterminate</b>: fiscal pushes it up, monetary down.",
+         /* fiscal: direction / output / r   ·   monetary: direction / output / r */
+         ans: ["expansionary", "up", "up", "expansionary", "up", "down"] },
+  inf: { label: "Inflationary gap",
+         why: "AD <b>left</b> &rarr; output <b>falls</b>; the real rate is <b>indeterminate</b>: fiscal pushes it down, monetary up.",
+         ans: ["contractionary", "down", "down", "contractionary", "down", "up"] }
+};
+const BK_ROW = ["along", "upward", "SRPC", "downward", "vertical", "no",
+                "expected", "1pp", "along", "shifts"];
+let bkGap = "rec";
+function bkAns(){ return BK_GAP[bkGap].ans.concat(BK_ROW); }
+function bkPaint(){
+  const A = bkAns();
+  for(let k = 0; k < A.length; k++){
+    const el = document.getElementById("bk" + (k + 1));
+    if(!el) continue;
+    if(k < bkN){ el.textContent = A[k]; el.classList.add("on"); }
+    else { el.textContent = "________"; el.classList.remove("on"); }
+  }
+  const p = document.getElementById("bkProg");
+  if(p) p.textContent = bkN + " / " + A.length;
+  const b = document.getElementById("bkBtn");
+  if(b){
+    b.disabled = bkN >= A.length;
+    b.textContent = bkN >= A.length ? "All revealed" : "Reveal answer \u25b6";
+  }
+}
+function bkNext(){ if(bkN < bkAns().length){ bkN++; bkPaint(); } }
+function bkAll(){ bkN = bkAns().length; bkPaint(); }
+function bkReset(){ bkN = 0; bkPaint(); }
+/* 两态切换：换缺口 = 换表格那一行的四个答案，同时把揭示进度复位（免得混着旧答案看） */
+function gapSet(g){
+  if(!BK_GAP[g]) return;
+  bkGap = g; bkN = 0;
+  const wy = document.getElementById("gapWhy");  if(wy) wy.innerHTML = BK_GAP[g].why;
+  const r = document.getElementById("gapRec"), i = document.getElementById("gapInf");
+  if(r) r.classList.toggle("on", g === "rec");
+  if(i) i.classList.toggle("on", g === "inf");
+  bkPaint();
+}
+
+
+/* ══════════ 初始化 ══════════ */
+pcPaint();
+dgInit();
+rxReset();
+srReset();
+lpReset();
+smPaintBtns();
+smDraw();
+bkReset();
+try{
+  const hashInit = parseInt(location.hash.slice(1) || "0", 10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+}catch(err){ console.error(err); gotoSlide(0); }
+
+</script>
+<script>
+/* == math typesetting engine (math-typeset.py) == */
+/* Inside .ma / .eqbox / .mcell: a single Latin letter or a single lowercase Greek
+   letter is a variable, so it goes italic; runs of two or more letters are words or
+   abbreviations ("Deposits", "MPC", "MV") and stay upright. */
+var MATH_FN = { ln:1, log:1, exp:1, max:1, min:1, sin:1, cos:1, tan:1 };
+var MATH_IT = { rr:1 };
+function mathVar(t){
+  if(t.length === 1) return /^[A-Za-z]$/.test(t) || /^[\u03b1-\u03c9]$/.test(t);
+  return !!MATH_IT[t];
+}
+function wrapLetters(root){
+  if(!root || root.nodeType !== 1) return;
+  var walker = document.createTreeWalker(root, 4, null, false), texts = [], n;
+  while((n = walker.nextNode())) texts.push(n);
+  for(var i = 0; i < texts.length; i++){
+    var t = texts[i], p = t.parentNode;
+    if(!p || p.nodeType !== 1) continue;
+    if(/^(I|B|EM|STRONG|SUP|SUB)$/.test(p.tagName)) continue;
+    var cl = p.className ? String(p.className) : "";
+    if(cl && /(^|\s)(fn|lbl|mi)(\s|$)/.test(cl)) continue;
+    var s = t.nodeValue, changed = false;
+    if(!/[A-Za-z\u03b1-\u03c9]/.test(s)) continue;
+    var parts = s.split(/([A-Za-z\u03b1-\u03c9]+)/), frag = document.createDocumentFragment();
+    for(var j = 0; j < parts.length; j++){
+      var piece = parts[j];
+      if(!piece) continue;
+      if(/^([A-Za-z\u03b1-\u03c9]+)$/.test(piece)){
+        if(mathVar(piece)){
+          var e2 = document.createElement("i");
+          e2.textContent = piece;
+          frag.appendChild(e2);
+          changed = true;
+        } else if(MATH_FN[piece]){
+          var e3 = document.createElement("span");
+          e3.className = "fn";
+          e3.textContent = piece;
+          frag.appendChild(e3);
+          changed = true;
+        } else {
+          frag.appendChild(document.createTextNode(piece));
+        }
+      } else {
+        frag.appendChild(document.createTextNode(piece));
+      }
+    }
+    if(changed) p.replaceChild(frag, t);   /* idempotent: no change means no mutation */
+  }
+}
+function typesetMath(root){
+  root = root || document;
+  var list = [], i, found;
+  var cls = root.nodeType === 1 && root.getAttribute ? String(root.getAttribute("class") || "") : "";
+  if(/(^|\s)(ma|mas|eqbox|mcell)(\s|$)/.test(cls)) list.push(root);
+  found = root.querySelectorAll ? root.querySelectorAll(".ma,.mas,.eqbox,.mcell") : [];
+  for(i = 0; i < found.length; i++) list.push(found[i]);
+  for(i = 0; i < list.length; i++){ wrapLetters(list[i]); list[i].setAttribute("data-ts", "1"); }
+}
+typesetMath(document);
+/* decks that build markup later (chains, step reveals, dynamic tables) are covered here */
+/* Decks rewrite their own labels (slider values, step reveals). When that happens the
+   scope survives but its text is new, so the whole document is re-typeset once per frame.
+   wrapLetters is idempotent, so this settles instead of looping. */
+if(window.MutationObserver){
+  var mathQueued = false;
+  new MutationObserver(function(){
+    if(mathQueued) return;
+    mathQueued = true;
+    var run = function(){ mathQueued = false; typesetMath(document); };
+    if(window.requestAnimationFrame) requestAnimationFrame(run); else setTimeout(run, 0);
+  }).observe(document.body, { childList:true, subtree:true });
+}
+/* == /math typesetting engine == */
+
+
+
+</script>
+</body>
+</html>

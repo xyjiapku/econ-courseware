@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 5.2 · The Phillips Curve as History</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s;
+    overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1 0 auto;min-height:44vh;overflow-y:auto;display:flex;flex-direction:column;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  .hidden{display:none !important;}
+  .steprow{display:flex;gap:.9vw;align-items:center;background:var(--accent-light);border-radius:10px;padding:.85vh 1vw;margin-bottom:.7vh;}
+  .steprow .sn{flex:0 0 auto;width:2.7vw;min-width:44px;height:2.7vw;min-height:44px;border-radius:50%;background:var(--accent-dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,2.3vh,26px);font-weight:800;}
+  .steprow .st{font-size:clamp(22px,2.3vh,26px);line-height:1.4;font-weight:600;}
+  .opt{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .opt.on{background:var(--accent);color:#fff;}
+.bk{display:inline-block;min-width:5.2em;border-bottom:2.5px solid var(--accent);
+      text-align:center;color:#b9c9d6;font-weight:700;padding:0 .2em;}
+  .bk.on{color:var(--green);border-bottom-color:var(--green);}
+.slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:14px;}
+.slide::-webkit-scrollbar-track,.stage::-webkit-scrollbar-track{background:#eef4f9;border-radius:8px;}
+.slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:var(--accent,#1CADE4);border-radius:8px;border:3px solid #eef4f9;}
+/* 填空总结页两栏（2026-10-14）：10 行一屏放不下 → 分两栏，行高减半。
+   与 .anslist 同一招；break-inside:avoid 保证一行不被拆到两栏中间。 */
+.drill2{column-count:2;column-gap:2.4vw;}
+.drill2 .steprow{break-inside:avoid;}
+  /* 结束页的图片版权列表（老师 2026-10-14：署名统一收在这一页） */
+  .cover .credithead{font-size:clamp(22px,2.2vh,26px);font-weight:800;color:#fff;letter-spacing:.08em;
+    text-transform:uppercase;margin-top:.8vh;}
+  .cover .credits{width:min(1520px,92%);columns:2;column-gap:3.4vw;text-align:left;
+    font-size:clamp(22px,2.05vh,24px);line-height:1.5;color:rgba(255,255,255,.92);}
+  .cover .credits div{padding-left:1.15em;text-indent:-1.15em;}   /* 悬挂缩进，两栏对齐 */
+/* == math typesetting (math-typeset.py) == */
+  /* Formulas: source stays plain text. Wrap in .ma (inline) / .eqbox (block);
+     the engine italicises single-letter variables and leaves words upright. */
+  .ma,.eqbox,.mcell{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}
+  .ma{font-size:1.2em;line-height:1.22;}
+  .mas{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;
+    font-variant-numeric:lining-nums tabular-nums;}   /* scope that keeps the host font-size */
+  .eqbox .ma,.mcell .ma,td .ma,th .ma,.hl .ma,.card .ma,.subline .ma,.cn .ma{font-size:1em;}
+  .ma i,.eqbox i,.mcell i{font-style:italic;font-weight:inherit;}
+  .ma .fn,.eqbox .fn,.mcell .fn{font-style:normal;}
+  .ma .fn::after,.eqbox .fn::after{content:"";display:inline-block;width:.15em;}
+  .ma sup,.ma sub,.eqbox sup,.eqbox sub,.mcell sup,.mcell sub{font-size:.82em;line-height:0;
+    font-style:normal;position:relative;vertical-align:baseline;}
+  .ma sup,.eqbox sup,.mcell sup{top:-.55em;}
+  .ma sub,.eqbox sub,.mcell sub{top:.14em;}
+  .bigop{font-size:1.32em;line-height:1;font-style:normal;position:relative;top:.08em;margin-right:.03em;}
+  .bar,.hat{position:relative;display:inline-block;}
+  .bar::after{content:"";position:absolute;left:-.05em;right:-.05em;bottom:1.05em;
+    height:.06em;background:currentColor;border-radius:.03em;}
+  .hat::after{content:"";position:absolute;left:50%;bottom:.98em;transform:translateX(-50%);
+    width:0;height:0;border-left:.15em solid transparent;border-right:.15em solid transparent;
+    border-bottom:.16em solid currentColor;}
+  .mfrac{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    vertical-align:middle;line-height:1.16;margin:0 .2em;font-size:1em;position:relative;top:.05em;}
+  .mfrac .num{padding:0 .3em .09em;border-bottom:.06em solid currentColor;}
+  .mfrac .den{padding:.09em .3em 0;}
+  .mvar{font-family:"Cambria","Cambria Math",Georgia,"Times New Roman",serif;font-style:italic;}
+  .eqbox{display:flex;align-items:center;justify-content:center;gap:.5vw;flex-wrap:wrap;
+    background:var(--accent-dark);color:#fff;border-radius:12px;padding:.7vh 1vw;margin:.5vh 0;
+    font-size:clamp(24px,2.7vh,34px);font-weight:800;line-height:1.4;text-align:center;}
+  .eqbox.green{background:var(--green);}
+  .eqbox.amber{background:var(--amber);}
+  .eqbox.red{background:var(--red);}
+  .eqbox.ghost{background:#fff;color:var(--ink);border:3px solid var(--accent);}
+  .eqbox .lbl{font-size:clamp(22px,2.1vh,24px);font-weight:700;}
+/* == /math typesetting == */
+
+
+  .figrow{display:flex;gap:1.4vw;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+  /* 装真图后（2026-10-14）：图框按 .fig img 的 max-height:26vh 定宽，
+     这样**长图注会在图宽范围内折行**，而不是把 .fig 撑宽导致 .figrow 折行、整页顶出一屏。 */
+  .fig.port{width:calc(26vh*.8);}
+  .fig.wide{width:calc(26vh*1.6);}
+  /* s4（凯恩斯）：左文栏加宽到七成，右侧留给肖像；肖像放大一号（30vh）。 */
+  #s4 .split .txt{flex:0 0 70%;}
+  #s4 .fig.solo{width:calc(30vh*.8);}
+  #s4 .fig.solo img{max-height:30vh;}
+  .fig span{text-align:center;}
+
+</style>
+</head>
+<body>
+<!-- 本课件于 2026-10-14 重组：只讲历史与思想史。模型部分（SRPC / LRPC / 预期 / 两种冲击）整段迁入 Part 1（那一边的 s13&ndash;s18）。 -->
+
+<div class="progress" id="progress"></div>
+<main><section class="slide cover active" id="s1">
+  <div class="tag">AP Macroeconomics &middot; Unit 5: Long-Run Consequences &middot; Part 2 of 2</div>
+  <h1>The Phillips Curve as History</h1>
+  <p>Keynes &middot; Phillips &middot; the menu &middot; the break &middot; the critique</p>
+  <p style="font-size:clamp(23px,2.6vh,30px);">From the <i>General Theory</i> to the 2026 Nobel &mdash; and the telling that says most of this story never happened</p>
+  <div class="meta">Dr. Jia &middot; &copy; 2026 &middot; Part 2 of 2 &middot; history of thought</div>
+</section>
+<section class="slide" id="s2">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; the standard account</div>
+  <h2>The story in one table</h2>
+  <div class="stage">
+    <table style="flex:0 0 auto;">
+      <tr><th>When</th><th>What happened</th><th>Why it matters</th></tr>
+      <tr><td><b>1936</b></td><td class="l">Keynes publishes the <i>General Theory</i></td><td class="l">Demand management; the price level treated as an <b>institutional datum</b></td></tr>
+      <tr><td><b>1958</b></td><td class="l">Phillips plots UK data, 1861&ndash;1957</td><td class="l">A <b>correlation</b>, with no theory behind it</td></tr>
+      <tr><td><b>1960&ndash;64</b></td><td class="l">Samuelson&ndash;Solow: a <b>menu</b>; the 1964 US tax cut</td><td class="l">The profession <b>believes it and acts on it</b></td></tr>
+      <tr><td><b>1967&ndash;68</b></td><td class="l">Phelps and Friedman add expectations</td><td class="l">The <b>natural-rate hypothesis</b> &mdash; predicted the break</td></tr>
+      <tr><td><b>1970&ndash;79</b></td><td class="l">Inflation and unemployment rise together</td><td class="l">The old line is <b>dead</b>; the vertical LRPC is bolted on</td></tr>
+      <tr><td><b>1976</b></td><td class="l">Lucas: estimated relations are not structural</td><td class="l"><b>Learn the rule &rarr; the rule stops working</b></td></tr>
+      <tr><td><b>1980s&ndash;90s</b></td><td class="l">Volcker; then inflation targets, independent banks</td><td class="l">Rebuild: <b>manage expectations</b>, not the curve</td></tr>
+      <tr><td><b>2026</b></td><td class="l">Hall and Woodford win the Nobel</td><td class="l">The rebuild gets its <b>microfoundations</b> &mdash; and its official history</td></tr>
+    </table>
+    <div class="s-foot"><div class="hl">The version in the textbooks &mdash; and the one the 2026 Nobel press release still tells. <b>Every row is contested</b>: near the end of this deck a historian puts a verdict beside each line.</div></div>
+  </div>
+</section>
+<section class="slide" id="s3">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; before 1936</div>
+  <h2>Before Keynes: the classical view</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 1 auto;flex-wrap:nowrap;align-items:stretch;">
+      <div class="card"><h3>Laissez-faire</h3><p>Markets clear on their own. Government should stand back, and budgets should balance.</p></div>
+      <div class="card"><h3>Say&rsquo;s Law</h3><p>Supply creates its own demand &mdash; a general glut of goods is impossible.</p></div>
+      <div class="card"><h3>Downturns are temporary</h3><p>Falling wages and prices restore full employment &mdash; <b>in the long run</b>.</p></div>
+    </div>
+    <div class="hl red" style="flex:0 0 auto;font-size:clamp(24px,2.6vh,30px);">&ldquo;This <b>long run</b> is a misleading guide to current affairs. <b>In the long run we are all dead.</b>&rdquo;<span style="font-weight:400;"> &mdash; Keynes, <i>A Tract on Monetary Reform</i> (1923)</span></div>
+    <div class="s-foot"><div class="hl amber">Then 1929 came: years of mass unemployment that wages and prices did <b>not</b> clear &mdash; and the classical prescription was to wait.</div></div>
+  </div>
+</section>
+<section class="slide" id="s4">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; 1936</div>
+  <h2>Keynes: what he wrote about prices</h2>
+  <div class="stage">
+    <div class="split">
+      <div class="txt">
+        <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">What the book builds</div><div class="kd">Effective demand, an underemployment equilibrium, and a case for fiscal policy.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">What it does not build</div><div class="kd">A stable unemployment&ndash;inflation trade-off. The price level was <b>institutional</b> &mdash; set by wage bargaining.</div></div></div>
+        <div class="hl amber">Keynes is called <b>the father of macroeconomics</b> &mdash; the <i>General Theory</i> turned it into a subject of its own. Friedman (1977) said the trade-off idea &ldquo;filled a gap in Keynes&rsquo;s theoretical structure&rdquo;; Keynes had already said the relation <b>moves</b>.</div>
+      </div>
+      <div class="pic">
+        <div class="figrow"><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：Wikimedia Commons (Bettmann Archive), c. 1929 &mdash; public domain -->
+        <div class="fig port solo" data-slot="keynes"><img src="photos/keynes.jpg" alt="John Maynard Keynes, seated portrait, c. 1929"><span>John Maynard Keynes</span></div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl red"><i>&ldquo;An increase in effective demand will &hellip; spend itself partly in increasing the quantity of employment and partly in raising the level of prices &hellip; we have in fact a condition of <b>prices rising gradually as employment increases</b>.&rdquo;</i> <span style="font-weight:400;">&mdash; <i>General Theory</i>, p. 296: the relation is <b>not</b> stable.</span></div></div>
+  </div>
+</section>
+<section class="slide" id="s5">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; 1958</div>
+  <h2>Phillips: a scatter, not a menu</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;flex-wrap:nowrap;align-items:center;">
+      <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
+        <div class="card"><h3>The paper</h3><p>Unemployment and <b>money wage rates</b>, UK 1861&ndash;1957 &mdash; <i>Economica</i>, November 1958.</p></div>
+        <div class="card"><h3>What he plotted</h3><p>Wage growth, <span class="ma">&Delta;w / w</span> &mdash; not inflation. His curve fits 1861&ndash;1913; the post-1948 points sit <b>to the right of it</b>.</p></div>
+        <div class="card lose"><h3>What he did about that</h3><p>Called it a <b>time lag</b>, then re-plotted unemployment <b>lagged seven months</b> to pull the points back onto the curve.</p></div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:1vh;">
+        <div class="figrow"><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：LSE Library via Flickr Commons, c. 1960 &mdash; no known copyright restrictions -->
+        <div class="fig port" data-slot="phillips"><img src="photos/phillips.jpg" alt="A. W. H. (Bill) Phillips, c. 1960, LSE Library"><span>A. W. Phillips</span></div><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：Kaihsu Tai (own work), via Wikimedia Commons &mdash; public domain -->
+        <div class="fig wide" data-slot="moniac"><img src="photos/moniac.jpg" alt="The MONIAC analogue computer, Reserve Bank of New Zealand Museum"><span>The MONIAC, 1949</span></div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">His own words about the paper he never followed up: <b>&ldquo;a very crude attempt&rdquo;</b>, <b>&ldquo;just done in a weekend&rdquo;</b>. He was not selling a law.</div></div>
+  </div>
+</section>
+<section class="slide" id="s6">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; 1960</div>
+  <h2>Samuelson and Solow: the curve becomes a policy tool</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:0 0 auto;flex-wrap:nowrap;align-items:flex-start;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.6vh;">
+        <div class="card"><h3>Two moves, one paper</h3><p>US data, and the axis swapped from <b>wages</b> to the <b>price level</b> &mdash; so the same shape now reads as inflation against unemployment.</p></div>
+        <div class="card win"><h3>The caveat, p. 193</h3><p><i>&ldquo;It would be wrong to think that our Figure 2 menu &hellip; will maintain its same shape in the longer run.&rdquo;</i> They sketched a low-pressure economy shifting it <b>down</b>, or structural unemployment shifting it <b>up</b>.</p></div>
+      </div>
+      <div style="flex:0 0 20%;display:flex;justify-content:center;">
+        <div class="figrow"><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：Bernard Gotfryd, via Wikimedia Commons &mdash; public domain -->
+        <div class="fig port" data-slot="samuelson"><img src="photos/samuelson.jpg" alt="Paul A. Samuelson, photographed by Bernard Gotfryd"><span>Paul A. Samuelson</span></div></div>
+      </div>
+    </div>
+    <div class="hl" style="flex:0 0 auto;">What everyone remembers: <b>&ldquo;the menu of choice between different degrees of unemployment and price stability&rdquo;</b> (p. 192) &mdash; two labelled points, <b>5.5% unemployment with stable prices</b>, or <b>3% with 4.5% inflation</b>.</div>
+    <div class="s-foot"><div class="hl amber">They wrote the menu <b>and</b> the warning, in the same paper. <b>The profession kept the menu.</b></div></div>
+  </div>
+</section>
+<section class="slide" id="s7">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; 1967&ndash;68</div>
+  <h2>Phelps and Friedman: expectations, and the natural rate</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 1 auto;flex-wrap:nowrap;align-items:center;min-height:0;">
+      <div style="flex:1.3;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
+        <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">Phelps, 1967</div><div class="kd"><i>Phillips Curves, Expectations of Inflation and Optimal Unemployment over Time</i>: workers and firms learn, so the trade-off must be written in <b>real</b> terms.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">Friedman, 1968 &mdash; the AEA address</div><div class="kd">There is &ldquo;always a <b>temporary</b> trade-off&rdquo; &mdash; and none in the long run.</div></div></div>
+        <div class="card warn"><h3>The natural rate, in one line</h3><p>The rate &ldquo;ground out by the Walrasian system of general equilibrium equations&rdquo;. Inflation moves unemployment only while it is a <b>surprise</b>: <span class="ma">&pi; = &pi;<sup>e</sup> &minus; 1.25(u &minus; u*)</span>.</p></div>
+      </div>
+      <div style="flex:0 0 30%;display:flex;justify-content:center;">
+        <div class="figrow"><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：official portrait, existing unit asset (photos/milton-friedman.png) -->
+        <div class="fig port" data-slot="friedman"><img src="photos/friedman.jpg" alt="Milton Friedman, official portrait"><span>Milton Friedman</span></div><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：Cp2960, via Wikimedia Commons &mdash; CC BY-SA 4.0（对外分享时须署名） -->
+        <div class="fig port" data-slot="phelps"><img src="photos/phelps.jpg" alt="Edmund S. Phelps, 2017, photographed by Cp2960"><span>Edmund S. Phelps</span></div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">They said it <b>before</b> the break, and the break came roughly as described. Push u below u* and what you buy is not a lower rate &mdash; it is <b>accelerating inflation</b>.</div></div>
+  </div>
+</section>
+<section class="slide" id="s8">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; discussion</div>
+  <h2>So who caused the stagflation? Two suspects.</h2>
+  <div class="stage">
+    <svg viewBox="0 0 1140 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1140px;height:auto;align-self:center;"><defs><marker id="ah16d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker><marker id="ah17d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="274" x2="540" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="274" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="308.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="168.8" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="261.6" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="354.4" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="447.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="224.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="68.0" y="166.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="108.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="68.0" y="50.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="85.3" y1="42.0" x2="134.0" y2="67.4" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="134.0" y1="67.4" x2="192.0" y2="97.6" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="192.0" y1="97.6" x2="250.0" y2="127.8" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="250.0" y1="127.8" x2="308.0" y2="158.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="308.0" y1="158.0" x2="366.0" y2="188.2" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="366.0" y1="188.2" x2="424.0" y2="218.4" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="424.0" y1="218.4" x2="482.0" y2="248.6" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="482.0" y1="248.6" x2="530.7" y2="274.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="178.1" y1="42.0" x2="192.0" y2="49.2" stroke="#8B5CF6" stroke-width="4.5"/><line x1="192.0" y1="49.2" x2="250.0" y2="79.5" stroke="#8B5CF6" stroke-width="4.5"/><line x1="250.0" y1="79.5" x2="308.0" y2="109.7" stroke="#8B5CF6" stroke-width="4.5"/><line x1="308.0" y1="109.7" x2="366.0" y2="139.9" stroke="#8B5CF6" stroke-width="4.5"/><line x1="366.0" y1="139.9" x2="424.0" y2="170.1" stroke="#8B5CF6" stroke-width="4.5"/><line x1="424.0" y1="170.1" x2="482.0" y2="200.3" stroke="#8B5CF6" stroke-width="4.5"/><line x1="482.0" y1="200.3" x2="540.0" y2="230.5" stroke="#8B5CF6" stroke-width="4.5"/><line x1="308.0" y1="274.0" x2="308.0" y2="42.0" stroke="#34495e" stroke-width="4"/><circle cx="308.0" cy="158.0" r="8" fill="#8a9aab"/><circle cx="354.4" cy="133.8" r="9" fill="#d9534f"/><line x1="456.5" y1="229.5" x2="456.5" y2="192.8" stroke="#d9534f" stroke-width="4" marker-end="url(#ah16d9534f)"/><text x="535.4" y="49.7" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Suspect 1: oil</text><text x="122.4" y="88.4" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">one shock =</text><text x="122.4" y="121.3" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">one shift up</text><text x="316.4" y="88.4" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="94.6" y="196.7" text-anchor="start" font-size="22" fill="#6d28d9" font-weight="700">SRPC (πᵉ = 8.5%)</text><text x="94.6" y="243.1" text-anchor="start" font-size="22" fill="#5b7288" font-weight="700">SRPC (πᵉ = 6%)</text><line x1="650" y1="274" x2="1114" y2="274" stroke="#1f2d3d" stroke-width="2.5"/><line x1="650" y1="274" x2="650" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="650.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="882.0" y="328.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="742.8" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="835.6" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="928.4" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="1021.2" y="296.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="642.0" y="224.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="642.0" y="166.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="642.0" y="108.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="642.0" y="50.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="659.3" y1="42.0" x2="708.0" y2="67.4" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="708.0" y1="67.4" x2="766.0" y2="97.6" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="766.0" y1="97.6" x2="824.0" y2="127.8" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="824.0" y1="127.8" x2="882.0" y2="158.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="882.0" y1="158.0" x2="940.0" y2="188.2" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="940.0" y1="188.2" x2="998.0" y2="218.4" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="998.0" y1="218.4" x2="1056.0" y2="248.6" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="1056.0" y1="248.6" x2="1104.7" y2="274.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><circle cx="882.0" cy="158.0" r="8" fill="#a97422"/><line x1="752.1" y1="42.0" x2="766.0" y2="49.2" stroke="#8B5CF6" stroke-width="4.0"/><line x1="766.0" y1="49.2" x2="824.0" y2="79.5" stroke="#8B5CF6" stroke-width="4.0"/><line x1="824.0" y1="79.5" x2="882.0" y2="109.7" stroke="#8B5CF6" stroke-width="4.0"/><line x1="882.0" y1="109.7" x2="940.0" y2="139.9" stroke="#8B5CF6" stroke-width="4.0"/><line x1="940.0" y1="139.9" x2="998.0" y2="170.1" stroke="#8B5CF6" stroke-width="4.0"/><line x1="998.0" y1="170.1" x2="1056.0" y2="200.3" stroke="#8B5CF6" stroke-width="4.0"/><line x1="1056.0" y1="200.3" x2="1114.0" y2="230.5" stroke="#8B5CF6" stroke-width="4.0"/><circle cx="882.0" cy="109.7" r="8" fill="#a97422"/><line x1="844.9" y1="42.0" x2="882.0" y2="61.3" stroke="#6d28d9" stroke-width="4.5"/><line x1="882.0" y1="61.3" x2="940.0" y2="91.5" stroke="#6d28d9" stroke-width="4.5"/><line x1="940.0" y1="91.5" x2="998.0" y2="121.8" stroke="#6d28d9" stroke-width="4.5"/><line x1="998.0" y1="121.8" x2="1056.0" y2="152.0" stroke="#6d28d9" stroke-width="4.5"/><line x1="1056.0" y1="152.0" x2="1114.0" y2="182.2" stroke="#6d28d9" stroke-width="4.5"/><circle cx="882.0" cy="61.3" r="8" fill="#a97422"/><line x1="882.0" y1="274.0" x2="882.0" y2="42.0" stroke="#34495e" stroke-width="4"/><line x1="901.5" y1="146.4" x2="901.5" y2="72.9" stroke="#d9534f" stroke-width="4" marker-end="url(#ah17d9534f)"/><text x="1109.4" y="49.7" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Suspect 2: policy</text><text x="970.2" y="88.4" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">πᵉ keeps</text><text x="970.2" y="121.3" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">climbing</text><text x="890.4" y="88.4" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="668.6" y="181.2" text-anchor="start" font-size="22" fill="#6d28d9" font-weight="700">SRPC (πᵉ = 11%)</text><text x="668.6" y="216.0" text-anchor="start" font-size="22" fill="#8B5CF6" font-weight="700">SRPC (πᵉ = 8.5%)</text><text x="668.6" y="250.8" text-anchor="start" font-size="22" fill="#5b7288" font-weight="700">SRPC (πᵉ = 6%)</text></svg>
+    <div class="two" style="flex:0 0 auto;flex-wrap:nowrap;gap:1.4vw;margin-top:.5vh;">
+      <div class="col" style="min-width:0;">
+        <div class="card lose" style="margin-bottom:0;"><h3>Suspect 1 &mdash; the oil shock</h3><p>SRAS shifts left, so output falls <b>while prices rise</b> &mdash; that is why &pi; and u jumped <b>together</b> in 1974 and 1979. No demand story can do that. <b>But one shock shifts the curve only once.</b></p></div>
+      </div>
+      <div class="col" style="min-width:0;">
+        <div class="card win" style="margin-bottom:0;"><h3>Suspect 2 &mdash; policy and expectations</h3><p>Each time unemployment rose, policy eased again, so inflation never fell back to where it started. &pi;<sup>e</sup> ratcheted up and the SRPC kept shifting. <b>That is what turns a bad year into a lost decade.</b></p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">They are not rivals: oil was the <b>trigger</b>, accommodation is why it <b>persisted</b>. Ask what you are explaining &mdash; the first jump, or why the curve never came back.</div></div>
+  </div>
+</section>
+<section class="slide" id="s9">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; the evidence</div>
+  <h2>What the data says: a ratchet, not a spike</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:0 0 auto;flex-wrap:nowrap;">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><rect data-bg="1" x="250.8" y="44.0" width="35.0" height="188.0" fill="#fdeaea"/><rect data-bg="1" x="355.7" y="44.0" width="35.0" height="188.0" fill="#fdeaea"/><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400"></text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Year</text><text x="111.0" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1965</text><text x="198.4" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1970</text><text x="285.8" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1975</text><text x="373.2" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1980</text><text x="460.6" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1985</text><text x="68.0" y="240.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">-5</text><text x="68.0" y="193.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="146.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="68.0" y="99.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">10</text><text x="68.0" y="52.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">15</text><line x1="76.0" y1="185.0" x2="548.0" y2="185.0" stroke="#cfe0ee" stroke-width="2.5"/><line x1="76.0" y1="166.9" x2="93.5" y2="164.5" stroke="#1CADE4" stroke-width="3"/><line x1="76.0" y1="173.2" x2="93.5" y2="172.6" stroke="#d9534f" stroke-width="4"/><line x1="93.5" y1="164.5" x2="111.0" y2="161.5" stroke="#1CADE4" stroke-width="3"/><line x1="93.5" y1="172.6" x2="111.0" y2="170.2" stroke="#d9534f" stroke-width="4"/><line x1="111.0" y1="161.5" x2="128.4" y2="165.1" stroke="#1CADE4" stroke-width="3"/><line x1="111.0" y1="170.2" x2="128.4" y2="156.9" stroke="#d9534f" stroke-width="4"/><line x1="128.4" y1="165.1" x2="145.9" y2="171.5" stroke="#1CADE4" stroke-width="3"/><line x1="128.4" y1="156.9" x2="145.9" y2="158.8" stroke="#d9534f" stroke-width="4"/><line x1="145.9" y1="171.5" x2="163.4" y2="171.7" stroke="#1CADE4" stroke-width="3"/><line x1="145.9" y1="158.8" x2="163.4" y2="145.1" stroke="#d9534f" stroke-width="4"/><line x1="163.4" y1="171.7" x2="180.9" y2="159.0" stroke="#1CADE4" stroke-width="3"/><line x1="163.4" y1="145.1" x2="180.9" y2="133.9" stroke="#d9534f" stroke-width="4"/><line x1="180.9" y1="159.0" x2="198.4" y2="172.8" stroke="#1CADE4" stroke-width="3"/><line x1="180.9" y1="133.9" x2="198.4" y2="129.7" stroke="#d9534f" stroke-width="4"/><line x1="198.4" y1="172.8" x2="215.9" y2="180.9" stroke="#1CADE4" stroke-width="3"/><line x1="198.4" y1="129.7" x2="215.9" y2="145.3" stroke="#d9534f" stroke-width="4"/><line x1="215.9" y1="180.9" x2="233.3" y2="174.1" stroke="#1CADE4" stroke-width="3"/><line x1="215.9" y1="145.3" x2="233.3" y2="154.2" stroke="#d9534f" stroke-width="4"/><line x1="233.3" y1="174.1" x2="250.8" y2="161.8" stroke="#1CADE4" stroke-width="3"/><line x1="233.3" y1="154.2" x2="250.8" y2="126.2" stroke="#d9534f" stroke-width="4"/><line x1="250.8" y1="161.8" x2="268.3" y2="189.8" stroke="#1CADE4" stroke-width="3"/><line x1="250.8" y1="126.2" x2="268.3" y2="81.5" stroke="#d9534f" stroke-width="4"/><line x1="268.3" y1="189.8" x2="285.8" y2="216.2" stroke="#1CADE4" stroke-width="3"/><line x1="268.3" y1="81.5" x2="285.8" y2="99.1" stroke="#d9534f" stroke-width="4"/><line x1="285.8" y1="216.2" x2="303.3" y2="191.8" stroke="#1CADE4" stroke-width="3"/><line x1="285.8" y1="99.1" x2="303.3" y2="130.7" stroke="#d9534f" stroke-width="4"/><line x1="303.3" y1="191.8" x2="320.7" y2="193.7" stroke="#1CADE4" stroke-width="3"/><line x1="303.3" y1="130.7" x2="320.7" y2="124.2" stroke="#d9534f" stroke-width="4"/><line x1="320.7" y1="193.7" x2="338.2" y2="182.2" stroke="#1CADE4" stroke-width="3"/><line x1="320.7" y1="124.2" x2="338.2" y2="113.3" stroke="#d9534f" stroke-width="4"/><line x1="338.2" y1="182.2" x2="355.7" y2="185.6" stroke="#1CADE4" stroke-width="3"/><line x1="338.2" y1="113.3" x2="355.7" y2="79.2" stroke="#d9534f" stroke-width="4"/><line x1="355.7" y1="185.6" x2="373.2" y2="186.3" stroke="#1CADE4" stroke-width="3"/><line x1="355.7" y1="79.2" x2="373.2" y2="58.1" stroke="#d9534f" stroke-width="4"/><line x1="373.2" y1="186.3" x2="390.7" y2="128.6" stroke="#1CADE4" stroke-width="3"/><line x1="373.2" y1="58.1" x2="390.7" y2="87.4" stroke="#d9534f" stroke-width="4"/><line x1="390.7" y1="128.6" x2="408.1" y2="127.6" stroke="#1CADE4" stroke-width="3"/><line x1="390.7" y1="87.4" x2="408.1" y2="127.1" stroke="#d9534f" stroke-width="4"/><line x1="408.1" y1="127.6" x2="425.6" y2="129.3" stroke="#1CADE4" stroke-width="3"/><line x1="408.1" y1="127.1" x2="425.6" y2="155.3" stroke="#d9534f" stroke-width="4"/><line x1="425.6" y1="129.3" x2="443.1" y2="129.9" stroke="#1CADE4" stroke-width="3"/><line x1="425.6" y1="155.3" x2="443.1" y2="143.9" stroke="#d9534f" stroke-width="4"/><line x1="443.1" y1="129.9" x2="460.6" y2="142.0" stroke="#1CADE4" stroke-width="3"/><line x1="443.1" y1="143.9" x2="460.6" y2="151.8" stroke="#d9534f" stroke-width="4"/><line x1="460.6" y1="142.0" x2="478.1" y2="139.3" stroke="#1CADE4" stroke-width="3"/><line x1="460.6" y1="151.8" x2="478.1" y2="166.7" stroke="#d9534f" stroke-width="4"/><line x1="478.1" y1="139.3" x2="495.6" y2="156.0" stroke="#1CADE4" stroke-width="3"/><line x1="478.1" y1="166.7" x2="495.6" y2="151.4" stroke="#d9534f" stroke-width="4"/><line x1="495.6" y1="156.0" x2="513.0" y2="152.4" stroke="#1CADE4" stroke-width="3"/><line x1="495.6" y1="151.4" x2="513.0" y2="146.5" stroke="#d9534f" stroke-width="4"/><line x1="513.0" y1="152.4" x2="530.5" y2="143.4" stroke="#1CADE4" stroke-width="3"/><line x1="513.0" y1="146.5" x2="530.5" y2="140.0" stroke="#d9534f" stroke-width="4"/><line x1="530.5" y1="143.4" x2="548.0" y2="159.8" stroke="#1CADE4" stroke-width="3"/><line x1="530.5" y1="140.0" x2="548.0" y2="134.1" stroke="#d9534f" stroke-width="4"/><circle cx="180.9" cy="133.9" r="6" fill="#a94442"/><text x="93.5" y="53.4" text-anchor="start" font-size="22" fill="#d9534f" font-weight="700">inflation (%)</text><text x="93.5" y="89.1" text-anchor="start" font-size="22" fill="#1CADE4" font-weight="700">real Fed funds rate (%)</text><text x="252.6" y="53.4" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1973–74</text><text x="354.0" y="53.4" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1979–80</text><text x="186.1" y="128.6" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1969</text></svg></div>
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><rect data-bg="1" x="269.1" y="44.0" width="42.9" height="188.0" fill="#fdeaea"/><rect data-bg="1" x="397.8" y="44.0" width="42.9" height="188.0" fill="#fdeaea"/><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400"></text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Year</text><text x="118.9" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1966</text><text x="204.7" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1970</text><text x="312.0" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1975</text><text x="419.3" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1980</text><text x="526.5" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1985</text><text x="68.0" y="240.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="167.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">10</text><text x="68.0" y="95.4" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">20</text><line x1="97.5" y1="199.3" x2="118.9" y2="215.0" stroke="#d9534f" stroke-width="3"/><line x1="118.9" y1="215.0" x2="140.4" y2="205.0" stroke="#d9534f" stroke-width="3"/><line x1="140.4" y1="205.0" x2="161.8" y2="222.8" stroke="#d9534f" stroke-width="3"/><line x1="161.8" y1="222.8" x2="183.3" y2="212.8" stroke="#d9534f" stroke-width="3"/><line x1="183.3" y1="212.8" x2="204.7" y2="196.1" stroke="#d9534f" stroke-width="3"/><line x1="204.7" y1="196.1" x2="226.2" y2="197.4" stroke="#d9534f" stroke-width="3"/><line x1="226.2" y1="197.4" x2="247.6" y2="190.4" stroke="#d9534f" stroke-width="3"/><line x1="247.6" y1="190.4" x2="269.1" y2="153.9" stroke="#d9534f" stroke-width="3"/><line x1="269.1" y1="153.9" x2="290.5" y2="93.5" stroke="#d9534f" stroke-width="3"/><line x1="290.5" y1="93.5" x2="312.0" y2="109.4" stroke="#d9534f" stroke-width="3"/><line x1="312.0" y1="109.4" x2="333.5" y2="111.9" stroke="#d9534f" stroke-width="3"/><line x1="333.5" y1="111.9" x2="354.9" y2="108.1" stroke="#d9534f" stroke-width="3"/><line x1="354.9" y1="108.1" x2="376.4" y2="144.6" stroke="#d9534f" stroke-width="3"/><line x1="376.4" y1="144.6" x2="397.8" y2="125.0" stroke="#d9534f" stroke-width="3"/><line x1="397.8" y1="125.0" x2="419.3" y2="79.7" stroke="#d9534f" stroke-width="3"/><line x1="419.3" y1="79.7" x2="440.7" y2="102.1" stroke="#d9534f" stroke-width="3"/><line x1="440.7" y1="102.1" x2="462.2" y2="112.8" stroke="#d9534f" stroke-width="3"/><line x1="462.2" y1="112.8" x2="483.6" y2="126.1" stroke="#d9534f" stroke-width="3"/><line x1="483.6" y1="126.1" x2="505.1" y2="153.9" stroke="#d9534f" stroke-width="3"/><line x1="505.1" y1="153.9" x2="526.5" y2="165.4" stroke="#d9534f" stroke-width="3"/><line x1="97.5" y1="197.5" x2="118.9" y2="203.7" stroke="#b8791f" stroke-width="3"/><line x1="118.9" y1="203.7" x2="140.4" y2="214.1" stroke="#b8791f" stroke-width="3"/><line x1="140.4" y1="214.1" x2="161.8" y2="198.0" stroke="#b8791f" stroke-width="3"/><line x1="161.8" y1="198.0" x2="183.3" y2="192.6" stroke="#b8791f" stroke-width="3"/><line x1="183.3" y1="192.6" x2="204.7" y2="186.0" stroke="#b8791f" stroke-width="3"/><line x1="204.7" y1="186.0" x2="226.2" y2="163.7" stroke="#b8791f" stroke-width="3"/><line x1="226.2" y1="163.7" x2="247.6" y2="180.9" stroke="#b8791f" stroke-width="3"/><line x1="247.6" y1="180.9" x2="269.1" y2="165.5" stroke="#b8791f" stroke-width="3"/><line x1="269.1" y1="165.5" x2="290.5" y2="116.0" stroke="#b8791f" stroke-width="3"/><line x1="290.5" y1="116.0" x2="312.0" y2="57.0" stroke="#b8791f" stroke-width="3"/><line x1="312.0" y1="57.0" x2="333.5" y2="112.3" stroke="#b8791f" stroke-width="3"/><line x1="333.5" y1="112.3" x2="354.9" y2="117.5" stroke="#b8791f" stroke-width="3"/><line x1="354.9" y1="117.5" x2="376.4" y2="172.3" stroke="#b8791f" stroke-width="3"/><line x1="376.4" y1="172.3" x2="397.8" y2="135.0" stroke="#b8791f" stroke-width="3"/><line x1="397.8" y1="135.0" x2="419.3" y2="102.1" stroke="#b8791f" stroke-width="3"/><line x1="419.3" y1="102.1" x2="440.7" y2="146.1" stroke="#b8791f" stroke-width="3"/><line x1="440.7" y1="146.1" x2="462.2" y2="169.8" stroke="#b8791f" stroke-width="3"/><line x1="462.2" y1="169.8" x2="483.6" y2="198.7" stroke="#b8791f" stroke-width="3"/><line x1="483.6" y1="198.7" x2="505.1" y2="196.1" stroke="#b8791f" stroke-width="3"/><line x1="505.1" y1="196.1" x2="526.5" y2="188.1" stroke="#b8791f" stroke-width="3"/><line x1="97.5" y1="220.6" x2="118.9" y2="210.4" stroke="#1f2d3d" stroke-width="3.5"/><line x1="118.9" y1="210.4" x2="140.4" y2="211.9" stroke="#1f2d3d" stroke-width="3.5"/><line x1="140.4" y1="211.9" x2="161.8" y2="201.3" stroke="#1f2d3d" stroke-width="3.5"/><line x1="161.8" y1="201.3" x2="183.3" y2="192.7" stroke="#1f2d3d" stroke-width="3.5"/><line x1="183.3" y1="192.7" x2="204.7" y2="189.4" stroke="#1f2d3d" stroke-width="3.5"/><line x1="204.7" y1="189.4" x2="226.2" y2="201.5" stroke="#1f2d3d" stroke-width="3.5"/><line x1="226.2" y1="201.5" x2="247.6" y2="208.3" stroke="#1f2d3d" stroke-width="3.5"/><line x1="247.6" y1="208.3" x2="269.1" y2="186.7" stroke="#1f2d3d" stroke-width="3.5"/><line x1="269.1" y1="186.7" x2="290.5" y2="152.4" stroke="#1f2d3d" stroke-width="3.5"/><line x1="290.5" y1="152.4" x2="312.0" y2="165.9" stroke="#1f2d3d" stroke-width="3.5"/><line x1="312.0" y1="165.9" x2="333.5" y2="190.2" stroke="#1f2d3d" stroke-width="3.5"/><line x1="333.5" y1="190.2" x2="354.9" y2="185.2" stroke="#1f2d3d" stroke-width="3.5"/><line x1="354.9" y1="185.2" x2="376.4" y2="176.8" stroke="#1f2d3d" stroke-width="3.5"/><line x1="376.4" y1="176.8" x2="397.8" y2="150.6" stroke="#1f2d3d" stroke-width="3.5"/><line x1="397.8" y1="150.6" x2="419.3" y2="134.4" stroke="#1f2d3d" stroke-width="3.5"/><line x1="419.3" y1="134.4" x2="440.7" y2="157.0" stroke="#1f2d3d" stroke-width="3.5"/><line x1="440.7" y1="157.0" x2="462.2" y2="187.5" stroke="#1f2d3d" stroke-width="3.5"/><line x1="462.2" y1="187.5" x2="483.6" y2="209.2" stroke="#1f2d3d" stroke-width="3.5"/><line x1="483.6" y1="209.2" x2="505.1" y2="200.4" stroke="#1f2d3d" stroke-width="3.5"/><line x1="505.1" y1="200.4" x2="526.5" y2="206.5" stroke="#1f2d3d" stroke-width="3.5"/><line x1="97.5" y1="208.6" x2="118.9" y2="206.5" stroke="#2e9e6b" stroke-width="3.5"/><line x1="118.9" y1="206.5" x2="140.4" y2="219.0" stroke="#2e9e6b" stroke-width="3.5"/><line x1="140.4" y1="219.0" x2="161.8" y2="221.4" stroke="#2e9e6b" stroke-width="3.5"/><line x1="161.8" y1="221.4" x2="183.3" y2="218.2" stroke="#2e9e6b" stroke-width="3.5"/><line x1="183.3" y1="218.2" x2="204.7" y2="207.1" stroke="#2e9e6b" stroke-width="3.5"/><line x1="204.7" y1="207.1" x2="226.2" y2="194.1" stroke="#2e9e6b" stroke-width="3.5"/><line x1="226.2" y1="194.1" x2="247.6" y2="192.3" stroke="#2e9e6b" stroke-width="3.5"/><line x1="247.6" y1="192.3" x2="269.1" y2="181.2" stroke="#2e9e6b" stroke-width="3.5"/><line x1="269.1" y1="181.2" x2="290.5" y2="181.5" stroke="#2e9e6b" stroke-width="3.5"/><line x1="290.5" y1="181.5" x2="312.0" y2="189.3" stroke="#2e9e6b" stroke-width="3.5"/><line x1="312.0" y1="189.3" x2="333.5" y2="201.3" stroke="#2e9e6b" stroke-width="3.5"/><line x1="333.5" y1="201.3" x2="354.9" y2="205.0" stroke="#2e9e6b" stroke-width="3.5"/><line x1="354.9" y1="205.0" x2="376.4" y2="212.3" stroke="#2e9e6b" stroke-width="3.5"/><line x1="376.4" y1="212.3" x2="397.8" y2="202.8" stroke="#2e9e6b" stroke-width="3.5"/><line x1="397.8" y1="202.8" x2="419.3" y2="192.7" stroke="#2e9e6b" stroke-width="3.5"/><line x1="419.3" y1="192.7" x2="440.7" y2="186.1" stroke="#2e9e6b" stroke-width="3.5"/><line x1="440.7" y1="186.1" x2="462.2" y2="194.1" stroke="#2e9e6b" stroke-width="3.5"/><line x1="462.2" y1="194.1" x2="483.6" y2="208.2" stroke="#2e9e6b" stroke-width="3.5"/><line x1="483.6" y1="208.2" x2="505.1" y2="214.6" stroke="#2e9e6b" stroke-width="3.5"/><line x1="505.1" y1="214.6" x2="526.5" y2="217.1" stroke="#2e9e6b" stroke-width="3.5"/><text x="271.2" y="51.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1973–74</text><text x="395.7" y="51.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1979–80</text><line x1="101.7" y1="47.6" x2="118.9" y2="47.6" stroke="#1f2d3d" stroke-width="3.5"/><text x="125.3" y="51.2" text-anchor="start" font-size="22" fill="#1f2d3d" font-weight="700">US</text><line x1="101.7" y1="78.7" x2="118.9" y2="78.7" stroke="#2e9e6b" stroke-width="3.5"/><text x="125.3" y="82.3" text-anchor="start" font-size="22" fill="#2e9e6b" font-weight="700">W. Germany</text><line x1="101.7" y1="109.8" x2="118.9" y2="109.8" stroke="#b8791f" stroke-width="3.5"/><text x="125.3" y="113.4" text-anchor="start" font-size="22" fill="#b8791f" font-weight="700">UK</text><line x1="101.7" y1="140.9" x2="118.9" y2="140.9" stroke="#d9534f" stroke-width="3.5"/><text x="125.3" y="144.5" text-anchor="start" font-size="22" fill="#d9534f" font-weight="700">Italy</text></svg></div>
+    </div>
+    <div class="two" style="flex:0 0 auto;flex-wrap:nowrap;gap:1.4vw;margin-top:.6vh;">
+      <div class="col" style="min-width:0;">
+        <div class="card" style="margin-bottom:0;"><h3>Already 5.4% in 1969</h3><p>That is <b>before any oil shock</b>. And after 1974 inflation fell only to 5.8% &mdash; not back to 1.6%. The real rate was <b>negative</b> in 1974&ndash;75 and 1979&ndash;80.</p></div>
+      </div>
+      <div class="col" style="min-width:0;">
+        <div class="card" style="margin-bottom:0;"><h3>One oil shock, four central banks</h3><p>1973&ndash;82 average inflation: <b>W. Germany 5.2%</b>, US 8.8%, UK 14.2%, <b>Italy 16.3%</b>. Same oil, different inflation.</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">Volcker&rsquo;s 1980&ndash;82 tightening broke the inflation (13.5% &rarr; 3.2%) at the cost of <b>9.7% unemployment</b>. Tight money could not abolish the oil &mdash; but it could end the inflation.</div></div>
+  </div>
+</section>
+<section class="slide" id="s10">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; 1976</div>
+  <h2>Lucas: the critique that ended the easy version</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.6vw;flex:1 0 auto;flex-wrap:nowrap;align-items:stretch;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
+        <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">People read the rule</div><div class="kd">Rational expectations (Muth, 1961): agents use the same model, and they learn.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">The critique</div><div class="kd">Lucas (1976), <i>Econometric Policy Evaluation: A Critique</i> &mdash; a relation estimated under one policy rule is <b>not structural</b>.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">3</div><div><div class="kw">The curve was the example</div><div class="kd">The 1961&ndash;69 fit was a <b>policy-regime correlation</b>, so it could not survive the regime changing.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">4</div><div><div class="kw">The policy conclusion</div><div class="kd">The <b>new classical</b> school &mdash; Lucas, Sargent, Barro, Prescott &mdash; added it up: if the rule is anticipated, only <b>surprises</b> move output.</div></div></div>
+      </div>
+      <div style="flex:0 0 24%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vh;">
+        <div class="figrow"><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：University of Chicago official portrait &mdash; courtesy of UChicago -->
+        <div class="fig port" data-slot="lucas"><img src="photos/lucas.jpg" alt="Robert E. Lucas, Jr., University of Chicago portrait"><span>Robert E. Lucas, Jr.</span></div></div>
+        <div class="note" style="text-align:center;"><i>&ldquo;Rules rather than discretion&rdquo;</i> &mdash; the policy slogan it produced.</div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">The answer was not &ldquo;the data is wrong&rdquo; but &ldquo;<b>our equations were</b>&rdquo;. Macroeconomics rebuilt itself on microfoundations &mdash; the road to 2026.</div></div>
+  </div>
+</section>
+<section class="slide" id="s11">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; history of thought</div>
+  <h2>Ricardian equivalence: the fiscal twin of the same critique</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.3vw;flex:1 0 auto;flex-wrap:nowrap;">
+
+      <div class="card" style="min-width:0;justify-content:flex-start;">
+        <h3>David Ricardo &middot; 1772&ndash;1823</h3>
+        <div style="display:flex;gap:1vw;align-items:flex-start;">
+          <div style="flex:0 0 36%;min-width:0;aspect-ratio:4/3;border:2px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;">
+            <img src="photos/david-ricardo.jpg" alt="Thomas Phillips, portrait of David Ricardo" style="width:100%;height:100%;object-fit:cover;display:block;">
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="margin:0;">His <b>Principles</b> (1817) put the argument in writing &mdash; and then doubted it.</p>
+          </div>
+        </div>
+        <p style="margin-top:.7vh;">Fund a war with &pound;20m at once, &pound;1m a year for ever, or &pound;1.2m for 45 years &mdash; &ldquo;<b>in point of economy, there is no real difference in either of the modes</b>.&rdquo;</p>
+        <div class="hl amber" style="margin-top:auto;font-size:clamp(22px,2.3vh,26px);">Then he doubted it: taxpayers, he wrote, &ldquo;do not manage their private affairs accordingly&rdquo;. A <b>benchmark</b>, not a forecast.</div>
+      </div>
+
+      <div class="card" style="min-width:0;justify-content:flex-start;">
+        <h3>Robert Barro &middot; b. 1944</h3>
+        <div style="display:flex;gap:1vw;align-items:flex-start;">
+          <div style="flex:0 0 36%;min-width:0;aspect-ratio:4/3;border:2px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;">
+            <img src="photos/robert-barro.jpg" alt="Robert Barro" style="width:100%;height:100%;object-fit:cover;display:block;">
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="margin:0;">With Lucas and Sargent, a founder of <b>new classical macroeconomics</b>.</p>
+          </div>
+        </div>
+        <p style="margin-top:.7vh;">1974, <i>Journal of Political Economy</i>: <b>&ldquo;Are Government Bonds Net Wealth?&rdquo;</b> A bond-financed tax cut is only a <b>future tax</b> &mdash; not wealth, so AD does not move.</p>
+        <div class="hl amber" style="margin-top:auto;font-size:clamp(22px,2.3vh,26px);">The name is not his: <b>Buchanan&rsquo;s 1976 comment</b> coined &ldquo;Ricardian equivalence&rdquo; &mdash; and Buchanan was a <b>critic</b> of it.</div>
+      </div>
+
+    </div>
+    <div class="s-foot"><div class="hl">The fiscal twin of the Lucas critique: a <b>systematic</b> move is anticipated and priced in, so it cannot move output.</div></div>
+  </div>
+</section>
+<section class="slide" id="s12">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; history of thought</div>
+  <h2>The rebuild: credibility, rules &mdash; and the wave that followed</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.4vw;flex:1 0 auto;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.5vh;">
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><rect data-bg="1" x="95.7" y="44.0" width="118.0" height="188.0" fill="#fdeaea"/><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400"></text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Year</text><text x="95.7" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1979</text><text x="213.7" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1982</text><text x="331.7" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1985</text><text x="449.7" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1988</text><text x="68.0" y="240.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="181.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="68.0" y="122.5" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">10</text><text x="68.0" y="63.8" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">15</text><line x1="95.7" y1="162.7" x2="135.0" y2="147.4" stroke="#1CADE4" stroke-width="4"/><line x1="95.7" y1="99.8" x2="135.0" y2="73.4" stroke="#d9534f" stroke-width="4"/><line x1="135.0" y1="147.4" x2="174.3" y2="142.7" stroke="#1CADE4" stroke-width="4"/><line x1="135.0" y1="73.4" x2="174.3" y2="110.1" stroke="#d9534f" stroke-width="4"/><line x1="174.3" y1="142.7" x2="213.7" y2="118.0" stroke="#1CADE4" stroke-width="4"/><line x1="174.3" y1="110.1" x2="213.7" y2="159.6" stroke="#d9534f" stroke-width="4"/><line x1="213.7" y1="118.0" x2="253.0" y2="119.2" stroke="#1CADE4" stroke-width="4"/><line x1="213.7" y1="159.6" x2="253.0" y2="194.9" stroke="#d9534f" stroke-width="4"/><line x1="253.0" y1="119.2" x2="292.3" y2="143.9" stroke="#1CADE4" stroke-width="4"/><line x1="253.0" y1="194.9" x2="292.3" y2="180.7" stroke="#d9534f" stroke-width="4"/><line x1="292.3" y1="143.9" x2="331.7" y2="147.4" stroke="#1CADE4" stroke-width="4"/><line x1="292.3" y1="180.7" x2="331.7" y2="190.5" stroke="#d9534f" stroke-width="4"/><line x1="331.7" y1="147.4" x2="371.0" y2="149.8" stroke="#1CADE4" stroke-width="4"/><line x1="331.7" y1="190.5" x2="371.0" y2="209.2" stroke="#d9534f" stroke-width="4"/><line x1="371.0" y1="149.8" x2="410.3" y2="159.1" stroke="#1CADE4" stroke-width="4"/><line x1="371.0" y1="209.2" x2="410.3" y2="190.0" stroke="#d9534f" stroke-width="4"/><line x1="410.3" y1="159.1" x2="449.7" y2="167.4" stroke="#1CADE4" stroke-width="4"/><line x1="410.3" y1="190.0" x2="449.7" y2="183.8" stroke="#d9534f" stroke-width="4"/><line x1="449.7" y1="167.4" x2="489.0" y2="169.7" stroke="#1CADE4" stroke-width="4"/><line x1="449.7" y1="183.8" x2="489.0" y2="175.7" stroke="#d9534f" stroke-width="4"/><line x1="489.0" y1="169.7" x2="528.3" y2="166.2" stroke="#1CADE4" stroke-width="4"/><line x1="489.0" y1="175.7" x2="528.3" y2="168.3" stroke="#d9534f" stroke-width="4"/><text x="119.3" y="56.9" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">13.5%</text><text x="194.0" y="101.6" text-anchor="end" font-size="22" fill="#1c5d8c" font-weight="700">9.7%</text><text x="276.6" y="48.7" text-anchor="start" font-size="22" fill="#d9534f" font-weight="700">inflation (%)</text><text x="276.6" y="86.3" text-anchor="start" font-size="22" fill="#1CADE4" font-weight="700">unemployment (%)</text><text x="135.0" y="215.6" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">1979–82</text><text x="268.7" y="168.6" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">3.2%</text></svg>
+        <div class="note" style="text-align:center;">Volcker 1979&ndash;82: inflation <b>13.5% &rarr; 3.2%</b>, at the price of <b>9.7%</b> unemployment.</div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.5vh;">
+        <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">Credibility became the instrument</div><div class="kd">The Fed accepted a deep recession to break expectations &mdash; and it worked.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">The theory was rebuilt</div><div class="kd">Calvo/Taylor staggered pricing: the short-run curve got explicit microfoundations.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">3</div><div><div class="kw">Institutions followed</div><div class="kd">Inflation targeting (NZ 1990) and independent central banks <b>anchor &pi;<sup>e</sup> directly</b>.</div></div></div>
+      </div>
+    </div>
+    <div class="key" style="flex:0 0 auto;margin-top:.5vh;">
+      <div class="no">4</div>
+      <div><div class="kw">And the same logic on the fiscal side</div>
+      <div class="kd">The page before: a deficit is a tax moved into the future, so it is <b>not new wealth</b> &mdash; and cannot move AD.</div></div>
+    </div>
+    <div class="s-foot"><div class="hl">This wave is the backbone of <b>neoliberalism</b>: if systematic policy cannot move output, the case for <b>rules, targets and independent central banks</b> wins.</div></div>
+  </div>
+</section>
+<section class="slide" id="s13">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; 12 October 2026 &middot; the prize</div>
+  <h2>The Nobel for the microfoundations</h2>
+  <div class="stage">
+    <div class="hl" style="flex:0 0 auto;"><b>Robert E. Hall</b> (b. 1943, Stanford) and <b>Michael Woodford</b> (b. 1955, Columbia) &mdash; <b>&ldquo;for microeconomic foundations of macroeconomic stabilisation&rdquo;</b>.</div>
+    <div style="display:flex;gap:1.4vw;flex:1 1 auto;flex-wrap:nowrap;min-height:0;">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
+        <div class="card"><h3>Hall: the household</h3><p>Consumption as an <b>intertemporal</b> choice (1978). Households smooth spending, so a known future income change moves today&rsquo;s spending <b>before the money arrives</b>.</p></div>
+        <div class="card"><h3>Woodford: the firm</h3><p>Prices are written down in advance, so <b>what the central bank says about the future is already policy today</b> (<i>Interest and Prices</i>, 2003).</p></div>
+      </div>
+      <div style="flex:0 0 30%;min-width:0;display:flex;justify-content:center;">
+        <div class="figrow"><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：Nobel Prize Outreach / Niklas Elmehed &mdash; 教学非商业，署名要求 -->
+        <div class="fig port" data-slot="hall"><img src="photos/hall.jpg" alt="Robert E. Hall, 2026 Nobel laureate, Nobel Prize Outreach portrait"><span>Robert E. Hall</span></div><!-- 图片出处 / 许可（**只在代码里留档，页面上不显示**）：Nobel Prize Outreach / Niklas Elmehed &mdash; 教学非商业，署名要求 -->
+        <div class="fig port" data-slot="woodford"><img src="photos/woodford.jpg" alt="Michael Woodford, 2026 Nobel laureate, Nobel Prize Outreach portrait"><span>Michael Woodford</span></div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl">The <b>new Keynesian</b> answer to Lucas: keep the Keynesian short run, but rebuild it on forward-looking households and firms.</div></div>
+  </div>
+</section>
+<section class="slide" id="s14">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; 12 October 2026 &middot; the official history</div>
+  <h2>The story the Nobel tells</h2>
+  <div class="stage">
+    <div class="hl red" style="flex:0 0 auto;font-size:clamp(24px,2.6vh,30px);">&ldquo;During the oil crises of the 1970s, it <b>seemed</b> that the Keynesian models &hellip; no longer worked &hellip; Many people believed that stabilisation policy had done more harm than good and that it should be retired.&rdquo;<span style="font-weight:400;"> &mdash; Nobel press release, 12 October 2026</span></div>
+    <div class="two" style="flex:0 0 auto;flex-wrap:nowrap;gap:1.4vw;align-items:stretch;">
+      <div class="col" style="min-width:0;justify-content:center;">
+        <div class="card lose" style="margin-bottom:0;flex:0 0 auto;"><h3>What it assumes</h3><p>That policy had been run off a <b>stable</b> curve, that the 1970s exposed it, and that the rebuild was a lesson learned.</p></div>
+      </div>
+      <div class="col" style="min-width:0;justify-content:center;">
+        <div class="card win" style="margin-bottom:0;flex:0 0 auto;"><h3>What it does not claim</h3><p>Nothing about <b>who believed what</b>. It is a summary of the models, not a reading of the archive.</p></div>
+      </div>
+    </div>
+    <div class="figrow" style="flex:1 1 auto;align-items:center;gap:2vw;">
+      <div class="fig"><img src="photos/oil-queue-1974.jpg" alt="Motorists queuing for petrol in the United States, 1974"><span>Queuing for petrol, 1974</span></div>
+      <div class="fig"><img src="photos/oil-queue-1979.jpg" alt="Motorists queuing for petrol in the United States, 1979"><span>Queuing for petrol, 1979</span></div>
+    </div>
+    <div class="s-foot"><div class="hl amber">Two pages from here, a historian reads the same decade from the documents. <b>Hold both readings.</b></div></div>
+  </div>
+</section>
+<section class="slide" id="s15">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; the revisionist account</div>
+  <h2>The other telling: a myth?</h2>
+  <div class="stage">
+    <div class="hl" style="flex:0 0 auto;"><b>James Forder</b>, <i>Macroeconomics and the Phillips Curve Myth</i> (2014): the standard story is <b>&ldquo;entirely inauthentic. It is made up.&rdquo;</b></div>
+    <table style="flex:1 1 auto;">
+      <tr><th>The story as it is told</th><th>What the record shows</th></tr>
+      <tr><td class="l">Phillips discovered a striking trade-off</td><td class="l">Not new in 1958</td></tr>
+      <tr><td class="l">Samuelson&ndash;Solow sold it as a menu</td><td class="l"><b>Hardly propounded a trade-off at all</b></td></tr>
+      <tr><td class="l">Governments inflated to buy jobs</td><td class="l"><b>Rarely mentioned</b> in policy discussion</td></tr>
+      <tr><td class="l">Friedman and Phelps added expectations</td><td class="l">Expectations were <b>commonplace before 1968</b></td></tr>
+      <tr><td class="l">The 1970s exposed the naive Keynesians</td><td class="l"><b>Oil and commodity prices</b> are overlooked</td></tr>
+    </table>
+    <div class="s-foot"><div class="hl amber">Why it matters: this is <b>the story that discredited the Keynesians of the 1970s</b> &mdash; and with them the case for expansionary policy.</div></div>
+  </div>
+</section>
+<section class="slide" id="s16">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; the L-shaped supply curve</div>
+  <h2>The L-shaped supply curve &mdash; and the Phillips curve it implies</h2>
+  <div class="stage">
+    <div class="hl" style="flex:0 0 auto;">Before 1958 the AS curve was drawn as an <b>L</b>: <b>flat</b> in a recession, <b>rising</b>, then <b>vertical</b> at full employment. Forder: wages and prices were treated as <b>exogenous</b> &mdash; &ldquo;no fundamental reason that full employment in and of itself should generate a change in the price level&rdquo;.</div>
+    <div style="display:flex;gap:1.4vw;flex:1 1 auto;min-height:0;align-items:center;">
+      <div class="svgwrap" style="flex:1;min-width:0;flex-direction:column;gap:.5vh;">
+        <div class="note" style="font-weight:700;">AD-AS: flat, then rising, then the wall</div>
+        <svg id="lcSvgL" viewBox="0 0 620 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:620px;height:36vh;align-self:center;flex:0 0 auto;"><line x1="76.0" y1="300.0" x2="600.0" y2="300.0" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76.0" y1="300.0" x2="76.0" y2="42.0" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">Price level</text><text x="338.0" y="352.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">Real GDP</text><text x="250.7" y="322.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">80</text><text x="600.0" y="322.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">120</text><text x="425.3" y="322.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">Y*</text><text x="68.0" y="265.0" text-anchor="end" font-size="24" fill="#5b7288" font-weight="400">100</text><text x="68.0" y="179.0" text-anchor="end" font-size="24" fill="#5b7288" font-weight="400">120</text><text x="68.0" y="93.0" text-anchor="end" font-size="24" fill="#5b7288" font-weight="400">140</text><line id="lcAsFlat" x1="76.0" y1="257.0" x2="285.6" y2="257.0" stroke="#1CADE4" stroke-width="6"/><polyline id="lcAsRise" points="289.1,256.7 292.6,256.1 296.1,255.4 299.6,254.4 303.1,253.3 306.6,252.0 310.1,250.7 313.5,249.1 317.0,247.5 320.5,245.8 324.0,243.9 327.5,242.0 331.0,239.9 334.5,237.8 338.0,235.5 341.5,233.2 345.0,230.8 348.5,228.2 352.0,225.6 355.5,223.0 359.0,220.2 362.5,217.3 365.9,214.4 369.4,211.4 372.9,208.3 376.4,205.2 379.9,202.0 383.4,198.7 386.9,195.3 390.4,191.9 393.9,188.4 397.4,184.8 400.9,181.1 404.4,177.4 407.9,173.7 411.4,169.8 414.9,165.9 418.3,161.9 421.8,157.9 425.3,153.8" fill="none" stroke="#1CADE4" stroke-width="6" stroke-linecap="round"/><line id="lcAsWall" x1="425.3" y1="153.8" x2="425.3" y2="42.0" stroke="#1CADE4" stroke-width="6"/><text x="437.3" y="70.0" text-anchor="start" font-size="26" fill="#0e7fae" font-weight="700">AS</text><text x="163.3" y="243.0" text-anchor="start" font-size="24" fill="#0e7fae" font-weight="700">flat</text><text x="320.5" y="282.8" text-anchor="start" font-size="24" fill="#0e7fae" font-weight="700">rising</text><line x1="425.3" y1="257.0" x2="425.3" y2="300.0" stroke="#cfe0ee" stroke-width="2.5" stroke-dasharray="8 6"/><line id="lcAD" x1="76.0" y1="171.0" x2="338.0" y2="300.0" stroke="#d9534f" stroke-width="5"/><line id="lcGx" x1="250.7" y1="300.0" x2="250.7" y2="257.0" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/><line id="lcGy" x1="76.0" y1="257.0" x2="250.7" y2="257.0" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/><circle id="lcDot" cx="250.7" cy="257.0" r="9" fill="#d9534f"/><text id="lcADt" x="177.7" y="212.1" text-anchor="start" font-size="24" fill="#a94442" font-weight="700">AD</text></svg>
+      </div>
+      <div class="svgwrap" style="flex:1;min-width:0;flex-direction:column;gap:.5vh;">
+        <div class="note" style="font-weight:700;">Three stages, three branches</div>
+        <svg id="lcSvgR" viewBox="0 0 620 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:620px;height:36vh;align-self:center;flex:0 0 auto;"><line x1="76.0" y1="300.0" x2="600.0" y2="300.0" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76.0" y1="300.0" x2="76.0" y2="42.0" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="338.0" y="352.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="180.8" y="322.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">5</text><text x="338.0" y="322.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">8</text><text x="495.2" y="322.0" text-anchor="middle" font-size="24" fill="#5b7288" font-weight="400">11</text><text x="68.0" y="273.6" text-anchor="end" font-size="24" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="204.8" text-anchor="end" font-size="24" fill="#5b7288" font-weight="400">10</text><text x="68.0" y="136.0" text-anchor="end" font-size="24" fill="#5b7288" font-weight="400">14</text><text x="68.0" y="67.2" text-anchor="end" font-size="24" fill="#5b7288" font-weight="400">18</text><line id="lcFlat" x1="348.5" y1="265.6" x2="600.0" y2="265.6" stroke="#1CADE4" stroke-width="6"/><line id="lcWall" x1="180.8" y1="162.4" x2="180.8" y2="42.0" stroke="#1CADE4" stroke-width="6"/><polyline id="lcMid" points="348.5,265.6 346.4,265.5 344.3,265.3 342.2,265.1 340.1,264.7 338.0,264.4 335.9,264.0 333.8,263.5 331.7,263.0 329.6,262.5 327.5,261.9 325.4,261.3 323.3,260.6 321.2,260.0 319.1,259.3 317.0,258.5 314.9,257.7 312.8,256.9 310.8,256.1 308.7,255.3 306.6,254.4 304.5,253.5 302.4,252.5 300.3,251.6 298.2,250.6 296.1,249.6 294.0,248.5 291.9,247.4 289.8,246.4 287.7,245.2 285.6,244.1 283.5,243.0 281.4,241.8 279.3,240.6 277.2,239.4 275.1,238.1 273.0,236.8 270.9,235.5 268.8,234.2 266.7,232.9 264.6,231.6 262.5,230.2 260.4,228.8 258.4,227.4 256.3,225.9 254.2,224.5 252.1,223.0 250.0,221.5 247.9,220.0 245.8,218.5 243.7,216.9 241.6,215.4 239.5,213.8 237.4,212.2 235.3,210.6 233.2,208.9 231.1,207.3 229.0,205.6 226.9,203.9 224.8,202.2 222.7,200.5 220.6,198.7 218.5,197.0 216.4,195.2 214.3,193.4 212.2,191.6 210.1,189.7 208.0,187.9 206.0,186.0 203.9,184.1 201.8,182.3 199.7,180.3 197.6,178.4 195.5,176.5 193.4,174.5 191.3,172.5 189.2,170.5 187.1,168.5 185.0,166.5 182.9,164.5 180.8,162.4" fill="none" stroke="#1CADE4" stroke-width="6" stroke-linecap="round"/><text x="430.0" y="289.6" text-anchor="middle" font-size="24" fill="#0e7fae" font-weight="700">no trade-off</text><text x="330.0" y="203.7" text-anchor="middle" font-size="24" fill="#0e7fae" font-weight="700">like the SRPC</text><text x="194.8" y="76.4" text-anchor="start" font-size="24" fill="#0e7fae" font-weight="700">vertical at u*</text><line id="lcGx2" x1="390.4" y1="300.0" x2="390.4" y2="265.6" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/><line id="lcGy2" x1="76.0" y1="265.6" x2="390.4" y2="265.6" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/><circle id="lcDot2" cx="390.4" cy="265.6" r="9" fill="#d9534f"/></svg>
+      </div>
+    </div>
+    <div style="display:flex;gap:1.2vw;align-items:center;flex:0 0 auto;margin-top:.4vh;">
+      <div class="note" style="flex:0 0 auto;font-weight:700;">Policy stimulus &rarr; AD</div>
+      <div class="sliderbox" style="flex:0 0 24%;margin-bottom:0;padding:.8vh 1vw;">
+        <input type="range" id="lcA" min="-20" max="30" step="1" value="-20" oninput="lcDraw(this.value)">
+      </div>
+      <div class="slidenote" id="lcRead" style="flex:1.3;font-weight:700;">Recession</div>
+      <div class="btnrow" style="margin-top:0;flex:0 0 auto;">
+        <button class="btn" id="lcBtn" onclick="lcPlay()">&#9654; Policy expansion</button>
+        <button class="btn ghost" onclick="lcReset()">Reset</button>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">Read the right panel: in the <b>recession stage inflation does not move with unemployment at all</b>; the middle stage is the <b>short-run trade-off you already know</b>; and once employment is full you get <b>inflation with no extra output</b>. Summers (1991) from the other side: the L &ldquo;was falsified by the coincidence of inflation and less than full employment in the late 1940s and 1950s&rdquo;.</div></div>
+  </div>
+</section>
+<section class="slide" id="s17">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Beyond the exam &middot; how to read a history of thought</div>
+  <h2>So which story is true?</h2>
+  <div class="stage">
+    <div class="two" style="flex:0 0 auto;flex-wrap:nowrap;gap:1.4vw;">
+      <div class="col" style="min-width:0;">
+        <div class="card win" style="margin-bottom:0;"><h3>Not in dispute</h3><p>The 1961&ndash;69 relation, the break after 1970, stagflation, the vertical LRPC at the resting point <span class="ma">&pi; = &pi;<sup>e</sup></span>, the Lucas critique, microfoundations, the 2026 prize.</p></div>
+      </div>
+      <div class="col" style="min-width:0;">
+        <div class="card lose" style="margin-bottom:0;"><h3>In dispute</h3><p>Who believed what, who acted on it &mdash; and whether the break was a profession&rsquo;s mistake or a story told <b>afterwards</b>.</p></div>
+      </div>
+    </div>
+    <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">One decade, two histories</div><div class="kd">The same events carry both readings &mdash; which one you were taught is itself evidence about who won.</div></div></div>
+    <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">A right model can have a wrong origin story</div><div class="kd">The vertical LRPC is still the right device, and the 1960s line really had <b>no long run in it at all</b>.</div></div></div>
+    <div class="key" style="margin-bottom:0;"><div class="no">3</div><div><div class="kw">And that is the point of this deck</div><div class="kd">Models come with a history attached. Ask who read the archives.</div></div></div>
+    <div class="s-foot"><div class="hl">The standard account is a <b>usable</b> history &mdash; it organises the models. That is not the same thing as a <b>verified</b> history.</div></div>
+  </div>
+</section>
+<section class="slide" id="s18">
+  <!-- ⚠️⚠️ 特殊页（老师 2026-10-14 明确指定）——**本页与下一页故意不做填空** ⚠️⚠️
+       理由：本课是**观念史**，AP 没有考点，学生不需要默写任何东西。所以这两页
+       **不遵循**「单元结尾 = 逐条揭晓的填空总结页 + Thank you」这条房规，
+       而是「时间轴」＋「诺奖表」的**阅读式**收束（看一遍就行）。
+       改的时候请注意：
+         ① 不要把 .fill / .bk / .drill 之类的填空机制加回来；
+         ② 不要按普通总结页去"补齐"空格或追问进度条；
+         ③ 原填空 JS（BK_ANS / bkPaint / bkNext / bkAll / bkReset）已随填空一起删除，不要在别处恢复；
+         ④ 真要恢复填空，请先问贾老师 —— 这是内容取舍，不是排版问题。 -->
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Wrap-up &middot; read, do not fill in</div>
+  <h2>The story on one line</h2>
+  <div class="stage">
+    <div class="svgwrap"><svg id="lcTl" viewBox="0 0 1200 540" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;max-height:56vh;align-self:center;"><defs><marker id="tlDown" markerWidth="9" markerHeight="9" refX="4.5" refY="7" orient="auto"><path d="M0,0 L4.5,8 L9,0 z" fill="#1f2d3d"/></marker><marker id="tlUp" markerWidth="9" markerHeight="9" refX="4.5" refY="1" orient="auto"><path d="M0,8 L4.5,0 L9,8 z" fill="#1f2d3d"/></marker></defs><line x1="120" y1="66" x2="120" y2="440" stroke="#1f2d3d" stroke-width="3" marker-end="url(#tlDown)"/><path d="M 120 440 V 492 H 660 V 68" fill="none" stroke="#1f2d3d" stroke-width="3" stroke-linejoin="round" marker-end="url(#tlUp)"/><line x1="660" y1="66" x2="660" y2="440" stroke="#1f2d3d" stroke-width="3"/><circle cx="120" cy="100" r="9" fill="#5b7288"/><text x="144.0" y="108.0" text-anchor="start" font-size="24" fill="#1f2d3d" font-weight="400"><tspan font-size="26" font-weight="800" fill="#5b7288">1936</tspan> &middot; Keynes writes the General Theory</text><text x="144.0" y="144.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">prices rise as employment rises</text><circle cx="120" cy="200" r="9" fill="#5b7288"/><text x="144.0" y="208.0" text-anchor="start" font-size="24" fill="#1f2d3d" font-weight="400"><tspan font-size="26" font-weight="800" fill="#5b7288">1958&ndash;60</tspan> &middot; Phillips plots UK wage data</text><text x="144.0" y="244.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">Samuelson&ndash;Solow read it as a menu</text><circle cx="120" cy="300" r="9" fill="#5b7288"/><text x="144.0" y="308.0" text-anchor="start" font-size="24" fill="#1f2d3d" font-weight="400"><tspan font-size="26" font-weight="800" fill="#5b7288">1967&ndash;68</tspan> &middot; Phelps and Friedman</text><text x="144.0" y="344.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">expectations, and the natural rate</text><circle cx="120" cy="400" r="9" fill="#5b7288"/><text x="144.0" y="408.0" text-anchor="start" font-size="24" fill="#1f2d3d" font-weight="400"><tspan font-size="26" font-weight="800" fill="#5b7288">1970s</tspan> &middot; the break: both rise together</text><text x="144.0" y="444.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">1976 Lucas: not structural</text><circle cx="660" cy="100" r="9" fill="#5b7288"/><text x="684.0" y="108.0" text-anchor="start" font-size="24" fill="#1f2d3d" font-weight="400"><tspan font-size="26" font-weight="800" fill="#5b7288">1980s&ndash;90s</tspan> &middot; Volcker breaks the inflation</text><text x="684.0" y="144.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">then rules and targets</text><circle cx="660" cy="220" r="9" fill="#a97422"/><text x="684.0" y="228.0" text-anchor="start" font-size="24" fill="#1f2d3d" font-weight="400"><tspan font-size="26" font-weight="800" fill="#a97422">2014</tspan> &middot; Forder re-reads the record</text><text x="684.0" y="264.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">&ldquo;entirely inauthentic &hellip; made up&rdquo;</text><circle cx="660" cy="340" r="9" fill="#0e7fae"/><text x="684.0" y="348.0" text-anchor="start" font-size="24" fill="#1f2d3d" font-weight="400"><tspan font-size="26" font-weight="800" fill="#0e7fae">2026</tspan> &middot; Hall and Woodford win the Nobel</text><text x="684.0" y="384.0" text-anchor="start" font-size="24" fill="#5b7288" font-weight="400">microfoundations of stabilisation</text></svg></div>
+    <div class="s-foot"><div class="hl">Read it down the left column, then down the right: <b>an empirical scatter</b> becomes <b>a policy menu</b>, the menu breaks in the 1970s, the profession rebuilds on <b>expectations and microfoundations</b> &mdash; and in 2014 a historian <b>re-reads the record</b>.</div></div>
+  </div>
+</section>
+<section class="slide" id="s19">
+  <!-- 本页也是**阅读式**收束页（不填空），见上一页顶部那段注释；改前请先读它。 -->
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Wrap-up &middot; the prizes behind the names</div>
+  <h2>All the Nobel prizes this lesson touched</h2>
+  <div class="stage">
+    <table style="flex:0 0 auto;"><tr><th style="width:8%">Nobel</th><th style="width:19%">Laureate</th><th style="width:35%">Why they won it</th><th style="width:38%">Why this lesson mentions them</th></tr><tr><td><b>1970</b></td><td class="l" title="for the scientific work through which he has developed static and dynamic economic theory and actively contributed to raising the level of analysis in economic science">Paul A. Samuelson</td><td class="l">static and dynamic economic theory</td><td class="l">the 1960 paper that made the curve a &ldquo;menu&rdquo;</td></tr><tr><td><b>1976</b></td><td class="l" title="for his achievements in the fields of consumption analysis, monetary history and theory and for his demonstration of the complexity of stabilization policy">Milton Friedman</td><td class="l">consumption, monetary history, stabilisation policy</td><td class="l">1968: expectations and the natural rate</td></tr><tr><td><b>1986</b></td><td class="l" title="for his development of the contractual and constitutional bases for the theory of economic and political decision-making">James M. Buchanan</td><td class="l">the contractual basis of economic decisions</td><td class="l">he named &ldquo;Ricardian equivalence&rdquo; (1976)</td></tr><tr><td><b>1987</b></td><td class="l" title="for his contributions to the theory of economic growth">Robert M. Solow</td><td class="l">the theory of economic growth</td><td class="l">the other half of the 1960 paper</td></tr><tr><td><b>1995</b></td><td class="l" title="for having developed and applied the hypothesis of rational expectations, and thereby having transformed macroeconomic analysis and deepened our understanding of economic policy">Robert E. Lucas, Jr.</td><td class="l">rational expectations</td><td class="l">1976: an estimated relation is not structural</td></tr><tr><td><b>2004</b></td><td class="l" title="for their contributions to dynamic macroeconomics: the time consistency of economic policy and the driving forces behind business cycles (with F. Kydland)">Edward C. Prescott</td><td class="l">time consistency; what drives business cycles</td><td class="l">new classical: rules, not discretion</td></tr><tr><td><b>2006</b></td><td class="l" title="for his analysis of intertemporal tradeoffs in macroeconomic policy">Edmund S. Phelps</td><td class="l">intertemporal tradeoffs in macroeconomic policy</td><td class="l">1967: expectations, before Friedman</td></tr><tr><td><b>2011</b></td><td class="l" title="for their empirical research on cause and effect in the macroeconomy (with C. Sims)">Thomas J. Sargent</td><td class="l">cause and effect in the macroeconomy</td><td class="l">new classical: seen policy moves nothing</td></tr><tr><td><b>2026</b></td><td class="l" title="for microeconomic foundations of macroeconomic stabilisation">Robert E. Hall &amp; Michael Woodford</td><td class="l">microeconomic foundations of stabilisation</td><td class="l">where this lesson ends: the rebuild gets its foundations</td></tr></table>
+    <div class="s-foot"><div class="hl amber">Not in this table: <b>Keynes</b> (d. 1946) and <b>Phillips</b> (d. 1975) &mdash; the prize began in 1969 and is never awarded posthumously; <b>Forder</b>, <b>Volcker</b> and <b>Muth</b> never won it either. <b>The curve is named after a man who never received the prize.</b></div></div>
+  </div>
+</section>
+<section class="slide cover" id="s20">
+  <div class="tag">Wrap-up</div>
+  <h1>Thank you!</h1>
+  <p>A curve is easy to draw. Knowing who believed it, and why you were told they did, is the harder part.</p>
+    <div class="credithead">Image credits</div>
+    <div class="credits">
+      <div>John Maynard Keynes &mdash; Wikimedia Commons (Bettmann Archive), public domain</div>
+      <div>A. W. Phillips &mdash; LSE Library via Flickr Commons, no known restrictions</div>
+      <div>The MONIAC &mdash; Kaihsu Tai, public domain, via Wikimedia Commons</div>
+      <div>Paul A. Samuelson &mdash; Bernard Gotfryd, public domain</div>
+      <div>Milton Friedman &mdash; official portrait (existing unit asset)</div>
+      <div>Edmund S. Phelps &mdash; Cp2960, <b>CC BY-SA 4.0</b>, via Wikimedia Commons</div>
+      <div>Robert E. Lucas, Jr. &mdash; University of Chicago official portrait</div>
+      <div>Robert E. Hall &mdash; <b>Nobel Prize Outreach</b> / Niklas Elmehed</div>
+      <div>Michael Woodford &mdash; <b>Nobel Prize Outreach</b> / Niklas Elmehed</div>
+      <div>Petrol queues, 1974 and 1979 &mdash; two period photographs</div>
+    </div>
+  <div class="meta">Dr. Jia &middot; &copy; 2026</div>
+</section>
+<!-- ============================================================================
+     IMAGES — 5.2（2026-10-14 已装图；**署名统一显示在最后一页的 Image credits**）
+     9 张肖像在 photos/ 下，尺寸与预留框一致（竖版 4:5 → 显示 225x281 @1920；
+     MONIAC 8:5 → 450x281）；s3 凯恩斯页的肖像放大到 30vh。
+     图注里**只写人名**（老师要求：不出现 ", c. 1929 · public domain" 这类署名）；
+     出处/许可写在这里，以及每张图前面的一条注释里。
+     ---------------------------------------------------------------------------
+     slot      页    内容                      显示框(1920)  出处 / 许可
+     keynes    s4    John Maynard Keynes       324x405       Wikimedia (Bettmann Archive), PD  ← s4 放大版
+     phillips  s5    A. W. Phillips            225x281       LSE Library / Flickr Commons, no known restrictions
+     moniac    s5    The MONIAC (RBNZ Museum)  450x281       Kaihsu Tai, PD, via Wikimedia Commons
+     samuelson s6    Paul A. Samuelson         225x281       Bernard Gotfryd, PD
+     friedman  s7    Milton Friedman           225x281       本单元既有素材（photos/milton-friedman.png）
+     phelps    s7    Edmund S. Phelps (2017)   225x281       Cp2960 / CC BY-SA 4.0   ← 必须署名
+     lucas     s10   Robert E. Lucas, Jr.      225x281       University of Chicago 官方肖像
+     hall      s13   Robert E. Hall (2026)     225x281       Nobel Prize Outreach / Niklas Elmehed  ← 必须署名
+     woodford  s13   Michael Woodford (2026)   225x281       Nobel Prize Outreach / Niklas Elmehed  ← 必须署名
+     另：s14 用 photos/oil-queue-1974.jpg / oil-queue-1979.jpg（两张 1970s 排队加油照）；
+     ⚠️ 这两张的原始出处没有记录，若日后对外发布，请先确认来源与许可。
+     全部为真实照片 / 官方肖像，**无 AI 生成图**。
+     ============================================================================ -->
+</main>
+
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 20</div>
+  <div class="copy">© 2026 Dr. Jia</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+
+<script>
+/* ═══════════ 翻页 ═══════════ */
+
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+function goTo(i){ gotoSlide(i); }
+window.goTo = goTo;
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+/* 翻页只走左右下角按键：方向键/空格翻页已移除（2026-10-08 硬规矩） */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ═══════════ s15 L 型总供给（三段）→ 隐含的菲利普斯曲线 ═══════════ */
+/* Model — identical parameters to the Python that generated the two SVGs:
+   stage 1  recession, flat        Y <= Y1 = 84            P = P0 = 100
+   stage 2  normal, rising smooth  84 < Y < Y* = 100       P = P0 + (P2-P0)*s^PW,  s = (Y-Y1)/(Y*-Y1)
+   stage 3  overheating, vertical  Y = Y* = 100            P = 100 + A
+   AD  P = (200 + A) - Y      u = 5 - 0.2(Y - 100)      pi = 6 + 0.25(P - 100) */
+const LC = { A0:-20, A1:30, Ystar:100, Y1:84, P0:100, P2:124, PW:1.6,
+             Ylo:60, Yhi:120, Plo:90, Phi:150, Ulo:3, Uhi:13, Pil:4, Pih:19, B:[76,42,600,300] };
+function lcXA(Y){ const b=LC.B; return b[0]+(Y-LC.Ylo)/(LC.Yhi-LC.Ylo)*(b[2]-b[0]); }
+function lcYA(P){ const b=LC.B; return b[3]-(P-LC.Plo)/(LC.Phi-LC.Plo)*(b[3]-b[1]); }
+function lcXB(u){ const b=LC.B; return b[0]+(u-LC.Ulo)/(LC.Uhi-LC.Ulo)*(b[2]-b[0]); }
+function lcYB(p){ const b=LC.B; return b[3]-(p-LC.Pil)/(LC.Pih-LC.Pil)*(b[3]-b[1]); }
+function lcSeg(id, x1, y1, x2, y2){
+  const e = document.getElementById(id); if(!e) return;
+  e.setAttribute("x1",x1.toFixed(1)); e.setAttribute("y1",y1.toFixed(1));
+  e.setAttribute("x2",x2.toFixed(1)); e.setAttribute("y2",y2.toFixed(1));
+}
+/* the three-stage supply curve */
+function lcAS(Y){
+  if(Y <= LC.Y1) return LC.P0;
+  const s = (Y - LC.Y1) / (LC.Ystar - LC.Y1);
+  return LC.P0 + (LC.P2 - LC.P0) * Math.pow(s, LC.PW);
+}
+function lcCalc(A){
+  if(100 + A <= LC.Y1)  return { A:A, Y:100+A,   P:LC.P0, stage:"rec"  };   /* flat part  */
+  if(100 + A >= LC.P2)  return { A:A, Y:LC.Ystar, P:100+A, stage:"over" };   /* the wall   */
+  let lo = LC.Y1, hi = LC.Ystar;                                            /* rising part */
+  for(let i = 0; i < 60; i++){
+    const m = (lo + hi) / 2;
+    if((200 + A - m) - lcAS(m) > 0) lo = m; else hi = m;
+  }
+  const Y = (lo + hi) / 2;
+  return { A:A, Y:Y, P:lcAS(Y), stage:"norm" };
+}
+function lcDraw(v){
+  const s = document.getElementById("lcA");
+  const A = (v === undefined || v === null || v === "") ? +s.value : +v;
+  if(s && v !== undefined) s.value = A;
+  const e = lcCalc(A);
+  const yl = Math.max(LC.Ylo, 200 + A - LC.Phi), yh = Math.min(LC.Yhi, 200 + A - LC.Plo);
+  lcSeg("lcAD", lcXA(yl), lcYA(200+A-yl), lcXA(yh), lcYA(200+A-yh));
+  const ex = lcXA(e.Y), ey = lcYA(e.P);
+  const d1 = document.getElementById("lcDot");
+  if(d1){ d1.setAttribute("cx",ex.toFixed(1)); d1.setAttribute("cy",ey.toFixed(1)); }
+  lcSeg("lcGx", ex, lcYA(LC.Plo), ex, ey);
+  lcSeg("lcGy", lcXA(LC.Ylo), ey, ex, ey);
+  const t1 = document.getElementById("lcADt");
+  if(t1){ const ty = yl + 0.35*(yh-yl);
+    t1.setAttribute("x",(lcXA(ty)+10).toFixed(1)); t1.setAttribute("y",(lcYA(200+A-ty)-4).toFixed(1)); }
+  const u = 5 - 0.2*(e.Y-100), pi = 6 + 0.25*(e.P-100);
+  const px = lcXB(u), py = lcYB(pi);
+  const d2 = document.getElementById("lcDot2");
+  if(d2){ d2.setAttribute("cx",px.toFixed(1)); d2.setAttribute("cy",py.toFixed(1)); }
+  lcSeg("lcGx2", px, lcYB(LC.Pil), px, py);
+  lcSeg("lcGy2", lcXB(LC.Ulo), py, px, py);
+  let ph;
+  if(e.stage === "rec")       ph = "Recession: output rises, \u03c0 stays at 6%";
+  else if(e.stage === "over") ph = "Overheating: output is pinned at Y*, only prices rise";
+  else                        ph = "Normal range: output and prices rise together";
+  const rd = document.getElementById("lcRead");
+  if(rd) rd.textContent = ph + "  \u00b7  Y " + e.Y.toFixed(1) + " \u00b7 P " + e.P.toFixed(1) +
+        " \u00b7 u " + u.toFixed(1) + "% \u00b7 \u03c0 " + pi.toFixed(1) + "%";
+}
+let lcTimer = null;
+function lcPlay(){
+  if(lcTimer){ clearInterval(lcTimer); lcTimer = null; }
+  const btn = document.getElementById("lcBtn");
+  let A = LC.A0; lcDraw(A);
+  if(btn){ btn.disabled = true; btn.textContent = "playing\u2026"; }
+  /* ⚠️ setInterval，不用 rAF：遮挡的 iframe / IDE 预览里 rAF 会被节流 → 「瞬间完成」 */
+  lcTimer = setInterval(() => {
+    A = Math.min(LC.A1, A + 2);
+    lcDraw(A);
+    if(A >= LC.A1){
+      clearInterval(lcTimer); lcTimer = null;
+      if(btn){ btn.disabled = false; btn.textContent = "\u25b6 Policy expansion"; }
+    }
+  }, 110);
+}
+function lcReset(){
+  if(lcTimer){ clearInterval(lcTimer); lcTimer = null; }
+  const btn = document.getElementById("lcBtn");
+  if(btn){ btn.disabled = false; btn.textContent = "\u25b6 Policy expansion"; }
+  const s = document.getElementById("lcA"); if(s) s.value = LC.A0;
+  lcDraw(LC.A0);
+}
+
+
+/* ══════════ 初始化 ══════════ */
+lcReset();
+try{
+  const hashInit = parseInt(location.hash.slice(1) || "0", 10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+}catch(err){ console.error(err); gotoSlide(0); }
+
+</script>
+<script>
+/* == math typesetting engine (math-typeset.py) == */
+/* Inside .ma / .eqbox / .mcell: a single Latin letter or a single lowercase Greek
+   letter is a variable, so it goes italic; runs of two or more letters are words or
+   abbreviations ("Deposits", "MPC", "MV") and stay upright. */
+var MATH_FN = { ln:1, log:1, exp:1, max:1, min:1, sin:1, cos:1, tan:1 };
+var MATH_IT = { rr:1 };
+function mathVar(t){
+  if(t.length === 1) return /^[A-Za-z]$/.test(t) || /^[\u03b1-\u03c9]$/.test(t);
+  return !!MATH_IT[t];
+}
+function wrapLetters(root){
+  if(!root || root.nodeType !== 1) return;
+  var walker = document.createTreeWalker(root, 4, null, false), texts = [], n;
+  while((n = walker.nextNode())) texts.push(n);
+  for(var i = 0; i < texts.length; i++){
+    var t = texts[i], p = t.parentNode;
+    if(!p || p.nodeType !== 1) continue;
+    if(/^(I|B|EM|STRONG|SUP|SUB)$/.test(p.tagName)) continue;
+    var cl = p.className ? String(p.className) : "";
+    if(cl && /(^|\s)(fn|lbl|mi)(\s|$)/.test(cl)) continue;
+    var s = t.nodeValue, changed = false;
+    if(!/[A-Za-z\u03b1-\u03c9]/.test(s)) continue;
+    var parts = s.split(/([A-Za-z\u03b1-\u03c9]+)/), frag = document.createDocumentFragment();
+    for(var j = 0; j < parts.length; j++){
+      var piece = parts[j];
+      if(!piece) continue;
+      if(/^([A-Za-z\u03b1-\u03c9]+)$/.test(piece)){
+        if(mathVar(piece)){
+          var e2 = document.createElement("i");
+          e2.textContent = piece;
+          frag.appendChild(e2);
+          changed = true;
+        } else if(MATH_FN[piece]){
+          var e3 = document.createElement("span");
+          e3.className = "fn";
+          e3.textContent = piece;
+          frag.appendChild(e3);
+          changed = true;
+        } else {
+          frag.appendChild(document.createTextNode(piece));
+        }
+      } else {
+        frag.appendChild(document.createTextNode(piece));
+      }
+    }
+    if(changed) p.replaceChild(frag, t);   /* idempotent: no change means no mutation */
+  }
+}
+function typesetMath(root){
+  root = root || document;
+  var list = [], i, found;
+  var cls = root.nodeType === 1 && root.getAttribute ? String(root.getAttribute("class") || "") : "";
+  if(/(^|\s)(ma|mas|eqbox|mcell)(\s|$)/.test(cls)) list.push(root);
+  found = root.querySelectorAll ? root.querySelectorAll(".ma,.mas,.eqbox,.mcell") : [];
+  for(i = 0; i < found.length; i++) list.push(found[i]);
+  for(i = 0; i < list.length; i++){ wrapLetters(list[i]); list[i].setAttribute("data-ts", "1"); }
+}
+typesetMath(document);
+/* decks that build markup later (chains, step reveals, dynamic tables) are covered here */
+/* Decks rewrite their own labels (slider values, step reveals). When that happens the
+   scope survives but its text is new, so the whole document is re-typeset once per frame.
+   wrapLetters is idempotent, so this settles instead of looping. */
+if(window.MutationObserver){
+  var mathQueued = false;
+  new MutationObserver(function(){
+    if(mathQueued) return;
+    mathQueued = true;
+    var run = function(){ mathQueued = false; typesetMath(document); };
+    if(window.requestAnimationFrame) requestAnimationFrame(run); else setTimeout(run, 0);
+  }).observe(document.body, { childList:true, subtree:true });
+}
+/* == /math typesetting engine == */
+
+
+
+</script>
+</body>
+</html>
