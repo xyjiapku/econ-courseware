@@ -5,93 +5,233 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AP Micro 4.2 — Price elasticity of supply</title>
 <style>
-:root{
+
+
+
+  /* ══ 基础样式表：整套取自已发布的 Demand 课件（保证两份看起来一致）══ */
+  :root {
+    --darkblue: #2E4A6B;
+
   --blue:#1E88E5; --blue2:#1565C0; --red:#C62828; --green:#2E7D32; --teal:#00838F;
-  --purple:#7C3AED; --amber:#F0B429; --ink:#1a3a5c; --gray:#5b6b7b; --line:#e6eef7;
+  --purple:#7C3AED; --amber:#F0B429; --ink:#333; --gray:#5b6b7b; --line:#e6eef7;
 }
+
+/* ══ 只属于 PES 的演示组件（面板、色块指示、结果格、条形、五种斜率缩略图）══ */
+  .card.r {border-color:var(--red);}
+  .card.r h3 {color:var(--red);}
+  .card.g {border-color:var(--green);}
+  .card.g h3 {color:var(--green);}
+  .card.t {border-color:var(--teal);}
+  .card.t h3 {color:var(--teal);}
+  .card.p {border-color:var(--purple);}
+  .card.p h3 {color:var(--purple);}
+  .card.a {border-color:var(--amber);}
+  .card.a h3 {color:#a57d12;}
+  .card.blue h3 {color:var(--blue2);}
+  .note {border-radius:0 10px 10px 0;padding:6px 12px;font-size:clamp(22px, min(2.1vw, 2.59vh), 28px);line-height:1.3;}
+  .note p+p {margin-top:4px;}
+  .compact {display:flex;flex-direction:column;gap:8px;}
+  .chart {background:#fff;border-radius:14px;border:2px solid var(--line);padding:6px;box-shadow:0 2px 10px rgba(26,58,92,.06);}
+  .panel {background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:6px 10px;}
+  .panel .b {font-weight:800;color:var(--ink);font-size:clamp(22px, min(1.6vw, 2.41vh), 26px);}
+  .ends {display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+  .chip {border:2px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:clamp(22px, min(1.4vw, 2.22vh), 24px);font-weight:800;color:var(--gray);cursor:pointer;font-family:inherit;}
+  .chip.on {background:var(--blue2);color:#fff;border-color:var(--blue2);}
+  table.data-table {border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(26,58,92,.07);}
+  .data-table td {padding:8px 10px;font-size:clamp(22px, min(1.5vw, 2.41vh), 26px);border:2px solid #e9f0f8;text-align:center;vertical-align:middle;}
+  .data-table tr.hit td {background:#f6fdf8;}
+  .blank {font-weight:800;color:var(--blue2);}
+  .blank.empty {color:#a9b8c8;}
+  .rgrid {display:flex;gap:8px;flex-wrap:wrap;}
+  .rgrid.grid3 {display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  .rcell {background:#F8FBFF;border:2px solid var(--line);border-radius:10px;padding:5px 10px;flex:1 1 30%;min-width:120px;}
+  .rcell .k {display:block;font-size:clamp(22px, min(1.35vw, 2.13vh), 23px);color:var(--gray);font-weight:700;}
+  .rcell .v {font-size:clamp(22px, min(1.65vw, 2.5vh), 27px);font-weight:800;}
+  .rcell .v.pur {color:var(--purple);}
+  .rcell .v.teal {color:var(--teal);}
+  .bbar {display:flex;height:46px;border-radius:10px;overflow:hidden;border:2px solid var(--line);}
+  .bseg {display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(22px, min(1.5vw, 2.31vh), 25px);color:#fff;white-space:nowrap;overflow:hidden;}
+  .bseg.c {background:var(--purple);}
+  .bseg.p {background:var(--teal);}
+  .scenario {font-size:clamp(22px, min(1.85vw, 2.78vh), 30px);font-weight:700;margin:6px 0 10px;min-height:2.4em;}
+  .qbtns {display:flex;flex-direction:column;gap:8px;}
+  .qbtns button {text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-size:clamp(22px, min(1.55vw, 2.41vh), 26px);font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;}
+  .qbtns button.correct {background:#e8f6ea;border-color:#b6ddba;}
+  .qbtns button.wrong {background:#fdeceb;border-color:#f3c6c3;}
+  .nav .copy,.nav .page {font-size:clamp(22px, min(1.3vw, 2.04vh), 22px);color:var(--gray);font-weight:700;}
+  .frac {display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 8px;}
+  .frac .top {border-bottom:3px solid var(--blue2);padding:0 12px 2px;}
+  .frac .bot {padding:2px 12px 0;}
+  .note p { margin: 0; }
+  #smT th, #smT td { padding-top:4px; padding-bottom:4px; font-size:clamp(22px, min(1.5vw, 2.31vh), 25px); }
+  #smT td, #smT th { font-size:22px; line-height:1.22; padding:2px 6px; }
+
+  
+
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;}
 body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6FB;color:var(--ink);overflow:hidden;}
 .view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(14px,2.2vh,40px) clamp(60px, min(7vw, 10.19vh), 110px) 74px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;font-size:clamp(22px, min(1.9vw, 2.31vh), 25px);line-height:1.45;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,3vh,48px) clamp(60px,7vw,110px) 80px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;overflow-x:hidden;}
 .slide.active{opacity:1;pointer-events:auto;}
-.slide.cover{justify-content:center;align-items:flex-start;}
-.content{width:100%;max-width:clamp(600px, 85vw, 1520px);display:flex;flex-direction:column;flex:1;}
-.course-tag{font-size:clamp(22px, min(1.8vw, 2.41vh), 26px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
-h1{font-size:clamp(28px, min(3.5vw, 4.07vh), 44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
-.sub{font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);color:#5b6b7b;margin-bottom:4px;width:100%;line-height:1.4;}
-hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
-.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:8px 14px;}
-.card h3{font-size:clamp(24px, min(2.5vw, 2.87vh), 31px);margin-bottom:6px;}
-.card p{font-size:clamp(22px, min(2.1vw, 2.59vh), 28px);line-height:1.3;color:#445;margin-top:4px;}
-.card.r{border-color:var(--red);} .card.r h3{color:var(--red);}
-.card.g{border-color:var(--green);} .card.g h3{color:var(--green);}
-.card.t{border-color:var(--teal);} .card.t h3{color:var(--teal);}
-.card.p{border-color:var(--purple);} .card.p h3{color:var(--purple);}
-.card.a{border-color:var(--amber);} .card.a h3{color:#a57d12;}
-.card.blue h3{color:var(--blue2);}
-.note{border-radius:0 10px 10px 0;padding:6px 12px;font-size:clamp(22px, min(2.1vw, 2.59vh), 28px);line-height:1.3;}
-.note p+p{margin-top:4px;}
-.txt{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;}
-.compact{display:flex;flex-direction:column;gap:8px;}
-.chart{background:#fff;border-radius:14px;border:2px solid var(--line);padding:6px;box-shadow:0 2px 10px rgba(26,58,92,.06);}
-.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:6px 10px;}
-.panel .b{font-weight:800;color:var(--ink);font-size:clamp(22px, min(1.6vw, 2.41vh), 26px);}
-.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
-.big-btn{padding:9px 22px;border:none;background:var(--blue);color:#fff;border-radius:12px;font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
-.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
-.big-btn:disabled{opacity:.55;cursor:default;}
-.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:clamp(22px, min(1.4vw, 2.22vh), 24px);font-weight:800;color:var(--gray);cursor:pointer;font-family:inherit;}
-.chip.on{background:var(--blue2);color:#fff;border-color:var(--blue2);}
-.rgrp{display:none;}
-.rgrp.show{display:block;}
-.rbtn-wrap{position:absolute;left:50%;transform:translateX(-50%);bottom:clamp(52px,7.6vh,76px);display:none;gap:10px;z-index:20;}
-table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(26,58,92,.07);}
-.data-table th{background:#eaf2fb;color:var(--ink);font-weight:800;padding:8px 10px;font-size:clamp(22px, min(1.45vw, 2.31vh), 25px);border:2px solid #dbe7f3;}
-.data-table td{padding:8px 10px;font-size:clamp(22px, min(1.5vw, 2.41vh), 26px);border:2px solid #e9f0f8;text-align:center;vertical-align:middle;}
-.data-table tr.hit td{background:#f6fdf8;}
-.blank{font-weight:800;color:var(--blue2);}
-.blank.empty{color:#a9b8c8;}
-.rgrid{display:flex;gap:8px;flex-wrap:wrap;}
-.rgrid.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-.rcell{background:#F8FBFF;border:2px solid var(--line);border-radius:10px;padding:5px 10px;flex:1 1 30%;min-width:120px;}
-.rcell .k{display:block;font-size:clamp(22px, min(1.35vw, 2.13vh), 23px);color:var(--gray);font-weight:700;}
-.rcell .v{font-size:clamp(22px, min(1.65vw, 2.5vh), 27px);font-weight:800;}
-.rcell .v.pur{color:var(--purple);} .rcell .v.teal{color:var(--teal);}
-.bbar{display:flex;height:46px;border-radius:10px;overflow:hidden;border:2px solid var(--line);}
-.bseg{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(22px, min(1.5vw, 2.31vh), 25px);color:#fff;white-space:nowrap;overflow:hidden;}
-.bseg.c{background:var(--purple);} .bseg.p{background:var(--teal);}
-.g1-box{background:#fff;border-radius:14px;border:2px solid var(--line);padding:14px 16px;box-shadow:0 2px 10px rgba(26,58,92,.07);}
-.scenario{font-size:clamp(22px, min(1.85vw, 2.78vh), 30px);font-weight:700;margin:6px 0 10px;min-height:2.4em;}
-.qbtns{display:flex;flex-direction:column;gap:8px;}
-.qbtns button{text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-size:clamp(22px, min(1.55vw, 2.41vh), 26px);font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;}
-.qbtns button.correct{background:#e8f6ea;border-color:#b6ddba;}
-.qbtns button.wrong{background:#fdeceb;border-color:#f3c6c3;}
-.g1-fb{font-size:clamp(22px, min(1.5vw, 2.31vh), 25px);font-weight:800;min-height:1.6em;margin-top:6px;}
-.result-box{display:none;text-align:center;}
-.result-box .big{font-size:clamp(34px, min(3.4vw, 4.81vh), 52px);font-weight:900;color:var(--blue2);margin:6px 0 10px;}
-.dots{display:flex;gap:6px;}
-.dots span{width:9px;height:9px;border-radius:50%;background:#c8d6e5;cursor:pointer;}
-.dots span.on{background:var(--blue2);}
-.nav{position:absolute;left:0;right:0;bottom:0;height:clamp(46px,6.4vh,62px);background:#fff;border-top:2px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px, min(2vw, 2.78vh), 30px);z-index:30;}
-.nav button{border:0;background:var(--blue2);color:#fff;width:38px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;font-family:inherit;}
-.nav button:disabled{opacity:.4;}
-.nav .copy,.nav .page{font-size:clamp(22px, min(1.3vw, 2.04vh), 22px);color:var(--gray);font-weight:700;}
-.author{font-size:clamp(22px, min(1.4vw, 2.22vh), 24px);color:var(--gray);letter-spacing:.14em;font-weight:800;}
-.sep{width:120px;height:6px;border-radius:3px;background:var(--blue);margin:14px 0;}
-.botbar{position:absolute;left:0;bottom:0;width:100%;height:12px;background:linear-gradient(90deg,var(--blue),#5aa9f0);}
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;height:56px;background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+.nav .page{color:#fff;font-size:16px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.65);font-size:13px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:clamp(22px,2.4vw,30px);font-weight:700;padding:6px 18px;border-radius:8px;cursor:pointer;transition:.12s;min-width:60px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:40%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.3);}
+.dots span.g1{background:rgba(255,193,7,.6);}
+.dots span.g1.on{background:#FFC107;transform:scale(1.3);}
+.dots span.g2{background:rgba(76,175,80,.6);}
+.dots span.g2.on{background:#4CAF50;transform:scale(1.3);}
+/* cover: center both ways */
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff;}
+.cover .course-tag{font-size:clamp(20px,2.5vw,32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px);}
+.cover h1{font-size:clamp(48px,7vw,84px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px);}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px);}
+.cover .author{font-size:clamp(18px,2.2vw,28px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:56px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
+/* reveal button: fixed right middle */
+.rbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(15px,1.3vw,18px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn:hover{background:var(--blue);color:#fff;}
+.rbtn:disabled{opacity:.35;cursor:default;}
+.rbtn-icon{font-size:12px;color:var(--blue);transition:.15s;}
+/* summary reveal button: same position */
+.sbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(15px,1.3vw,18px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn:hover{background:var(--blue);color:#fff;}
+.sbtn:disabled{opacity:.35;cursor:default;}
+/* content */
+.content{width:100%;max-width:clamp(600px,85vw,1100px);display:flex;flex-direction:column;flex:1;}
+h1{font-size:clamp(28px,3.5vw,44px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+.sub{font-size:clamp(20px,2.2vw,28px);color:#5b6b7b;margin-bottom:8px;width:100%;}
+.course-tag{font-size:clamp(16px,1.8vw,24px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(20px,2.2vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.6vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}
+.db{color:var(--darkblue);}
+.dr{color:var(--red);}
+.green{color:var(--green);}
 .gray{color:#5b6b7b;}
-.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 8px;}
-.frac .top{border-bottom:3px solid var(--blue2);padding:0 12px 2px;}
-.frac .bot{padding:2px 12px 0;}
-  .note p { margin: 0; }
-  #smT th, #smT td { padding-top:4px; padding-bottom:4px; font-size:clamp(22px, min(1.5vw, 2.31vh), 25px); }
-  .cover { justify-content:center;align-items:center;text-align:center;padding-top:0;background:#fff; }
-  .cover .course-tag { font-size:clamp(22px, min(2.5vw, 2.96vh), 32px);color:#888;letter-spacing:.5px;margin-bottom:clamp(12px,1.5vh,24px); }
-  .cover h1 { font-size:clamp(46px, min(6.4vw, 7.22vh), 78px);color:#222;font-weight:400;margin-bottom:clamp(10px,1.2vh,20px); }
-  .cover .sep { width:clamp(60px, min(8vw, 9.26vh), 100px);height:2px;background:#ccc;margin:0 auto clamp(16px,2vh,28px); }
-  .cover .author { font-size:clamp(22px, min(2.2vw, 2.59vh), 28px);color:var(--darkblue);letter-spacing:2px;font-weight:700; }
-  .cover .botbar { position:absolute;bottom:60px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8); }
+/* image float */
+.img-wrap{max-width:clamp(320px,38vw,540px);margin:2px 0 10px clamp(18px,2.8vw,36px);border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1);float:right;clear:right;}
+.img-wrap.zoomable img{cursor:zoom-in;}
+.img-wrap img{width:100%;display:block;}
+/* reveal groups */
+.rgrp{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .5s;width:100%;}
+.rgrp.show{opacity:1;max-height:800px;}
+/* lightbox */
+.lbox{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.88);z-index:2000;display:none;justify-content:center;align-items:center;cursor:pointer;}
+.lbox.show{display:flex;}
+.lbox img{max-width:92vw;max-height:92vh;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+/* comparison table */
+.ctab{width:100%;border-collapse:collapse;font-size:clamp(17px,1.8vw,24px);margin-top:4px;}
+.ctab th{background:var(--blue);color:#fff;padding:clamp(5px,.5vh,9px) clamp(8px,.8vw,12px);text-align:center;font-weight:700;font-size:clamp(18px,1.8vw,24px);}
+.ctab td{padding:clamp(5px,.5vh,9px) clamp(10px,1vw,16px);border:1px solid #d5e3f2;vertical-align:top;line-height:1.35;}
+.ctab tr:nth-child(even) td{background:#F7FBFD;}
+.ctab .sname{font-weight:700;text-align:center;color:var(--darkblue);}
+/* cards */
+.card-row{display:flex;gap:clamp(10px,1.5vw,22px);flex-wrap:wrap;margin:clamp(4px,.4vh,8px) 0;width:100%;}
+.card{border-radius:14px;padding:clamp(10px,1.2vh,18px) clamp(14px,1.8vw,24px);border:2px solid #dde8f4;flex:1;min-width:150px;}
+.card h3{font-size:clamp(22px,2.5vw,30px);margin-bottom:3px;}
+.card p{font-size:clamp(18px,2vw,26px);color:#445;}
+/* Game 1 */
+.g1-box{background:#F8FBFF;border-radius:16px;padding:clamp(12px,1.5vh,22px) clamp(16px,2vw,28px);border:2px solid #dde8f4;margin-top:4px;width:100%;}
+.g1-box .scenario{font-size:clamp(20px,2.2vw,28px);margin-bottom:8px;line-height:1.5;}
+.g1-box .qbtns{display:flex;gap:clamp(8px,1vw,14px);margin-bottom:6px;flex-wrap:wrap;}
+.g1-box .qbtns button{font-size:clamp(20px,2.2vw,28px);padding:clamp(8px,1vh,14px) clamp(16px,2vw,28px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g1-box .qbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g1-box .qbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g1-box .qbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g1-box .qbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g1-fb{font-size:clamp(20px,2.2vw,28px);font-weight:700;min-height:28px;margin-top:2px;}
+/* Game 2 */
+.g2-box{background:#F8FBFF;border-radius:16px;padding:clamp(14px,1.8vh,24px);border:2px solid #dde8f4;margin-top:4px;min-height:clamp(200px,30vh,340px);display:flex;flex-direction:column;justify-content:center;width:100%;}
+.g2-box .feature{font-size:clamp(22px,2.5vw,32px);font-weight:700;color:var(--darkblue);margin-bottom:clamp(10px,1.2vh,16px);line-height:1.4;}
+.g2-box .sbtns{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(10px,1.2vw,16px);margin-bottom:6px;}
+.g2-box .sbtns button{font-size:clamp(20px,2.2vw,28px);padding:clamp(10px,1.2vh,16px);border-radius:10px;border:3px solid #d5e3f2;background:#fff;cursor:pointer;font-weight:600;color:var(--darkblue);transition:.1s;}
+.g2-box .sbtns button:hover{border-color:var(--blue);background:#EAF4FF;}
+.g2-box .sbtns button:disabled{cursor:not-allowed;opacity:.6;}
+.g2-box .sbtns button.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.g2-box .sbtns button.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.g2-fb{font-size:clamp(20px,2.2vw,28px);font-weight:700;min-height:28px;margin-top:4px;}
+.g2-score{font-size:clamp(18px,1.8vw,24px);color:var(--darkblue);font-weight:700;text-align:right;margin-bottom:2px;}
+/* vocab table */
+.vtab{width:100%;border-collapse:collapse;font-size:clamp(18px,1.8vw,24px);margin-top:4px;}
+.vtab th{background:var(--blue);color:#fff;padding:clamp(8px,.8vh,12px) clamp(10px,1vw,16px);text-align:left;font-weight:700;font-size:clamp(18px,1.8vw,24px);}
+.vtab td{padding:clamp(6px,.6vh,10px) clamp(10px,1vw,16px);border-bottom:1px solid #e0e8f0;font-size:clamp(18px,1.8vw,24px);}
+.vtab tr:nth-child(even) td{background:#F7FBFD;}
+.vtab .ec{font-weight:700;text-align:center;}
+.vtab .zh{text-align:center;}
+/* summary steps */
+.ssteps{font-size:clamp(22px,1.9vw,24px);line-height:1.45;width:100%;}
+.sstep{opacity:0;transition:opacity .4s;margin-bottom:clamp(6px,.8vh,10px);}
+.sstep.show{opacity:1;}
+.sstep .blank{display:inline-block;min-width:clamp(50px,5vw,90px);border-bottom:3px solid var(--blue);padding:0 4px;margin:0 2px;text-align:center;font-weight:700;}
+.sstep .blank.filled{color:var(--blue);}
+.sstep .blank.empty{color:transparent;}
+/* closing */
+.closing{justify-content:center;text-align:center;align-items:center;}
+.result-box{display:none;text-align:center;padding:20px;}
+.result-box h3{font-size:clamp(28px,3.5vw,38px);color:var(--darkblue);}
+.result-box .big{font-size:clamp(40px,5.5vw,56px);font-weight:800;color:var(--blue);margin:8px 0;}
+.result-box .btn{font-size:clamp(20px,2.2vw,28px);padding:clamp(8px,1vh,14px) clamp(24px,3vw,40px);border:none;border-radius:10px;background:var(--blue);color:#fff;cursor:pointer;font-weight:700;}
+@media(max-width:900px){
+  .slide{padding:16px 12px 72px;}
+  h1{font-size:22px;}
+  .txt{font-size:clamp(20px,2.1vw,28px);}
+  .img-wrap{float:none;max-width:100%;margin:10px 0;}
+  .g2-box .sbtns{grid-template-columns:1fr;}
+  .rbtn-wrap{right:4px;}
+  .rbtn{font-size:12px;padding:10px 4px;}
+}
+
+    /* ── price mechanism animation ── */
+    @keyframes dashmove { to { stroke-dashoffset: -42; } }
+    .flowline { stroke-dasharray: 13 9; animation: dashmove .7s linear infinite; }
+    .glow-blue { filter: drop-shadow(0 0 12px rgba(30,136,229,.65)); }
+    .glow-red { filter: drop-shadow(0 0 12px rgba(198,40,40,.6)); }
+    .glow-green { filter: drop-shadow(0 0 12px rgba(46,125,50,.6)); }
+    @keyframes pricering { 0%{transform:scale(1)} 40%{transform:scale(1.14)} 100%{transform:scale(1)} }
+    .pulse { animation: pricering .7s ease-out 2; transform-box: fill-box; transform-origin: center; }
+
+    /* ── shared styles for the demand interaction pages ── */
+    .big-btn { padding:12px 26px; border:none; background:var(--blue); color:#fff; border-radius:12px; font-size:clamp(20px,2.2vw,28px); font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(26,58,92,.3); transition:.15s; }
+    .big-btn:hover { filter:brightness(1.12); transform:translateY(-1px); }
+    .big-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .big-btn.ghost { background:#fff; color:#1a3a5c; border:2.5px solid rgba(42,90,140,.35); box-shadow:none; }
+    .big-btn.ghost:hover { background:#eaf2fb; }
+    .factor-btn { padding:10px 18px; border-radius:12px; border:2.5px solid rgba(42,90,140,.35); background:#fff; color:#1a3a5c; font-size:clamp(18px,1.9vw,25px); font-weight:700; cursor:pointer; transition:.15s; }
+    .factor-btn:hover { border-color:var(--blue); background:#eaf2fb; }
+    .data-table { border-collapse:collapse; width:100%; }
+    .data-table th, .data-table td { border:2px solid #d5e3f2; padding:10px 14px; font-size:clamp(20px,2.2vw,27px); text-align:center; }
+    .data-table th { background:#E3F0FC; color:#1a3a5c; font-weight:800; }
+    /* compact table: tighter padding for tables with many rows (font floor stays 22px) */
+    .data-table.compact th, .data-table.compact td { font-size:clamp(22px,1.7vw,25px); padding:6px 10px; }
+  /* 总结页：条目多，收紧行间，保证一屏 */
+  #ssteps .sstep { margin-bottom:2px !important; line-height:1.34 !important; }
+  #ssteps .sstep .blank { min-width:clamp(46px,4.2vw,80px); }
+
+
+  
+  
+  
+    /* Other factors 表：六行，收一档保证一屏 */
+  #ofT td, #ofT th { font-size:22px; line-height:1.2; padding:3px 8px; }
+  #tmT td, #tmT th { font-size:22px; line-height:1.2; padding:3px 8px; }
+
+  /* ── PES 演示图表容器：必须撑满所在列，否则 SVG 高度为 0（视觉上是一个空框）── */
+  .chart { flex:1 1 0; min-height:0; display:flex; flex-direction:column; }
+  .chart > svg { width:100%; height:100%; display:block; }
+  .mini-sup { flex:1 1 0 !important; min-height:0 !important; }
 </style>
 </head>
 <body>
@@ -114,15 +254,12 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 
 <!-- ══════ 1 · COVER ══════ -->
 <div class="slide cover" data-i="0">
-  <div style="text-align:center;width:100%;">
-  <div class="course-tag" style="text-align:center;">AP MICROECONOMICS · UNIT 2.4</div>
-  <h1>Can a price rise<br>grow more food?</h1>
-  <div class="sep"></div>
-  <div style="font-size:clamp(28px,3.4vw,46px);color:var(--blue2);font-weight:800;margin-bottom:10px;">Price elasticity of supply (PES)</div>
-  <div style="font-size:clamp(22px,2.4vw,30px);color:#7b8794;font-weight:700;margin-bottom:14px;">CED 2.4 · MKT-3.E.6–E.8</div>
-  <div style="font-size:clamp(24px,2.6vw,34px);color:#5b6b7b;">A famine, a price cap — and what the supply curve says about both.</div>
-  <div class="author" style="margin-top:34px;">DR. JIA · © 2026</div>
-  </div>
+    <div class="course-tag">AP MICROECONOMICS · UNIT 2.4</div>
+    <h1>Can a price rise grow more food?</h1>
+    <div class="sep"></div>
+    <div style="font-size:clamp(20px,2.4vw,30px);color:#5b6b7b;font-weight:600;">Price elasticity of supply · 供给弹性</div>
+    <div class="author">DR. JIA</div>
+    <div class="botbar"></div>
   <div class="botbar"></div>
 </div>
 
@@ -318,7 +455,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 </div>
 
 <!-- ══════ 7 · PUZZLE: TWO LINES, SAME PRICE RISE ══════ -->
-<div class="slide" data-i="6">
+<div class="slide" data-i="5">
   <div class="content">
   <div class="course-tag">PUZZLE · 猜想</div>
   <h1>Two lines through the origin — guess both PES values</h1>
@@ -360,45 +497,51 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 </div>
 
 <!-- ══════ 8 · THE FIVE DEGREES (每种 PES 配小图) ══════ -->
-<div class="slide" data-i="7">
+<div class="slide" data-i="6">
   <div class="content">
   <div class="course-tag">FIVE DEGREES · 五种</div>
-  <h1>Five degrees — each with its own curve</h1>
-  <div class="sub">Read the shape first, then the number. The last one you just proved.</div><hr>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;flex:1;min-height:0;">
-    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
-      <div class="mini-sup" data-shape="elastic" style="flex:0 0 auto;"></div>
-      <p style="margin:4px 0 0;font-size:22px;"><b class="teal">ELASTIC · PES &gt; 1</b> — shallow line, touches the price axis. Paper clips, t-shirts.</p>
+  <h1>Five degrees — from 0 to ∞</h1>
+  <div class="sub">Click a card to see its curve. Read the <b>slope</b> first, then the <b>number</b> — they run from the least responsive to the most.</div><hr>
+
+  <div style="display:flex;gap:10px;flex:0 0 auto;margin-bottom:12px;">
+    <button class="big-btn ghost pes-tab on" onclick="pesPick(0)">PES = 0</button>
+    <button class="big-btn ghost pes-tab" onclick="pesPick(1)">PES &lt; 1</button>
+    <button class="big-btn ghost pes-tab" onclick="pesPick(2)">PES = 1</button>
+    <button class="big-btn ghost pes-tab" onclick="pesPick(3)">PES &gt; 1</button>
+    <button class="big-btn ghost pes-tab" onclick="pesPick(4)">PES = &#8734;</button>
+  </div>
+
+  <div style="display:flex;gap:18px;flex:1;min-height:0;align-items:stretch;">
+    <div style="flex:1.15;min-width:0;max-height:430px;background:#fff;border:2px solid #e6eef7;border-radius:14px;padding:8px;display:flex;flex-direction:column;">
+      <div id="pesBig" style="flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;"></div>
     </div>
-    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
-      <div class="mini-sup" data-shape="inelastic" style="flex:0 0 auto;"></div>
-      <p style="margin:4px 0 0;font-size:22px;"><b class="dr">INELASTIC · PES &lt; 1</b> — steep line, touches the quantity axis. Wheat, apples, pork.</p>
-    </div>
-    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
-      <div class="mini-sup" data-shape="p-inelastic" style="flex:0 0 auto;"></div>
-      <p style="margin:4px 0 0;font-size:22px;"><b class="dr">PERFECTLY INELASTIC · PES = 0</b> — vertical. Cinema seats tonight.</p>
-    </div>
-    <div class="card" style="padding:8px 12px;display:flex;flex-direction:column;">
-      <div class="mini-sup" data-shape="p-elastic" style="flex:0 0 auto;"></div>
-      <p style="margin:4px 0 0;font-size:22px;"><b class="teal">PERFECTLY ELASTIC · PES = ∞</b> — horizontal. One seller among many identical ones.</p>
-    </div>
-    <div class="card p" style="padding:8px 12px;display:flex;flex-direction:column;">
-      <div class="mini-sup" data-shape="unitary" style="flex:0 0 auto;"></div>
-      <p style="margin:4px 0 0;font-size:22px;"><b class="pur">UNIT ELASTIC · PES = 1</b> — any straight line <b>through the origin</b> (proved above).</p>
+    <div class="compact" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;">
+      <div class="card" style="padding:10px 14px;flex:0 0 auto;">
+        <h3 id="pesName" class="blue" style="font-size:clamp(24px,2.4vw,32px);">PES = 0 · perfectly inelastic</h3>
+        <p id="pesDesc" style="font-size:clamp(24px,2.4vw,30px);line-height:1.45;margin:0;">
+          Vertical — quantity supplied <b>cannot</b> change at all.
+        </p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);flex:0 0 auto;">
+        <p id="pesEg"><b>Examples:</b> seats for tonight's film; land in the centre of a city.</p>
+      </div>
+      <div class="card g" style="padding:10px 14px;flex:0 0 auto;">
+        <p style="margin:0;font-size:clamp(22px,2.2vw,26px);line-height:1.4;">
+          <b class="green">The rule:</b> the <b>flatter</b> the curve, the <b>bigger</b> the PES — the same price rise moves quantity further.
+        </p>
+      </div>
     </div>
   </div>
   </div>
 </div>
-
-<!-- ══════ 9 · DETERMINANT 1: PRODUCTION PERIOD ══════ -->
-<div class="slide" data-i="8">
+<div class="slide" data-i="7">
   <div class="content">
   <div class="course-tag">DETERMINANT 1 · 生产周期</div>
   <h1>How long does one more unit take?</h1>
   <div class="sub">The product itself decides: a signal today can only become output later.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
     <div class="compact" style="flex:1.15;display:flex;flex-direction:column;gap:10px;min-width:0;">
-      <table class="data-table" style="width:100%;table-layout:fixed;">
+      <table class="data-table" id="tmT" style="width:100%;table-layout:fixed;">
         <tr><th style="width:34%;">Example</th><th style="width:40%;">Time to make one more</th><th style="width:26%;">PES</th></tr>
         <tr><td style="text-align:left;">Cups of coffee</td><td style="text-align:left;">a minute</td><td class="b teal">elastic</td></tr>
         <tr><td style="text-align:left;">Chairs</td><td style="text-align:left;">a few days</td><td class="b teal">elastic</td></tr>
@@ -428,42 +571,9 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 </div>
 
 <!-- ══════ 10 · DETERMINANT 2: SPARE CAPACITY ══════ -->
-<div class="slide" data-i="9">
+<div class="slide" data-i="8">
   <div class="content">
-  <div class="course-tag">DETERMINANT 2 · 闲置产能</div>
-  <h1>Is there room to ramp up?</h1>
-  <div class="sub">Spare capacity = can output rise without new buildings or new land?</div><hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;">
-      <div class="card g">
-        <h3 class="green">Idle machines → ELASTIC</h3>
-        <p>Machines used a few hours a day, workers on short shifts → a price rise just means <b>switch them on</b>.</p>
-      </div>
-      <div class="card r">
-        <h3 class="dr">Running flat out → INELASTIC</h3>
-        <p>Every machine busy, every field planted → more output needs <b>new capital and new land</b> — and that takes time.</p>
-      </div>
-    </div>
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;">
-      <div class="card a">
-        <h3 style="color:#a57d12;">Example — one order, two factories</h3>
-        <p><b>Factory A</b> (one shift a day): takes the order in <b>days</b>. <b>Factory B</b> (three shifts, full): needs <b>new machines</b> → quoted in <b>months</b>.</p>
-      </div>
-      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
-        <p><b>Why farms lose here:</b> a wheat field cannot add a second summer, and land is <b>always</b> fully used.</p>
-      </div>
-      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
-        <p><b>Exam line:</b> spare capacity → output extends <b>quickly and cheaply</b> → elastic.</p>
-      </div>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ══════ 11 · DETERMINANT 3: STORAGE ══════ -->
-<div class="slide" data-i="10">
-  <div class="content">
-  <div class="course-tag">DETERMINANT 3 · 可储存</div>
+  <div class="course-tag">DETERMINANT 2 · 可储存</div>
   <h1>Can it be kept until the price moves?</h1>
   <div class="sub">Stock is supply that has already been produced — it can be released the moment price rises.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
@@ -474,7 +584,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
       </div>
       <div class="card r">
         <h3 class="dr">Perishable → INELASTIC</h3>
-        <p><b>Fresh milk, strawberries</b>, a haircut, tonight’s seat: whatever is offered today is all there is.</p>
+        <p><b>Fresh milk, strawberries</b>, a haircut, tonight's seat: whatever is offered today is all there is.</p>
       </div>
     </div>
     <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;">
@@ -494,40 +604,24 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 </div>
 
 <!-- ══════ 12 · OTHER FACTORS (the short list) ══════ -->
-<div class="slide" data-i="11">
+<div class="slide" data-i="10">
   <div class="content">
   <div class="course-tag">OTHER FACTORS · 其他因素</div>
-  <h1>The remaining influences — five lines</h1>
-  <div class="sub">Each one still works through the same question: how easily can more be supplied?</div><hr>
-  <div style="display:flex;gap:14px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1.1;display:flex;flex-direction:column;gap:8px;min-width:0;">
-      <div class="card" style="padding:10px 14px;">
-        <p><b class="blue">Cost of altering supply</b> — cheap to change output → <b>elastic</b>; new plant, scarce specialists → <b>inelastic</b>. <i>Software ≫ a steel mill.</i></p>
-      </div>
-      <div class="card" style="padding:10px 14px;">
-        <p><b class="blue">Mobility of factors</b> — workers, land and capital that can <b>switch</b> to the dearer good → <b>elastic</b>. <i>Delivery riders switch overnight.</i></p>
-      </div>
-      <div class="card" style="padding:10px 14px;">
-        <p><b class="blue">Price of alternative inputs</b> <span style="font-weight:400;">(the factor the CED names)</span> — inputs used for <b>other</b> goods get dearer → producers switch away → supply here <b>more elastic</b>.</p>
-      </div>
-    </div>
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
-      <div class="card" style="padding:10px 14px;">
-        <p><b class="blue">Natural resources</b> — a resource being <b>depleted</b> gets harder to expand → <b>inelastic</b>. <i>Fish stocks in decline, ageing oil wells.</i></p>
-      </div>
-      <div class="card" style="padding:10px 14px;">
-        <p><b class="blue">Length of the time period</b> — momentary → short run → long run: more time → <b>more elastic</b> (page 9).</p>
-      </div>
-      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
-        <p><b>Room ≠ cheap.</b> <b>Spare capacity</b> asks "is there <b>room</b>?" (page 10). <b>Cost of altering supply</b> asks "how <b>expensive</b> is the change?" — even with room, new kit may cost too much.</p>
-      </div>
-    </div>
-  </div>
+  <h1>Other factors</h1>
+  <div class="sub">Every one of them asks the same question: <b>how easily can more be supplied?</b></div><hr>
+  <table class="data-table" id="ofT" style="width:100%;table-layout:fixed;">
+    <colgroup><col style="width:28%"><col style="width:46%"><col style="width:26%"></colgroup>
+    <tr><th style="text-align:left;">Factor</th><th style="text-align:left;">How it works</th><th>Effect on PES</th></tr>
+    <tr><td style="text-align:left;"><b class="blue">Spare capacity</b></td><td style="text-align:left;">Machines used a few hours a day → switch them on. All busy → new plant and new land.</td><td class="b teal">idle → elastic</td></tr>
+    <tr><td style="text-align:left;"><b class="blue">Cost of altering supply</b></td><td style="text-align:left;">Cheap to change output → easy to expand; new plant or scarce specialists → hard.</td><td class="b teal">cheap → elastic</td></tr>
+    <tr><td style="text-align:left;"><b class="blue">Mobility of factors</b></td><td style="text-align:left;">Land, labour and capital that can <b>switch</b> to this good quickly.</td><td class="b teal">mobile → elastic</td></tr>
+    <tr><td style="text-align:left;"><b class="blue">Price of alternative inputs</b></td><td style="text-align:left;">Inputs also wanted for <b>other</b> goods get dearer → producers switch away here.</td><td class="b teal">more elastic</td></tr>
+    <tr><td style="text-align:left;"><b class="blue">Natural resources</b></td><td style="text-align:left;">A depleting resource is harder to expand — oil wells, rare earths.</td><td class="b dr">inelastic</td></tr>
+    <tr><td style="text-align:left;"><b class="blue">Time</b></td><td style="text-align:left;">Momentary &lt; short run &lt; long run: every factor above loosens with time.</td><td class="b teal">time → elastic</td></tr>
+  </table>
   </div>
 </div>
-
-<!-- ══════ 13 · WHY IT MATTERS ══════ -->
-<div class="slide" data-i="12">
+<div class="slide" data-i="10">
   <div class="content">
   <div class="course-tag">WHY IT MATTERS · 意义</div>
   <h1>Two people who really need PES</h1>
@@ -559,7 +653,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 
 <!-- ══════ 14 · SORTING GAME ══════ -->
 <!-- ══════ 15 · THE PIG CYCLE (one page) ══════ -->
-<div class="slide" data-i="13">
+<div class="slide" data-i="11">
   <div class="content">
   <div class="course-tag">REAL CASE · 猪周期</div>
   <h1>The pig cycle — a lag you can see</h1>
@@ -593,7 +687,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 </div>
 
 <!-- ══════ 16 · SMOOTHING THE CYCLE ══════ -->
-<div class="slide" data-i="14">
+<div class="slide" data-i="12">
   <div class="content">
   <div class="course-tag">POLICY · 平滑周期</div>
   <h1>Fighting a lag you cannot remove</h1>
@@ -631,7 +725,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 </div>
 
 <!-- ══════ 17 · BACK TO THE FAMINE ══════ -->
-<div class="slide" data-i="15">
+<div class="slide" data-i="13">
   <div class="content">
   <div class="course-tag">BACK TO THE FAMINE · 回答</div>
   <h1>So — should the price have been capped?</h1>
@@ -670,7 +764,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
   </div>
 </div>
 
-<div class="slide" data-i="16">
+<div class="slide" data-i="14">
   <div class="content">
   <div class="course-tag">A WAY OF THINKING</div>
   <h1>Three ways to see the same famine</h1>
@@ -718,7 +812,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 
 <!-- ══════ 18 · CHECK ══════ -->
 <!-- ══════ 19 · SUMMARY ══════ -->
-<div class="slide" data-i="17">
+<div class="slide" data-i="15">
   <div class="content">
   <div class="course-tag">SUMMARY · 总结</div>
   <h1>PES — the whole chapter in one table</h1>
@@ -765,7 +859,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
 </div>
 
 <!-- ══════ 20 · CLOSING ══════ -->
-<div class="slide cover" data-i="18">
+<div class="slide cover" data-i="16">
   <div style="text-align:center;width:100%;">
   <div class="course-tag" style="text-align:center;">THANK YOU · 谢谢</div>
   <h1 style="font-size:clamp(56px,7.6vw,110px);text-align:center;margin:20px 0 26px;">PES — done ✓</h1>
@@ -781,7 +875,7 @@ table.data-table{border-collapse:collapse;background:#fff;border-radius:12px;ove
   <div class="dots" id="dots"></div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="copy">© 2026 Dr. Jia</span>
-    <span class="page" id="pageNum">1 / 19</span>
+    <span class="page" id="pageNum">1 / 18</span>
     <button id="nextBtn">▶</button>
   </div>
 </div>
@@ -1135,25 +1229,62 @@ function pigSvg(o){
 }
 
 /* ══════════ 24b · FIVE DEGREES mini-diagrams + unitary proof ══════════ */
+/* ══════ P8 五幅小图：固定 ΔP，标出各自的 ΔQ（严谨版）
+   约定：交「价格轴」= 弹性（PES>1）· 交「数量轴」= 非弹性（PES<1）· 过原点 = 1 ══════ */
 function miniSvg(shape){
-  let g = '<svg viewBox="0 0 300 190" style="width:100%;height:150px;display:block;">'
-    + '<line x1="40" y1="160" x2="285" y2="160" stroke="#94a3b8" stroke-width="2"/>'
-    + '<line x1="40" y1="160" x2="40" y2="16" stroke="#94a3b8" stroke-width="2"/>'
-    + '<text x="288" y="152" text-anchor="end" font-size="30" font-weight="700" fill="#5b6b7b">Q</text>'
-    + '<text x="48" y="26" font-size="30" font-weight="700" fill="#5b6b7b">P</text>';
-  if(shape === 'elastic'){
-    g += '<line x1="52" y1="146" x2="278" y2="52" stroke="#00838F" stroke-width="5"/>';
-  } else if(shape === 'inelastic'){
-    g += '<line x1="150" y1="160" x2="222" y2="18" stroke="#C62828" stroke-width="5"/>';
-  } else if(shape === 'p-inelastic'){
-    g += '<line x1="150" y1="160" x2="150" y2="18" stroke="#C62828" stroke-width="6"/>';
-  } else if(shape === 'p-elastic'){
-    g += '<line x1="40" y1="80" x2="285" y2="80" stroke="#00838F" stroke-width="6"/>';
-  } else if(shape === 'unitary'){
-    g += '<line x1="40" y1="160" x2="278" y2="28" stroke="#7C3AED" stroke-width="5"/>'
-       + '<circle cx="150" cy="88" r="5" fill="#7C3AED"/><circle cx="232" cy="41" r="5" fill="#7C3AED"/>';
+  const OX = 48, OY = 168, EX = 330, TOP = 18;
+  const yP = 128, yP2 = 92;          /* 同一 ΔP：垂直距离 36，五幅图完全一致 */
+  let g = '<line x1="' + OX + '" y1="' + OY + '" x2="' + EX + '" y2="' + OY + '" stroke="#94a3b8" stroke-width="2"/>'
+        + '<line x1="' + OX + '" y1="' + OY + '" x2="' + OX + '" y2="' + TOP + '" stroke="#94a3b8" stroke-width="2"/>'
+        + '<text x="' + (EX - 2) + '" y="' + (OY + 24) + '" font-size="21" fill="#8b9bb0" text-anchor="end">Q</text>'
+        + '<text x="' + (OX - 8) + '" y="' + (TOP + 2) + '" font-size="21" fill="#8b9bb0" text-anchor="end">P</text>';
+
+  /* 曲线端点 */
+  let a;
+  if (shape === 'p-inelastic')      a = [180, OY, 180, 30];
+  else if (shape === 'inelastic')   a = [95, OY, 160, 30];        /* 交数量轴 → 非弹性 */
+  else if (shape === 'unitary')     a = [OX, OY, 175, 20];        /* 过原点 */
+  else if (shape === 'elastic')     a = [OX, 132, EX, 52];        /* 交价格轴 → 弹性 */
+  else                              a = [OX, 110, EX, 110];       /* 水平 */
+
+  /* 两条价位虚线（PES=∞ 不适用） */
+  if (shape !== 'p-elastic'){
+    g += '<line x1="' + OX + '" y1="' + yP  + '" x2="' + EX + '" y2="' + yP  + '" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 5"/>'
+       + '<line x1="' + OX + '" y1="' + yP2 + '" x2="' + EX + '" y2="' + yP2 + '" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 5"/>'
+       + '<text x="' + (EX - 4) + '" y="' + (yP  - 6) + '" font-size="18" fill="#8b9bb0" text-anchor="end">P</text>'
+       + '<text x="' + (EX - 4) + '" y="' + (yP2 - 6) + '" font-size="18" fill="#8b9bb0" text-anchor="end">P + \u0394P</text>';
   }
-  return g + '</svg>';
+
+  g += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + a[2] + '" y2="' + a[3] +
+       '" stroke="#F0B429" stroke-width="5" stroke-linecap="round"/>';
+  /* S 标签统一放在线端上方、右对齐，避免超出画布或压线 */
+  g += '<text x="' + (a[2] - 2) + '" y="' + (a[3] - 10) +
+       '" font-size="20" font-weight="800" fill="#a57d12" text-anchor="end">S</text>';
+
+  /* 与两条价位线的交点 + ΔQ 括号 */
+  if (shape === 'p-elastic'){
+    g += '<text x="' + (EX - 4) + '" y="' + (110 - 8) + '" font-size="18" fill="#8b9bb0" text-anchor="end">P</text>'
+       + '<text x="' + (OX + 10) + '" y="' + (OY - 10) + '" font-size="19" font-weight="800" fill="#C62828">\u0394P impossible \u2014 any Q at P</text>';
+  } else {
+    const xAt = y => {
+      const t = (y - a[1]) / (a[3] - a[1]);
+      return a[0] + t * (a[2] - a[0]);
+    };
+    const x1 = xAt(yP), x2 = xAt(yP2);
+    g += '<circle cx="' + x1.toFixed(1) + '" cy="' + yP + '" r="5" fill="#1E88E5"/>'
+       + '<circle cx="' + x2.toFixed(1) + '" cy="' + yP2 + '" r="5" fill="#C62828"/>';
+    /* ΔQ 括号（画在横轴下方） */
+    const by = OY + 16;
+    if (Math.abs(x2 - x1) < 2){
+      g += '<text x="' + (x1 + 10).toFixed(1) + '" y="' + (by + 6) + '" font-size="19" font-weight="800" fill="#C62828">\u0394Q = 0</text>';
+    } else {
+      g += '<line x1="' + x1.toFixed(1) + '" y1="' + by + '" x2="' + x2.toFixed(1) + '" y2="' + by + '" stroke="#1E88E5" stroke-width="3"/>'
+         + '<line x1="' + x1.toFixed(1) + '" y1="' + (by - 5) + '" x2="' + x1.toFixed(1) + '" y2="' + (by + 5) + '" stroke="#1E88E5" stroke-width="3"/>'
+         + '<line x1="' + x2.toFixed(1) + '" y1="' + (by - 5) + '" x2="' + x2.toFixed(1) + '" y2="' + (by + 5) + '" stroke="#1E88E5" stroke-width="3"/>'
+         + '<text x="' + ((x1 + x2) / 2).toFixed(1) + '" y="' + (by + 22) + '" font-size="19" font-weight="800" fill="#1E88E5" text-anchor="middle">\u0394Q</text>';
+    }
+  }
+  return '<svg viewBox="0 0 340 210" style="width:100%;height:100%;display:block;">' + g + '</svg>';
 }
 document.querySelectorAll('.mini-sup').forEach(function(d){ d.innerHTML = miniSvg(d.getAttribute('data-shape')); });
 /* 过原点的两条线：P = Q 与 P = 2Q，价格 $1 → $5（本地坐标，P、Q 同为 0..6） */
@@ -1350,6 +1481,38 @@ try {
   };
 } catch(err){ console.error('famine intro bind', err); }
 
+
+/* ══════ P8 五种 PES：点卡片切换（一次只显示一幅） ══════ */
+const PES_KINDS = [
+  { shape:'p-inelastic', name:'PES = 0 · perfectly inelastic',
+    desc:'Vertical — quantity supplied <b>cannot</b> change at all, whatever the price.',
+    eg:'<b>Examples:</b> seats for tonight\'s film; land in the centre of a city.' },
+  { shape:'inelastic', name:'PES &lt; 1 · inelastic',
+    desc:'Steep, and it meets the <b>quantity</b> axis. Output barely responds to price.',
+    eg:'<b>Examples:</b> wheat, pork, apples — a season cannot be stretched.' },
+  { shape:'unitary', name:'PES = 1 · unit elastic',
+    desc:'Any straight line <b>through the origin</b> — %\u0394Q exactly matches %\u0394P.',
+    eg:'<b>Proved</b> on the previous page: the ratio of Q to P never changes.' },
+  { shape:'elastic', name:'PES &gt; 1 · elastic',
+    desc:'Shallow, and it meets the <b>price</b> axis. Output responds strongly.',
+    eg:'<b>Examples:</b> t-shirts, paper clips — idle machines can be switched on.' },
+  { shape:'p-elastic', name:'PES = &#8734; · perfectly elastic',
+    desc:'Horizontal — at one price, suppliers will offer <b>any</b> quantity at all.',
+    eg:'<b>Example:</b> one seller among many identical ones.' }
+];
+window.pesPick = function(k){
+  const d = PES_KINDS[k]; if (!d) return;
+  const box = document.getElementById('pesBig');
+  if (box) box.innerHTML = miniSvg(d.shape);
+  const n = document.getElementById('pesName'); if (n) n.innerHTML = d.name;
+  const t = document.getElementById('pesDesc'); if (t) t.innerHTML = d.desc;
+  const e = document.getElementById('pesEg'); if (e) e.innerHTML = d.eg;
+  document.querySelectorAll('.pes-tab').forEach(function(b, i){
+    b.classList.toggle('on', i === k);
+    b.classList.toggle('ghost', i !== k);
+  });
+};
+try { window.pesPick(0); } catch(e){}
 </script>
 </body>
 </html>

@@ -200,6 +200,19 @@
   .endpage { justify-content:center; align-items:center; text-align:center; }
   .endpage .big { font-size:clamp(40px,7vh,64px); font-weight:800; color:var(--primary-deep); }
   .endpage .sub { font-size:clamp(24px,3vh,34px); color:var(--text-sub); margin-top:2vh; line-height:1.85; }
+  .tu-table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:clamp(22px,2.25vh,26px); }
+  .tu-table th { background:#e8f6fd; color:var(--primary-dark); font-size:clamp(20px,2.05vh,23px);
+                 font-weight:800; padding:.45vh .5vw; border-bottom:2px solid var(--line); text-align:center; }
+  .tu-table td { padding:.42vh .5vw; border-bottom:1px solid #eef4f8; text-align:center;
+                 font-variant-numeric:tabular-nums; font-weight:700; color:#25455c; }
+  .tu-table td.k { color:#5b6b7b; }
+  .tu-table td.mu { color:#c47f0a; }
+  .tu-table tr.off td { color:#c3d0da; }
+  .tu-table tr.fill td { background:#f7fcff; }
+  .tu-table tr.peak td { background:#eefaf1; }
+  .tu-table tr.peak td.mu { color:#2e7d32; }
+  .tu-table tr.neg td { background:#fdf1f1; }
+  .tu-table tr.neg td.mu { color:#c62828; }
 </style>
 </head>
 <body>
@@ -225,9 +238,9 @@
       <span class="tag">Step 1</span><h2>One Can at a Time</h2><span class="en">逐罐喝下去</span>
     </div>
     <div class="s-body">
-      <div class="coke-stage">
-        <div class="face-box">
-          <svg id="faceSvg" viewBox="0 0 200 200">
+      <div style="display:flex;gap:2vw;flex:0 0 auto;align-items:center;">
+        <div style="flex:0 0 15%;max-width:170px;">
+          <svg id="faceSvg" viewBox="0 0 200 200" style="width:100%;display:block;">
             <circle id="faceHead" cx="100" cy="100" r="76" fill="#ffd9a8" stroke="#e0a86a" stroke-width="4"/>
             <g id="faceEyes">
               <circle cx="74" cy="84" r="9" fill="#3a2c1f"/>
@@ -239,28 +252,40 @@
             </g>
             <path id="faceMouth" d="M78 130 L122 130" stroke="#8a4a35" stroke-width="7" fill="none" stroke-linecap="round"/>
           </svg>
-          <div class="face-status" id="faceStatus">Nobody has had a Coke yet.</div>
         </div>
-        <div class="coke-right">
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.8vh;">
           <div class="can-slots" id="canSlots"></div>
-          <div class="counter">Cans finished: <span id="canCount">0</span></div>
-          <div class="meter-label">How good the LAST can felt</div>
-          <div class="meter"><i id="lastBar"></i></div>
-          <div class="meter-label">How good the whole morning felt</div>
-          <div class="meter"><i id="totalBar" style="background:var(--primary)"></i></div>
-          <div class="hl" id="cokeHint">Click <b>[Add a can]</b> and watch his face. Keep going — all the way to can 8.</div>
+          <div class="counter">Cans finished: <span id="canCount">0</span> &nbsp;·&nbsp; <span id="cokeNote">0 / 8</span></div>
+          <div class="face-status" id="faceStatus" style="text-align:left;">Nobody has had a Coke yet.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:2vw;flex:1 1 0;min-height:0;align-items:flex-start;">
+        <table class="tu-table" style="flex:0 0 46%;align-self:center;">
+          <thead>
+            <tr><th style="width:24%">Can</th><th style="width:38%">TU (utils)</th><th style="width:38%">MU (utils)</th></tr>
+          </thead>
+          <tbody id="tuBody"></tbody>
+        </table>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1vh;">
+          <div class="def" style="padding:.8vh 1vw;font-size:clamp(22px,2.2vh,26px);">
+            <b>Utility</b> = the satisfaction a person gets from a good.<br>
+            <b>Total utility (TU)</b> = the satisfaction from everything consumed so far, in <b>utils</b>.
+          </div>
+          <div class="def" style="padding:.8vh 1vw;font-size:clamp(22px,2.2vh,26px);border-left-color:var(--accent-orange);background:#fdf6ea;">
+            <b>Marginal utility (MU)</b> = the <b>extra</b> satisfaction from <b>one more</b> unit:
+            <b>MU = ΔTU ÷ ΔQ</b> — the step each can adds to TU.
+          </div>
         </div>
       </div>
       <div class="s-foot">
-        <span class="note" id="cokeNote">0 / 8</span>
+        <span class="note" id="cokeHint" style="margin-right:auto;text-align:left;">Click <b>[Add a can]</b> and watch his face and the table.</span>
         <button class="btn ghost" onclick="resetCoke()">↺ Reset</button>
         <button class="btn" id="cokeBtn" onclick="addCan()">➕ Add a can</button>
       </div>
     </div>
   </section>
-
-  <!-- ════ P3 UTILITY + MARGINAL UTILITY (merged, no table) ════ -->
-  <section class="slide" data-title="Utility and MU">
+<section class="slide" data-title="Utility and MU">
     <div class="s-head">
       <span class="tag">Step 2</span><h2>Utility and Marginal Utility</h2><span class="en">效用与边际效用</span>
     </div>
@@ -269,18 +294,11 @@
         <div class="col" style="flex:.95;overflow-y:auto;overflow-x:hidden;padding-right:.5vw;">
           <div class="card reveal s1" style="border-left:6px solid var(--primary);">
             <h3>Total utility (TU)</h3>
-            <div class="def"><b>Utility</b> = the satisfaction a person gets from a good.<br>
-              <b>Total utility</b> = the satisfaction from everything consumed so far.</div>
-            <p style="margin-top:.7vh;">Measured in <b>utils</b>. From the Coke game: the early cans add
-              a lot, and TU climbs all the way to <b>60 utils</b>.</p>
+<p style="margin-top:.7vh;">Remember the table: TU is measured in <b>utils</b>, and from the Coke game it climbs all the way to <b>60 utils</b> at can 6.</p>
           </div>
           <div class="card reveal s2" style="border-left:6px solid var(--accent-orange);">
             <h3>Marginal utility (MU)</h3>
-            <div class="def" style="border-left-color:var(--accent-orange);background:#fdf6ea;">
-              <b>Marginal utility</b> = the <b>extra</b> satisfaction from consuming <b>one more</b>
-              unit.<br>MU = change in TU ÷ change in quantity</div>
-            <p style="margin-top:.7vh;">Marginal always asks: <b>what does one more unit change?</b>
-              Can 5 → 4 utils · can 6 → 0 · can 7 → <b>−4</b>.</p>
+<p style="margin-top:.7vh;">Marginal always asks: <b>what does one more unit change?</b> From the table: can 5 → 4 · can 6 → 0 · can 7 → <b>−4</b>.</p>
           </div>
           <div class="hl reveal s3">TU is the <b>total</b>; MU is the <b>step</b>. The blue curve is the
             running total, the orange bars are the steps that build it.</div>
@@ -647,6 +665,20 @@ function buildCanSlots() {
     box.appendChild(d);
   }
 }
+/* 逐罐填表：8 行先摆好（· 占位），每加一罐就把该行的 TU / MU 填上 */
+function renderCokeTable() {
+  const tb = document.getElementById("tuBody");
+  if (!tb) return;
+  let html = "";
+  for (let k = 1; k <= 8; k++) {
+    const on = k <= canN, mu = MU_UTIL[k - 1], tu = TU_UTIL[k - 1];
+    const cls = !on ? "off" : (mu < 0 ? "neg" : (mu === 0 ? "peak" : "fill"));
+    const muTxt = mu > 0 ? "+" + mu : (mu === 0 ? "0" : "\u2212" + Math.abs(mu));
+    html += '<tr class="' + cls + '"><td class="k">' + k + "</td><td>" + (on ? tu : "\u00b7") +
+            '</td><td class="mu">' + (on ? muTxt : "\u00b7") + "</td></tr>";
+  }
+  tb.innerHTML = html;
+}
 function renderFace() {
   const i = canN;
   document.getElementById("faceHead").setAttribute("fill", FACE.head[i]);
@@ -665,10 +697,9 @@ function renderFace() {
   document.getElementById("canCount").textContent = canN;
   document.getElementById("cokeNote").textContent = canN + " / 8 cans";
   const lb = document.getElementById("lastBar"), tb = document.getElementById("totalBar");
-  lb.style.width = (FACE.last[i] * 100) + "%";
-  lb.style.background = (i >= 6) ? "var(--accent-red)" : "var(--accent-green)";
-  tb.style.width = (FACE.total[i] * 100) + "%";
-}
+    if (lb) { lb.style.width = (FACE.last[i] * 100) + "%"; lb.style.background = (i >= 6) ? "var(--accent-red)" : "var(--accent-green)"; }
+    if (tb) { tb.style.width = (FACE.total[i] * 100) + "%"; }
+    renderCokeTable(); }
 function addCan() {
   if (canN >= 8) return;
   canN++;
