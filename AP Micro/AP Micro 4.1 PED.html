@@ -140,6 +140,54 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 .slide .rgrp.mini .card{padding:5px 10px;}
 .slide .rgrp.mini .card h3{display:none;}
 .slide .rgrp.mini .card p{display:inline;margin:0 6px 0 0;}
+
+  /* ══════════ PED · Total Revenue Test（第 6 页）══════════ */
+  #trChart{height:min(46vh,470px);width:auto;max-width:100%;display:block;margin:0 auto;}
+  /* 两栏并排（这条漏了会变成上下堆叠，整页超高） */
+  .row{display:grid;grid-template-columns:minmax(430px,1fr) minmax(520px,1fr);gap:20px;align-items:stretch;}
+  .trpanel h2{font-size:19px;color:var(--blue);font-weight:800;margin-bottom:7px;letter-spacing:.3px;}
+  .fbox{background:#F7FBFF;border:2px solid #E3EFFA;border-radius:14px;padding:10px 16px;margin-bottom:10px;flex:0 0 auto;}
+  .frow{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .fname{font-size:26px;font-weight:800;color:#1a3a5c;}
+  .fop{font-size:26px;font-weight:800;color:#9fb4c8;}
+  .farr{font-weight:800;display:inline-flex;align-items:baseline;gap:6px;}
+  .farr .arw{font-size:28px;line-height:1;}
+  .farr b{line-height:1;transition:font-size .12s;}
+  .fcon{margin-top:6px;font-size:21px;font-weight:800;}
+  .ctrl{display:flex;flex-direction:column;gap:10px;}
+  .dirbox{display:flex;gap:12px;}
+  .dirbox button{
+    flex:1;padding:10px 12px;font-size:21px;font-weight:800;border-radius:12px;
+    border:2.5px solid rgba(42,90,140,.32);background:#fff;color:#1a3a5c;
+    cursor:pointer;transition:.15s;letter-spacing:.2px;
+  }
+  .dirbox button:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px);}
+  .dirbox button.pedon{
+    background:var(--blue);border-color:var(--blue);color:#fff;
+    box-shadow:0 4px 12px rgba(30,136,229,.32);
+  }
+  #btnReset{flex:0 0 auto;padding:10px 20px;border-style:dashed;color:#5b6b7b;}
+  #btnReset:hover{border-color:var(--red);color:var(--red);}
+  .pedbox{background:#F7FBFF;border:2px solid #E3EFFA;border-radius:12px;padding:9px 14px;margin-top:auto;}
+  .pedbox .lab{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;color:var(--darkblue);font-size:21px;}
+  .pedbox .lab b{font-size:26px;color:var(--blue);}
+  .pedends{display:flex;justify-content:space-between;font-size:18px;color:var(--gray);margin-top:2px;}
+  /* 滑轨加粗加高，占满整行 */
+  input[type=range]{width:100%;height:16px;accent-color:var(--blue);margin-top:8px;cursor:pointer;}
+  .formula{background:#F7FBFF;border:2px solid #E3EFFA;border-radius:14px;padding:11px 16px;display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .formula .cap{font-size:20px;color:var(--gray);font-weight:700;}
+  #frNum{font-weight:800;color:var(--blue);line-height:1.05;white-space:nowrap;}
+  .frab{width:min(420px,80%);height:4px;background:#b9d3ee;border-radius:3px;}
+  #frDen{font-weight:800;color:var(--amber);line-height:1.05;white-space:nowrap;}
+  .formula .why{font-size:18px;color:var(--gray);text-align:center;margin-top:4px;line-height:1.35;}
+  .verdict{border-radius:14px;padding:10px 15px;border:2px solid var(--line);}
+  .verdict h3{font-size:22px;font-weight:800;margin-bottom:3px;}
+  .verdict p{font-size:20px;line-height:1.42;}
+  .verdict.el{border-color:#9fd4a6;background:#EFF9F0;}
+  .verdict.el h3{color:var(--green);}
+  .verdict.inel{border-color:#e8b4a6;background:#FDF1F1;}
+  .verdict.inel h3{color:var(--red);}
+  button.pedon{background:var(--blue);border-color:var(--blue);color:#fff;}
 </style>
 </head>
 <body>
@@ -332,6 +380,63 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 
 <!-- ───── 6 · THE BASE: GUIDED DEMO (A → B, B → A, midpoint) ───── -->
 <div class="slide" data-i="5">
+  <div class="content" style="max-width:1520px;">
+  <div class="course-tag">PED → REVENUE · 总收入检验</div>
+  <h1>The Total Revenue Test — see it move</h1>
+  <div class="sub">Total revenue = <b>Price × Quantity</b>. Drag the PED slider and watch which change is bigger — that decides whether revenue rises or falls.</div><hr>
+<div class="row">
+    <section class="trpanel">
+      <h2>Which change is bigger — and what that does to revenue</h2>
+
+      <!-- 公式：独立框，不再压在图里 -->
+      <div class="fbox">
+        <div class="frow">
+          <span class="fname">TR = P</span>
+          <span class="farr" id="fP"><span class="arw">↑</span><b>10%</b></span>
+          <span class="fop">×</span>
+          <span class="fname">Q</span>
+          <span class="farr" id="fQ"><span class="arw">↓</span><b>25%</b></span>
+        </div>
+        <div class="fcon" id="fCon">ΔQ bigger → TR down</div>
+      </div>
+
+      <svg id="trChart" viewBox="0 0 560 536" role="img" aria-label="Total revenue before and after"></svg>
+    </section>
+
+    <section class="trpanel">
+      <h2>Read the formula — the bigger font wins</h2>
+      <div class="ctrl">
+        <div class="formula">
+          <div class="cap">PED =</div>
+          <div id="frNum">%ΔQ = 10%</div>
+          <div class="frab"></div>
+          <div id="frDen">%ΔP = 10%</div>
+          <div class="why">Whichever percentage is <b>bigger</b> is also printed <b>bigger</b> — that alone tells you if PED is above or below 1.</div>
+        </div>
+
+        <div class="verdict" id="verdict">
+          <h3 id="vHead">PED = 1 · unit elastic</h3>
+          <p id="vBody"></p>
+        </div>
+
+        <div class="dirbox">
+          <button id="dirUp" class="pedon">▲ Price RISES</button>
+          <button id="dirDn">▼ Price FALLS</button>
+          <button id="btnReset">Reset</button>
+        </div>
+
+        <div class="pedbox">
+          <div class="lab"><span>PED</span><b id="pedVal">1.0</b></div>
+          <input type="range" id="pedSlider" min="0.2" max="5" step="0.1" value="1">
+          <div class="pedends"><span>0.2 — very inelastic</span><span>5 — very elastic</span></div>
+        </div>
+      </div>
+    </section>
+  
+  </div>
+</div>
+</div>
+<div class="slide" data-i="6">
   <div class="content">
   <div class="course-tag">GUIDED DEMO · 逐步演示</div>
   <h1>The same two points — three different bases</h1>
@@ -395,7 +500,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 7 · FIVE DEGREES ───── -->
-<div class="slide" data-i="6">
+<div class="slide" data-i="7">
   <div class="content">
   <div class="course-tag">FIVE DEGREES · 谱系</div>
   <h1>Five degrees of elasticity</h1>
@@ -442,7 +547,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 8 · STEEP vs SHALLOW ───── -->
-<div class="slide" data-i="7">
+<div class="slide" data-i="8">
   <div class="content">
   <div class="course-tag">CONTRAST · 对比</div>
   <h1>Same price rise, two very different curves</h1>
@@ -497,7 +602,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 9 · DETERMINANT 1: SUBSTITUTES (main factor) ───── -->
-<div class="slide" data-i="8">
+<div class="slide" data-i="9">
   <div class="content">
   <div class="course-tag">DETERMINANT 1 · 因素</div>
   <h1>The main factor: availability of substitutes</h1>
@@ -531,7 +636,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 10 · DETERMINANT 2: PROPORTION OF INCOME ───── -->
-<div class="slide" data-i="9">
+<div class="slide" data-i="10">
   <div class="content">
   <div class="course-tag">DETERMINANT 2 · 因素</div>
   <h1>Second: the proportion of income spent on it</h1>
@@ -595,7 +700,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 11 · OTHER INFLUENCES (supplementary) ───── -->
-<div class="slide" data-i="10">
+<div class="slide" data-i="11">
   <div class="content">
   <div class="course-tag">OTHER INFLUENCES · 因素</div>
   <h1>Other influences</h1>
@@ -615,7 +720,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 12 · PED → REVENUE (stacked charts, aligned Q axes) ───── -->
-<div class="slide" data-i="11">
+<div class="slide" data-i="12">
   <div class="content">
   <div class="course-tag">PED → REVENUE · 收入</div>
   <h1>How TR moves as the price falls — the total revenue test</h1>
@@ -664,7 +769,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 13 · WHY PED = 1 ───── -->
-<div class="slide" data-i="12">
+<div class="slide" data-i="13">
   <div class="content">
   <div class="course-tag">WHY PED = 1 · 推导</div>
   <h1>What shape has PED = 1 everywhere?</h1>
@@ -707,7 +812,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 14 · THE REVENUE RULES ───── -->
-<div class="slide" data-i="13">
+<div class="slide" data-i="14">
   <div class="content">
   <div class="course-tag">THE RULES · 规则</div>
   <h1>The revenue rules — the total revenue test</h1>
@@ -751,7 +856,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 15 · BACK TO THE PRICE WAR ───── -->
-<div class="slide" data-i="14">
+<div class="slide" data-i="15">
   <div class="content">
   <div class="course-tag">CASES · 例题</div>
   <h1>Back to the price war — now you can explain it</h1>
@@ -801,7 +906,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 
 
 <!-- ───── 16 · SUMMARY ───── -->
-<div class="slide" data-i="15">
+<div class="slide" data-i="16">
   <div class="content">
   <div class="course-tag">SUMMARY · 总结</div>
   <h1>PED in seven steps</h1>
@@ -836,7 +941,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 17 · CLOSING ───── -->
-<div class="slide cover" data-i="16">
+<div class="slide cover" data-i="17">
   <div class="course-tag">THANK YOU · 谢谢</div>
   <h1 style="font-size:clamp(40px,5.5vw,60px);">PED — done ✓</h1>
   <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">Now you can predict the money before the price moves.</div>
@@ -850,7 +955,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
   <div class="dots" id="dots"></div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="copy">© 2026 Dr. Jia</span>
-    <span class="page" id="pageNum">1 / 17</span>
+    <span class="page" id="pageNum">1 / 18</span>
     <button id="nextBtn">▶</button>
   </div>
 </div>
@@ -1415,6 +1520,168 @@ try {
     refreshSumBtn();
   };
 } catch(err){ console.error('summary', err); }
+
+/* ══════════ P6 · Total Revenue Test ══════════ */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const svg=document.getElementById('trChart');
+  const el=(t,a,x)=>{const e=document.createElementNS(NS,t);
+    for(const k in a)e.setAttribute(k,a[k]); if(x!==undefined)e.textContent=x; return e;};
+  const $=id=>document.getElementById(id);
+
+  /* ══ 精确模型 ══ P0=¥40、Q0=50 杯；价格变化固定 10%；%ΔQ = PED × 10% ══
+     画布接近正方形：坐标轴 70..500（横）× 86..466（纵） */
+  const P0=40, Q0=50, DP=10, K=6;
+  const OX=70, OY=452;                  /* 原点：坐标轴与矩形共用，左边无缝隙 */
+
+  let dir=1, ped=1;
+
+  /* 色块中央写字；色块太薄就不写 */
+  function tagStrip(x,y,txt,col,room){
+    if(room < 30) return;
+    svg.appendChild(el('text',{x:x,y:y+8,'font-size':21,'font-weight':800,fill:col,'text-anchor':'middle'},txt));
+  }
+
+  function draw(){
+    svg.innerHTML='';
+    const dq=ped*DP;
+    const Q1=Math.max(1, Q0*(1-dir*dq/100));
+    const P1=P0*(1+dir*DP/100);
+    const TR0=P0*Q0, TR1=P1*Q1, up=TR1>TR0+1e-9;
+    const w0=Q0*K, w1=Q1*K, h0=P0*K, h1=P1*K;
+    const lo=Math.min(h0,h1), hi=Math.max(h0,h1);
+    const lw=Math.min(w0,w1), rw=Math.max(w0,w1);
+    const dH=hi-lo, dW=rw-lw;
+
+    /* ① 坐标轴（P 轴就在矩形左边缘上） */
+    svg.appendChild(el('line',{x1:OX,y1:OY,x2:508,y2:OY,stroke:'#7a93ad','stroke-width':3}));
+    svg.appendChild(el('line',{x1:OX,y1:OY,x2:OX,y2:86,stroke:'#7a93ad','stroke-width':3}));
+    svg.appendChild(el('text',{x:OX-10,y:78,'font-size':23,'font-weight':700,fill:'#5b6b7b','text-anchor':'end'},'P'));
+    svg.appendChild(el('text',{x:508,y:OY-10,'font-size':23,'font-weight':700,fill:'#5b6b7b','text-anchor':'end'},'Q'));
+
+    /* ② 三块面积：重叠（保住的收入）+ 增量（绿）+ 缺口（红） */
+    svg.appendChild(el('rect',{x:OX,y:OY-lo,width:lw,height:lo,fill:'#e7eef5'}));
+    if(dir>0){        /* 涨价：矩形变高变窄 */
+      svg.appendChild(el('rect',{x:OX,y:OY-hi,width:lw,height:dH,fill:'#cfe8d3'}));
+      svg.appendChild(el('rect',{x:OX+lw,y:OY-lo,width:dW,height:lo,fill:'#f6cfc7'}));
+      tagStrip(OX+lw/2, OY-hi+dH/2, 'gained', '#2E7D32', dH);
+      tagStrip(OX+lw+dW/2, OY-lo/2, 'lost', '#C62828', lo);
+    }else{            /* 降价：矩形变矮变宽 */
+      svg.appendChild(el('rect',{x:OX,y:OY-hi,width:lw,height:dH,fill:'#f6cfc7'}));
+      svg.appendChild(el('rect',{x:OX+lw,y:OY-lo,width:dW,height:lo,fill:'#cfe8d3'}));
+      tagStrip(OX+lw/2, OY-hi+dH/2, 'lost', '#C62828', dH);
+      tagStrip(OX+lw+dW/2, OY-lo/2, 'gained', '#2E7D32', lo);
+    }
+
+    /* ③ 两个矩形：只画描边 */
+    svg.appendChild(el('rect',{x:OX,y:OY-h0,width:w0,height:h0,fill:'none',
+      stroke:'#8fa3b8','stroke-width':3,'stroke-dasharray':'9 7'}));
+    svg.appendChild(el('rect',{x:OX,y:OY-h1,width:w1,height:h1,fill:'none',
+      stroke:up?'#2E7D32':'#C62828','stroke-width':4}));
+
+    /* ④ 需求曲线：过两个右上顶点，只向两端各延 26px（示意，不横穿画面） */
+    const A=[OX+w0,OY-h0], B=[OX+w1,OY-h1];
+    const m=(B[1]-A[1])/(B[0]-A[0]);
+    const ext=x=>A[1]+m*(x-A[0]);
+    /* D 只比两个顶点各多出 18px —— 纯示意，不横穿画面 */
+    const ex1=Math.min(A[0],B[0])-18, ex2=Math.max(A[0],B[0])+18;
+    svg.appendChild(el('line',{x1:ex1,y1:ext(ex1),x2:ex2,y2:ext(ex2),
+      stroke:'#1a5276','stroke-width':4.5,'stroke-linecap':'round'}));
+    svg.appendChild(el('text',{x:ex1,y:ext(ex1)-12,'font-size':26,'font-weight':800,
+      fill:'#1a5276','text-anchor':'middle'},'D'));
+
+    /* ⑤ ΔP：P 轴左侧竖直线段 + 双箭头，标签在上方 */
+    const px=OX-20;
+    svg.appendChild(el('line',{x1:px,y1:OY-h0,x2:px,y2:OY-h1,stroke:dir>0?'#1E88E5':'#F0B429','stroke-width':4}));
+    svg.appendChild(el('path',{d:'M'+px+' '+(OY-h1+(dir>0?-9:9))+' l-6 '+(dir>0?12:-12)+' h12 z',
+      fill:dir>0?'#1E88E5':'#F0B429'}));
+    svg.appendChild(el('path',{d:'M'+px+' '+(OY-h0+(dir>0?9:-9))+' l-6 '+(dir>0?-12:12)+' h12 z',
+      fill:dir>0?'#1E88E5':'#F0B429'}));
+    svg.appendChild(el('text',{x:px,y:Math.min(OY-h0,OY-h1)-16,'font-size':23,'font-weight':800,
+      fill:dir>0?'#1E88E5':'#a57d12','text-anchor':'middle'},(dir>0?'+':'−')+DP+'%  ΔP'));
+
+    /* ⑥ ΔQ：Q 轴下方水平线段 + 双箭头，标签放线段右侧（不占左下角） */
+    const qy=OY+16;
+    const qa=OX+w0, qb=OX+w1;
+    svg.appendChild(el('line',{x1:qa,y1:qy,x2:qb,y2:qy,stroke:'#C62828','stroke-width':4}));
+    svg.appendChild(el('path',{d:'M'+qb+' '+qy+' l'+(dir>0?12:-12)+' -6 v12 z',fill:'#C62828'}));
+    svg.appendChild(el('path',{d:'M'+qa+' '+qy+' l'+(dir>0?-12:12)+' -6 v12 z',fill:'#C62828'}));
+    svg.appendChild(el('text',{x:Math.max(qa,qb)+14,y:qy+8,'font-size':23,'font-weight':800,
+      fill:'#C62828'},(dir>0?'−':'+')+dq.toFixed(0)+'%  ΔQ'));
+
+    /* ⑦ 两个矩形各自标注：after 在上方，before 在底部内侧 */
+    svg.appendChild(el('text',{x:OX+8,y:OY-16,'font-size':21,'font-weight':700,fill:'#7b8b9b'},'before'));
+    svg.appendChild(el('text',{x:OX+8,y:OY-h1-10,'font-size':21,'font-weight':700,
+      fill:up?'#2E7D32':'#C62828'},'after'));
+
+    /* ⑧ Total revenue 箭头：文字永远放在箭头的另一侧，不重叠 */
+    const tx=524, ty=OY-hi+52;
+    svg.appendChild(el('line',{x1:tx,y1:ty,x2:tx,y2:ty+(up?-70:70),stroke:up?'#2E7D32':'#C62828','stroke-width':6}));
+    svg.appendChild(el('path',{d: up? 'M'+tx+' '+(ty-80)+' l-9 17 h18 z' : 'M'+tx+' '+(ty+80)+' l-9 -17 h18 z',
+      fill:up?'#2E7D32':'#C62828'}));
+    /* 文字右对齐到箭头，避免超出画布右缘 */
+    svg.appendChild(el('text',{x:tx,y: up ? ty+26 : ty-26,'font-size':23,'font-weight':800,
+      fill:up?'#2E7D32':'#C62828','text-anchor':'end'},'Total revenue'));
+    svg.appendChild(el('text',{x:tx,y: up ? ty+50 : ty-50,'font-size':24,'font-weight':800,
+      fill:up?'#2E7D32':'#C62828','text-anchor':'end'},up?'▲ UP':'▼ DOWN'));
+
+    /* ⑨ 图例：放进图里、左下角、一行排开，三种颜色各说明干什么 */
+    const lg=[['#cfe8d3','gained'],['#f6cfc7','lost'],['#e7eef5','kept']];
+    lg.forEach((it,i)=>{
+      const lx=76+i*118, ly=496;
+      svg.appendChild(el('rect',{x:lx,y:ly-11,width:22,height:13,rx:3,fill:it[0],
+        stroke:'#c9d6e3','stroke-width':1}));
+      svg.appendChild(el('text',{x:lx+28,y:ly,'font-size':19,fill:'#5b6b7b'},it[1]));
+    });
+
+    /* ⑩ 公式框：百分比字号 ∝ 大小；箭头方向跟着价格方向 */
+    const fs=v=>Math.min(24+v*0.8, 40);   /* 封顶 40px，最大时也不换行 */
+    const P=document.getElementById('fP'), Q=document.getElementById('fQ');
+    P.querySelector('.arw').textContent = dir>0 ? '↑' : '↓';
+    P.querySelector('b').textContent = DP+'%';
+    P.querySelector('b').setAttribute('style','font-size:'+fs(DP).toFixed(0)+'px');
+    P.querySelector('.arw').style.color = dir>0 ? '#1E88E5' : '#F0B429';
+    P.querySelector('b').style.color = dir>0 ? '#1E88E5' : '#a57d12';
+    Q.querySelector('.arw').textContent = dir>0 ? '↓' : '↑';
+    Q.querySelector('b').textContent = dq.toFixed(0)+'%';
+    Q.querySelector('b').setAttribute('style','font-size:'+fs(dq).toFixed(0)+'px');
+    Q.querySelector('.arw').style.color = '#C62828';
+    Q.querySelector('b').style.color = '#C62828';
+
+    const elastic=ped>1.0001, inelastic=ped<0.9999, rise=dir>0;
+    const trTop=(elastic?(rise?'down':'up'):(inelastic?(rise?'up':'down'):'barely moves'));
+    const con=document.getElementById('fCon');
+    con.textContent=(dq>DP?'ΔQ bigger':(dq<DP?'ΔP bigger':'equal'))+' → TR '+trTop;
+    con.style.color = trTop==='up' ? '#2E7D32' : (trTop==='down' ? '#C62828' : '#1a3a5c');
+
+    /* ⑪ 右侧分数公式字号 */
+    $('frNum').textContent='%ΔQ = '+dq.toFixed(0)+'%';
+    $('frNum').setAttribute('style','font-size:'+fs(dq).toFixed(0)+'px');
+    $('frDen').textContent='%ΔP = '+DP+'%';
+    $('frDen').setAttribute('style','font-size:'+fs(DP).toFixed(0)+'px');
+
+    /* ⑫ 结论 */
+    const trDir=(elastic?(rise?'down':'up'):(inelastic?(rise?'up':'down'):'unchanged'));
+    const v=$('verdict');
+    v.className='verdict '+(elastic?'el':'inel');
+    $('vHead').textContent='PED = '+ped.toFixed(1)+(elastic?' > 1 · elastic':(inelastic?' < 1 · inelastic':' = 1 · unit elastic'));
+    $('vBody').innerHTML='%ΔQ <b>'+(dq>DP?'&gt;':(dq<DP?'&lt;':'='))+'</b> %ΔP, so PED '+
+      (elastic?'&gt; 1':(inelastic?'&lt; 1':'= 1'))+'. '+
+      (elastic?'Quantity answers more than price':(inelastic?'Price answers more than quantity':'They answer equally'))+
+      '.<br>A price '+(rise?'rise':'fall')+' therefore takes total revenue <b style="color:'+
+      (trDir==='up'?'#2E7D32':(trDir==='down'?'#C62828':'#1a3a5c'))+'">'+trDir+'</b>.';
+    $('pedVal').textContent=ped.toFixed(1);
+  }
+
+  $('pedSlider').addEventListener('input',function(){ped=+this.value;draw();});
+  $('dirUp').addEventListener('click',function(){dir=1;this.classList.add('pedon');$('dirDn').classList.remove('pedon');draw();});
+  $('dirDn').addEventListener('click',function(){dir=-1;this.classList.add('pedon');$('dirUp').classList.remove('pedon');draw();});
+  $('btnReset').addEventListener('click',function(){
+    ped=1;dir=1;$('pedSlider').value=1;
+    $('dirUp').classList.add('pedon');$('dirDn').classList.remove('pedon');draw();});
+  draw();
+})();
+
 </script>
 
 </div>

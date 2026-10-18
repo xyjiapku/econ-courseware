@@ -128,6 +128,33 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 /* slider readout */
 .ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
 .panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+  /* ── 八点练习页 ── */
+  #meqT td{padding:0;border:2px solid #d5e3f2;}
+  #meqT td.pn{font-size:clamp(22px,2.1vw,26px);font-weight:800;color:var(--darkblue);padding:4px 6px;}
+  #meqT tr.sel td{background:#FFF6E0;}
+  .meq-c{position:relative;cursor:pointer;}
+  .meq-v{display:block;padding:5px 6px;font-size:clamp(22px,2vw,25px);color:#b6c4d1;min-height:2.1em;line-height:1.25;}
+  .meq-c.has .meq-v{color:var(--darkblue);font-weight:700;background:#F7FBFF;}
+  .meq-c.ok .meq-v{background:#EFF9F0;color:#1b5e20;}
+  .meq-c.bad .meq-v{background:#FDF1F1;color:#a12622;}
+  .meq-pop{position:absolute;z-index:60;left:2px;right:2px;top:calc(100% - 2px);
+    background:#fff;border:2px solid var(--blue);border-radius:10px;box-shadow:0 10px 26px rgba(20,60,100,.2);
+    padding:3px;display:none;}
+  .meq-pop.up{top:auto;bottom:calc(100% - 2px);}
+  .meq-c:hover .meq-pop, .meq-c.open .meq-pop{display:block;}
+  .meq-pop b{display:block;padding:4px 8px;border-radius:6px;font-size:clamp(21px,1.9vw,24px);
+    font-weight:600;color:var(--darkblue);cursor:pointer;}
+  .meq-pop b:hover{background:#EAF4FF;}
+  .meq-pop b.none{color:#9aa8b6;}
+  /* ── P8 回顾页：层级 + 涨跌配色 ── */
+  #p8 .item{margin:0 0 9px;}
+  #p8 .item:last-child{margin-bottom:0;}
+  #p8 .item h3{font-size:23px;color:var(--darkblue);font-weight:800;line-height:1.3;}
+  #p8 .item h3 em{font-style:normal;color:var(--gray);font-weight:600;font-size:20px;}
+  #p8 .item ul{margin:2px 0 0 20px;}
+  #p8 .item li{font-size:23px;line-height:1.42;color:#33475c;margin-bottom:1px;}
+  #p8 .up{color:var(--green);font-weight:800;}
+  #p8 .dn{color:var(--red);font-weight:800;}
 </style>
 </head>
 <body>
@@ -496,7 +523,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <div class="content">
   <div class="course-tag">PRICE CHANGES · 变动</div>
   <h1>Why prices change — and what happens to sales</h1>
-  <div class="sub">Market conditions change, so the crossing moves: a new <b class="blue">equilibrium price</b> and a new <b class="blue">sales quantity</b>. <b>D →</b> means demand rises — the whole curve shifts right.</div><hr>
+  <div class="sub">Market conditions change, so the crossing moves. <b>D →</b> means demand rises. Drag <b>one</b> slider at a time — the other snaps back.</div><hr>
   <div style="display:flex;gap:16px;flex:1;min-height:0;">
     <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
       <table class="data-table" id="shT" style="width:100%;table-layout:fixed;">
@@ -549,46 +576,77 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <!-- ───── 9 · REVISION: WHAT SHIFTS D AND S ───── -->
 <div class="slide" data-i="7">
-  <div class="content">
+  <div class="content" id="p8" style="max-width:1420px;">
   <div class="course-tag">REVISION · 回顾</div>
   <h1>What shifts D — and what shifts S</h1>
-  <div class="sub">Straight from the Demand and Supply lessons. Try to list them <b>before</b> you reveal.</div><hr>
-  <div class="txt compact2">
-    <div class="rgrp show">
-      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
-        <p><b>Two lists, out loud:</b> first the conditions of <b class="blue">demand</b>, then the conditions of <b style="color:#a57d12;">supply</b>. Reveal once you have both.</p>
+  <div class="sub">Every condition, with the <b>direction</b> it pushes the curve — <b class="up">green ↑</b>, <b class="dn">red ↓</b>. Say each arrow out loud.</div><hr>
+  <div class="txt compact2" style="display:flex;flex-direction:column;">
+    <div class="rgrp show" style="flex:1;display:flex;">
+      <div style="display:flex;gap:16px;flex:1;align-items:stretch;">
+        <div class="card" style="flex:1;padding:12px 15px;min-height:56vh;display:flex;flex-direction:column;justify-content:space-between;">
+          <h3 class="blue">Conditions of DEMAND</h3>
+
+          <div class="item">
+            <h3>① Income <em>— normal or inferior decides the direction</em></h3>
+            <ul>
+              <li><b>Normal good:</b> income <span class="up">↑</span> → D <span class="up">up</span> · income <span class="dn">↓</span> → D <span class="dn">down</span></li>
+              <li><b>Inferior good:</b> the opposite — income <span class="up">↑</span> → D <span class="dn">down</span></li>
+            </ul>
+          </div>
+
+          <div class="item">
+            <h3>② Price of related goods <em>— substitutes &amp; complements</em></h3>
+            <ul>
+              <li><b>Substitute</b> dearer <span class="up">↑</span> → D <span class="up">up</span> (buyers switch in)</li>
+              <li><b>Complement</b> dearer <span class="up">↑</span> → D <span class="dn">down</span> (the pair costs more)</li>
+            </ul>
+          </div>
+
+          <div class="item">
+            <h3>③ Other factors <em>— especially expectations</em></h3>
+            <ul>
+              <li>Expect the price to rise → buy now → D <span class="up">up</span></li>
+              <li>Also: tastes · advertising · population · seasons</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card a" style="flex:1;padding:12px 15px;min-height:56vh;display:flex;flex-direction:column;justify-content:space-between;">
+          <h3 style="color:#a57d12;">Conditions of SUPPLY</h3>
+
+          <div class="item">
+            <h3>① Costs <em>— wages, materials, energy, rent</em></h3>
+            <ul>
+              <li>Costs <span class="up">↑</span> → S <span class="dn">down</span> · costs <span class="dn">↓</span> → S <span class="up">up</span></li>
+            </ul>
+          </div>
+
+          <div class="item">
+            <h3>② Taxes and subsidies</h3>
+            <ul>
+              <li>A <b>tax</b> makes production dearer → S <span class="dn">down</span></li>
+              <li>A <b>subsidy</b> makes it cheaper → S <span class="up">up</span></li>
+            </ul>
+          </div>
+
+          <div class="item">
+            <h3>③ Expectations and other factors</h3>
+            <ul>
+              <li>Expect the price to rise → hold stock back → S <span class="dn">down</span></li>
+              <li>Also: technology · weather · number of sellers</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
     <div class="rgrp">
-      <div style="display:flex;gap:18px;">
-        <div class="card" style="flex:1;">
-          <h3 class="blue">Conditions of DEMAND <span style="font-weight:600;font-size:.85em;">(shift D)</span></h3>
-          <p>· Income</p>
-          <p>· Tastes and fashion</p>
-          <p>· Price of substitutes and complements</p>
-          <p>· Number of buyers (population)</p>
-          <p>· Expectations of future prices</p>
-        </div>
-        <div class="card a" style="flex:1;">
-          <h3 style="color:#a57d12;">Conditions of SUPPLY <span style="font-weight:600;font-size:.85em;">(shift S)</span></h3>
-          <p>· Costs of production (wages, materials, rent, energy)</p>
-          <p>· Technology</p>
-          <p>· Government: indirect tax ↑ / subsidy ↓</p>
-          <p>· Weather and other shocks</p>
-          <p>· Number of firms in the market</p>
-        </div>
-      </div>
-    </div>
-    <div class="rgrp">
-      <div class="note" style="background:#FFF8E1;border-left:6px solid #F0B429;margin-top:8px;">
-        <p>Every item on those lists changes the <b>whole curve</b> — a new relationship between price and quantity at <b>every</b> price. The one thing that shifts <b>neither</b> curve is the product's own price: that only moves you <b>along</b> the curve. Next page makes that distinction stick.</p>
+      <div class="note" style="background:#FFF8E1;border-left:6px solid #F0B429;margin-top:10px;">
+        <p>Every item on those lists changes the <b>whole curve</b>. The one thing that shifts <b>neither</b> curve is the product's <b>own price</b> — that only moves you <b>along</b> the curve.</p>
       </div>
     </div>
   </div>
   </div>
 </div>
-
-<!-- ───── 10 · WORKED EXAMPLES (one diagram, two cases) ───── -->
 <div class="slide" data-i="8">
   <div class="content">
   <div class="course-tag">WORKED EXAMPLES · 例题</div>
@@ -730,6 +788,13 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
           <p class="gray">Trigger: the <b>product's own price</b> changed — nothing else.</p>
         </div>
       </div>
+      <div class="rgrp">
+        <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
+          <p><b>Shift D right</b> → the price rises → this causes an <b>extension of supply</b>.<br>
+             <b>Shift S right</b> → the price falls → this causes an <b>extension of demand</b>.</p>
+          <p style="margin-top:4px;">One line to remember: <b>curves shift, quantities move along</b>.</p>
+        </div>
+      </div>
     </div>
     <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:2px;">
       <div style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
@@ -769,125 +834,6 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <!-- ───── 12b · ONE SENTENCE, BOTH PAIRS ───── -->
 <div class="slide" data-i="11">
-  <div class="content">
-  <div class="course-tag">WORDS THAT EARN MARKS · 一句话</div>
-  <h1>One sentence, both pairs</h1>
-  <div class="sub">A shift on one curve forces a movement along the other — say it in one sentence and you have the marks.</div><hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;">
-      <div class="rgrp show">
-        <div class="note" style="background:#E8F5E9;border-left:6px solid var(--green);">
-          <p><b>Shift D right</b> → the price rises → this causes an <b>extension of supply</b> (a larger <b>quantity supplied</b>).</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="note" style="background:#FFF8E1;border-left:6px solid #F0B429;">
-          <p><b>Shift S right</b> → the price falls → this causes an <b>extension of demand</b> (a larger <b>quantity demanded</b>).</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
-          <p>One line to remember: <b>curves shift, quantities move along</b>.</p>
-        </div>
-      </div>
-    </div>
-    <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:2px;">
-      <div style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
-        <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
-          <defs>
-            <marker id="ow-ah1" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" refX="20" refY="10" orient="auto">
-              <path d="M0,0 L20,10 L0,20 z" fill="#1E88E5"/>
-            </marker>
-            <marker id="ow-ah2" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" refX="20" refY="10" orient="auto">
-              <path d="M0,0 L20,10 L0,20 z" fill="#1b5e20"/>
-            </marker>
-          </defs>
-          <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
-          <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
-          <text x="626" y="444" text-anchor="end" font-size="36" font-weight="700" fill="#5b6b7b">Q</text>
-          <text x="98" y="30" font-size="36" font-weight="700" fill="#5b6b7b">P ↑</text>
-          <line x1="122.5" y1="50" x2="447.5" y2="460" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 7"/>
-          <line id="ow-d1" x1="252.5" y1="50" x2="577.5" y2="460" stroke="#1E88E5" stroke-width="5"/>
-          <line x1="90" y1="419" x2="382.5" y2="50" stroke="#F0B429" stroke-width="5"/>
-          <line id="ow-gv" x1="317.5" y1="132" x2="317.5" y2="460" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>
-          <line id="ow-gh" x1="317.5" y1="132" x2="90" y2="132" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>
-          <circle id="ow-e0" cx="252.5" cy="214" r="8" fill="none" stroke="#94a3b8" stroke-width="4"/>
-          <circle id="ow-dot" cx="317.5" cy="132" r="11" fill="#1b5e20" stroke="#fff" stroke-width="3"/>
-          <line id="ow-arr" x1="380" y1="372" x2="492" y2="372" stroke="#1E88E5" stroke-width="5" marker-end="url(#ow-ah1)"/>
-          <line id="ow-arr2" x1="252.5" y1="214" x2="306.4" y2="146" stroke="#1b5e20" stroke-width="5" marker-end="url(#ow-ah2)"/>
-          <text id="ow-pv" x="44" y="138" text-anchor="end" font-size="30" font-weight="800" fill="#1b5e20">40</text>
-          <text id="ow-qv" x="317.5" y="494" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">7</text>
-          <text x="498" y="300" font-size="38" font-weight="800" fill="#1E88E5">D1</text>
-          <text x="160" y="262" text-anchor="end" font-size="38" font-weight="800" fill="#a57d12">S</text>
-        </svg>
-      </div>
-      <p class="gray" style="margin:0;"><b style="color:#1E88E5;">Blue arrow</b> = the curve <b>shifts</b> (an increase in demand) · <b style="color:#1b5e20;">green arrow</b> = movement <b>along</b> the curve (an extension of supply)</p>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ───── 13 · DOUBLE SHIFTS: INTERACTIVE ───── -->
-<div class="slide" data-i="12">
-  <div class="content">
-  <div class="course-tag">YOUR HAND · 演示</div>
-  <h1>Move both curves — see what stays certain</h1>
-  <div class="sub">Drag either slider — the new crossing always stays on the chart. Watch which answer <b>never</b> changes direction.</div><hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
-      <div class="panel">
-        <p class="b db" style="margin-bottom:2px;">Shift DEMAND (cups): <span id="dsKv">+4</span></p>
-        <input type="range" id="dsK" min="-8" max="8" step="1" value="4" style="width:100%;accent-color:#1E88E5;">
-        <div class="ends"><span>← left 8</span><span>right 8 →</span></div>
-      </div>
-      <div class="panel">
-        <p class="b db" style="margin-bottom:2px;">Shift SUPPLY (cups): <span id="dsMv">+2</span></p>
-        <input type="range" id="dsM" min="-8" max="8" step="1" value="2" style="width:100%;accent-color:#a57d12;">
-        <div class="ends"><span>← left 8</span><span>right 8 →</span></div>
-      </div>
-      <div class="panel">
-        <p id="dsRead" style="margin:0;font-weight:700;color:#1a3a5c;"></p>
-      </div>
-      <button class="big-btn ghost" id="dsReset" style="align-self:flex-start;">↺ Back to ¥30 / 5 cups</button>
-    </div>
-    <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:2px;">
-      <div style="flex:1;min-height:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
-        <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
-          <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
-          <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
-          <text x="626" y="444" text-anchor="end" font-size="36" font-weight="700" fill="#5b6b7b">Q</text>
-          <text x="98" y="30" font-size="36" font-weight="700" fill="#5b6b7b">P ↑</text>
-          <g font-size="28" fill="#94a3b8">
-            <text x="155" y="490" text-anchor="middle">2</text>
-            <text x="220" y="490" text-anchor="middle">4</text>
-            <text x="285" y="490" text-anchor="middle">6</text>
-            <text x="350" y="490" text-anchor="middle">8</text>
-            <text x="415" y="490" text-anchor="middle">10</text>
-            <text x="78" y="387" text-anchor="end">10</text>
-            <text x="78" y="305" text-anchor="end">20</text>
-            <text x="78" y="223" text-anchor="end">30</text>
-            <text x="78" y="141" text-anchor="end">40</text>
-            <text x="78" y="59" text-anchor="end">50</text>
-          </g>
-          <line x1="122.5" y1="50" x2="447.5" y2="460" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 7"/>
-          <line x1="90" y1="419" x2="382.5" y2="50" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8 7"/>
-          <circle cx="252.5" cy="214" r="8" fill="none" stroke="#94a3b8" stroke-width="4"/>
-          <line id="ds-d" x1="252.5" y1="50" x2="577.5" y2="460" stroke="#1E88E5" stroke-width="5"/>
-          <line id="ds-s" x1="220" y1="419" x2="512.5" y2="50" stroke="#F0B429" stroke-width="5"/>
-          <line id="ds-gv" x1="350" y1="173" x2="350" y2="460" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>
-          <line id="ds-gh" x1="350" y1="173" x2="90" y2="173" stroke="#1b5e20" stroke-width="3" stroke-dasharray="8 6"/>
-          <circle id="ds-dot" cx="350" cy="173" r="11" fill="#1b5e20" stroke="#fff" stroke-width="3"/>
-          <text id="ds-pv" x="36" y="179" text-anchor="end" font-size="28" font-weight="800" fill="#1b5e20">35</text>
-        </svg>
-      </div>
-      <p class="gray" style="margin:0;"><b style="color:#1E88E5;">Blue</b> = demand · <b style="color:#a57d12;">amber</b> = supply · <b style="color:#94a3b8;">grey dashed</b> = where they started (¥30, 5 cups)</p>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ───── 14 · DOUBLE SHIFTS: TWO WORKED CASES (one diagram) ───── -->
-<div class="slide" data-i="13">
   <div class="content">
   <div class="course-tag">DOUBLE SHIFTS · 两例</div>
   <h1>Two cases, two answers</h1>
@@ -947,56 +893,31 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 15 · DOUBLE SHIFTS: THE RULE (four cases table) ───── -->
-<div class="slide" data-i="14">
-  <div class="content">
-  <div class="course-tag">DOUBLE SHIFTS · 总结</div>
-  <h1>Both curves at once — the four cases</h1>
-  <div class="sub">Two changes at the same time? Read your case off this table: one of the two answers is <b>certain</b>, the other one is <b>not</b>.</div><hr>
-  <div class="txt">
-    <div class="rgrp show">
-      <table class="data-table" id="dsT" style="width:100%;table-layout:fixed;">
-        <tr>
-          <th style="width:24%;">Demand</th><th style="width:24%;">Supply</th>
-          <th style="width:26%;">Price</th><th style="width:26%;">Quantity</th>
-        </tr>
-        <tr id="dr-r1">
-          <td class="b"><b class="blue">↑</b> rises &nbsp;D →</td><td class="b"><b style="color:#a57d12;">↑</b> rises &nbsp;S →</td>
-          <td><span class="blank empty" data-a="? uncertain">___</span></td><td><span class="blank empty" data-a="↑ certain">___</span></td>
-        </tr>
-        <tr id="dr-r2">
-          <td class="b"><b class="blue">↑</b> rises &nbsp;D →</td><td class="b"><b style="color:#a57d12;">↓</b> falls &nbsp;← S</td>
-          <td><span class="blank empty" data-a="↑ certain">___</span></td><td><span class="blank empty" data-a="? uncertain">___</span></td>
-        </tr>
-        <tr id="dr-r3">
-          <td class="b"><b class="blue">↓</b> falls &nbsp;← D</td><td class="b"><b style="color:#a57d12;">↑</b> rises &nbsp;S →</td>
-          <td><span class="blank empty" data-a="↓ certain">___</span></td><td><span class="blank empty" data-a="? uncertain">___</span></td>
-        </tr>
-        <tr id="dr-r4">
-          <td class="b"><b class="blue">↓</b> falls &nbsp;← D</td><td class="b"><b style="color:#a57d12;">↓</b> falls &nbsp;← S</td>
-          <td><span class="blank empty" data-a="? uncertain">___</span></td><td><span class="blank empty" data-a="↓ certain">___</span></td>
-        </tr>
+<div class="slide" data-i="12">
+  <div class="content" style="max-width:1500px;">
+  <div class="course-tag">YOUR TURN · 八点练习</div>
+  <h1>Eight points — fill in the table</h1>
+  <div class="sub">X is the initial equilibrium. Hover a cell to pick a word; hover a row and the two curves that meet at that point light up.</div><hr>
+  <div style="display:flex;gap:18px;flex:1;min-height:0;align-items:stretch;">
+    <div style="flex:0 0 40%;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:14px;padding:6px;display:flex;">
+      <svg id="meqChart" viewBox="0 0 660 560" style="width:100%;height:100%;"></svg>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+      <table class="data-table" id="meqT" style="width:100%;table-layout:fixed;">
+        <colgroup><col style="width:10%"><col style="width:24%"><col style="width:24%"><col style="width:21%"><col style="width:21%"></colgroup>
+        <thead><tr><th>Point</th><th>Demand</th><th>Supply</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody id="meqBody"></tbody>
       </table>
-      <div style="display:flex;gap:10px;margin-top:10px;">
-        <button class="big-btn" id="drNext">Reveal next row ▶</button>
-        <button class="big-btn ghost" id="drReset">↺ Reset</button>
-      </div>
-    </div>
-    <div class="rgrp">
-      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;">
-        <p><b>Why?</b> Both shifts push the <b>same</b> variable, and in opposite ways. Rows 1 and 4 move the same way, so their <b>quantity</b> effects add up — quantity is certain, price is not. Rows 2 and 3 move in opposite ways, so their <b>price</b> effects add up.</p>
-      </div>
-    </div>
-    <div class="rgrp">
-      <div class="note" style="background:#FFF8E1;border-left:6px solid #F0B429;margin-top:10px;">
-        <p>Worth marks: <b>same-way shifts → quantity is certain; opposite-way shifts → price is certain</b>. Equal-sized shifts cancel exactly — the price stays at ¥30, or the quantity at 5 cups.</p>
+      <div style="display:flex;align-items:center;gap:12px;flex:0 0 auto;">
+        <button class="big-btn" id="meqCheck" style="padding:6px 18px;font-size:21px;">✓ Check</button>
+        <button class="big-btn ghost" id="meqReset" style="padding:6px 18px;font-size:21px;">↺</button>
+        <span id="meqScore" style="font-size:22px;font-weight:800;color:#2E7D32;"></span>
       </div>
     </div>
   </div>
   </div>
 </div>
-
-<!-- ───── 16 · CHECK YOUR UNDERSTANDING (game) ───── -->
-<div class="slide" data-i="15">
+<div class="slide" data-i="13">
   <div class="content">
   <div class="course-tag">CHECK YOUR UNDERSTANDING · 检测</div>
   <div style="display:flex;justify-content:space-between;align-items:baseline;width:100%;">
@@ -1021,7 +942,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 17 · SUMMARY ───── -->
-<div class="slide" data-i="16">
+<div class="slide" data-i="14">
   <div class="content">
   <div class="course-tag">SUMMARY · 总结</div>
   <h1>What you must be able to do</h1>
@@ -1053,7 +974,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 18 · CLOSING ───── -->
-<div class="slide cover" data-i="17">
+<div class="slide cover" data-i="15">
   <div class="course-tag">THANK YOU · 谢谢</div>
   <h1 style="font-size:clamp(40px,5.5vw,60px);">Market equilibrium — done ✓</h1>
   <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">Demand and supply, one diagram — and the price settles where they cross.</div>
@@ -1067,7 +988,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <div class="dots" id="dots"></div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="copy">© 2026 Dr. Jia</span>
-    <span class="page" id="pageNum">1 / 18</span>
+    <span class="page" id="pageNum">1 / 16</span>
     <button id="nextBtn">▶</button>
   </div>
 </div>
@@ -1665,7 +1586,12 @@ try {
 try {
   [['shK', 'k'], ['shM', 'm']].forEach(function(p){
     const sl = $(p[0]); if(!sl) return;
-    sl.addEventListener('input', function(){ clampShifts('sh', p[1]); syncSlideEffects(); });
+    sl.addEventListener('input', function(){
+      /* 一次只动一条线：拖 D 就把 S 归位，拖 S 就把 D 归位 */
+      const other = $(p[0] === 'shK' ? 'shM' : 'shK');
+      if (other && +other.value !== 0) other.value = 0;
+      clampShifts('sh', p[1]); syncSlideEffects();
+    });
   });
   const shr = $('shReset');
   if(shr) shr.onclick = function(){
@@ -1680,7 +1606,7 @@ try {
     const sl = $(p[0]); if(!sl) return;
     sl.addEventListener('input', function(){ clampShifts('ds', p[1]); syncSlideEffects(); });
   });
-  $('dsReset').onclick = function(){
+  if($('dsReset')) $('dsReset').onclick = function(){
     $('dsK').value = 0;
     $('dsM').value = 0;
     clampShifts('ds', 'k');
@@ -1759,18 +1685,18 @@ try {
         });
       });
     }
-    $('drNext').onclick = function(){
+    if($('drNext')) $('drNext').onclick = function(){
       if(i >= ROWS.length) return;
       i++;
       paint();
       if(i >= ROWS.length){ this.textContent = 'All shown ✓'; this.disabled = true; }
     };
-    $('drReset').onclick = function(){
+    if($('drReset')) $('drReset').onclick = function(){
       i = 0; paint();
       $('drNext').textContent = 'Reveal next row ▶';
       $('drNext').disabled = false;
     };
-    paint();
+    
   })();
 } catch(err){ console.error('rule table', err); }
 
@@ -1874,6 +1800,231 @@ try {
     refreshSumBtn();
   };
 } catch(err){ console.error('summary', err); }
+
+/* ══════ 八点练习：6 条线 → 9 个交点，X 为初始均衡，其余 a–h ══════ */
+(function(){
+  const BASE = {
+    D : { a:[100,120], b:[600,460], thick:true,  name:'D'  },
+    D1: { a:[100, 18], b:[600,358], thick:false, name:'D₁' },
+    D2: { a:[100,222], b:[480,480], thick:false, name:'D₂' },
+    S : { a:[200,500], b:[520, 80], thick:true,  name:'S'  },
+    S1: { a:[340,513], b:[620,146], thick:false, name:'S₁' },
+    S2: { a:[150,369], b:[420, 34], thick:false, name:'S₂' }
+  };
+  const LB = { D:[604,470], D1:[604,352], D2:[484,492], S:[524,74], S1:[616,140], S2:[416,28] };
+  const PTS = [
+    { id:'a', pair:['D' ,'S2'], off:[-16,  2] },
+    { id:'b', pair:['D1','S' ], off:[  2,-16] },
+    { id:'c', pair:['D' ,'S1'], off:[ 16, 14] },
+    { id:'d', pair:['D2','S' ], off:[-16, 12] },
+    { id:'e', pair:['D1','S2'], off:[-14,-16] },
+    { id:'f', pair:['D1','S1'], off:[ 16,-12] },
+    { id:'g', pair:['D2','S1'], off:[  2, 20] },
+    { id:'h', pair:['D2','S2'], off:[-16, 18] }
+  ];
+  const KEY = {
+    a:{demand:'Contraction', supply:'Decrease',   qty:'Decrease',     price:'Increase'},
+    b:{demand:'Increase',    supply:'Extension',  qty:'Increase',     price:'Increase'},
+    c:{demand:'Extension',   supply:'Increase',   qty:'Increase',     price:'Decrease'},
+    d:{demand:'Decrease',    supply:'Contraction',qty:'Decrease',     price:'Decrease'},
+    e:{demand:'Increase',    supply:'Decrease',   qty:'Indetermined', price:'Increase'},
+    f:{demand:'Increase',    supply:'Increase',   qty:'Increase',     price:'Indetermined'},
+    g:{demand:'Decrease',    supply:'Increase',   qty:'Indetermined', price:'Decrease'},
+    h:{demand:'Decrease',    supply:'Decrease',   qty:'Decrease',     price:'Indetermined'}
+  };
+  const INDET = { e:{k:'S2', amp:112}, f:{k:'S1', amp:74}, g:{k:'S1', amp:112}, h:{k:'S2', amp:74} };
+  const OPT = {
+    demand:['Increase','Decrease','Extension','Contraction','—'],
+    supply:['Increase','Decrease','Extension','Contraction','—'],
+    qty:['Increase','Decrease','Indetermined'],
+    price:['Increase','Decrease','Indetermined']
+  };
+
+  const NS='http://www.w3.org/2000/svg';
+  const svg=document.getElementById('meqChart');
+  const el=(t,a,x)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(x!==undefined)e.textContent=x;return e;};
+  function cross(c1,c2){
+    const [x1,y1]=c1.a,[x2,y2]=c1.b,[x3,y3]=c2.a,[x4,y4]=c2.b;
+    const d=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+    if(Math.abs(d)<1e-9) return null;
+    const t=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/d, u=-((x1-x2)*(y1-y3)-(y1-y2)*(x1-x3))/d;
+    if(t<0||t>1||u<0||u>1) return null;
+    return [x1+t*(x2-x1), y1+t*(y2-y1)];
+  }
+  const shift=(c,dx)=>({a:[c.a[0]+dx,c.a[1]],b:[c.b[0]+dx,c.b[1]]});
+
+  const refs={}; let sel=null, anim=null, X=null;
+  const state={};
+
+  function draw(){
+    svg.innerHTML='';
+    const defs=el('defs',{});
+    const mk=el('marker',{id:'meqArw',markerWidth:9,markerHeight:9,refX:7,refY:3,orient:'auto'});
+    mk.appendChild(el('path',{d:'M0,0 L8,3 L0,6 z',fill:'#F0B429'}));
+    defs.appendChild(mk); svg.appendChild(defs);
+
+    svg.appendChild(el('line',{x1:70,y1:520,x2:632,y2:520,stroke:'#7a93ad','stroke-width':3}));
+    svg.appendChild(el('line',{x1:70,y1:520,x2:70,y2:20,stroke:'#7a93ad','stroke-width':3}));
+    svg.appendChild(el('text',{x:624,y:550,'font-size':24,'font-weight':700,fill:'#5b6b7b','text-anchor':'end'},'Q'));
+    svg.appendChild(el('text',{x:44,y:32,'font-size':24,'font-weight':700,fill:'#5b6b7b'},'P'));
+
+    Object.keys(BASE).forEach(k=>{
+      const c=BASE[k];
+      const l=el('line',{x1:c.a[0],y1:c.a[1],x2:c.b[0],y2:c.b[1],
+        stroke:c.thick?'#1a5276':'#5aa9f0','stroke-width':c.thick?4.5:2.4,
+        'stroke-linecap':'round','data-k':k});
+      l.style.transition='opacity .18s,stroke-width .18s';
+      svg.appendChild(l); refs[k]=l;
+    });
+    Object.entries(LB).forEach(([k,q])=>{
+      svg.appendChild(el('text',{x:q[0],y:q[1],'font-size':22,'font-weight':800,
+        fill:BASE[k].thick?'#1a5276':'#3d8bd4'},BASE[k].name));
+    });
+
+    X=cross(BASE.D,BASE.S);
+    refs.arrow=el('line',{x1:X[0],y1:X[1],x2:X[0],y2:X[1],stroke:'#F0B429','stroke-width':3.5,
+      'marker-end':'url(#meqArw)',opacity:0});
+    svg.appendChild(refs.arrow);
+
+    PTS.forEach(p=>{
+      const pos=cross(BASE[p.pair[0]],BASE[p.pair[1]]); if(!pos) return;
+      p.base=pos;
+      const g=el('g',{});
+      const cir=el('circle',{cx:pos[0],cy:pos[1],r:7,fill:'#fff',stroke:'#1a5276','stroke-width':3});
+      const tx=el('text',{x:pos[0]+p.off[0],y:pos[1]+p.off[1],'font-size':22,'font-weight':800,
+        fill:'#1a3a5c','text-anchor':p.off[0]<0?'end':(p.off[0]>0?'start':'middle')},p.id);
+      g.appendChild(cir); g.appendChild(tx);
+      g.style.cursor='pointer';
+      g.addEventListener('mouseenter',()=>pick(p.id));
+      g.addEventListener('click',()=>pick(p.id));
+      svg.appendChild(g);
+      refs['p'+p.id]={cir,tx};
+    });
+
+    refs.Xg=el('g',{});
+    refs.Xg.appendChild(el('circle',{cx:X[0],cy:X[1],r:9,fill:'#F0B429',stroke:'#8a5a00','stroke-width':2.5}));
+    refs.Xg.appendChild(el('text',{x:X[0]+15,y:X[1]+30,'font-size':22,'font-weight':800,fill:'#8a5a00'},'X'));
+    svg.appendChild(refs.Xg);
+  }
+
+  function paint(){
+    const pair = sel ? PTS.find(p=>p.id===sel).pair : null;
+    Object.keys(BASE).forEach(k=>{
+      const l=refs[k];
+      const on = pair && pair.indexOf(k)>=0;
+      l.style.opacity = pair ? (on?1:.07) : 1;
+      l.setAttribute('stroke-width', on?6.5:(BASE[k].thick?4.5:2.4));
+    });
+    if (sel){ const pos=refs['p'+sel].cir; refs.arrow.setAttribute('x2',pos.getAttribute('cx'));
+      refs.arrow.setAttribute('y2',pos.getAttribute('cy')); refs.arrow.setAttribute('opacity',1); }
+    else refs.arrow.setAttribute('opacity',0);
+    document.querySelectorAll('#meqBody tr').forEach(tr=>{
+      tr.classList.toggle('sel', tr.getAttribute('data-id')===sel);
+    });
+  }
+
+  function stopAnim(){
+    if(anim){ cancelAnimationFrame(anim.raf); anim=null; }
+    Object.keys(BASE).forEach(k=>{
+      const c=BASE[k],l=refs[k];
+      l.setAttribute('x1',c.a[0]); l.setAttribute('y1',c.a[1]);
+      l.setAttribute('x2',c.b[0]); l.setAttribute('y2',c.b[1]);
+    });
+    PTS.forEach(p=>{ if(p.base){ refs['p'+p.id].cir.setAttribute('cx',p.base[0]);
+      refs['p'+p.id].cir.setAttribute('cy',p.base[1]); } });
+    if(sel) paint();
+  }
+  function startAnim(id){
+    const cfg=INDET[id]; if(!cfg) return;
+    const p=PTS.find(x=>x.id===id), other=p.pair.filter(k=>k!==cfg.k)[0];
+    const t0=performance.now(), AMP=cfg.amp, PERIOD=2600;
+    const l=refs[cfg.k], base=BASE[cfg.k];
+    const step=now=>{
+      const dx=Math.sin((now-t0)/PERIOD*Math.PI*2)*AMP;
+      l.setAttribute('x1',base.a[0]+dx); l.setAttribute('x2',base.b[0]+dx);
+      const ip=cross(shift(base,dx),BASE[other]);
+      if(ip){ const r=refs['p'+id].cir;
+        r.setAttribute('cx',ip[0]); r.setAttribute('cy',ip[1]);
+        refs.arrow.setAttribute('x2',ip[0]); refs.arrow.setAttribute('y2',ip[1]); }
+      anim.raf=requestAnimationFrame(step);
+    };
+    anim={raf:requestAnimationFrame(step)};
+  }
+  function pick(id){
+    if(sel===id){ stopAnim(); sel=null; paint(); return; }
+    stopAnim(); sel=id; paint();
+    if(INDET[id]) startAnim(id);
+  }
+
+  /* 表格 */
+  function buildTable(){
+    const tb=document.getElementById('meqBody');
+    tb.innerHTML='';
+    PTS.forEach(p=>{
+      const tr=document.createElement('tr');
+      tr.setAttribute('data-id',p.id);
+      let h='<td class="pn">'+p.id+'</td>';
+      ['demand','supply','qty','price'].forEach(k=>{
+        h+='<td><div class="meq-c" data-p="'+p.id+'" data-k="'+k+'">'+
+           '<span class="meq-v">—</span><div class="meq-pop">'+
+           OPT[k].map(o=>'<b data-v="'+o+'"'+(o==='—'?' class="none"':'')+'>'+o+'</b>').join('')+
+           '</div></div></td>';
+      });
+      tr.innerHTML=h;
+      tb.appendChild(tr);
+    });
+    tb.querySelectorAll('.meq-c').forEach(w=>{
+      w.addEventListener('mouseenter',()=>{ const id=w.getAttribute('data-p'); if(sel!==id) pick(id); });
+      w.addEventListener('click',e=>{
+        if(e.target.tagName==='B') return;
+        const r=w.getBoundingClientRect();
+        w.querySelector('.meq-pop').classList.toggle('up', r.bottom+260 > window.innerHeight);
+        tb.querySelectorAll('.meq-c.open').forEach(x=>{ if(x!==w) x.classList.remove('open'); });
+        w.classList.toggle('open');
+      });
+      w.querySelectorAll('.meq-pop b').forEach(b=>{
+        b.addEventListener('click',ev=>{
+          ev.stopPropagation();
+          const v=b.getAttribute('data-v');
+          w.querySelector('.meq-v').textContent=v;
+          w.classList.toggle('has', v!=='—');
+          w.classList.remove('ok','bad');
+          state[w.getAttribute('data-p')+'.'+w.getAttribute('data-k')]=v;
+          w.classList.remove('open');
+          document.getElementById('meqScore').textContent='';
+        });
+      });
+    });
+  }
+
+  document.getElementById('meqCheck').addEventListener('click',()=>{
+    let ok=0,bad=0;
+    document.querySelectorAll('.meq-c').forEach(w=>{
+      const p=w.getAttribute('data-p'),k=w.getAttribute('data-k');
+      const mine=(w.querySelector('.meq-v').textContent||'').trim()||'—';
+      w.classList.remove('ok','bad');
+      if(mine===KEY[p][k]){ w.classList.add('ok'); ok++; } else { w.classList.add('bad'); bad++; }
+    });
+    const sc=document.getElementById('meqScore');
+    sc.textContent = ok+' / 32' + (bad?'':' ✓');
+    sc.style.color = bad?'#a12628':'#2E7D32';
+  });
+  document.getElementById('meqReset').addEventListener('click',()=>{
+    document.querySelectorAll('.meq-c').forEach(w=>{
+      w.querySelector('.meq-v').textContent='—';
+      w.classList.remove('has','ok','bad','open');
+    });
+    document.getElementById('meqScore').textContent='';
+    stopAnim(); sel=null; paint();
+  });
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.meq-c'))
+      document.querySelectorAll('.meq-c.open').forEach(x=>x.classList.remove('open'));
+  });
+
+  draw(); buildTable(); paint();
+})();
+
 </script>
 
 </div>
