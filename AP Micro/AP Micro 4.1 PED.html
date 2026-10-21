@@ -155,7 +155,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
   .farr b{line-height:1;transition:font-size .12s;}
   .fcon{margin-top:6px;font-size:21px;font-weight:800;}
   .ctrl{display:flex;flex-direction:column;gap:10px;}
-  .dirbox{display:flex;gap:12px;}
+  .dirbox{display:flex;gap:10px;}
   .dirbox button{
     flex:1;padding:10px 12px;font-size:21px;font-weight:800;border-radius:12px;
     border:2.5px solid rgba(42,90,140,.32);background:#fff;color:#1a3a5c;
@@ -166,7 +166,14 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
     background:var(--blue);border-color:var(--blue);color:#fff;
     box-shadow:0 4px 12px rgba(30,136,229,.32);
   }
-  #btnReset{flex:0 0 auto;padding:10px 20px;border-style:dashed;color:#5b6b7b;}
+  #btnPlay,#btnReset{
+    flex:0 0 auto;width:44px;height:44px;padding:0;display:flex;align-items:center;justify-content:center;
+    font-size:22px;line-height:1;border-radius:12px;border:2.5px solid rgba(42,90,140,.32);
+    background:#fff;color:#1a3a5c;cursor:pointer;transition:.15s;
+  }
+  #btnPlay:hover{background:var(--green);border-color:var(--green);color:#fff;}
+  #btnPlay.playing{background:var(--green);border-color:var(--green);color:#fff;}
+  #btnReset{border-style:dashed;color:#5b6b7b;}
   #btnReset:hover{border-color:var(--red);color:var(--red);}
   .pedbox{background:#F7FBFF;border:2px solid #E3EFFA;border-radius:12px;padding:9px 14px;margin-top:auto;}
   .pedbox .lab{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;color:var(--darkblue);font-size:21px;}
@@ -188,6 +195,30 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
   .verdict.inel{border-color:#e8b4a6;background:#FDF1F1;}
   .verdict.inel h3{color:var(--red);}
   button.pedon{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+  /* ── 光谱页（五格并列） ── */
+  .sp5{flex:1;min-width:0;border:2px solid var(--line);border-radius:14px;padding:10px 9px;
+       display:flex;flex-direction:column;gap:8px;background:#fff;align-self:flex-start;}
+  .sp-tag{font-size:22px;font-weight:800;color:#1a3a5c;text-align:center;}
+  .sp-svg{width:100%;height:auto;flex:0 0 auto;display:block;}
+  .sp-cap{font-size:18px;line-height:1.35;color:#5b6b7b;}
+  .sp-cap b{color:#1a3a5c;}
+  .sp-cap .g{color:#2E7D32;} .sp-cap .r{color:#C62828;} .sp-cap .n{color:#1E88E5;}
+  /* 第五格说明框 */
+  .inf-wrap{display:flex;gap:8px;align-items:flex-start;justify-content:flex-end;margin-top:2px;width:100%;}
+  .inf-arrow{width:56px;height:140px;flex:0 0 auto;margin-top:-70px;}
+  .inf-box{flex:1 1 auto;min-width:0;border:2.5px solid #C62828;border-radius:14px;background:#FDF3F1;
+           padding:9px 18px 10px;}
+  .inf-h{font-size:21px;font-weight:800;color:#C62828;margin-bottom:5px;letter-spacing:.2px;}
+  .inf-lead{font-size:19px;line-height:1.42;color:#33475c;margin-bottom:4px;}
+  .inf-lead b{color:#1a3a5c;}
+  .inf-box ul{margin:2px 0 0 20px;}
+  .inf-box li{font-size:19px;line-height:1.42;color:#33475c;margin-bottom:3px;}
+  .inf-box li b{color:#1a3a5c;}
+  .inf-box .r{color:#C62828;}
+  .inf-box .b{color:#1E88E5;}
+  .sp-note{font-size:16px;color:#7b8794;line-height:1.35;}
+  .sp-note b{color:#1a3a5c;}
 </style>
 </head>
 <body>
@@ -422,13 +453,14 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
         <div class="dirbox">
           <button id="dirUp" class="pedon">▲ Price RISES</button>
           <button id="dirDn">▼ Price FALLS</button>
-          <button id="btnReset">Reset</button>
+          <button id="btnPlay" title="Play step by step">▶</button>
+          <button id="btnReset" title="Back to step 1">&#8634;</button>
         </div>
 
         <div class="pedbox">
           <div class="lab"><span>PED</span><b id="pedVal">1.0</b></div>
-          <input type="range" id="pedSlider" min="0.2" max="5" step="0.1" value="1">
-          <div class="pedends"><span>0.2 — very inelastic</span><span>5 — very elastic</span></div>
+          <input type="range" id="pedSlider" min="0" max="100" step="1" value="66">
+          <div class="pedends"><span>0 — perfectly inelastic</span><span>5 — very elastic</span></div>
         </div>
       </div>
     </section>
@@ -437,6 +469,81 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 </div>
 <div class="slide" data-i="6">
+  <div class="content" style="max-width:1520px;">
+  <div class="course-tag">FIVE DEGREES · 光谱</div>
+  <h1>Five degrees — same price rise, five answers</h1>
+  <hr>
+  <div style="display:flex;gap:14px;align-items:stretch;">
+    <div class="sp5"><div class="sp-tag">PED = 0</div><svg class="sp-svg" data-k="p0"></svg><div class="sp-cap">Vertical D. Quantity never changes → the whole rectangle just grows.<br><b class="g">TR rises</b></div></div>
+    <div class="sp5"><div class="sp-tag">PED &lt; 1</div><svg class="sp-svg" data-k="lt1"></svg><div class="sp-cap">Steep D. Price effect beats quantity effect.<br><b class="g">TR rises</b></div></div>
+    <div class="sp5"><div class="sp-tag">PED = 1</div><svg class="sp-svg" data-k="eq1"></svg><div class="sp-cap">The two areas are equal.<br><b class="n">TR unchanged</b></div></div>
+    <div class="sp5"><div class="sp-tag">PED &gt; 1</div><svg class="sp-svg" data-k="gt1"></svg><div class="sp-cap">Shallow D. Quantity effect beats price effect.<br><b class="r">TR falls</b></div></div>
+    <div class="sp5"><div class="sp-tag">PED = &#8734;</div><svg class="sp-svg" data-k="inf"></svg><div class="sp-cap sp-note">The red dashed line is the firm's output;<br>the blue box is <b>P × Q = TR</b>.</div></div>
+  </div>
+
+  <!-- 第五格的说明：独立文本框 + 箭头指回上面的图 -->
+  <div class="inf-wrap">
+    <div class="inf-box">
+      <div class="inf-h">PED = &#8734; &nbsp;·&nbsp; the perfectly elastic demand, the firm is a <span class="r">price taker</span>.</div>
+      <p class="inf-lead">The market is enormous next to one seller. It can sell <b>all it produces</b> at the going price — so its demand curve is <b class="b">horizontal</b>.</p>
+      <ul>
+        <li><b class="r">Raise the price</b> by even one cent → every buyer leaves → <b class="r">sales fall to zero</b>.</li>
+        <li><b class="r">Lower the price</b> → it sells no more than before, and earns less → <b>why bother?</b></li>
+      </ul>
+    </div>
+    <svg class="inf-arrow" viewBox="0 0 60 150"><line x1="30" y1="146" x2="30" y2="26" stroke="#C62828" stroke-width="4"/><path d="M30 6 l-12 20 h24 z" fill="#C62828"/></svg>
+  </div>
+  </div>
+</div>
+<div class="slide" data-i="7">
+  <div class="content">
+  <div class="course-tag">PED → REVENUE · 收入</div>
+  <h1>How TR moves as the price falls — the total revenue test</h1>
+  <hr>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;">
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+      <div class="rgrp show">
+        <div class="card blue" style="padding:8px 12px;">
+          <h3 class="blue">1 · Watch the rectangle</h3>
+          <p>Press <b>Play ▶</b> — the price slides from top to bottom. Watch only the <b>area</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card a" style="padding:6px 11px;">
+          <h3 style="color:#a57d12;">2 · What did the area do?</h3>
+          <p>It <b class="teal">grew</b>, peaked <b>in the middle</b>, then <b class="dr">shrank</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card g" style="padding:6px 11px;">
+          <h3 class="green">3 · Turn it into PED (the test)</h3>
+          <p>TR <b class="teal">rising</b> → <b>ELASTIC</b> · TR <b class="dr">falling</b> → <b>INELASTIC</b> · peak → <b>PED = 1</b>.</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <div class="card p" style="padding:6px 11px;">
+          <h3 class="pur">4 · Conclusion</h3>
+          <p>Straight line: PED <b>falls as Q rises</b> — elastic, <b>PED = 1 in the middle</b> (Q = 5.5), then inelastic. <b>Not the slope.</b></p>
+        </div>
+      </div>
+      <div class="panel" style="padding:10px 14px;">
+        <div style="display:flex;gap:10px;">
+          <button class="big-btn" id="trPlay" style="font-size:17px;padding:5px 12px;">Play ▶</button>
+          <button class="big-btn" id="trDraw" style="background:#1b5e20;font-size:17px;padding:5px 12px;">Draw TR ▶</button>
+          <button class="big-btn" id="trPed" style="background:#C62828;font-size:17px;padding:5px 12px;">Label PED ●</button>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1.34;min-width:0;display:flex;flex-direction:column;gap:10px;">
+        <div id="trTop" style="height:min(38vh,400px);background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;"></div>
+        <div id="trBot" style="height:min(38vh,400px);background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ───── 13 · WHY PED = 1 ───── -->
+<div class="slide" data-i="8">
   <div class="content">
   <div class="course-tag">GUIDED DEMO · 逐步演示</div>
   <h1>The same two points — three different bases</h1>
@@ -500,108 +607,6 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 7 · FIVE DEGREES ───── -->
-<div class="slide" data-i="7">
-  <div class="content">
-  <div class="course-tag">FIVE DEGREES · 谱系</div>
-  <h1>Five degrees of elasticity</h1>
-  <div class="sub">Every PED value lands in one of five zones. Click each zone — the curve redraws to match.</div><hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <button class="factor-btn" id="sp0">PED = 0 · perfectly inelastic</button>
-        <button class="factor-btn" id="sp1">0 &lt; PED &lt; 1 · inelastic</button>
-        <button class="factor-btn" id="sp2">PED = −1 · unit elastic</button>
-        <button class="factor-btn" id="sp3">1 &lt; PED &lt; ∞ · elastic</button>
-        <button class="factor-btn" id="sp4">PED = ∞ · perfectly elastic</button>
-      </div>
-      <div class="note" id="spDesc" style="background:#EAF4FF;border-left:6px solid var(--blue);min-height:118px;">
-        <p><b>Inelastic (&lt; 1):</b> Qd changes by a <b>smaller</b> percentage than price. Typical of necessities — salt, petrol, medicine. Price and revenue move in the <b>same</b> direction.</p>
-      </div>
-    </div>
-    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
-      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
-        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
-        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
-        <text x="626" y="442" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Q</text>
-        <text x="100" y="30" font-size="32" font-weight="700" fill="#5b6b7b">P ($) ↑</text>
-        <text x="122" y="430" font-size="30" font-weight="800" fill="#1E88E5">D</text>
-        <g id="sp-v" opacity="0">
-          <line x1="252.5" y1="460" x2="252.5" y2="50" stroke="#1E88E5" stroke-width="4.5"/>
-        </g>
-        <g id="sp-steep" opacity="0">
-          <line x1="220" y1="50" x2="285" y2="378" stroke="#1E88E5" stroke-width="4.5"/>
-        </g>
-        <g id="sp-unit" opacity="0">
-          <line x1="195" y1="50" x2="400" y2="378" stroke="#1E88E5" stroke-width="4.5"/>
-        </g>
-        <g id="sp-shallow" opacity="0">
-          <line x1="155" y1="50" x2="545" y2="378" stroke="#1E88E5" stroke-width="4.5"/>
-        </g>
-        <g id="sp-horz" opacity="0">
-          <line x1="90" y1="255" x2="630" y2="255" stroke="#1E88E5" stroke-width="4.5"/>
-        </g>
-      </svg>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ───── 8 · STEEP vs SHALLOW ───── -->
-<div class="slide" data-i="8">
-  <div class="content">
-  <div class="course-tag">CONTRAST · 对比</div>
-  <h1>Same price rise, two very different curves</h1>
-  <div class="sub">Both demand curves start at $30 / 5 cups. Raise the price and watch how differently Qd responds.</div><hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;">
-      <div class="rgrp show">
-        <div class="card r">
-          <h3 class="dr">Steep curve → inelastic</h3>
-          <p>Buyers barely move: Qd falls by a <b>smaller</b> % than the price rose. |PED| &lt; 1.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="card">
-          <h3 class="blue">Shallow curve → elastic</h3>
-          <p>Buyers flee: Qd falls by a <b>bigger</b> % than the price rose. |PED| &gt; 1.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
-          <p><b>Careful:</b> "steep/shallow" only compares curves on the <b>same scale</b>. Always check the axes before judging.</p>
-        </div>
-      </div>
-      <div class="panel">
-        <p class="b db" style="margin-bottom:2px;">Raise the price to: <span id="tpPv">$30</span> <span class="gray">(from $30)</span></p>
-        <input type="range" id="tpP" min="30" max="45" step="1" value="30" style="width:100%;accent-color:#C62828;">
-        <div class="ends"><span>$30</span><span>$45</span></div>
-        <p id="tpRead" style="margin:4px 0 0;font-weight:700;color:#1a3a5c;min-height:34px;">Reveal all 3 steps first — then raise the price yourself.</p>
-      </div>
-    </div>
-    <div style="flex:1.15;min-width:0;background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:4px;">
-      <svg viewBox="0 0 700 520" style="width:100%;height:100%;">
-        <line x1="90" y1="460" x2="630" y2="460" stroke="#94a3b8" stroke-width="2"/>
-        <line x1="90" y1="460" x2="90" y2="50" stroke="#94a3b8" stroke-width="2"/>
-        <text x="626" y="442" text-anchor="end" font-size="32" font-weight="700" fill="#5b6b7b">Q</text>
-        <text x="100" y="30" font-size="32" font-weight="700" fill="#5b6b7b">P ($) ↑</text>
-        <line x1="220" y1="50" x2="285" y2="378" stroke="#C62828" stroke-width="4"/>
-        <text x="295" y="95" font-size="30" font-weight="800" fill="#C62828">steep</text>
-        <line x1="415" y1="378" x2="90" y2="50" stroke="#1E88E5" stroke-width="4"/>
-        <text x="472" y="305" font-size="30" font-weight="800" fill="#1E88E5">shallow</text>
-        <circle cx="252.5" cy="214" r="8" fill="none" stroke="#94a3b8" stroke-width="3"/>
-        <line id="tp-gh" x1="90" y1="214" x2="252.5" y2="214" stroke="#1b5e20" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
-        <line id="tp-gs" x1="252.5" y1="214" x2="252.5" y2="460" stroke="#1b5e20" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
-        <circle id="tp-dotS" cx="252.5" cy="214" r="9" fill="#C62828" opacity="0"/>
-        <circle id="tp-dotL" cx="252.5" cy="214" r="9" fill="#1E88E5" opacity="0"/>
-        <line id="tp-gvS" x1="252.5" y1="214" x2="252.5" y2="460" stroke="#C62828" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
-        <line id="tp-gvL" x1="252.5" y1="214" x2="252.5" y2="460" stroke="#1E88E5" stroke-width="2.5" stroke-dasharray="7 6" opacity="0"/>
-      </svg>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ───── 9 · DETERMINANT 1: SUBSTITUTES (main factor) ───── -->
 <div class="slide" data-i="9">
   <div class="content">
   <div class="course-tag">DETERMINANT 1 · 因素</div>
@@ -722,55 +727,6 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 <!-- ───── 12 · PED → REVENUE (stacked charts, aligned Q axes) ───── -->
 <div class="slide" data-i="12">
   <div class="content">
-  <div class="course-tag">PED → REVENUE · 收入</div>
-  <h1>How TR moves as the price falls — the total revenue test</h1>
-  <hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
-      <div class="rgrp show">
-        <div class="card blue" style="padding:8px 12px;">
-          <h3 class="blue">1 · Watch the rectangle</h3>
-          <p>Press <b>Play ▶</b> — the price slides from top to bottom. Watch only the <b>area</b>.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="card a" style="padding:6px 11px;">
-          <h3 style="color:#a57d12;">2 · What did the area do?</h3>
-          <p>It <b class="teal">grew</b>, peaked <b>in the middle</b>, then <b class="dr">shrank</b>.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="card g" style="padding:6px 11px;">
-          <h3 class="green">3 · Turn it into PED (the test)</h3>
-          <p>TR <b class="teal">rising</b> → <b>ELASTIC</b> · TR <b class="dr">falling</b> → <b>INELASTIC</b> · peak → <b>PED = 1</b>.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="card p" style="padding:6px 11px;">
-          <h3 class="pur">4 · Conclusion</h3>
-          <p>Straight line: PED <b>falls as Q rises</b> — elastic, <b>PED = 1 in the middle</b> (Q = 5.5), then inelastic. <b>Not the slope.</b></p>
-        </div>
-      </div>
-      <div class="panel" style="padding:10px 14px;">
-        <div style="display:flex;gap:10px;">
-          <button class="big-btn" id="trPlay">Play ▶</button>
-          <button class="big-btn" id="trDraw" style="background:#1b5e20;">Draw TR ▶</button>
-        </div>
-      </div>
-    </div>
-    <div style="flex:1.34;min-width:0;display:flex;flex-direction:column;gap:10px;">
-      <div style="font-size:22px;font-weight:800;color:#1E88E5;">P × Q = the rectangle</div>
-      <div id="trTop" style="height:min(32vh,330px);background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;"></div>
-      <div style="font-size:22px;font-weight:800;color:#1b5e20;">Q × TR = the area, as a curve</div>
-      <div id="trBot" style="height:min(32vh,330px);background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:2px;"></div>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ───── 13 · WHY PED = 1 ───── -->
-<div class="slide" data-i="13">
-  <div class="content">
   <div class="course-tag">WHY PED = 1 · 推导</div>
   <h1>What shape has PED = 1 everywhere?</h1>
   <div class="sub">Start from the test you just used: <b>TR = P × Q</b>.</div><hr>
@@ -812,7 +768,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 14 · THE REVENUE RULES ───── -->
-<div class="slide" data-i="14">
+<div class="slide" data-i="13">
   <div class="content">
   <div class="course-tag">THE RULES · 规则</div>
   <h1>The revenue rules — the total revenue test</h1>
@@ -856,7 +812,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 15 · BACK TO THE PRICE WAR ───── -->
-<div class="slide" data-i="15">
+<div class="slide" data-i="14">
   <div class="content">
   <div class="course-tag">CASES · 例题</div>
   <h1>Back to the price war — now you can explain it</h1>
@@ -906,7 +862,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 
 
 <!-- ───── 16 · SUMMARY ───── -->
-<div class="slide" data-i="16">
+<div class="slide" data-i="15">
   <div class="content">
   <div class="course-tag">SUMMARY · 总结</div>
   <h1>PED in seven steps</h1>
@@ -941,7 +897,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
 </div>
 
 <!-- ───── 17 · CLOSING ───── -->
-<div class="slide cover" data-i="17">
+<div class="slide cover" data-i="16">
   <div class="course-tag">THANK YOU · 谢谢</div>
   <h1 style="font-size:clamp(40px,5.5vw,60px);">PED — done ✓</h1>
   <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">Now you can predict the money before the price moves.</div>
@@ -955,7 +911,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:4px 0 7px;width:100%;}
   <div class="dots" id="dots"></div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="copy">© 2026 Dr. Jia</span>
-    <span class="page" id="pageNum">1 / 18</span>
+    <span class="page" id="pageNum">1 / 17</span>
     <button id="nextBtn">▶</button>
   </div>
 </div>
@@ -1051,7 +1007,7 @@ function syncSlideEffects(){
   if(!slide) return;
   try { if(slide.querySelector('#arP')) syncArea(); } catch(err){ console.error('area sync', err); }
   try { if(slide.querySelector('#tpP')) syncTwo(); } catch(err){ console.error('two sync', err); }
-  try { if(slide.querySelector('#trTop')) trReset(); } catch(err){ console.error('tr sync', err); }
+  try { if(slide.querySelector('#trTop')) trRedraw(); } catch(err){ console.error('tr sync', err); }
   try { if(slide.querySelector('#spDesc')) syncSpec(+(slide.dataset.sp || 1)); } catch(err){ console.error('spec sync', err); }
   const _rv = slide.querySelectorAll('.rgrp').length ? [].filter.call(slide.querySelectorAll('.rgrp'), function(gg){ return gg.classList.contains('show'); }).length : 0;
   try { if(slide.querySelector('#mpA')){
@@ -1148,13 +1104,16 @@ function trAxis(which){
     g += '<line x1="' + x + '" y1="' + TR_Y0 + '" x2="' + x + '" y2="287" stroke="#94a3b8" stroke-width="2"/>';
     g += '<text x="' + x + '" y="312" text-anchor="middle" font-size="30" font-weight="700" fill="#7b8794">' + q + '</text>';
   }
-  g += '<line x1="' + TR_X0 + '" y1="' + TR_Y0 + '" x2="' + trX(TRQ_MAX).toFixed(1) + '" y2="' + TR_Y0 + '" stroke="#94a3b8" stroke-width="2"/>';
+  g += '<text x="' + (TR_X0 - 16) + '" y="76" text-anchor="end" font-size="28" font-weight="800" fill="#33475c">' + (which === 'top' ? 'P' : 'TR') + '</text>';g += '<line x1="' + TR_X0 + '" y1="' + TR_Y0 + '" x2="' + trX(TRQ_MAX).toFixed(1) + '" y2="' + TR_Y0 + '" stroke="#94a3b8" stroke-width="2"/>';
   g += '<line x1="' + TR_X0 + '" y1="' + TR_Y0 + '" x2="' + TR_X0 + '" y2="30" stroke="#94a3b8" stroke-width="2"/>';
   /* Q 轴名放在图内右下（不与刻度标签同排） */
   g += '<text x="622" y="246" text-anchor="end" font-size="30" font-weight="700" fill="#7b8794">Q \u2192</text>';
-  return g;
+  
+return g;
 }
-function trRender(qNow, qDrawn, showRect){
+let trQ=5, trDrawn=0;
+function trRedraw(){ trRender(trQ, trDrawn, true); }
+function trRender(qNow, qDrawn, showRect){ trQ=qNow; trDrawn=qDrawn;
   const top = $('trTop'), bot = $('trBot');
   if(!top || !bot) return;
   const P = trP(qNow), tr = P * qNow;
@@ -1173,6 +1132,7 @@ function trRender(qNow, qDrawn, showRect){
     g += '<text id="tr-tv" x="622" y="58" text-anchor="end" font-size="30" font-weight="800" fill="#1b5e20">TR = $' + fm(tr) + '</text>';
   }
   top.innerHTML = '<svg viewBox="-30 0 730 356" style="width:100%;height:100%;display:block;">' + g + '</svg>';
+  try { if(typeof applyPedMarks === 'function') applyPedMarks(); } catch(err){}
   /* ── 下图：TR 曲线（Draw 时从左到右生长） ── */
   let g2 = trAxis('bot');
   if(qDrawn > 0.01){
@@ -1211,6 +1171,50 @@ function trVerdict(q){
 }
 let trTimer = null;
 function trStop(){ if(trTimer){ clearInterval(trTimer); trTimer = null; } }
+let pedStep=0, pedTimer=null;
+  function trLabelPed(){
+    /* 一次点击：自动依次标完 5 个；全部显示后再点一次清空 */
+    if(pedTimer){ clearInterval(pedTimer); pedTimer=null; }
+    if(pedStep>=5){
+      pedStep=0; applyPedMarks(); if($('trPed')) $('trPed').textContent='Label PED \u25CF';
+      return;
+    }
+    pedStep=0; applyPedMarks();
+    if($('trPed')) $('trPed').textContent='Label PED ...';
+    pedTimer=setInterval(function(){
+      pedStep++;
+      applyPedMarks();
+      if(pedStep>=5){
+        clearInterval(pedTimer); pedTimer=null;
+        if($('trPed')) $('trPed').textContent='Clear PED \u25CB';
+      }
+    }, 190);
+  }
+  function applyPedMarks(){
+    const top = $('trTop'); if(!top) return;
+    const svg = top.querySelector('svg'); if(!svg) return;
+    svg.querySelectorAll('.pedmark').forEach(function(e){ e.remove(); });
+    if(pedStep<=0) return;
+    const marks = [[0,'\u221E'],[2.75,'> 1'],[5.5,'= 1'],[8.25,'< 1'],[11,'0']];
+    marks.slice(0, pedStep).forEach(function(m,i){
+      const x = trX(m[0]), y = trYTop(55 - 5*m[0]);
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('class','pedmark');
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',9);
+      c.setAttribute('fill','#C62828'); c.setAttribute('stroke','#fff'); c.setAttribute('stroke-width',3);
+      g.appendChild(c);
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      const dx = (i===0) ? 14 : (i===4 ? -14 : 0);
+      const dy = (i===0) ? 44 : ((i===4) ? 30 : (i%2===0 ? -20 : 30));
+      t.setAttribute('x', x + dx);
+      t.setAttribute('y', y + dy);
+      t.setAttribute('font-size','21'); t.setAttribute('font-weight','800');
+      t.setAttribute('fill','#C62828');
+      t.setAttribute('text-anchor', (i===0)?'start':((i===4)?'end':'middle'));
+      t.textContent = m[1]; g.appendChild(t); svg.appendChild(g);
+    });
+  }
 function trReset(){
   trStop();
   const pb = $('trPlay'), db = $('trDraw');
@@ -1243,7 +1247,7 @@ function trDrawAnim(){
 try {
   const pb = $('trPlay'), db = $('trDraw');
   if(pb) pb.onclick = trPlayAnim;
-  if(db) db.onclick = trDrawAnim;
+  if(db) db.onclick = trDrawAnim; if($('trPed')) $('trPed').onclick = trLabelPed;
   trReset();
 } catch(err){ console.error('revenue page bind', err); }
 
@@ -1301,7 +1305,7 @@ function mpBar(horizontal, from0, to, col, lab, labDy){
     g += '<rect x="' + x + '" y="' + mpY(to.p) + '" width="14" height="' + (MPF.oy - mpY(to.p)) + '" rx="3" fill="' + col + '"/>';
     if(lab) g += '<text x="' + (x - 8) + '" y="' + (mpY(to.p) + (labDy || -12)) + '" text-anchor="end" font-size="34" font-weight="800" fill="' + col + '">' + lab + '</text>';
   }
-  return g;
+    return g;
 }
 function mpStep(step){
   const box = $('mpA'); if(!box) return;
@@ -1437,8 +1441,7 @@ try {
 
 /* ══════════ 7 · S8 FIVE-DEGREES CHIPS ══════════ */
 try {
-  ['sp0', 'sp1', 'sp2', 'sp3', 'sp4'].forEach(function(id, i){
-    $(id).onclick = function(){
+  ['sp0', 'sp1', 'sp2', 'sp3', 'sp4'].forEach(function(id, i){ if(!$(id)) return; $(id).onclick = function(){
       const slide = $(id).closest('.slide');
       if(slide) slide.dataset.sp = String(i);
       syncSpec(i);
@@ -1544,98 +1547,125 @@ try {
 
   function draw(){
     svg.innerHTML='';
+    /* ── 缓动时间轴：prog 0→1 ── */
+    const cl=x=>Math.max(0,Math.min(1,x));
+    const ez=x=>x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+    const morph = ez(cl(prog/0.55));          /* 矩形:旧 → 新 */
+    const segA  = ez(cl((prog-0.20)/0.35));   /* ΔP / ΔQ 线段 */
+    const fillA = ez(cl((prog-0.50)/0.28));   /* 绿/红面积 */
+    const endA  = ez(cl((prog-0.76)/0.24));   /* 箭头 + 图例 */
+
     const dq=ped*DP;
     const Q1=Math.max(1, Q0*(1-dir*dq/100));
     const P1=P0*(1+dir*DP/100);
     const TR0=P0*Q0, TR1=P1*Q1, up=TR1>TR0+1e-9;
-    const w0=Q0*K, w1=Q1*K, h0=P0*K, h1=P1*K;
-    const lo=Math.min(h0,h1), hi=Math.max(h0,h1);
-    const lw=Math.min(w0,w1), rw=Math.max(w0,w1);
+    const w0=Q0*K, h0=P0*K;
+    /* 当前（插值中的）价格与数量 */
+    const Pm=P0+(P1-P0)*morph, Qm=Q0+(Q1-Q0)*morph;
+    const wm=Qm*K, hm=Pm*K;
+    const lo=Math.min(h0,hm), hi=Math.max(h0,hm);
+    const lw=Math.min(w0,wm), rw=Math.max(w0,wm);
     const dH=hi-lo, dW=rw-lw;
 
-    /* ① 坐标轴（P 轴就在矩形左边缘上） */
+    /* ① 坐标轴 */
     svg.appendChild(el('line',{x1:OX,y1:OY,x2:508,y2:OY,stroke:'#7a93ad','stroke-width':3}));
     svg.appendChild(el('line',{x1:OX,y1:OY,x2:OX,y2:86,stroke:'#7a93ad','stroke-width':3}));
     svg.appendChild(el('text',{x:OX-10,y:78,'font-size':23,'font-weight':700,fill:'#5b6b7b','text-anchor':'end'},'P'));
     svg.appendChild(el('text',{x:508,y:OY-10,'font-size':23,'font-weight':700,fill:'#5b6b7b','text-anchor':'end'},'Q'));
 
-    /* ② 三块面积：重叠（保住的收入）+ 增量（绿）+ 缺口（红） */
+    /* ② 重叠区（保住的收入）—— 随变形实时伸缩 */
     svg.appendChild(el('rect',{x:OX,y:OY-lo,width:lw,height:lo,fill:'#e7eef5'}));
-    if(dir>0){        /* 涨价：矩形变高变窄 */
-      svg.appendChild(el('rect',{x:OX,y:OY-hi,width:lw,height:dH,fill:'#cfe8d3'}));
-      svg.appendChild(el('rect',{x:OX+lw,y:OY-lo,width:dW,height:lo,fill:'#f6cfc7'}));
-      tagStrip(OX+lw/2, OY-hi+dH/2, 'gained', '#2E7D32', dH);
-      tagStrip(OX+lw+dW/2, OY-lo/2, 'lost', '#C62828', lo);
-    }else{            /* 降价：矩形变矮变宽 */
-      svg.appendChild(el('rect',{x:OX,y:OY-hi,width:lw,height:dH,fill:'#f6cfc7'}));
-      svg.appendChild(el('rect',{x:OX+lw,y:OY-lo,width:dW,height:lo,fill:'#cfe8d3'}));
-      tagStrip(OX+lw/2, OY-hi+dH/2, 'lost', '#C62828', dH);
-      tagStrip(OX+lw+dW/2, OY-lo/2, 'gained', '#2E7D32', lo);
+
+    /* ③ 增加 / 减少的面积 —— 随变形长大，再淡入标签 */
+    if(dH>0.5||dW>0.5){
+      if(dir>0){
+        svg.appendChild(el('rect',{x:OX,y:OY-hi,width:lw,height:dH,fill:'#cfe8d3',opacity:fillA}));
+        svg.appendChild(el('rect',{x:OX+lw,y:OY-lo,width:dW,height:lo,fill:'#f6cfc7',opacity:fillA}));
+        if(fillA>0.55){
+          tagStrip(OX+lw/2, OY-hi+dH/2, 'gained', '#2E7D32', dH);
+          tagStrip(OX+lw+dW/2, OY-lo/2, 'lost', '#C62828', lo);
+        }
+      }else{
+        svg.appendChild(el('rect',{x:OX,y:OY-hi,width:lw,height:dH,fill:'#f6cfc7',opacity:fillA}));
+        svg.appendChild(el('rect',{x:OX+lw,y:OY-lo,width:dW,height:lo,fill:'#cfe8d3',opacity:fillA}));
+        if(fillA>0.55){
+          tagStrip(OX+lw/2, OY-hi+dH/2, 'lost', '#C62828', dH);
+          tagStrip(OX+lw+dW/2, OY-lo/2, 'gained', '#2E7D32', lo);
+        }
+      }
     }
 
-    /* ③ 两个矩形：只画描边 */
+    /* ④ 变化前的矩形（始终） */
     svg.appendChild(el('rect',{x:OX,y:OY-h0,width:w0,height:h0,fill:'none',
       stroke:'#8fa3b8','stroke-width':3,'stroke-dasharray':'9 7'}));
-    svg.appendChild(el('rect',{x:OX,y:OY-h1,width:w1,height:h1,fill:'none',
-      stroke:up?'#2E7D32':'#C62828','stroke-width':4}));
-
-    /* ④ 需求曲线：过两个右上顶点，只向两端各延 26px（示意，不横穿画面） */
-    const A=[OX+w0,OY-h0], B=[OX+w1,OY-h1];
-    const m=(B[1]-A[1])/(B[0]-A[0]);
-    const ext=x=>A[1]+m*(x-A[0]);
-    /* D 只比两个顶点各多出 18px —— 纯示意，不横穿画面 */
-    const ex1=Math.min(A[0],B[0])-18, ex2=Math.max(A[0],B[0])+18;
-    svg.appendChild(el('line',{x1:ex1,y1:ext(ex1),x2:ex2,y2:ext(ex2),
-      stroke:'#1a5276','stroke-width':4.5,'stroke-linecap':'round'}));
-    svg.appendChild(el('text',{x:ex1,y:ext(ex1)-12,'font-size':26,'font-weight':800,
-      fill:'#1a5276','text-anchor':'middle'},'D'));
-
-    /* ⑤ ΔP：P 轴左侧竖直线段 + 双箭头，标签在上方 */
-    const px=OX-20;
-    svg.appendChild(el('line',{x1:px,y1:OY-h0,x2:px,y2:OY-h1,stroke:dir>0?'#1E88E5':'#F0B429','stroke-width':4}));
-    svg.appendChild(el('path',{d:'M'+px+' '+(OY-h1+(dir>0?-9:9))+' l-6 '+(dir>0?12:-12)+' h12 z',
-      fill:dir>0?'#1E88E5':'#F0B429'}));
-    svg.appendChild(el('path',{d:'M'+px+' '+(OY-h0+(dir>0?9:-9))+' l-6 '+(dir>0?-12:12)+' h12 z',
-      fill:dir>0?'#1E88E5':'#F0B429'}));
-    svg.appendChild(el('text',{x:px,y:Math.min(OY-h0,OY-h1)-16,'font-size':23,'font-weight':800,
-      fill:dir>0?'#1E88E5':'#a57d12','text-anchor':'middle'},(dir>0?'+':'−')+DP+'%  ΔP'));
-
-    /* ⑥ ΔQ：Q 轴下方水平线段 + 双箭头，标签放线段右侧（不占左下角） */
-    const qy=OY+16;
-    const qa=OX+w0, qb=OX+w1;
-    svg.appendChild(el('line',{x1:qa,y1:qy,x2:qb,y2:qy,stroke:'#C62828','stroke-width':4}));
-    svg.appendChild(el('path',{d:'M'+qb+' '+qy+' l'+(dir>0?12:-12)+' -6 v12 z',fill:'#C62828'}));
-    svg.appendChild(el('path',{d:'M'+qa+' '+qy+' l'+(dir>0?-12:12)+' -6 v12 z',fill:'#C62828'}));
-    svg.appendChild(el('text',{x:Math.max(qa,qb)+14,y:qy+8,'font-size':23,'font-weight':800,
-      fill:'#C62828'},(dir>0?'−':'+')+dq.toFixed(0)+'%  ΔQ'));
-
-    /* ⑦ 两个矩形各自标注：after 在上方，before 在底部内侧 */
     svg.appendChild(el('text',{x:OX+8,y:OY-16,'font-size':21,'font-weight':700,fill:'#7b8b9b'},'before'));
-    svg.appendChild(el('text',{x:OX+8,y:OY-h1-10,'font-size':21,'font-weight':700,
-      fill:up?'#2E7D32':'#C62828'},'after'));
 
-    /* ⑧ Total revenue 箭头：文字永远放在箭头的另一侧，不重叠 */
-    const tx=524, ty=OY-hi+52;
-    svg.appendChild(el('line',{x1:tx,y1:ty,x2:tx,y2:ty+(up?-70:70),stroke:up?'#2E7D32':'#C62828','stroke-width':6}));
-    svg.appendChild(el('path',{d: up? 'M'+tx+' '+(ty-80)+' l-9 17 h18 z' : 'M'+tx+' '+(ty+80)+' l-9 -17 h18 z',
-      fill:up?'#2E7D32':'#C62828'}));
-    /* 文字右对齐到箭头，避免超出画布右缘 */
-    svg.appendChild(el('text',{x:tx,y: up ? ty+26 : ty-26,'font-size':23,'font-weight':800,
-      fill:up?'#2E7D32':'#C62828','text-anchor':'end'},'Total revenue'));
-    svg.appendChild(el('text',{x:tx,y: up ? ty+50 : ty-50,'font-size':24,'font-weight':800,
-      fill:up?'#2E7D32':'#C62828','text-anchor':'end'},up?'▲ UP':'▼ DOWN'));
+    /* ⑤ 需求曲线：斜率取自【终态】，整段动画中保持不变 */
+    const A=[OX+w0,OY-h0], Bf=[OX+Q1*K,OY-P1*K];
+    const vertical = Math.abs(Bf[0]-A[0]) < 0.8;        /* PED≈0 → 垂直线 */
+    let ex1, ex2, y1, y2;
+    if(vertical){
+      ex1=ex2=A[0]; y1=OY-h0-30; y2=OY-h0+30;
+    }else{
+      const m=(Bf[1]-A[1])/(Bf[0]-A[0]);
+      const ext=x=>A[1]+m*(x-A[0]);
+      ex1=Math.min(A[0],Bf[0])-18; ex2=Math.max(A[0],Bf[0])+18;
+      y1=ext(ex1); y2=ext(ex2);
+    }
+    svg.appendChild(el('line',{x1:ex1,y1:y1,x2:ex2,y2:y2,
+      stroke:'#1a5276','stroke-width':4.5,'stroke-linecap':'round'}));
+    svg.appendChild(el('text',{x:vertical?ex1-10:ex1,y:vertical?y2:y1-12,'font-size':26,'font-weight':800,
+      fill:'#1a5276','text-anchor':vertical?'end':'middle'},'D'));
 
-    /* ⑨ 图例：放进图里、左下角、一行排开，三种颜色各说明干什么 */
-    const lg=[['#cfe8d3','gained'],['#f6cfc7','lost'],['#e7eef5','kept']];
-    lg.forEach((it,i)=>{
-      const lx=76+i*118, ly=496;
-      svg.appendChild(el('rect',{x:lx,y:ly-11,width:22,height:13,rx:3,fill:it[0],
-        stroke:'#c9d6e3','stroke-width':1}));
-      svg.appendChild(el('text',{x:lx+28,y:ly,'font-size':19,fill:'#5b6b7b'},it[1]));
-    });
+    /* ⑥ 变化后的矩形（跟着变形走） */
+    svg.appendChild(el('rect',{x:OX,y:OY-hm,width:wm,height:hm,fill:'none',
+      stroke:up?'#2E7D32':'#C62828','stroke-width':4,opacity:0.25+0.75*morph}));
 
-    /* ⑩ 公式框：百分比字号 ∝ 大小；箭头方向跟着价格方向 */
-    const fs=v=>Math.min(24+v*0.8, 40);   /* 封顶 40px，最大时也不换行 */
+    /* ⑦ ΔP */
+    if(segA>0.01){
+      const px=OX-20, yTop=OY-hm, yBot=OY-h0;
+      svg.appendChild(el('line',{x1:px,y1:yBot,x2:px,y2:yTop,stroke:dir>0?'#1E88E5':'#F0B429','stroke-width':4,opacity:segA}));
+      svg.appendChild(el('path',{d:'M'+px+' '+(yTop+(dir>0?-9:9))+' l-6 '+(dir>0?12:-12)+' h12 z',
+        fill:dir>0?'#1E88E5':'#F0B429',opacity:segA}));
+      svg.appendChild(el('path',{d:'M'+px+' '+(yBot+(dir>0?9:-9))+' l-6 '+(dir>0?-12:12)+' h12 z',
+        fill:dir>0?'#1E88E5':'#F0B429',opacity:segA}));
+      svg.appendChild(el('text',{x:px,y:Math.min(yTop,yBot)-16,'font-size':23,'font-weight':800,
+        fill:dir>0?'#1E88E5':'#a57d12','text-anchor':'middle',opacity:segA},(dir>0?'+':'−')+DP+'%  ΔP'));
+    }
+
+    /* ⑧ ΔQ */
+    if(segA>0.01){
+      const qy=OY+16, qa=OX+w0, qb=OX+wm;
+      svg.appendChild(el('line',{x1:qa,y1:qy,x2:qb,y2:qy,stroke:'#C62828','stroke-width':4,opacity:segA}));
+      svg.appendChild(el('path',{d:'M'+qb+' '+qy+' l'+(dir>0?12:-12)+' -6 v12 z',fill:'#C62828',opacity:segA}));
+      svg.appendChild(el('path',{d:'M'+qa+' '+qy+' l'+(dir>0?-12:12)+' -6 v12 z',fill:'#C62828',opacity:segA}));
+      svg.appendChild(el('text',{x:Math.max(qa,qb)+14,y:qy+8,'font-size':23,'font-weight':800,
+        fill:'#C62828',opacity:segA},(dir>0?'−':'+')+dq.toFixed(0)+'%  ΔQ'));
+    }
+
+    /* ⑨ 总收入方向 + 图例（最后出现） */
+    if(endA>0.01){
+      const tx=524, ty=OY-hi+52;
+      svg.appendChild(el('line',{x1:tx,y1:ty,x2:tx,y2:ty+(up?-70:70),stroke:up?'#2E7D32':'#C62828','stroke-width':6,opacity:endA}));
+      svg.appendChild(el('path',{d: up? 'M'+tx+' '+(ty-80)+' l-9 17 h18 z' : 'M'+tx+' '+(ty+80)+' l-9 -17 h18 z',
+        fill:up?'#2E7D32':'#C62828',opacity:endA}));
+      svg.appendChild(el('text',{x:tx,y: up ? ty+26 : ty-26,'font-size':23,'font-weight':800,
+        fill:up?'#2E7D32':'#C62828','text-anchor':'end',opacity:endA},'Total revenue'));
+      svg.appendChild(el('text',{x:tx,y: up ? ty+50 : ty-50,'font-size':24,'font-weight':800,
+        fill:up?'#2E7D32':'#C62828','text-anchor':'end',opacity:endA},up?'▲ UP':'▼ DOWN'));
+    }
+    if(endA>0.4){
+      const lg=[['#cfe8d3','gained'],['#f6cfc7','lost'],['#e7eef5','kept']];
+      lg.forEach((it,k)=>{
+        const lx=76+k*118, ly=496;
+        svg.appendChild(el('rect',{x:lx,y:ly-11,width:22,height:13,rx:3,fill:it[0],
+          stroke:'#c9d6e3','stroke-width':1,opacity:endA}));
+        svg.appendChild(el('text',{x:lx+28,y:ly,'font-size':19,fill:'#5b6b7b',opacity:endA},it[1]));
+      });
+    }
+
+    /* ⑩ 右侧面板（与动画同步） */
+    const fs=v=>Math.min(24+v*0.8, 40);
     const P=document.getElementById('fP'), Q=document.getElementById('fQ');
     P.querySelector('.arw').textContent = dir>0 ? '↑' : '↓';
     P.querySelector('b').textContent = DP+'%';
@@ -1654,32 +1684,123 @@ try {
     con.textContent=(dq>DP?'ΔQ bigger':(dq<DP?'ΔP bigger':'equal'))+' → TR '+trTop;
     con.style.color = trTop==='up' ? '#2E7D32' : (trTop==='down' ? '#C62828' : '#1a3a5c');
 
-    /* ⑪ 右侧分数公式字号 */
     $('frNum').textContent='%ΔQ = '+dq.toFixed(0)+'%';
     $('frNum').setAttribute('style','font-size:'+fs(dq).toFixed(0)+'px');
     $('frDen').textContent='%ΔP = '+DP+'%';
     $('frDen').setAttribute('style','font-size:'+fs(DP).toFixed(0)+'px');
 
-    /* ⑫ 结论 */
     const trDir=(elastic?(rise?'down':'up'):(inelastic?(rise?'up':'down'):'unchanged'));
     const v=$('verdict');
     v.className='verdict '+(elastic?'el':'inel');
-    $('vHead').textContent='PED = '+ped.toFixed(1)+(elastic?' > 1 · elastic':(inelastic?' < 1 · inelastic':' = 1 · unit elastic'));
+    const pedTxt = (ped<0.03 ? '0' : ped.toFixed(1));
+    $('vHead').textContent='PED = '+pedTxt+(elastic?' > 1 · elastic':(inelastic?' < 1 · inelastic':' = 1 · unit elastic'));
     $('vBody').innerHTML='%ΔQ <b>'+(dq>DP?'&gt;':(dq<DP?'&lt;':'='))+'</b> %ΔP, so PED '+
       (elastic?'&gt; 1':(inelastic?'&lt; 1':'= 1'))+'. '+
       (elastic?'Quantity answers more than price':(inelastic?'Price answers more than quantity':'They answer equally'))+
       '.<br>A price '+(rise?'rise':'fall')+' therefore takes total revenue <b style="color:'+
       (trDir==='up'?'#2E7D32':(trDir==='down'?'#C62828':'#1a3a5c'))+'">'+trDir+'</b>.';
-    $('pedVal').textContent=ped.toFixed(1);
+    $('pedVal').textContent = (ped<0.03 ? '0' : ped.toFixed(1));
   }
 
-  $('pedSlider').addEventListener('input',function(){ped=+this.value;draw();});
-  $('dirUp').addEventListener('click',function(){dir=1;this.classList.add('pedon');$('dirDn').classList.remove('pedon');draw();});
-  $('dirDn').addEventListener('click',function(){dir=-1;this.classList.add('pedon');$('dirUp').classList.remove('pedon');draw();});
-  $('btnReset').addEventListener('click',function(){
-    ped=1;dir=1;$('pedSlider').value=1;
-    $('dirUp').classList.add('pedon');$('dirDn').classList.remove('pedon');draw();});
+  /* ── 连续缓动播放 ── */
+  let prog=0, raf=null;
+  const DUR=2400;                                  /* 整段 2.4 秒 */
+  function play(){
+    if(raf) return;
+    const t0=performance.now();
+    const btn=$('btnPlay');
+    btn.classList.add('playing'); btn.textContent='❙❙';
+    const step=now=>{
+      prog=Math.min((now-t0)/DUR, 1);
+      draw();
+      if(prog<1){ raf=requestAnimationFrame(step); }
+      else { raf=null; btn.classList.remove('playing'); btn.textContent='▶'; }
+    };
+    raf=requestAnimationFrame(step);
+  }
+  function stop(){
+    if(raf){ cancelAnimationFrame(raf); raf=null; }
+    const btn=$('btnPlay');
+    btn.classList.remove('playing'); btn.textContent='▶';
+  }
+  $('pedSlider').addEventListener('input',function(){stop();prog=1;ped=(+this.value)/20;draw();});
+  $('dirUp').addEventListener('click',function(){stop();prog=1;dir=1;this.classList.add('pedon');$('dirDn').classList.remove('pedon');draw();});
+  $('dirDn').addEventListener('click',function(){stop();prog=1;dir=-1;this.classList.add('pedon');$('dirUp').classList.remove('pedon');draw();});
+  $('btnPlay').addEventListener('click', play);
+  $('btnReset').addEventListener('click',function(){ stop(); prog=0; draw(); });
   draw();
+})();
+
+
+/* ══════════ 光谱页：五格小图 ══════════ */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a,x)=>{const e=document.createElementNS(NS,t);
+    for(const k in a)e.setAttribute(k,a[k]); if(x!==undefined)e.textContent=x; return e;};
+
+  function mini(svg, kind){
+    if(!svg) return;
+    const W=280,H=232, OX=44,OY=196, P0=40,Q0=50,K=2.3;
+    const P1=P0*1.1, h0=P0*K, h1=P1*K, w0=Q0*K;
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    svg.innerHTML='';
+    /* 轴 */
+    svg.appendChild(el('line',{x1:OX,y1:OY,x2:W-8,y2:OY,stroke:'#7a93ad','stroke-width':2.5}));
+    svg.appendChild(el('line',{x1:OX,y1:OY,x2:OX,y2:16,stroke:'#7a93ad','stroke-width':2.5}));
+    svg.appendChild(el('text',{x:W-10,y:OY-8,'font-size':18,'font-weight':700,fill:'#5b6b7b','text-anchor':'end'},'Q'));
+    svg.appendChild(el('text',{x:OX-8,y:26,'font-size':18,'font-weight':700,fill:'#5b6b7b','text-anchor':'end'},'P'));
+
+    if(kind==='inf'){
+      /* 特殊：水平 D + 企业产量的竖虚线 + 矩形 */
+      const yD=OY-96;
+      svg.appendChild(el('line',{x1:OX,y1:yD,x2:W-10,y2:yD,stroke:'#1a5276','stroke-width':4.5,'stroke-linecap':'round'}));
+      svg.appendChild(el('text',{x:W-14,y:yD-10,'font-size':20,'font-weight':800,fill:'#1a5276','text-anchor':'end'},'D'));
+      const xq=OX+118;
+      svg.appendChild(el('line',{x1:xq,y1:OY,x2:xq,y2:yD,stroke:'#C62828','stroke-width':3,'stroke-dasharray':'7 6'}));
+      svg.appendChild(el('text',{x:xq+6,y:OY-8,'font-size':17,'font-weight':800,fill:'#C62828'},'firm output'));
+      svg.appendChild(el('rect',{x:OX,y:yD,width:xq-OX,height:OY-yD,fill:'rgba(30,136,229,.16)',
+        stroke:'#1E88E5','stroke-width':3}));
+      svg.appendChild(el('text',{x:OX+(xq-OX)/2,y:OY-52,'font-size':19,'font-weight':800,
+        fill:'#1E88E5','text-anchor':'middle'},'TR'));
+      return;
+    }
+
+    const ped = kind==='p0'?0 : kind==='lt1'?0.5 : kind==='eq1'?1 : 2;
+    const Q1=Q0*(1-ped*0.1), w1=Q1*K;
+    const lo=Math.min(h0,h1), hi=Math.max(h0,h1);
+    const lw=Math.min(w0,w1), rw=Math.max(w0,w1);
+    const dH=hi-lo, dW=rw-lw, up=(P1*Q1)>(P0*Q0);
+
+    /* 面积 */
+    svg.appendChild(el('rect',{x:OX,y:OY-lo,width:lw,height:lo,fill:'#e7eef5'}));
+    svg.appendChild(el('rect',{x:OX,y:OY-hi,width:lw,height:dH,fill:'#cfe8d3'}));
+    svg.appendChild(el('rect',{x:OX+lw,y:OY-lo,width:dW,height:lo,fill:'#f6cfc7'}));
+    /* 两矩形描边 */
+    svg.appendChild(el('rect',{x:OX,y:OY-h0,width:w0,height:h0,fill:'none',
+      stroke:'#8fa3b8','stroke-width':2.5,'stroke-dasharray':'8 6'}));
+    svg.appendChild(el('rect',{x:OX,y:OY-h1,width:w1,height:h1,fill:'none',
+      stroke:up?'#2E7D32':'#C62828','stroke-width':3}));
+    /* D 线（短示意，按该弹性的斜率） */
+    const A=[OX+w0,OY-h0], Bf=[OX+w1,OY-h1];
+    const ver=Math.abs(Bf[0]-A[0])<1;
+    if(ver){
+      svg.appendChild(el('line',{x1:A[0],y1:OY-h0-14,x2:A[0],y2:OY-h0+14,
+        stroke:'#1a5276','stroke-width':4,'stroke-linecap':'round'}));
+      svg.appendChild(el('text',{x:A[0]+8,y:OY-h0-16,'font-size':20,'font-weight':800,fill:'#1a5276'},'D'));
+    }else{
+      const m=(Bf[1]-A[1])/(Bf[0]-A[0]);
+      const ext=x=>A[1]+m*(x-A[0]);
+      const e1=Math.min(A[0],Bf[0])-12, e2=Math.max(A[0],Bf[0])+12;
+      svg.appendChild(el('line',{x1:e1,y1:ext(e1),x2:e2,y2:ext(e2),
+        stroke:'#1a5276','stroke-width':4,'stroke-linecap':'round'}));
+      svg.appendChild(el('text',{x:e2+2,y:ext(e2)-20,'font-size':20,'font-weight':800,
+        fill:'#1a5276','text-anchor':'end'},'D'));
+    }
+  }
+
+  document.querySelectorAll('.sp-svg').forEach(function(sv){
+    mini(sv, sv.getAttribute('data-k'));
+  });
 })();
 
 </script>
