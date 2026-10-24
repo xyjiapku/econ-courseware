@@ -98,13 +98,36 @@ body{font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;background:#F2F6F
 .cover .botbar{position:absolute;bottom:56px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--blue),#1A73E8);}
 /* reveal button: fixed right middle */
 .rbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.rbtn{writing-mode:vertical-rl;font-size:clamp(15px,1.3vw,18px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.rbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
 .rbtn:hover{background:var(--blue);color:#fff;}
 .rbtn:disabled{opacity:.35;cursor:default;}
 .rbtn-icon{font-size:12px;color:var(--blue);transition:.15s;}
+/* ── p9 时间谱：一个例子一档，颜色从弹性渐变到非弹性 ── */
+.ladder{display:flex;flex-direction:column;gap:6px;}
+.lad-grid{display:flex;gap:clamp(8px,1vw,14px);align-items:stretch;}
+.lad-col{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;
+  border-radius:12px;padding:clamp(10px,1.3vh,16px) 8px;border:2px solid transparent;}
+.lad-col b{font-size:clamp(20px,1.7vw,25px);color:#22394f;line-height:1.2;}
+.lad-col i{font-style:normal;font-size:clamp(18px,1.4vw,21px);color:#5b6b7b;}
+.lad-col em{font-style:normal;font-weight:800;font-size:clamp(19px,1.5vw,23px);margin-top:2px;}
+.lad-axis{display:flex;align-items:center;gap:10px;color:#5b6b7b;font-weight:700;
+  font-size:clamp(19px,1.5vw,23px);}
+.lad-axis .ln{flex:1;height:3px;background:linear-gradient(90deg,#1e8449,#2E7D32 28%,#F0B429 62%,#b03a2e);border-radius:2px;}
+/* ── p10 二选一流程图 ── */
+.qbox{background:#EAF4FF;border:2.5px solid var(--blue);border-radius:14px;padding:clamp(10px,1.4vh,16px) 20px;
+  text-align:center;font-size:clamp(23px,2vw,29px);font-weight:800;color:#1a3a5c;align-self:center;}
+.yn{font-size:clamp(20px,1.6vw,24px);font-weight:800;padding:5px 16px;border-radius:20px;}
+.yn.y{background:#E8F5E9;color:#1b5e20;border:2px solid #a9d5b3;}
+.yn.n{background:#FDECEA;color:#b03a2e;border:2px solid #f0b8b0;}
+.flowarr{font-size:26px;color:#94a3b8;line-height:1;}
+/* 紧凑列：一页要放很多块时用 */
+.smcol .card{padding:clamp(8px,1vh,12px) clamp(12px,1.6vw,20px);}
+.smcol .card p{font-size:clamp(19px,1.55vw,23px);line-height:1.34;}
+.smcol .card h3{font-size:clamp(21px,2vw,26px);margin-bottom:2px;}
+.smcol .note p{font-size:clamp(19px,1.5vw,22px);line-height:1.32;}
 /* summary reveal button: same position */
 .sbtn-wrap{position:fixed;right:clamp(6px,1.2vw,20px);top:50%;transform:translateY(-50%);z-index:50;display:none;}
-.sbtn{writing-mode:vertical-rl;font-size:clamp(15px,1.3vw,18px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
+.sbtn{writing-mode:vertical-rl;font-size:clamp(22px,1.6vw,24px);padding:16px 6px;border:2px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;font-weight:600;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.08);letter-spacing:1px;}
 .sbtn:hover{background:var(--blue);color:#fff;}
 .sbtn:disabled{opacity:.35;cursor:default;}
 /* content */
@@ -191,7 +214,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   .img-wrap{float:none;max-width:100%;margin:10px 0;}
   .g2-box .sbtns{grid-template-columns:1fr;}
   .rbtn-wrap{right:4px;}
-  .rbtn{font-size:12px;padding:10px 4px;}
+  .rbtn{font-size:17px;padding:10px 4px;}
 }
 
     /* ── price mechanism animation ── */
@@ -225,7 +248,6 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   
   
     /* Other factors 表：六行，收一档保证一屏 */
-  #ofT td, #ofT th { font-size:22px; line-height:1.2; padding:3px 8px; }
   #tmT td, #tmT th { font-size:22px; line-height:1.2; padding:3px 8px; }
 
   /* ── PES 演示图表容器：必须撑满所在列，否则 SVG 高度为 0（视觉上是一个空框）── */
@@ -249,7 +271,12 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <!-- global reveal button -->
 <div class="rbtn-wrap" id="rbtnWrap">
-  <button class="big-btn" id="rbtn">Reveal more ▶</button>
+  <button class="rbtn" id="rbtn">Reveal more ▶</button>
+</div>
+
+<!-- summary reveal button -->
+<div class="sbtn-wrap" id="sbtnWrap">
+  <button class="sbtn" id="sbtn">Reveal answers</button>
 </div>
 
 <!-- ══════ 1 · COVER ══════ -->
@@ -354,7 +381,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <div class="sub">We need a <b>number</b> that says how strongly sellers respond to a price change. Here it is.</div><hr>
   <div class="txt">
     <div class="rgrp show">
-      <p><b class="db">1 · The idea</b> — <b>CED 2.4:</b> PES is measured by the <b>percentage change in quantity supplied divided by the percentage change in price</b> — the responsiveness of Qs to a change in price.</p>
+      <p><b class="db">1 · The idea</b> — PES is measured by the <b>percentage change in quantity supplied divided by the percentage change in price</b> — the responsiveness of Qs to a change in price.</p>
     </div>
     <div class="rgrp">
       <p><b class="db">2 · The formula</b></p>
@@ -455,7 +482,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ══════ 7 · PUZZLE: TWO LINES, SAME PRICE RISE ══════ -->
-<div class="slide" data-i="5">
+<div class="slide" data-i="6">
   <div class="content">
   <div class="course-tag">PUZZLE · 猜想</div>
   <h1>Two lines through the origin — guess both PES values</h1>
@@ -497,7 +524,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ══════ 8 · THE FIVE DEGREES (每种 PES 配小图) ══════ -->
-<div class="slide" data-i="6">
+<div class="slide" data-i="7">
   <div class="content">
   <div class="course-tag">FIVE DEGREES · 五种</div>
   <h1>Five degrees — from 0 to ∞</h1>
@@ -534,190 +561,167 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   </div>
   </div>
 </div>
-<div class="slide" data-i="7">
+<div class="slide" data-i="8">
   <div class="content">
   <div class="course-tag">DETERMINANT 1 · 生产周期</div>
   <h1>How long does one more unit take?</h1>
   <div class="sub">The product itself decides: a signal today can only become output later.</div><hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1.15;display:flex;flex-direction:column;gap:10px;min-width:0;">
-      <table class="data-table" id="tmT" style="width:100%;table-layout:fixed;">
-        <tr><th style="width:34%;">Example</th><th style="width:40%;">Time to make one more</th><th style="width:26%;">PES</th></tr>
-        <tr><td style="text-align:left;">Cups of coffee</td><td style="text-align:left;">a minute</td><td class="b teal">elastic</td></tr>
-        <tr><td style="text-align:left;">Chairs</td><td style="text-align:left;">a few days</td><td class="b teal">elastic</td></tr>
-        <tr><td style="text-align:left;">Pork</td><td style="text-align:left;"><b>≈ 10 months</b> (sow → market pig)</td><td class="b" style="color:#a57d12;">inelastic</td></tr>
-        <tr><td style="text-align:left;">Wheat</td><td style="text-align:left;">a whole season</td><td class="b dr">inelastic</td></tr>
-        <tr><td style="text-align:left;">A new mine</td><td style="text-align:left;">years</td><td class="b dr">very inelastic</td></tr>
-      </table>
-      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
-        <p><b>Momentary → short run → long run:</b> the longer the period, the more room to respond.</p>
+  <div style="display:flex;flex-direction:column;gap:12px;flex:1;min-height:0;justify-content:center;">
+    <div class="ladder">
+    <div class="lad-grid">
+      <div class="lad-col" style="background:#E8F5E9;border-color:#a9d5b3;">
+        <b>Cups of coffee</b><i>a minute</i><em style="color:#1b5e20;">elastic</em>
+      </div>
+      <div class="lad-col" style="background:#EDF7EE;border-color:#bcdcc0;">
+        <b>Chairs</b><i>a few days</i><em style="color:#1b5e20;">elastic</em>
+      </div>
+      <div class="lad-col" style="background:#FFF6E0;border-color:#e8d5a3;">
+        <b>Pork</b><i>≈ 10 months<br>(sow → market pig)</i><em style="color:#a57d12;">inelastic</em>
+      </div>
+      <div class="lad-col" style="background:#FDEEE3;border-color:#ecc7ad;">
+        <b>Wheat</b><i>a whole season</i><em style="color:#b03a2e;">inelastic</em>
+      </div>
+      <div class="lad-col" style="background:#FBE4E0;border-color:#eeb4ab;">
+        <b>A new mine</b><i>years</i><em style="color:#b03a2e;">very inelastic</em>
       </div>
     </div>
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;">
-      <div class="card a">
-        <h3 style="color:#a57d12;">Why it decides everything</h3>
-        <p>Only <b>produced</b> goods can be offered. If production takes months, a price rise today cannot be answered today.</p>
-      </div>
-      <div class="card p">
-        <h3 class="pur">Where to see it next</h3>
-        <p>A signal becomes meat only <b>10 months later</b> → the <b>pig cycle</b> (page 15).</p>
-      </div>
-      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
-        <p><b>Exam line:</b> long production period → <b>inelastic supply</b>.</p>
-      </div>
+    <div class="lad-axis"><b>time to make one more unit →</b><span class="ln"></span><span>the longer it takes, the less supply can answer</span></div>
+  </div>
+  <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);flex:0 0 auto;">
+    <p><b>Only produced goods can be offered.</b> Momentary → short run → long run: the longer the period, the more room to respond — see it in the <b>pig cycle</b> (page 13).</p>
+  </div>
+    <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);flex:0 0 auto;">
+      <p><b>Exam line:</b> long production period → <b>inelastic supply</b>.</p>
     </div>
   </div>
   </div>
 </div>
 
-<!-- ══════ 10 · DETERMINANT 2: SPARE CAPACITY ══════ -->
-<div class="slide" data-i="8">
+<div class="slide" data-i="9">
   <div class="content">
   <div class="course-tag">DETERMINANT 2 · 可储存</div>
   <h1>Can it be kept until the price moves?</h1>
   <div class="sub">Stock is supply that has already been produced — it can be released the moment price rises.</div><hr>
-  <div style="display:flex;gap:16px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;">
-      <div class="card g">
-        <h3 class="green">Storable → ELASTIC</h3>
-        <p>Oil in tanks, <b>grain in silos</b>, tinned food: price up → sell from stock; price down → hold it back.</p>
+  <div style="display:flex;flex-direction:column;gap:12px;flex:1;min-height:0;justify-content:center;">
+    <div class="qbox">Price rises. Can the seller answer <b>today</b>?</div>
+    <div style="display:flex;gap:clamp(16px,3vw,44px);align-items:stretch;">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;">
+        <div class="yn y">YES — it can be stored</div>
+        <div class="flowarr">▼</div>
+        <div class="card g" style="flex:0 0 auto;width:100%;">
+          <h3 class="green">Sell from stock → ELASTIC</h3>
+          <p>Price up → release stock; price down → hold it back. <b>Oil in tanks, grain in silos, tinned food.</b></p>
+        </div>
       </div>
-      <div class="card r">
-        <h3 class="dr">Perishable → INELASTIC</h3>
-        <p><b>Fresh milk, strawberries</b>, a haircut, tonight's seat: whatever is offered today is all there is.</p>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;">
+        <div class="yn n">NO — it perishes</div>
+        <div class="flowarr">▼</div>
+        <div class="card r" style="flex:0 0 auto;width:100%;">
+          <h3 class="dr">Today's offer is all there is → INELASTIC</h3>
+          <p><b>Fresh milk, strawberries, a haircut, tonight's seat</b> — whatever is offered today is all there is.</p>
+        </div>
       </div>
     </div>
-    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;">
-      <div class="card a">
-        <h3 style="color:#a57d12;">Example — rice, 2008</h3>
-        <p>World output was a <b>record high</b>, yet prices <b>tripled</b>: hoarding + export bans. When Japan <b>released stock</b>, prices fell at once.</p>
-      </div>
-      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
-        <p><b>Connect it:</b> China’s <b>frozen-pork reserve</b> is storage policy for the pig cycle.</p>
-      </div>
-      <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);">
-        <p><b>Exam line:</b> storable → stock smooths the response → elastic.</p>
-      </div>
+    <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);flex:0 0 auto;">
+      <p><b>Rice, 2008:</b> output was a record high, yet prices <b>tripled</b> — hoarding and export bans. When Japan <b>released stock</b>, prices fell at once. China's <b>frozen-pork reserve</b> is the same idea: buy low, release high.</p>
     </div>
   </div>
   </div>
 </div>
 
-<!-- ══════ 12 · OTHER FACTORS (the short list) ══════ -->
 <div class="slide" data-i="10">
   <div class="content">
   <div class="course-tag">OTHER FACTORS · 其他因素</div>
   <h1>Other factors</h1>
   <div class="sub">Every one of them asks the same question: <b>how easily can more be supplied?</b></div><hr>
-  <table class="data-table" id="ofT" style="width:100%;table-layout:fixed;">
-    <colgroup><col style="width:28%"><col style="width:46%"><col style="width:26%"></colgroup>
-    <tr><th style="text-align:left;">Factor</th><th style="text-align:left;">How it works</th><th>Effect on PES</th></tr>
-    <tr><td style="text-align:left;"><b class="blue">Spare capacity</b></td><td style="text-align:left;">Machines used a few hours a day → switch them on. All busy → new plant and new land.</td><td class="b teal">idle → elastic</td></tr>
-    <tr><td style="text-align:left;"><b class="blue">Cost of altering supply</b></td><td style="text-align:left;">Cheap to change output → easy to expand; new plant or scarce specialists → hard.</td><td class="b teal">cheap → elastic</td></tr>
-    <tr><td style="text-align:left;"><b class="blue">Mobility of factors</b></td><td style="text-align:left;">Land, labour and capital that can <b>switch</b> to this good quickly.</td><td class="b teal">mobile → elastic</td></tr>
-    <tr><td style="text-align:left;"><b class="blue">Price of alternative inputs</b></td><td style="text-align:left;">Inputs also wanted for <b>other</b> goods get dearer → producers switch away here.</td><td class="b teal">more elastic</td></tr>
-    <tr><td style="text-align:left;"><b class="blue">Natural resources</b></td><td style="text-align:left;">A depleting resource is harder to expand — oil wells, rare earths.</td><td class="b dr">inelastic</td></tr>
-    <tr><td style="text-align:left;"><b class="blue">Time</b></td><td style="text-align:left;">Momentary &lt; short run &lt; long run: every factor above loosens with time.</td><td class="b teal">time → elastic</td></tr>
-  </table>
+  <div class="card-row" style="flex:1;align-content:center;row-gap:clamp(10px,1.4vh,16px);">
+    <div class="card" style="flex:1 1 44%;">
+      <h3 class="blue">Spare capacity</h3>
+      <p>Machines used a few hours a day → <b>switch them on</b>. All busy → new plant and new land.</p>
+    </div>
+    <div class="card" style="flex:1 1 44%;">
+      <h3 class="blue">Cost of altering supply</h3>
+      <p>Cheap to change output → easy to expand. New plant or scarce specialists → hard.</p>
+    </div>
+    <div class="card" style="flex:1 1 44%;">
+      <h3 class="blue">Mobility of factors</h3>
+      <p>Land, labour and capital that can <b>switch</b> to this good quickly — inputs other goods also want.</p>
+    </div>
+    <div class="card" style="flex:1 1 44%;">
+      <h3 class="blue">Natural resources</h3>
+      <p>A depleting resource is harder to expand — oil wells, rare earths → <b class="dr">inelastic</b>.</p>
+    </div>
+  </div>
+  <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);flex:0 0 auto;">
+    <p><b>Time is the master switch:</b> momentary &lt; short run &lt; long run — every factor above loosens with time.</p>
+  </div>
   </div>
 </div>
-<div class="slide" data-i="10">
+
+<div class="slide" data-i="11">
   <div class="content">
   <div class="course-tag">WHY IT MATTERS · 意义</div>
   <h1>Two people who really need PES</h1>
   <div class="sub">One is deciding whether to expand. One is deciding who pays.</div><hr>
-  <div class="txt">
-    <div class="rgrp show">
-      <div style="display:flex;gap:12px;">
-        <div class="card blue" style="flex:1;">
-          <h3 class="blue">The firm 💼</h3>
-          <p>Demand jumps — <b>can you actually supply it</b>? Elastic → take the sales. Inelastic → customers go elsewhere.</p>
-        </div>
-        <div class="card g" style="flex:1;">
-          <h3 class="green">The government 🏛️</h3>
-          <p>Incidence needs <b>both</b> elasticities. Elastic supply → firms escape a tax. Inelastic supply → firms cannot escape it.</p>
-        </div>
-      </div>
+  <div class="card-row" style="flex:1;align-content:center;row-gap:clamp(10px,1.4vh,16px);">
+    <div class="card blue" style="flex:1 1 44%;">
+      <h3 class="blue">The firm 💼</h3>
+      <p>Demand jumps — <b>can you actually supply it?</b> Elastic → take the sales. Inelastic → customers go elsewhere.</p>
     </div>
-    <div class="rgrp">
-      <div class="note" style="background:#F5F0FF;border-left:6px solid var(--purple);margin-top:12px;">
-        <p><b>Link back to last lesson:</b> a tax lands on the <b>less elastic</b> side — of demand <i>and</i> of supply. Steep S + steep D → the two sides share the burden; flat S → consumers pay almost all.</p>
-      </div>
-      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;">
-        <p><b>And for a famine?</b> If supply cannot respond in time, a higher price only <b>moves money</b>.</p>
-      </div>
+    <div class="card g" style="flex:1 1 44%;">
+      <h3 class="green">The government 🏛️</h3>
+      <p>Incidence needs <b>both</b> elasticities. Elastic supply → firms escape a tax. Inelastic supply → firms cannot escape it.</p>
     </div>
+  </div>
+  <div class="note" style="background:#F5F0FF;border-left:6px solid var(--purple);flex:0 0 auto;">
+    <p><b>And for a famine?</b> If supply cannot respond in time, a higher price only <b>moves money</b>.</p>
   </div>
   </div>
 </div>
 
-<!-- ══════ 14 · SORTING GAME ══════ -->
 <!-- ══════ 15 · THE PIG CYCLE (one page) ══════ -->
-<div class="slide" data-i="11">
+<div class="slide" data-i="12">
   <div class="content">
   <div class="course-tag">REAL CASE · 猪周期</div>
   <h1>The pig cycle — a lag you can see</h1>
   <div class="sub">Real live-hog prices, 2019–2025. Demand barely moves — the <b>supply response takes about ten months</b>.</div><hr>
-  <div style="display:flex;gap:14px;flex:1;min-height:0;">
-  <div style="flex:1.05;display:flex;flex-direction:column;gap:8px;min-width:0;">
-    <div id="pgA" class="chart" style="flex:1 1 auto;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);border-radius:12px;overflow:hidden;">
-      <img src="images/m42-2.jpg" alt="" style="display:block;width:100%;height:auto;max-height:100%;object-fit:contain;">
+  <div style="display:flex;flex-direction:column;gap:10px;flex:1;min-height:0;">
+    <div id="pgA" class="chart" style="flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);border-radius:12px;overflow:hidden;padding:4px 8px;">
+      <img src="images/m42-2.jpg" alt="Live hog price 2019-2025" style="display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;">
     </div>
-    <div class="card a" style="padding:8px 12px;">
-        <p><b class="db">The wave.</b> Price up → farmers keep more sows → ≈10 months later pigs flood the market → price down → sows cut → shortage again.</p>
-      </div>
-      
+    <div class="note" style="background:#F4F8FC;border-left:6px solid #7b8794;flex:0 0 auto;font-size:clamp(21px,1.6vw,25px);">
+      <p><b>Ten months from decision to meat.</b> Price ↑ → more sows → pigs flood the market → price ↓ → sows cut → shortage again. 2019–2025: <b>$38.71 → $12.30</b> (−70%).</p>
+    </div>
   </div>
-  <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;font-size:clamp(22px,1.7vw,23px);">
-    <div class="card r" style="padding:8px 12px;">
-        <p><b class="db">The ten months.</b> Sow → piglet <b>4 months</b>; to 7 kg <b>1 month</b>; to market weight <b>5 months</b> ≈ <b>10 months</b> from decision to meat.</p>
-      </div>
-      
-    <div class="card" style="padding:8px 12px;">
-        <p><b class="db">The herd moves first.</b> African swine fever: sow herd <b>−32.9%</b> (2017→2019), then <b>+52.1%</b> by Jun 2021 — the herd swings <b>first</b>.</p>
-      </div>
-      
-    <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);padding:8px 12px;">
-        <p><b>Six turning points:</b> $38.71 → $11.54 → $27.66 → $14.19 → $20.92 → $12.30 (2019 → 2025) — a <b>−70%</b> fall in two years.</p>
-        <p>1995–2022: <b>seven cycles</b>, shortest <b>36</b> / longest <b>49 months</b> → “3–4 years”.</p>
-      </div>
-  </div>
-</div>
   </div>
 </div>
 
 <!-- ══════ 16 · SMOOTHING THE CYCLE ══════ -->
-<div class="slide" data-i="12">
+<div class="slide" data-i="13">
   <div class="content">
   <div class="course-tag">POLICY · 平滑周期</div>
   <h1>Fighting a lag you cannot remove</h1>
   <div class="sub">Nobody can make a pig grow faster. So policy works on the <b>information</b> and the <b>stock</b>.</div><hr>
-  <div class="txt">
-    <div class="rgrp show">
-      <div style="display:flex;gap:12px;">
-        <div class="card g" style="flex:1;">
-          <h3 class="green">Buy low, release high</h3>
-          <p>State buys when low, sells when high — the stock farms cannot hold.</p>
-        </div>
-        <div class="card a" style="flex:1;">
-          <h3 style="color:#a57d12;">Target the herd, not the price</h3>
-          <p>A <b>sow-inventory band</b> (normal ≈ 43 m sows, floor 40 m) warns farmers <i>before</i> they all expand together.</p>
-        </div>
-      </div>
+  <div style="display:flex;gap:16px;flex:1;min-height:0;align-items:center;">
+    <div style="flex:0 0 32%;min-width:0;display:flex;flex-direction:column;gap:8px;">
+      <img src="images/m42-4.png" alt="Government reserve-pork counter" style="display:block;width:100%;height:auto;border-radius:12px;border:2px solid #e6eef7;">
+      <p class="gray" style="font-size:clamp(19px,1.4vw,23px);margin:0;line-height:1.35;">A <b>government reserve-pork</b> counter: the state sells from stock when the price runs high.</p>
     </div>
-    <div class="rgrp">
-      <div style="display:flex;gap:12px;margin-top:12px;">
-        <div class="card blue" style="flex:1;">
-          <h3 class="blue">Contracts and futures</h3>
-          <p>Hog <b>futures</b> lock a price today — less guesswork.</p>
-        </div>
-        <div class="card t" style="flex:1;">
-          <h3 class="teal">Information</h3>
-          <p>Publish the <b>sow count</b>: if everyone sees the flood, fewer join it.</p>
-        </div>
+    <div class="compact" style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;justify-content:center;">
+      <div class="card g" style="flex:0 0 auto;">
+        <h3 class="green">Buy low, release high</h3>
+        <p>The state buys when the price is low and sells when it is high — the stock farms cannot hold.</p>
       </div>
-      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:10px;">
-        <p><b>Why it works:</b> the lag (≈10 months) cannot be removed, so the aim is to stop <b>everyone reacting at once</b> — smoothing, not eliminating, the cycle.</p>
+      <div class="card a" style="flex:0 0 auto;">
+        <h3 style="color:#a57d12;">Target the herd, not the price</h3>
+        <p>A <b>sow-inventory band</b> (normal ≈ 43 m sows, floor 40 m) warns farmers <i>before</i> they all expand together.</p>
+      </div>
+      <div class="card blue" style="flex:0 0 auto;">
+        <h3 class="blue">Lock a price · share the numbers</h3>
+        <p>Hog <b>futures</b> fix a price today; publishing the <b>sow count</b> means fewer farmers join the flood.</p>
+      </div>
+      <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);flex:0 0 auto;">
+        <p>The lag (≈10 months) cannot be removed — the aim is to stop <b>everyone reacting at once</b>.</p>
       </div>
     </div>
   </div>
@@ -725,51 +729,41 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ══════ 17 · BACK TO THE FAMINE ══════ -->
-<div class="slide" data-i="13">
+<div class="slide" data-i="14">
   <div class="content">
   <div class="course-tag">BACK TO THE FAMINE · 回答</div>
   <h1>So — should the price have been capped?</h1>
   <div class="sub">Build it: the market, then the shortage, then the grain that arrives from elsewhere.</div><hr>
   <div style="display:flex;gap:14px;flex:1;min-height:0;">
-    <div class="compact" style="flex:1;">
-      <div class="rgrp show">
-        <div class="card">
-          <h3 class="blue">⓪ Before the famine</h3>
-          <p>Grain: D and S cross at <b>$30 / 5 units</b>; supply is steep.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="card r">
-          <h3 class="dr">① The harvest fails → D jumps</h3>
-          <p>Price <b>$30 → $34.8 (+16%)</b> but food supplied only <b>5 → 5.2 (+5%)</b>: PES ≈ <b>0.3</b>.</p>
-        </div>
-        <div class="note" style="background:#FDECEA;border-left:6px solid var(--red);margin-top:8px;">
-          <p>The rise <b>moves money</b>, it does not <b>grow grain</b> — and invites <b>hoarding</b>.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="card g">
-          <h3 class="green">② Grain arrives from elsewhere</h3>
-          <p>Imports at <b>$33</b>: food <b>5.2 → 5.6</b>, price falls back — from <b>moving</b> grain, not growing it.</p>
-        </div>
-      </div>
-      <div class="rgrp">
-        <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);">
-          <p><b>The answer:</b> let the price rise <b>some</b> — but cap the extremes, stop hoarding, and <b>bring grain in fast</b>.</p>
-        </div>
-      </div>
+    <div class="compact smcol" style="flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;justify-content:center;">
+      <div class="rgrp show"><div class="card" style="flex:0 0 auto;">
+        <h3 class="blue">⓪ Before the famine</h3>
+        <p>Grain: D and S cross at <b>$30 / 5 units</b>; supply is steep.</p>
+      </div></div>
+      <div class="rgrp"><div class="card r" style="flex:0 0 auto;">
+        <h3 class="dr">① The harvest fails → D jumps</h3>
+        <p>Price <b>$30 → $34.8 (+16%)</b> but food supplied only <b>5 → 5.2 (+5%)</b>: PES ≈ <b>0.3</b>.</p>
+        <p style="margin-top:3px;color:#8a2b1f;">The rise <b>moves money</b>, it does not <b>grow grain</b> — and invites <b>hoarding</b>.</p>
+      </div></div>
+      <div class="rgrp"><div class="card g" style="flex:0 0 auto;">
+        <h3 class="green">② Grain arrives from elsewhere</h3>
+        <p>Imports at <b>$33</b>: food <b>5.2 → 5.6</b>, price falls back — from <b>moving</b> grain, not growing it.</p>
+      </div></div>
+      <div class="rgrp"><div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);flex:0 0 auto;">
+        <p><b>The answer:</b> let the price rise <b>some</b> — but cap the extremes, stop hoarding, and <b>bring grain in fast</b>.</p>
+      </div></div>
     </div>
     <div id="fmA" class="chart" style="flex:1.15;min-width:0;max-height:430px;"></div>
   </div>
   </div>
 </div>
 
-<div class="slide" data-i="14">
+<div class="slide" data-i="15">
   <div class="content">
   <div class="course-tag">A WAY OF THINKING</div>
   <h1>Three ways to see the same famine</h1>
   <div class="sub">See the mountain → see it as not a mountain → see it as a mountain again.</div><hr>
-  <div class="txt">
+  <div class="txt smcol">
     <div class="rgrp show">
       <div class="card" style="display:flex;gap:12px;align-items:center;">
         <span style="flex:0 0 auto;font-size:clamp(30px,3vw,42px);font-weight:900;color:#5b6b7b;">1</span>
@@ -799,7 +793,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
     </div>
     <div class="rgrp">
       <div class="note" style="background:#FFF8E1;border-left:6px solid var(--amber);margin-top:12px;display:flex;gap:14px;align-items:center;">
-        <img src="images/m42-3.jpg" alt="" style="flex:0 0 auto;width:150px;height:150px;border-radius:12px;object-fit:cover;border:2px solid #e6e0c8;">
+        <img src="images/m42-3.jpg" alt="" style="flex:0 0 auto;width:118px;height:118px;border-radius:12px;object-fit:cover;border:2px solid #e6e0c8;">
         <div>
           <p><b>A caution.</b> Some popular writers — <b>Xue Zhaofeng</b> (薛兆丰) is the classic case — like using first-pass economics to dress up <b>anti-common-sense, anti-moral</b> conclusions.</p>
           <p>Economics is a tool for <b>understanding reality</b>. Counter-intuitive ≠ counter-moral.</p>
@@ -810,56 +804,40 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   </div>
 </div>
 
-<!-- ══════ 18 · CHECK ══════ -->
 <!-- ══════ 19 · SUMMARY ══════ -->
-<div class="slide" data-i="15">
+<div class="slide" data-i="16">
   <div class="content">
   <div class="course-tag">SUMMARY · 总结</div>
-  <h1>PES — the whole chapter in one table</h1>
-  <div class="sub">CED 2.4 (MKT-3.E.6–E.8), exam words. Say each row out loud in one sentence.</div><hr>
-  <div style="flex:1;min-height:0;overflow:hidden;"><table class="data-table" id="smT" style="width:100%;table-layout:fixed;">
-    <tr>
-      <th style="width:22%;">Row</th><th style="width:48%;">What it says</th><th style="width:30%;">Quick check</th>
-    </tr>
-    <tr>
-      <td style="text-align:left;"><b class="dr">1 · PES</b></td>
-      <td style="text-align:left;">% change in <b>quantity supplied</b> ÷ % change in price — always <b>positive</b></td>
-      <td style="text-align:left;">2.6 → a 1% rise = 2.6% more</td>
-    </tr>
-    <tr>
-      <td style="text-align:left;"><b class="dr">2 · Elastic / inelastic</b></td>
-      <td style="text-align:left;"><b>&gt; 1</b> elastic (flat) · <b>&lt; 1</b> inelastic (steep) · vertical = <b>0</b> · horizontal = <b>∞</b></td>
-      <td style="text-align:left;">0.4 → inelastic</td>
-    </tr>
-    <tr>
-      <td style="text-align:left;"><b class="pur">3 · Unitary</b></td>
-      <td style="text-align:left;">Any straight line <b>through the origin</b>: PES = <b>1</b> everywhere (the constant cancels)</td>
-      <td style="text-align:left;">P = Q and P = 2Q → both 1</td>
-    </tr>
-    <tr>
-      <td style="text-align:left;"><b class="a">4 · Influences</b></td>
-      <td style="text-align:left;"><b>Time to produce</b> · <b>spare capacity</b> · <b>can be stored</b> · cost of altering supply · factor mobility · natural resources</td>
-      <td style="text-align:left;">rubber bands ≫ aircraft</td>
-    </tr>
-    <tr>
-      <td style="text-align:left;"><b class="a">5 · Time</b></td>
-      <td style="text-align:left;">The longer the period, the <b>more elastic</b>: momentary → short run → long run</td>
-      <td style="text-align:left;">PES ≈ 0 → &lt; 1 → &gt; 1</td>
-    </tr>
-    <tr>
-      <td style="text-align:left;"><b class="g">6 · Why it matters</b></td>
-      <td style="text-align:left;">Firms: can we supply the jump? Government: incidence needs <b>both</b> elasticities — the <b>less elastic</b> side pays</td>
-      <td style="text-align:left;">flat S → consumers pay</td>
-    </tr>
-  </table></div>
-  <div class="note" style="background:#EAF4FF;border-left:6px solid var(--blue);margin-top:12px;">
-    <p><b>Applied today:</b> the famine policy (rise some, stop hoarding, import fast) and the pig cycle — both are row 4 and row 5 at work.</p>
+  <h1>PES — the whole chapter in seven lines</h1>
+  <div class="sub">Fill each line, then say it out loud in one sentence.</div><hr>
+  <div class="ssteps" style="font-size:clamp(22px,1.95vw,26px);line-height:1.4;width:100%;">
+    <div class="sstep show">
+      <p><b class="db">1 · PES</b> — % change in <span class="blank empty" data-a="quantity supplied">______</span> ÷ % change in <span class="blank empty" data-a="price">______</span>; always <span class="blank empty" data-a="positive">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">2 · The two shapes</b> — PES <span class="blank empty" data-a="&gt; 1">______</span> = elastic (flat) · PES <span class="blank empty" data-a="&lt; 1">______</span> = inelastic (steep) · vertical = <span class="blank empty" data-a="0">______</span> · horizontal = <span class="blank empty" data-a="∞">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">3 · Unitary</b> — any straight line through the <span class="blank empty" data-a="origin">______</span> has PES = <span class="blank empty" data-a="1">______</span> at every point.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">4 · Time to produce</b> — the longer one more unit takes, the more <span class="blank empty" data-a="inelastic">______</span> supply is.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">5 · Storage</b> — storable → <span class="blank empty" data-a="elastic">______</span> (stock answers at once) · perishable → <span class="blank empty" data-a="inelastic">______</span>.</p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">6 · Other factors</b> — spare capacity · cost of altering supply · factor mobility · natural resources: all ask the same question — <b>how easily can more be supplied?</b></p>
+    </div>
+    <div class="sstep">
+      <p><b class="db">7 · Why it matters</b> — a tax lands on the <span class="blank empty" data-a="less elastic">______</span> side; and in a famine a higher price cannot <span class="blank empty" data-a="grow food">______</span> in time.</p>
+    </div>
   </div>
   </div>
 </div>
 
 <!-- ══════ 20 · CLOSING ══════ -->
-<div class="slide cover" data-i="16">
+<div class="slide cover" data-i="17">
   <div style="text-align:center;width:100%;">
   <div class="course-tag" style="text-align:center;">THANK YOU · 谢谢</div>
   <h1 style="font-size:clamp(56px,7.6vw,110px);text-align:center;margin:20px 0 26px;">PES — done ✓</h1>
@@ -1357,7 +1335,29 @@ function showSlide(i){
     grps.forEach(function(g, idx){ g.classList.toggle('show', !nofirst && idx === 0); });
   }
   if(grps.length > 1) globalR.setup(grps); else globalR.hide();
+  /* 填空页：换用「Reveal answers」按钮，一条一条揭 */
+  const steps = slides[i].querySelectorAll('.sstep');
+  if(steps.length){
+    globalR.hide();
+    $('sbtnWrap').style.display = 'flex';
+    if(!slides[i].dataset.sIdx) slides[i].dataset.sIdx = '0';
+    if(!slides[i].querySelector('.sstep.show')) steps[0].classList.add('show');
+    refreshSumBtn();
+  } else {
+    $('sbtnWrap').style.display = 'none';
+  }
   syncSlideEffects();
+}
+
+function refreshSumBtn(){
+  const slide = document.querySelector('.slide.active');
+  const btn = $('sbtn');
+  if(!slide || !btn) return;
+  const steps = slide.querySelectorAll('.sstep');
+  if(!steps.length) return;
+  const idx = +(slide.dataset.sIdx || 0);
+  if(idx >= steps.length){ btn.textContent = 'All done ✓'; btn.disabled = true; }
+  else { btn.textContent = 'Reveal answers'; btn.disabled = false; }
 }
 
 /* ══════════ 27 · PAGE EFFECTS ══════════ */
@@ -1409,7 +1409,7 @@ function syncTime(){
 function syncFamine(){
   const box = $('fmA'); if(!box) return;
   const n = shownGroups(box.closest('.slide').querySelectorAll('.rgrp'));
-  box.innerHTML = famineSvg({ level: n - 1 });
+  box.innerHTML = famineSvg({ level: n ? n - 1 : 2 });   /* 无分步组 → 直接画完整三级 */
 }
 /* page 10 — the pig cycle */
 function syncPig(){
@@ -1513,6 +1513,29 @@ window.pesPick = function(k){
   });
 };
 try { window.pesPick(0); } catch(e){}
+
+/* ══════════ 填空页：一条一条揭答案 ══════════ */
+try {
+  $('sbtn').onclick = function(){
+    const slide = document.querySelector('.slide.active');
+    if(!slide) return;
+    const steps = slide.querySelectorAll('.sstep');
+    let idx = +(slide.dataset.sIdx || 0);
+    const el = steps[idx];
+    if(!el){ refreshSumBtn(); return; }
+    el.classList.add('show');
+    el.querySelectorAll('.blank.empty').forEach(function(b){
+      b.textContent = b.getAttribute('data-a');
+      b.classList.remove('empty');
+      b.classList.add('filled');
+    });
+    idx++;
+    slide.dataset.sIdx = String(idx);
+    const next = steps[idx];
+    if(next) next.classList.add('show');
+    refreshSumBtn();
+  };
+} catch(err){ console.error('summary', err); }
 </script>
 </body>
 </html>
