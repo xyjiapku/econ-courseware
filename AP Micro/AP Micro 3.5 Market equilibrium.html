@@ -135,6 +135,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   .meq-c{position:relative;cursor:pointer;}
   .meq-v{display:block;padding:5px 6px;font-size:clamp(22px,2vw,25px);color:#b6c4d1;min-height:2.1em;line-height:1.25;}
   .meq-c.has .meq-v{color:var(--darkblue);font-weight:700;background:#F7FBFF;}
+  .meq-v.long{font-size:19px !important;letter-spacing:-.3px;}
   .meq-c.ok .meq-v{background:#EFF9F0;color:#1b5e20;}
   .meq-c.bad .meq-v{background:#FDF1F1;color:#a12622;}
   .meq-pop{position:absolute;z-index:60;left:2px;right:2px;top:calc(100% - 2px);
@@ -147,14 +148,46 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   .meq-pop b:hover{background:#EAF4FF;}
   .meq-pop b.none{color:#9aa8b6;}
   /* ── P8 回顾页：层级 + 涨跌配色 ── */
-  #p8 .item{margin:0 0 9px;}
-  #p8 .item:last-child{margin-bottom:0;}
-  #p8 .item h3{font-size:23px;color:var(--darkblue);font-weight:800;line-height:1.3;}
-  #p8 .item h3 em{font-style:normal;color:var(--gray);font-weight:600;font-size:20px;}
-  #p8 .item ul{margin:2px 0 0 20px;}
-  #p8 .item li{font-size:23px;line-height:1.42;color:#33475c;margin-bottom:1px;}
-  #p8 .up{color:var(--green);font-weight:800;}
-  #p8 .dn{color:var(--red);font-weight:800;}
+  .rev .item{margin:0 0 6px;}
+  .rev .item:last-child{margin-bottom:0;}
+  .rev .item h3{font-size:25px;color:var(--darkblue);font-weight:800;line-height:1.3;}
+  .rev .item h3 em{font-style:normal;color:var(--gray);font-weight:600;font-size:20px;}
+  .rev .item ul{margin:2px 0 0 20px;}
+  .rev .item li{font-size:26px;line-height:1.42;color:#33475c;margin-bottom:1px;}
+  .rev .up{color:var(--green);font-weight:800;}
+  .rev .dn{color:var(--red);font-weight:800;}
+
+  /* 最后两行弹层向上开，避免被底部裁掉 */
+  #meqBody tr:nth-last-child(-n+2) .meq-pop{top:auto;bottom:calc(100% - 2px);}
+
+  #tb4 u{text-decoration-color:#2E7D32;text-decoration-thickness:3px;}
+
+  /* P16/P17 翻卡片（一张一张翻） */
+  .flipwrap{perspective:1600px;display:flex;flex-direction:column;flex:1;min-height:0;height:100%;}
+  .flipcard{position:relative;width:100%;flex:1;min-height:0;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.2,.7,.3,1);}
+  .flipcard.flipped{transform:rotateY(180deg);}
+  .flipface{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
+            border:2.5px solid #c3d9ea;border-radius:16px;padding:14px 20px;background:#fff;
+            display:flex;flex-direction:column;gap:8px;justify-content:center;box-shadow:0 6px 20px rgba(26,82,118,.10);}
+  .flipface p{font-size:22px;line-height:1.4;margin:0;}
+  /* 正面：一句主张 + 一句追问 */
+  .frontcol{display:flex;flex-direction:column;gap:14px;justify-content:center;height:100%;max-width:1080px;}
+  .frontcol .claim{font-size:26px;line-height:1.34;font-weight:700;color:#22394f;}
+  .frontcol .ask{font-size:24px;line-height:1.4;color:#41586e;border-top:2px dashed #d5e2ee;padding-top:12px;}
+  .flipface .hint{font-size:20px;color:#7b8794;}
+  .flipface.back{transform:rotateY(180deg);background:#F7FCF8;border-color:#a9d5b3;}
+  .flipface.back p{font-size:20px;line-height:1.36;}
+  /* 背面：左文右图 */
+  .backrow{display:flex;gap:18px;align-items:center;justify-content:center;flex:1;min-height:0;}
+  /* 背面：上图下文（窄卡用）；图放进 .eqbox，高度吃掉剩余空间，永远不会被卡片框切掉 */
+  .backcol{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1;min-height:0;}
+  .backcol .backtxt{flex:0 0 auto;width:100%;max-width:640px;}
+  .eqbox{flex:1 1 0;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;}
+  .eqbox .eqv{height:100%;width:auto;max-width:100%;max-height:340px;}
+  .backtxt{flex:0 1 640px;min-width:0;display:flex;flex-direction:column;gap:7px;justify-content:center;}
+  /* 图按自己的比例定尺，绝不被 flex 压扁 */
+  .eqv{flex:0 0 auto;display:block;height:auto;}
+  .gr{color:var(--green);}
 </style>
 </head>
 <body>
@@ -229,6 +262,13 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <text x="314" y="262" font-size="32" font-weight="800" fill="#1E88E5">D</text>
         <line x1="90" y1="419" x2="382.5" y2="50" stroke="#F0B429" stroke-width="4"/>
         <text x="180" y="262" text-anchor="end" font-size="32" font-weight="800" fill="#a57d12">S</text>
+        <!-- 价格表里的每个价位描一点：曲线是把点连起来 -->
+        <circle cx="382.5" cy="378" r="8" fill="#1E88E5"/>
+        <circle cx="317.5" cy="296" r="8" fill="#1E88E5"/>
+        <circle cx="187.5" cy="132" r="8" fill="#1E88E5"/>
+        <circle cx="122.5" cy="378" r="8" fill="#F0B429"/>
+        <circle cx="187.5" cy="296" r="8" fill="#F0B429"/>
+        <circle cx="317.5" cy="132" r="8" fill="#F0B429"/>
       </svg>
     </div>
   </div>
@@ -453,6 +493,13 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
         <text x="314" y="262" font-size="32" font-weight="800" fill="#1E88E5">D</text>
         <line x1="90" y1="419" x2="382.5" y2="50" stroke="#F0B429" stroke-width="4"/>
         <text x="180" y="262" text-anchor="end" font-size="32" font-weight="800" fill="#a57d12">S</text>
+        <!-- 价格表里的每个价位描一点：曲线是把点连起来 -->
+        <circle cx="382.5" cy="378" r="8" fill="#1E88E5"/>
+        <circle cx="317.5" cy="296" r="8" fill="#1E88E5"/>
+        <circle cx="187.5" cy="132" r="8" fill="#1E88E5"/>
+        <circle cx="122.5" cy="378" r="8" fill="#F0B429"/>
+        <circle cx="187.5" cy="296" r="8" fill="#F0B429"/>
+        <circle cx="317.5" cy="132" r="8" fill="#F0B429"/>
         <circle cx="252.5" cy="214" r="11" fill="#1b5e20" stroke="#fff" stroke-width="3"/>
         <text x="252.5" y="182" text-anchor="middle" font-size="30" font-weight="800" fill="#1b5e20">E</text>
         <line id="re-a1" x1="187.5" y1="132" x2="209.7" y2="160" stroke="#1b5e20" stroke-width="4" marker-end="url(#ahG)" opacity="0"/>
@@ -576,78 +623,82 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 
 <!-- ───── 9 · REVISION: WHAT SHIFTS D AND S ───── -->
 <div class="slide" data-i="7">
-  <div class="content" id="p8" style="max-width:1420px;">
-  <div class="course-tag">REVISION · 回顾</div>
-  <h1>What shifts D — and what shifts S</h1>
-  <div class="sub">Every condition, with the <b>direction</b> it pushes the curve — <b class="up">green ↑</b>, <b class="dn">red ↓</b>. Say each arrow out loud.</div><hr>
-  <div class="txt compact2" style="display:flex;flex-direction:column;">
-    <div class="rgrp show" style="flex:1;display:flex;">
-      <div style="display:flex;gap:16px;flex:1;align-items:stretch;">
-        <div class="card" style="flex:1;padding:12px 15px;min-height:56vh;display:flex;flex-direction:column;justify-content:space-between;">
-          <h3 class="blue">Conditions of DEMAND</h3>
-
-          <div class="item">
-            <h3>① Income <em>— normal or inferior decides the direction</em></h3>
-            <ul>
-              <li><b>Normal good:</b> income <span class="up">↑</span> → D <span class="up">up</span> · income <span class="dn">↓</span> → D <span class="dn">down</span></li>
-              <li><b>Inferior good:</b> the opposite — income <span class="up">↑</span> → D <span class="dn">down</span></li>
-            </ul>
-          </div>
-
-          <div class="item">
-            <h3>② Price of related goods <em>— substitutes &amp; complements</em></h3>
-            <ul>
-              <li><b>Substitute</b> dearer <span class="up">↑</span> → D <span class="up">up</span> (buyers switch in)</li>
-              <li><b>Complement</b> dearer <span class="up">↑</span> → D <span class="dn">down</span> (the pair costs more)</li>
-            </ul>
-          </div>
-
-          <div class="item">
-            <h3>③ Other factors <em>— especially expectations</em></h3>
-            <ul>
-              <li>Expect the price to rise → buy now → D <span class="up">up</span></li>
-              <li>Also: tastes · advertising · population · seasons</li>
-            </ul>
-          </div>
+  <div class="content rev" style="max-width:1500px;">
+  <div class="course-tag">REVISION ① · 回顾</div>
+  <h1>What shifts <span style="color:#1E88E5;">demand</span>?</h1>
+  <div class="sub">Every condition, with the direction it pushes the curve — <b class="up">green = increase (→)</b>, <b class="dn">red = decrease (←)</b>.</div><hr>
+  <div class="txt compact2" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+    <div class="rgrp show" style="flex:1;display:flex;gap:18px;">
+<div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:18px;flex:1;justify-content:flex-start;">
+        <h3 class="blue" style="font-size:26px;">Conditions of DEMAND</h3>
+        <div class="item">
+          <h3>① Income <em>— normal or inferior decides the direction</em></h3>
+          <ul>
+            <li><b>Normal good:</b> income <span class="up">↑</span> → D <span class="up">increase</span> · income <span class="dn">↓</span> → D <span class="dn">decrease</span></li>
+            <li><b>Inferior good:</b> the opposite — income <span class="up">↑</span> → D <span class="dn">decrease</span></li>
+          </ul>
         </div>
-
-        <div class="card a" style="flex:1;padding:12px 15px;min-height:56vh;display:flex;flex-direction:column;justify-content:space-between;">
-          <h3 style="color:#a57d12;">Conditions of SUPPLY</h3>
-
-          <div class="item">
-            <h3>① Costs <em>— wages, materials, energy, rent</em></h3>
-            <ul>
-              <li>Costs <span class="up">↑</span> → S <span class="dn">down</span> · costs <span class="dn">↓</span> → S <span class="up">up</span></li>
-            </ul>
-          </div>
-
-          <div class="item">
-            <h3>② Taxes and subsidies</h3>
-            <ul>
-              <li>A <b>tax</b> makes production dearer → S <span class="dn">down</span></li>
-              <li>A <b>subsidy</b> makes it cheaper → S <span class="up">up</span></li>
-            </ul>
-          </div>
-
-          <div class="item">
-            <h3>③ Expectations and other factors</h3>
-            <ul>
-              <li>Expect the price to rise → hold stock back → S <span class="dn">down</span></li>
-              <li>Also: technology · weather · number of sellers</li>
-            </ul>
-          </div>
+        <div class="item">
+          <h3>② Price of related goods <em>— substitutes &amp; complements</em></h3>
+          <ul>
+            <li><b>Substitute</b> dearer <span class="up">↑</span> → D <span class="up">increase</span> (buyers switch in)</li>
+            <li><b>Complement</b> dearer <span class="up">↑</span> → D <span class="dn">decrease</span> (the pair costs more)</li>
+          </ul>
+        </div>
+        <div class="item">
+          <h3>③ Other factors <em>— especially expectations</em></h3>
+          <ul>
+            <li>Expect the price to rise → buy now → D <span class="up">increase</span></li>
+            <li>Also: tastes · advertising · population · seasons</li>
+          </ul>
         </div>
       </div>
-    </div>
-    <div class="rgrp">
-      <div class="note" style="background:#FFF8E1;border-left:6px solid #F0B429;margin-top:10px;">
-        <p>Every item on those lists changes the <b>whole curve</b>. The one thing that shifts <b>neither</b> curve is the product's <b>own price</b> — that only moves you <b>along</b> the curve.</p>
+      <div style="flex:0 0 38%;min-width:0;background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px;display:flex;align-items:center;justify-content:center;">
+        <svg id="revD" viewBox="0 0 380 300" style="width:100%;height:auto;display:block;"></svg>
       </div>
     </div>
   </div>
   </div>
 </div>
+
 <div class="slide" data-i="8">
+  <div class="content rev" style="max-width:1500px;">
+  <div class="course-tag">REVISION ② · 回顾</div>
+  <h1>What shifts <span style="color:#a57d12;">supply</span>?</h1>
+  <div class="sub">Every condition, with the direction it pushes the curve — <b class="up">green = increase (→)</b>, <b class="dn">red = decrease (←)</b>.</div><hr>
+  <div class="txt compact2" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+    <div class="rgrp show" style="flex:1;display:flex;gap:18px;">
+<div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:18px;flex:1;justify-content:flex-start;">
+        <h3 style="font-size:26px;color:#a57d12;">Conditions of SUPPLY</h3>
+        <div class="item">
+          <h3>① Costs <em>— wages, materials, energy, rent</em></h3>
+          <ul>
+            <li>Costs <span class="up">↑</span> → S <span class="dn">decrease</span> · costs <span class="dn">↓</span> → S <span class="up">increase</span></li>
+          </ul>
+        </div>
+        <div class="item">
+          <h3>② Taxes and subsidies</h3>
+          <ul>
+            <li>A <b>tax</b> makes production dearer → S <span class="dn">decrease</span></li>
+            <li>A <b>subsidy</b> makes it cheaper → S <span class="up">increase</span></li>
+          </ul>
+        </div>
+        <div class="item">
+          <h3>③ Expectations and other factors</h3>
+          <ul>
+            <li>Expect the price to rise → hold stock back → S <span class="dn">decrease</span></li>
+            <li>Also: technology · weather · number of sellers</li>
+          </ul>
+        </div>
+      </div>
+      <div style="flex:0 0 38%;min-width:0;background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px;display:flex;align-items:center;justify-content:center;">
+        <svg id="revS" viewBox="0 0 380 300" style="width:100%;height:auto;display:block;"></svg>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+<div class="slide" data-i="9">
   <div class="content">
   <div class="course-tag">WORKED EXAMPLES · 例题</div>
   <h1>Two stories, one method</h1>
@@ -719,7 +770,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 11 · YOUR TURN (practice) ───── -->
-<div class="slide" data-i="9">
+<div class="slide" data-i="10">
   <div class="content">
   <div class="course-tag">YOUR TURN · 练习</div>
   <h1>Predict it — then reveal</h1>
@@ -767,7 +818,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 12 · WORD DISCIPLINE (increase vs extension) ───── -->
-<div class="slide" data-i="10">
+<div class="slide" data-i="11">
   <div class="content">
   <div class="course-tag">WORDS THAT EARN MARKS · 词汇</div>
   <h1>Along the curve, or the whole curve?</h1>
@@ -833,7 +884,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 12b · ONE SENTENCE, BOTH PAIRS ───── -->
-<div class="slide" data-i="11">
+<div class="slide" data-i="12">
   <div class="content">
   <div class="course-tag">DOUBLE SHIFTS · 两例</div>
   <h1>Two cases, two answers</h1>
@@ -893,7 +944,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 15 · DOUBLE SHIFTS: THE RULE (four cases table) ───── -->
-<div class="slide" data-i="12">
+<div class="slide" data-i="13">
   <div class="content" style="max-width:1500px;">
   <div class="course-tag">YOUR TURN · 八点练习</div>
   <h1>Eight points — fill in the table</h1>
@@ -911,13 +962,14 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
       <div style="display:flex;align-items:center;gap:12px;flex:0 0 auto;">
         <button class="big-btn" id="meqCheck" style="padding:6px 18px;font-size:21px;">✓ Check</button>
         <button class="big-btn ghost" id="meqReset" style="padding:6px 18px;font-size:21px;">↺</button>
+          <button class="big-btn" id="meqSym" style="padding:6px 14px;font-size:19px;background:#1a5276;">⇄ Symbols</button>
         <span id="meqScore" style="font-size:22px;font-weight:800;color:#2E7D32;"></span>
       </div>
     </div>
   </div>
   </div>
 </div>
-<div class="slide" data-i="13">
+<div class="slide" data-i="14">
   <div class="content">
   <div class="course-tag">CHECK YOUR UNDERSTANDING · 检测</div>
   <div style="display:flex;justify-content:space-between;align-items:baseline;width:100%;">
@@ -942,7 +994,102 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 17 · SUMMARY ───── -->
-<div class="slide" data-i="14">
+<div class="slide" data-i="15">
+  <div class="content" style="max-width:1460px;">
+  <div class="course-tag">WHY THIS TOOL · 为什么用模型</div>
+  <h1>Two ways to answer the same question</h1>
+  <div class="sub">The council raises the <b>property tax</b> on rented flats. What happens to the rent?</div><hr>
+
+  <div style="display:flex;gap:18px;flex:1;min-height:0;align-items:center;">
+      <div class="flipwrap" style="height:min(100%,520px);">
+        <div class="flipcard" id="fc1">
+          <div class="flipface front">
+            <div class="frontcol">
+              <h3 style="font-size:25px;color:#8a6d3b;">What most people would say</h3>
+              <p class="claim">The tax goes up, so landlords will put the rent up to cover it — and tenants pay.</p>
+              <p class="hint" style="font-size:21px;">It sounds fair, and it sounds obvious. But ask two questions:</p>
+              <p class="ask">· Why aren't rents already as high as the market will bear?<br>· Is your landlord being <b>kind</b> to you?</p>
+            </div>
+          </div>
+          <div class="flipface back">
+            <div class="backrow">
+              <div class="backtxt">
+                <h3 class="green" style="font-size:25px;">What the model says</h3>
+                <p>① The tax is on <b>owning</b> property — not on letting it.</p>
+                <p>② An empty flat now <b>costs the owner money</b> → some <b>vacant flats come onto the market</b> → <b class="gr">supply increases →</b></p>
+                <p>③ Demand is unchanged → <b class="dr">rent falls ↓</b>, quantity rented <b>rises ↑</b>.</p>
+                <p style="font-weight:800;color:#1a3a5c;border-top:2px dashed #a9d5b3;padding-top:6px;">⇒ A property tax does <b>not</b> raise rents — it can <b>lower</b> them.</p>
+                <p class="hint" style="font-size:18px;">○ before &nbsp;→&nbsp; ● after</p>
+              </div>
+              <svg class="eqv" viewBox="0 0 400 260" style="height:min(100%,400px);width:auto;"></svg>
+            </div>
+          </div>
+        </div>
+        <button class="big-btn flipbtn" data-card="fc1" style="margin-top:10px;">⇄ Turn the card over</button>
+      </div>
+  </div>
+  </div>
+</div>
+<div class="slide" data-i="16">
+  <div class="content" style="max-width:1500px;">
+  <div class="course-tag">WHY THIS TOOL · 反直觉</div>
+  <h1>When the model disagrees with your guess</h1>
+  <div class="sub">Two more cases where the obvious answer is wrong — turn each card over to see why.</div><hr>
+
+  <div style="display:flex;gap:18px;flex:1;min-height:0;">
+      <div class="flipwrap">
+        <div class="flipcard" id="fc2">
+          <div class="flipface front">
+            <div class="frontcol">
+              <h3 style="font-size:24px;color:#a57d12;">The case for protecting tenants</h3>
+              <p class="claim">The law says a tenancy <b>renews automatically</b> and a tenant <b>cannot be evicted</b>.</p>
+              <p class="ask">Tenants are safer — so renting out must be <b>more attractive</b> now, surely?</p>
+            </div>
+          </div>
+          <div class="flipface back">
+            <div class="backcol">
+              <div class="eqbox"><svg class="eqv" viewBox="0 0 400 260"></svg></div>
+              <div class="backtxt">
+                <h3 class="green" style="font-size:23px;">The model &nbsp;<span class="hint" style="font-size:16px;font-weight:600;">○ before → ● after</span></h3>
+                <p>① Landlords see more <b>hassle and risk</b> → some keep flats <b>empty</b> → <b class="dr">supply decreases ←</b></p>
+                <p>② Demand unchanged → <b class="dr">rent rises ↑</b>, fewer flats let.</p>
+                <p style="font-weight:800;color:#b03a2e;">⇒ tenants end up worse off. The lasting fix: <b>build more</b>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="big-btn flipbtn" data-card="fc2" style="margin-top:10px;">⇄ Turn the card over</button>
+      </div>      <div class="flipwrap">
+        <div class="flipcard" id="fc3">
+          <div class="flipface front">
+            <div class="frontcol">
+              <h3 style="font-size:24px;color:#1e8449;">A bumper harvest</h3>
+              <p class="claim">The harvest is huge — far more grain than last year.</p>
+              <p class="ask">Farmers must be <b>delighted</b>: more to sell means more money, doesn't it?</p>
+            </div>
+          </div>
+          <div class="flipface back">
+            <div class="backcol">
+              <div class="eqbox"><svg class="eqv" viewBox="0 0 400 260"></svg></div>
+              <div class="backtxt">
+                <h3 class="green" style="font-size:23px;">The model &nbsp;<span class="hint" style="font-size:16px;font-weight:600;">○ before → ● after</span></h3>
+                <p>① More is offered at <b>every</b> price → <b class="gr">supply increases →</b></p>
+                <p>② Demand unchanged → <b class="dr">price falls ↓</b>, quantity sold <b>rises ↑</b>.</p>
+                <p style="font-weight:800;color:#b03a2e;">⇒ each bag sells for less.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="big-btn flipbtn" data-card="fc3" style="margin-top:10px;">⇄ Turn the card over</button>
+      </div>
+  </div>
+
+  <div class="cnote" style="margin-top:10px;font-size:20px;padding:7px 14px;line-height:1.35;">
+    <b>Science usually starts by contradicting intuition.</b> Heavy objects do not fall faster; the sun does not go round the earth. A model earns its keep when it tells you something your instinct would miss.
+  </div>
+  </div>
+</div>
+<div class="slide" data-i="17">
   <div class="content">
   <div class="course-tag">SUMMARY · 总结</div>
   <h1>What you must be able to do</h1>
@@ -974,7 +1121,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
 </div>
 
 <!-- ───── 18 · CLOSING ───── -->
-<div class="slide cover" data-i="15">
+<div class="slide cover" data-i="18">
   <div class="course-tag">THANK YOU · 谢谢</div>
   <h1 style="font-size:clamp(40px,5.5vw,60px);">Market equilibrium — done ✓</h1>
   <div style="font-size:clamp(24px,3vw,34px);color:var(--blue);font-weight:700;margin:20px 0;">Demand and supply, one diagram — and the price settles where they cross.</div>
@@ -988,7 +1135,7 @@ hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
   <div class="dots" id="dots"></div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="copy">© 2026 Dr. Jia</span>
-    <span class="page" id="pageNum">1 / 16</span>
+    <span class="page" id="pageNum">1 / 19</span>
     <button id="nextBtn">▶</button>
   </div>
 </div>
@@ -1383,46 +1530,7 @@ function syncShift(){
   drawMarket('sh', k, m, { dy: 310, sy: 190 });
 }
 
-/* the double-shift page: two independent sliders, and the verdict says which variable stays certain */
-function syncDouble(){
-  const kEl = $('dsK'), mEl = $('dsM');
-  if(!kEl || !mEl) return;
-  clampShifts('ds', 'k');
-  const k = +kEl.value, m = +mEl.value;
-  const e = eqSolve(k, m), P = e.P, Q = e.Q;
-  const dSeg = clipSeg(XQ(DEMAND(50, k)), YP(50), XQ(DEMAND(0, k)), YP(0));
-  const sSeg = clipSeg(XQ(SUPPLY(50, m)), YP(50), XQ(SUPPLY(0, m)), YP(0));
-  if(dSeg) setSeg('ds-d', dSeg[0], dSeg[1], dSeg[2], dSeg[3]);
-  if(sSeg) setSeg('ds-s', sSeg[0], sSeg[1], sSeg[2], sSeg[3]);
-  const xe = XQ(Q), ye = YP(P);
-  setSeg('ds-gv', xe, ye, xe, Y0);
-  setSeg('ds-gh', xe, ye, X0, ye);
-  $('ds-dot').setAttribute('cx', xe.toFixed(1));
-  $('ds-dot').setAttribute('cy', ye.toFixed(1));
-  $('ds-pv').setAttribute('y', (ye + 6).toFixed(1));
-  $('ds-pv').textContent = fnum(P);
-  $('dsKv').textContent = (k > 0 ? '+' : '') + k;
-  $('dsMv').textContent = (m > 0 ? '+' : '') + m;
-  const part = (name, v) => name + (v === 0 ? ' unchanged' : (v > 0 ? ' → ' : ' ← ') + Math.abs(v) + ' cups');
-  let out = part('Demand', k) + ' · ' + part('Supply', m) + ' → <b>P = ¥' + fnum(P) + '</b>, <b>Q = ' + fnum(Q) + ' cups</b><br>';
-  if(!k && !m){
-    out += 'Start again from the middle — move at least one curve.';
-  } else if(!k || !m){
-    out += '<b>Only one curve moved</b>, so both answers are certain here: price ' +
-      (P > 30 ? 'rises' : P < 30 ? 'falls' : 'stays') + ', quantity ' +
-      (Q > 5 ? 'rises' : Q < 5 ? 'falls' : 'stays') + '.';
-  } else if((k > 0 && m > 0) || (k < 0 && m < 0)){
-    out += 'Both move the <b>same</b> way → <b>QUANTITY is certain</b>: it ' + (k + m > 0 ? 'rises' : 'falls') +
-      '. Price is <b>uncertain</b>' + (k === m ? ' — here it does not move at all: the two effects cancel exactly.'
-        : ' — it depends on which shift is bigger.');
-  } else {
-    out += 'They move in <b>opposite</b> ways → <b>PRICE is certain</b>: it ' + (k - m > 0 ? 'rises' : 'falls') +
-      '. Quantity is <b>uncertain</b>' + (k === -m ? ' — here it does not move at all: the two effects cancel exactly.'
-        : ' — it depends on which shift is bigger.');
-  }
-  $('dsRead').innerHTML = out;
-}
-
+/* （原 double-shift 页的 syncDouble 已删除：该页已重做，ds* 元素不存在） */
 /* the word-discipline page: the diagram walks down with the text
    (step 1 = the curve shifts, step 2 = the movement along it).
    This page carries two reveal groups, so only the first two states exist;
@@ -1487,7 +1595,6 @@ function syncSlideEffects(){
   if(!slide) return;
   try { if(slide.querySelector('#eqP')) syncEq(); } catch(err){ console.error('eq sync', err); }
   try { if(slide.querySelector('#shK')) syncShift(); } catch(err){ console.error('shift sync', err); }
-  try { if(slide.querySelector('#dsK')) syncDouble(); } catch(err){ console.error('double sync', err); }
   try { if(slide.querySelector('#wdCap')) syncWords(); } catch(err){ console.error('words sync', err); }
   try { if(slide.querySelector('#wxCap')) syncCases(); } catch(err){ console.error('cases sync', err); }
   try { if(slide.querySelector('#dbcCap')) syncDbCases(); } catch(err){ console.error('dbc sync', err); }
@@ -1601,18 +1708,7 @@ try {
   };
 } catch(err){ console.error('shift bind', err); }
 
-try {
-  [['dsK', 'k'], ['dsM', 'm']].forEach(function(p){
-    const sl = $(p[0]); if(!sl) return;
-    sl.addEventListener('input', function(){ clampShifts('ds', p[1]); syncSlideEffects(); });
-  });
-  if($('dsReset')) $('dsReset').onclick = function(){
-    $('dsK').value = 0;
-    $('dsM').value = 0;
-    clampShifts('ds', 'k');
-    syncDouble();
-  };
-} catch(err){ console.error('double bind', err); }
+/* （原 dsK/dsM 监听 + double bind 的 try/catch 已整段删除） */
 
 /* ══════════ 6 · S11 WORKED EXAMPLES ══════════ */
 try {
@@ -1685,17 +1781,7 @@ try {
         });
       });
     }
-    if($('drNext')) $('drNext').onclick = function(){
-      if(i >= ROWS.length) return;
-      i++;
-      paint();
-      if(i >= ROWS.length){ this.textContent = 'All shown ✓'; this.disabled = true; }
-    };
-    if($('drReset')) $('drReset').onclick = function(){
-      i = 0; paint();
-      $('drNext').textContent = 'Reveal next row ▶';
-      $('drNext').disabled = false;
-    };
+    /* （drNext/drReset 已删除：规则表页不再用按钮逐行揭晓） */
     
   })();
 } catch(err){ console.error('rule table', err); }
@@ -1833,12 +1919,20 @@ try {
     h:{demand:'Decrease',    supply:'Decrease',   qty:'Decrease',     price:'Indetermined'}
   };
   const INDET = { e:{k:'S2', amp:112}, f:{k:'S1', amp:74}, g:{k:'S1', amp:112}, h:{k:'S2', amp:74} };
-  const OPT = {
-    demand:['Increase','Decrease','Extension','Contraction','—'],
-    supply:['Increase','Decrease','Extension','Contraction','—'],
-    qty:['Increase','Decrease','Indetermined'],
-    price:['Increase','Decrease','Indetermined']
-  };
+  const OPT = { demand:['Increase','Decrease','Extension','Contraction'], supply:['Increase','Decrease','Extension','Contraction'], qty:['Increase','Decrease','Indetermined'], price:['Increase','Decrease','Indetermined'] };
+/* ── 符号模式 ── */
+const SYM_QTY = {'Increase':'↑','Decrease':'↓','Indetermined':'?'};
+let symMode = false;
+function disp(v,k){
+  if(!symMode) return v;
+  if(k==='qty'||k==='price') return SYM_QTY[v] || v;
+  if(v==='Increase')  return '→';
+  if(v==='Decrease')  return '←';
+  if(v==='Extension') return (k==='demand'?'Qd':'Qs') + ' ↑';
+  if(v==='Contraction') return (k==='demand'?'Qd':'Qs') + ' ↓';
+  return v;
+}
+function isLong(t){ return t && t.length > 9; }
 
   const NS='http://www.w3.org/2000/svg';
   const svg=document.getElementById('meqChart');
@@ -1967,14 +2061,14 @@ try {
       ['demand','supply','qty','price'].forEach(k=>{
         h+='<td><div class="meq-c" data-p="'+p.id+'" data-k="'+k+'">'+
            '<span class="meq-v">—</span><div class="meq-pop">'+
-           OPT[k].map(o=>'<b data-v="'+o+'"'+(o==='—'?' class="none"':'')+'>'+o+'</b>').join('')+
+           OPT[k].map(o=>'<b data-v="'+o+'">'+disp(o,k)+'</b>').join('')+
            '</div></div></td>';
       });
       tr.innerHTML=h;
       tb.appendChild(tr);
     });
     tb.querySelectorAll('.meq-c').forEach(w=>{
-      w.addEventListener('mouseenter',()=>{ const id=w.getAttribute('data-p'); if(sel!==id) pick(id); });
+      w.addEventListener('mouseenter',()=>{ const id=w.getAttribute('data-p'); if(sel!==id) pick(id); const r=w.getBoundingClientRect(); w.querySelector('.meq-pop').classList.toggle('up', r.bottom+220 > window.innerHeight-70); });
       w.addEventListener('click',e=>{
         if(e.target.tagName==='B') return;
         const r=w.getBoundingClientRect();
@@ -1986,7 +2080,7 @@ try {
         b.addEventListener('click',ev=>{
           ev.stopPropagation();
           const v=b.getAttribute('data-v');
-          w.querySelector('.meq-v').textContent=v;
+          const vv0=w.querySelector('.meq-v'); vv0.textContent=disp(v,w.getAttribute('data-k')); vv0.classList.toggle('long', isLong(v));
           w.classList.toggle('has', v!=='—');
           w.classList.remove('ok','bad');
           state[w.getAttribute('data-p')+'.'+w.getAttribute('data-k')]=v;
@@ -1997,7 +2091,19 @@ try {
     });
   }
 
-  document.getElementById('meqCheck').addEventListener('click',()=>{
+  document.getElementById('meqSym').addEventListener('click',function(){
+  symMode = !symMode;
+  this.textContent = symMode ? '⇄ Words' : '⇄ Symbols';
+  this.style.background = symMode ? '#1e8449' : '#1a5276';
+  document.querySelectorAll('.meq-c').forEach(w=>{
+    const p=w.getAttribute('data-p'), k=w.getAttribute('data-k');
+    const v = state[p+'.'+k];
+    const vv = w.querySelector('.meq-v');
+    if(v){ vv.textContent = disp(v,k); vv.classList.toggle('long', isLong(v)); }
+    w.querySelectorAll('.meq-pop b').forEach(b=>{ b.textContent = disp(b.getAttribute('data-v'), k); });
+  });
+});
+document.getElementById('meqCheck').addEventListener('click',()=>{
     let ok=0,bad=0;
     document.querySelectorAll('.meq-c').forEach(w=>{
       const p=w.getAttribute('data-p'),k=w.getAttribute('data-k');
@@ -2023,6 +2129,141 @@ try {
   });
 
   draw(); buildTable(); paint();
+})();
+
+
+
+/* ══════════ 3.5 · P8/P9 两条 shift 示意图 ══════════ */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a,x)=>{const e=document.createElementNS(NS,t);
+    for(const k in a)e.setAttribute(k,a[k]); if(x!==undefined)e.textContent=x; return e;};
+  function arrow(g,x1,y1,x2,y2,col,w){
+    const a=Math.atan2(y2-y1,x2-x1), L=17, H=8.5;
+    const bx=x2-Math.cos(a)*L, by=y2-Math.sin(a)*L;
+    g.appendChild(el('line',{x1:x1,y1:y1,x2:bx,y2:by,stroke:col,'stroke-width':w,'stroke-linecap':'round'}));
+    const nx=Math.cos(a+Math.PI/2)*H, ny=Math.sin(a+Math.PI/2)*H;
+    g.appendChild(el('path',{d:'M'+x2+' '+y2+' L'+(bx+nx)+' '+(by+ny)+' L'+(bx-nx)+' '+(by-ny)+' Z',fill:col}));
+  }
+  function axes(g){
+    g.appendChild(el('line',{x1:52,y1:250,x2:352,y2:250,stroke:'#94a3b8','stroke-width':3}));
+    g.appendChild(el('line',{x1:52,y1:250,x2:52,y2:26,stroke:'#94a3b8','stroke-width':3}));
+    g.appendChild(el('text',{x:26,y:34,'font-size':22,'font-weight':800,fill:'#5b6b7b'},'P'));
+    g.appendChild(el('text',{x:352,y:282,'font-size':22,'font-weight':800,fill:'#5b6b7b','text-anchor':'end'},'Q'));
+  }
+  /* D 右移 */
+  (function(){
+    const g=document.getElementById('revD'); if(!g) return; axes(g);
+    g.appendChild(el('line',{x1:110,y1:44,x2:250,y2:214,stroke:'#1E88E5','stroke-width':5,'stroke-linecap':'round'}));
+    g.appendChild(el('text',{x:256,y:222,'font-size':24,'font-weight':800,fill:'#1E88E5'},'D'));
+    g.appendChild(el('line',{x1:168,y1:44,x2:308,y2:214,stroke:'#2E7D32','stroke-width':5,'stroke-linecap':'round','stroke-dasharray':'12 8'}));
+    g.appendChild(el('text',{x:314,y:222,'font-size':24,'font-weight':800,fill:'#2E7D32'},'D\u2032'));
+    arrow(g, 205, 128, 258, 128, '#2E7D32', 4.5);
+    g.appendChild(el('text',{x:231,y:112,'font-size':20,'font-weight':800,fill:'#2E7D32','text-anchor':'middle'},'increase'));
+  })();
+  /* S 右移 */
+  (function(){
+    const g=document.getElementById('revS'); if(!g) return; axes(g);
+    g.appendChild(el('line',{x1:110,y1:214,x2:250,y2:44,stroke:'#2a5a8c','stroke-width':5,'stroke-linecap':'round'}));
+    g.appendChild(el('text',{x:256,y:44,'font-size':24,'font-weight':800,fill:'#2a5a8c'},'S'));
+    g.appendChild(el('line',{x1:168,y1:214,x2:308,y2:44,stroke:'#2E7D32','stroke-width':5,'stroke-linecap':'round','stroke-dasharray':'12 8'}));
+    g.appendChild(el('text',{x:314,y:44,'font-size':24,'font-weight':800,fill:'#2E7D32'},'S\u2032'));
+    arrow(g, 205, 128, 258, 128, '#2E7D32', 4.5);
+    g.appendChild(el('text',{x:231,y:112,'font-size':20,'font-weight':800,fill:'#2E7D32','text-anchor':'middle'},'increase'));
+  })();
+})();
+
+
+
+/* （原「模型 vs 直觉」旧版互动已删除：fc/fcBtn/fcRst/bvBtn/bvRst/.bv 均不存在，
+   现由下方 fc1/fc2/fc3 翻卡片负责） */
+
+/* ══════════ 3.5 · 翻卡片 + 均衡图 ══════════ */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a,x)=>{const e=document.createElementNS(NS,t);
+    for(const k in a)e.setAttribute(k,a[k]); if(x!==undefined)e.textContent=x; return e;};
+  /* viewBox 400×260：横轴 y=222，纵轴 x=46；Q 0..6 占 332px，P 0..60 占 198px
+     D：P = 58 − 9Q      S：P = 4 + 9Q      E = (Q 3, P 31)
+     S 平移 s 个 Q 单位后  P = 4 + 9(Q − s)  →  E′ = (3 + 0.5s, 31 − 4.5s)
+     fs = 字号（viewBox 单位）；图在不同页渲染宽度不同，调用方按实测宽度反算，
+     保证屏幕上的实际字号恒定 ≈ 24px。 */
+  const X=q=>46+55.33*q, Y=p=>222-3.3*p;
+
+  function eq(svg, s, fs){
+    if(!svg) return;
+    svg.innerHTML='';
+    /* 轴 */
+    svg.appendChild(el('line',{x1:46,y1:222,x2:382,y2:222,stroke:'#94a3b8','stroke-width':2.5,'stroke-linecap':'round'}));
+    svg.appendChild(el('line',{x1:46,y1:222,x2:46,y2:16,stroke:'#94a3b8','stroke-width':2.5,'stroke-linecap':'round'}));
+    svg.appendChild(el('text',{x:20,y:36,'font-size':fs,'font-weight':800,fill:'#5b6b7b'},'P'));
+    svg.appendChild(el('text',{x:376,y:252,'font-size':fs,'font-weight':800,fill:'#5b6b7b','text-anchor':'end'},'Q'));
+
+    const qA=0.15, qB=5.85, col = s>0 ? '#1e8449' : '#b03a2e';
+    const d1=[X(qA),Y(58-9*qA)], d2=[X(qB),Y(58-9*qB)];
+    const s1=[X(qA),Y(4+9*qA)],  s2=[X(qB),Y(4+9*qB)];
+
+    /* 曲线 */
+    svg.appendChild(el('line',{x1:d1[0],y1:d1[1],x2:d2[0],y2:d2[1],stroke:'#1E88E5','stroke-width':5.5,'stroke-linecap':'round'}));
+    svg.appendChild(el('line',{x1:s1[0],y1:s1[1],x2:s2[0],y2:s2[1],stroke:'#2a5a8c','stroke-width':5.5,'stroke-linecap':'round'}));
+
+    /* 曲线标签放在 30% 处、沿法向推到曲线外侧——两端都有轴和交点，只有中段是空的 */
+    function curveTag(p1,p2,t,txt,c,anchor){
+      const dx=p2[0]-p1[0], dy=p2[1]-p1[1], L=Math.hypot(dx,dy);
+      const nx=dy/L, ny=-dx/L;
+      svg.appendChild(el('text',{x:p1[0]+dx*t+nx*16,y:p1[1]+dy*t+ny*16,'font-size':fs,'font-weight':800,
+        fill:c,'text-anchor':anchor},txt));
+    }
+    curveTag(d1,d2,0.92,'D','#1E88E5','end');
+    curveTag(s1,s2,0.30,'S','#2a5a8c','end');
+
+    /* S′（虚线）：只画落在图框内的那段 */
+    const st=Math.max(qA,s), en=Math.min(qB,6+s);
+    const t1=[X(st),Y(4+9*(st-s))], t2=[X(en),Y(4+9*(en-s))];
+    svg.appendChild(el('line',{x1:t1[0],y1:t1[1],x2:t2[0],y2:t2[1],stroke:col,'stroke-width':5.5,
+      'stroke-linecap':'round','stroke-dasharray':'12 9'}));
+    curveTag(t1,t2,0.88,'S\u2032',col,'end');
+
+    /* 两个均衡点：空心 = 原来，实心 = 移动后 */
+    const e0=[X(3),Y(31)], e1=[X(3+0.5*s),Y(31-4.5*s)];
+    svg.appendChild(el('line',{x1:46,y1:e0[1],x2:e0[0],y2:e0[1],stroke:'#cbd8e4','stroke-width':2,'stroke-dasharray':'6 6'}));
+    svg.appendChild(el('line',{x1:e0[0],y1:e0[1],x2:e0[0],y2:222,stroke:'#cbd8e4','stroke-width':2,'stroke-dasharray':'6 6'}));
+    svg.appendChild(el('line',{x1:46,y1:e1[1],x2:e1[0],y2:e1[1],stroke:'#8fa8bd','stroke-width':2.5,'stroke-dasharray':'6 6'}));
+    svg.appendChild(el('line',{x1:e1[0],y1:e1[1],x2:e1[0],y2:222,stroke:'#8fa8bd','stroke-width':2.5,'stroke-dasharray':'6 6'}));
+
+    /* 箭头标的是「供给平移」本身：在 S 与 S′ 之间水平画一支，方向 = 左移 / 右移。
+       箭头不能画成均衡点沿 D 滑动 —— 那是「沿曲线」而不是「整条曲线平移」，学生最容易混。
+       价位取 15（右移）或 49（左移）：这两个高度上 S 与 S′ 都还在图框内，且避开 E′ 的引导虚线。 */
+    const Pa = s>0 ? 15 : 49, ya = Y(Pa);
+    const qa = (Pa-4)/9;
+    const xa1 = X(qa), xa2 = X(qa+s), dir = s>0 ? 1 : -1;
+    svg.appendChild(el('line',{x1:xa1,y1:ya,x2:xa2-dir*11,y2:ya,
+      stroke:col,'stroke-width':4.5,'stroke-linecap':'round'}));
+    svg.appendChild(el('polygon',{points:xa2+','+ya+' '+(xa2-dir*19)+','+(ya-9)+' '+(xa2-dir*19)+','+(ya+9),fill:col}));
+
+    svg.appendChild(el('circle',{cx:e0[0],cy:e0[1],r:8,fill:'#fff',stroke:'#1a5276','stroke-width':3.5}));
+    svg.appendChild(el('circle',{cx:e1[0],cy:e1[1],r:9,fill:col}));
+  }
+
+  const cfgs={ fc1: 2.2, fc2: -2.2, fc3: 2.2 };
+  Object.keys(cfgs).forEach(function(id){
+    const card=document.getElementById(id);
+    if(!card) return;
+    const sv=card.querySelector('.eqv');
+    if(!sv) return;
+    /* 图在不同页的渲染宽度不同 → 按实测宽度反算 viewBox 字号，屏幕上恒 ≈ 24px */
+    const w=sv.getBoundingClientRect().width || 400;
+    const fs=Math.min(34, Math.max(15, 24/(w/400)));
+    eq(sv, cfgs[id], Math.round(fs*10)/10);
+  });
+  document.querySelectorAll('.flipbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      const c=document.getElementById(b.getAttribute('data-card'));
+      if(!c) return;
+      c.classList.toggle('flipped');
+      b.textContent = c.classList.contains('flipped') ? '⇄ Turn it back' : '⇄ Turn the card over';
+    });
+  });
 })();
 
 </script>
