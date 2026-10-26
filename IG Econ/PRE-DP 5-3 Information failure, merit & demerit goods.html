@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 2-9a (2) - Information failure, merit and demerit goods</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:21px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(20px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(20px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:20px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(20px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(20px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(20px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(20px,1.35vw,20px);}
+.zone .zt{width:100%;font-size:clamp(20px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:20px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:20px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:20px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:20px;}
+.chip.small{font-size:20px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(20px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:20px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+/* ── 字号：最小 20px，正文 24px ── */
+.slide .content{font-size:24px;}
+.card p, .note p, .qfb, .band, .step3 .col p, .ingredient p, .hero p,
+.defcard p, .readout, .qstem, .qopt, .txt p{
+  font-size:clamp(22px,2vw,25px) !important;line-height:1.42;}
+.sub{font-size:clamp(23px,2.1vw,26px) !important;}
+.card h3, .step3 .col h3, .ingredient h3{font-size:clamp(22px,2vw,26px) !important;}
+.data-table td, .data-table th{font-size:21px !important;}
+.chain .nd p{font-size:20px !important;}
+
+.hero{width:100%;border:3px solid var(--blue);border-radius:16px;padding:18px 24px;
+  background:linear-gradient(180deg,#F4FAFF,#fff);}
+.hero p{font-size:clamp(22px,2.2vw,29px);line-height:1.38;font-weight:700;color:#15334f;}
+.lot{display:flex;gap:12px;justify-content:center;align-items:flex-end;min-height:110px;
+  margin-top:16px;}
+.car{width:104px;height:58px;flex:0 0 auto;transition:transform .7s cubic-bezier(.4,0,.2,1),
+  opacity .7s ease;transition-delay:var(--d);}
+.car.good{filter:drop-shadow(0 3px 6px rgba(46,125,50,.28));}
+.car.lemon{filter:drop-shadow(0 3px 6px rgba(201,162,39,.30));}
+.car.gone{opacity:0;transform:translateX(-52px) translateY(18px) scale(.78);}
+.lot.s3 .car.lemon{transform:translateY(-4px);}
+.legendrow{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:6px;
+  font-size:20px;color:#5b6b7b;flex-wrap:wrap;}
+.legendrow .dot{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:7px;
+  vertical-align:-1px;}
+.legendrow .dot.good{background:#2E7D32;}
+.legendrow .dot.lemon{background:#C9A227;}
+.legendrow .ph{background:#14304d;color:#fff;border-radius:999px;padding:4px 16px;font-weight:800;
+  opacity:0;transform:translateY(6px);transition:.5s;}
+.legendrow .ph.on{opacity:1;transform:none;}
+.legendrow .ph.low{background:#C9A227;color:#3a2f06;}
+.seg{display:inline-flex;flex:0 0 auto;border:2.5px solid var(--blue);
+  border-radius:999px;overflow:hidden;background:#fff;}
+.segbtn{border:none;background:transparent;padding:8px 20px;font-size:20px;font-weight:800;
+  color:var(--darkblue);cursor:pointer;font-family:inherit;white-space:nowrap;transition:.15s;}
+.segbtn.on{background:var(--blue) !important;color:#fff !important;}
+.taxcard{flex:1;border-radius:16px;padding:14px 18px;border:3px solid #e2ecf6;background:#fff;
+  display:flex;flex-direction:column;gap:6px;}
+.taxcard .pct{font-size:clamp(32px,3.4vw,44px);font-weight:900;line-height:1;}
+.taxcard .pct span{font-size:clamp(20px,1.7vw,21px);font-weight:800;}
+.tagp{display:inline-block;background:#C62828;color:#fff;border-radius:999px;padding:1px 10px;font-size:20px;font-weight:800;vertical-align:1px;}
+.taxcard h3{font-size:clamp(20px,1.9vw,23px);margin:2px 0 4px;}
+.taxcard p{line-height:1.4;color:#3d4d5c;}
+.taxcard .why{margin-top:auto;padding-top:8px;border-top:1px dashed #e2ecf6;
+  color:#7b8b9b;font-style:italic;}
+.taxcard.g{border-color:var(--green);background:#F2FAF4;} .taxcard.g .pct{color:#1d5c37;}
+.taxcard.r{border-color:var(--red);background:#FEF6F5;} .taxcard.r .pct{color:#8c2a22;}
+.taxcard.a{border-color:#C9A227;background:#FDF9EC;} .taxcard.a .pct{color:#8a6b12;}
+.ifcol{flex:1;border-radius:16px;padding:14px 18px;border:3px solid #e2ecf6;background:#fff;
+  display:flex;flex-direction:column;gap:8px;}
+.ifcol h3{font-size:clamp(21px,2vw,24px);margin-bottom:2px;}
+.ifcol.b{border-color:var(--blue);background:#F4FAFF;} .ifcol.b h3{color:#12507e;}
+.ifcol.a{border-color:#C9A227;background:#FDF9EC;} .ifcol.a h3{color:#8a6b12;}
+.exr b{color:var(--darkblue);}
+.exr p{color:#4a5b6b;line-height:1.35;font-size:clamp(20px,1.8vw,22px);}
+.ifcol .fix{margin-top:auto;padding:10px 12px;border-radius:10px;background:#EAF4FF;
+  font-size:clamp(20px,1.8vw,22px);line-height:1.4;color:#1a3a5c;}
+.ifcol.a .fix{background:#FBF1D2;color:#5c460c;}
+.defcard{flex:1;border-radius:16px;padding:26px 28px;border:3px solid #e2ecf6;background:#fff;}
+.defcard h3{font-size:clamp(24px,2.2vw,28px);margin-bottom:8px;}
+.defcard p{line-height:1.45;color:#33414f;}
+.defcard p.ex{margin-top:10px;color:#7b8b9b;font-style:italic;}
+.defcard.g{border-color:var(--green);background:#F2FAF4;}
+.defcard.g h3{color:#1d5c37;}
+.defcard.r{border-color:var(--red);background:#FEF6F5;}
+.defcard.r h3{color:#8c2a22;}
+.band{width:100%;border-radius:12px;padding:12px 20px;background:#14304d;color:#fff;
+  font-size:clamp(20px,1.9vw,23px);font-weight:700;text-align:center;}
+.step3{display:flex;gap:12px;width:100%;}
+.step3 .col{flex:1;min-width:0;border-radius:14px;border:2px solid #e2ecf6;background:#fff;
+  padding:12px 14px;display:flex;flex-direction:column;}
+.step3 .col b.n{font-size:24px;line-height:1;color:#cfe0f2;font-weight:900;}
+.step3 .col h3{font-size:clamp(20px,1.8vw,21px);margin:4px 0 4px;color:var(--darkblue);}
+.step3 .col p{font-size:clamp(20px,1.6vw,20px);color:#4a5b6b;line-height:1.42;}
+.chain{display:flex;align-items:stretch;width:100%;max-height:190px;}
+.chain .nd{flex:1;min-width:0;background:#fff;border:2.5px solid #dbe7f3;border-radius:14px;
+  padding:12px 14px;opacity:.5;transition:.4s;display:flex;flex-direction:column;justify-content:center;}
+.chain .nd.on{opacity:1;border-color:var(--blue);}
+.chain .nd b{font-size:24px;color:#8fb4d6;line-height:1;}
+.chain .nd.on b{color:var(--blue);}
+.chain .nd p{font-size:clamp(20px,1.55vw,20px);color:#1b2733;line-height:1.4;margin-top:4px;}
+.chain .arw{width:28px;display:flex;align-items:center;justify-content:center;color:#c3d3e2;font-size:20px;}
+.ingredient{display:flex;gap:14px;width:100%;}
+.ingredient .ing{flex:1;border-radius:14px;padding:12px 16px 16px;border:2.5px solid #e2ecf6;background:#fff;}
+.ingredient .ing.a{border-color:var(--blue);background:#EAF4FF;}
+.ingredient .ing.b{border-color:var(--green);background:#F2FAF4;}
+.ingredient h3{font-size:clamp(20px,1.8vw,21px);margin-bottom:4px;}
+.ingredient p{font-size:clamp(20px,1.55vw,20px);color:#3d4d5c;line-height:1.4;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 2: The allocation of resources</div><h1>Information failure,<br>merit &amp; demerit goods</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div style="position:absolute;bottom:110px;left:0;right:0;text-align:center;font-size:clamp(16px,1.5vw,19px);color:#94a3b3">You cannot value what you do not know.</div><div class="botbar"></div></div><div class="slide "><div class="content"><h1>First, a quick look back</h1><div class="sub">Last lesson the price was missing a cost. Today the price is missing a fact.</div><div class="step3 mt"><div class="col"><b class="n">01</b><h3>External cost</h3><p>Sp sits below Ss → <b>Qp &gt; Qs</b> → too much is produced.</p></div><div class="col"><b class="n">02</b><h3>External benefit</h3><p>Dp sits below Ds → <b>Qp &lt; Qs</b> → too little is produced.</p></div><div class="col"><b class="n">03</b><h3>Both are market failure</h3><p>The price carried the private view only. Society’s view was somewhere else.</p></div></div><div class="band" style="margin-top:16px">Social cost = private cost + external cost &nbsp;·&nbsp; social benefit = private benefit + external benefit</div></div></div><div class="slide "><div class="content"><h1>Information failure in your life</h1><div class="sub">Three things you have probably done this year.</div><div class="row mt" style="align-items:stretch;gap:20px"><div style="flex:1.5;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:12px"><div class="card" style="padding:10px 14px"><h3>1 · Bought on 拼多多</h3><p>Was the price low because it was cheap to make — or because you could not check what you were buying?</p></div><div class="card t" style="padding:10px 14px"><h3>2 · Sold on 闲鱼</h3><p>Who knew more about the thing you sold — you, or the person buying it?</p></div><div class="card a" style="padding:10px 14px"><h3>3 · A second-hand laptop</h3><p>Would you pay the “fair” price if the seller knew the battery was dying and you did not?</p></div></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><img src="images/xianyu.png" alt="" style="max-height:210px;max-width:100%;width:auto;height:auto;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.12)"><div style="font-size:20px;color:#8a99a8;text-align:center;line-height:1.3">A second-hand market: one side always knows more.</div></div></div></div><div class="note mt"><p>Every one of these is a market with a <b>gap in the information</b>. Today we look at what that gap does to the price.</p></div></div></div><div class="slide "><div class="content"><h1>Information failure</h1><div class="row mt" style="align-items:stretch;gap:18px"><div style="flex:1.5;min-width:0;display:flex;flex-direction:column;gap:10px"><div class="hero" style="padding:14px 18px"><p style="font-size:clamp(20px,2vw,25px)">When buyers or sellers lack the information needed to make the best economic decisions.</p></div><div class="sub" style="margin-top:2px">Three types</div><div class="card" style="padding:8px 14px"><h3 style="font-size:19px">1 · Lack of information</h3><p>the fact exists somewhere; you do not have it</p></div><div class="card t" style="padding:8px 14px"><h3 style="font-size:19px">2 · Misleading information</h3><p>the fact you have is wrong — often because someone chose to make it wrong</p></div><div class="card a" style="padding:8px 14px;border-color:var(--blue)"><h3 style="font-size:19px">3 · Asymmetric information</h3><p>one party knows more than the other — and the price is set as if they knew the same</p></div></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><img src="images/exam.jpg" alt="" style="max-height:240px;max-width:100%;width:auto;height:auto;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.12)"><div style="font-size:20px;color:#8a99a8;text-align:center;line-height:1.3">An exam you cannot revise for — that is what a market feels like when the information is missing.</div></div></div></div><div class="note mt" style="margin-top:10px"><p>All three end the same way: resources go to the wrong place, and we call that <b>market failure</b>.</p></div></div></div><div class="slide "><div class="content"><h1>Two failures, two fixes</h1><div class="sub">The same two problems you meet every week — and what policy does about each.</div><div class="row mt" style="gap:18px;align-items:stretch;flex:1;min-height:0"><div class="ifcol b"><h3>Lack of information</h3><div class="exr"><b>A second-hand phone</b><p>You cannot open it. The seller knows the battery is dying; you find out in March.</p></div><div class="exr"><b>A new restaurant</b><p>You cannot taste it before you pay. Its kitchen is invisible until someone inspects it.</p></div><div class="fix"><b>The fix.</b> Make information flow: ratings and review platforms, certification marks, mandatory labelling, third-party inspection, the 12315 complaint system.</div></div><div class="ifcol a"><h3>Misleading information</h3><div class="exr"><b>A “zero sugar” drink</b><p>The claim is legal and the sugar is replaced by something you were not told about.</p></div><div class="exr"><b>Fake reviews and scam adverts</b><p>Paid five-star ratings, “miracle cures” aimed at the elderly, phishing messages that look official.</p></div><div class="fix"><b>The fix.</b> Punish the lie: advertising law, fines for false claims, platform liability for what it carries, anti-fraud alerts and take-down power.</div></div></div><div class="band" style="margin-top:12px">One is an <b>empty</b> signal, the other a <b>false</b> one — and both make the price say something untrue</div></div></div><div class="slide "><div class="content"><h1>The market for lemons — asymmetric information</h1><div class="sub">Four grades of car, one price. Each round the best sellers leave first — and the average falls with them.</div><div class="row mt" style="align-items:center;gap:20px;flex:0 0 auto;margin-top:auto"><div style="flex:1.5;min-width:0;display:flex;flex-direction:column;justify-content:center"><div class="lot" id="lot" style="margin-top:0"><div class="car" data-i="0" data-g="ex" style="--d:0.0s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#1B5E20"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#134415"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div><div class="car" data-i="1" data-g="good" style="--d:0.05s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#388E3C"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#26692a"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div><div class="car" data-i="2" data-g="fair" style="--d:0.1s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#C9A227"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#9c7d1c"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div><div class="car" data-i="3" data-g="lemon" style="--d:0.15000000000000002s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#C62828"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#8e1c1c"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div><div class="car" data-i="4" data-g="ex" style="--d:0.2s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#1B5E20"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#134415"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div><div class="car" data-i="5" data-g="good" style="--d:0.25s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#388E3C"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#26692a"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div><div class="car" data-i="6" data-g="fair" style="--d:0.30000000000000004s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#C9A227"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#9c7d1c"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div><div class="car" data-i="7" data-g="lemon" style="--d:0.35000000000000003s"><svg viewBox="0 0 84 46" width="100%" height="100%"><rect x="6" y="19" width="72" height="15" rx="4" fill="#C62828"/><path d="M22 19 L30 8 L56 8 L64 19 Z" fill="#8e1c1c"/><circle cx="24" cy="36" r="6" fill="#33404d"/><circle cx="60" cy="36" r="6" fill="#33404d"/></svg></div></div><div class="legendrow" style="margin-top:10px"><span><i class="dot" style="background:#1B5E20"></i>excellent · ¥120</span><span><i class="dot" style="background:#388E3C"></i>good · ¥100</span><span><i class="dot" style="background:#C9A227"></i>fair · ¥70</span><span><i class="dot" style="background:#C62828"></i>lemon · ¥40</span></div><div class="legendrow" style="margin-top:8px"><span class="ph on" id="ptag">buyer offers ¥82</span><span id="rcount" style="font-weight:800;color:#2E4A6B">8 cars</span></div></div><div style="flex:0 0 200px;display:flex;flex-direction:column;align-items:center;gap:6px"><img src="images/akerlof.png" alt="" style="height:238px;width:auto;max-width:100%;object-fit:contain;border-radius:10px;box-shadow:0 4px 16px rgba(20,48,77,.18)"><div style="font-size:20px;color:#8a99a8;text-align:center;line-height:1.3">George Akerlof, 1970</div></div></div><div class="note mt" id="lemonCap" style="min-height:78px;margin-top:16px;margin-bottom:auto"><p>Round 1 — nobody can inspect what is under the paint, so one price has to cover all four grades.</p></div><div class="row" style="gap:14px;margin-top:10px;align-items:center"><button class="big-btn" id="lemonBtn" onclick="lemonStep()" style="min-width:230px;white-space:nowrap">Next round ▶</button><button class="big-btn ghost" onclick="lemonReset()">Reset</button><div class="qfb" style="margin:0">Left unchecked, the best cars never reach the market.</div></div></div></div><div class="slide "><div class="content"><h1>Merit and demerit goods</h1><div class="sub">Two definitions, both with two halves.</div><div class="row mt" style="gap:18px;align-items:stretch;margin-top:auto"><div class="defcard g"><h3>Merit goods</h3><p>Goods that are <b>more beneficial to consumers than they realise</b>, and which <b>also create external benefits</b>.</p><p class="ex">education · vaccinations · health insurance</p></div><div class="defcard r"><h3>Demerit goods</h3><p>Goods that are <b>more harmful than consumers realise</b>, and which <b>also create external costs</b>.</p><p class="ex">cigarettes · alcohol · gambling</p></div></div><div class="band" style="margin-top:18px;margin-bottom:auto">Both halves matter: the misjudgement is <b>information failure</b>; the spillover is an <b>externality</b>. Left alone, the market under-produces the first and over-produces the second.</div></div></div><div class="slide "><div class="content"><h1>Merit and demerit goods — two ingredients</h1><div class="row mt" style="align-items:stretch;gap:22px"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;justify-content:center"><div class="ingredient" style="flex-direction:column;gap:10px"><div class="ing a"><h3>① Information failure</h3><p>the buyer does not know the benefit, or discounts it because it arrives years from now</p></div><div class="ing b"><h3>② External benefits</h3><p>other people gain when this is consumed — and they never paid for it</p></div></div><div class="note" style="margin:0"><p><b>Take either one away and it is no longer a merit good.</b> Without the externality it is just a good people misjudge; without the misjudgement it is just a good with an externality.</p></div></div><div style="flex:1.15;min-width:0;display:flex;align-items:center;justify-content:center"><img src="images/edu_wall.jpg" alt="" style="max-height:340px;max-width:100%;width:auto;height:auto;border-radius:12px;box-shadow:0 3px 16px rgba(20,48,77,.14)"></div></div><div style="text-align:center;font-size:20px;color:#8a99a8;margin-top:6px">A village wall: finish middle school before going out to work — education is the clearest merit good</div></div></div><div class="slide "><div class="content"><h1>Merit good: health insurance</h1><div class="row mt" style="gap:26px;align-items:stretch;flex:1;min-height:0"><div style="flex:0 0 300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><img src="images/yaoshen.jpg" alt="" style="height:100%;max-height:392px;width:auto;max-width:100%;object-fit:contain;border-radius:12px;box-shadow:0 4px 18px rgba(20,48,77,.20)"><div style="font-size:20px;color:#8a99a8"><i>Dying to Survive</i> (2018)</div></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;justify-content:center"><div class="note r" style="margin:0"><p><b>Why demand is too low.</b> Insurers cannot tell the healthy from the sick, so they charge one price — the sick buy, the young and healthy stay out (<i>adverse selection</i>). Once insured, people use more care than they would have (<i>moral hazard</i>).</p></div><div class="note g" style="margin:0"><p><b>External benefits.</b> Timely treatment lowers medical costs for everyone and lowers the risk of disease spreading — the neighbours gain and never pay.</p></div><div class="note" style="margin:0"><p><b>The film.</b> Imported cancer drugs priced beyond what families can pay, and the grey market that grew to fill the gap: the medicine was a merit good, and the price kept it from the people who needed it.</p></div><div class="band" style="margin:0">Under-consumed → under-produced → a case for subsidy or public provision</div></div></div></div></div><div class="slide "><div class="content"><h1>Does spending more buy more health?</h1><div class="sub">Each dot is a country: spending per person across, life expectancy up.</div><div style="display:flex;gap:30px;align-items:stretch;flex:1;min-height:0;margin-top:10px;justify-content:center"><div style="flex:0 0 auto;display:flex;min-height:0"><img src="images/health_scatter.png" alt="" style="height:100%;width:auto;max-width:none;flex:0 0 auto;border-radius:8px;box-shadow:0 3px 16px rgba(20,48,77,.16)"></div><div style="flex:0 0 430px;display:flex;flex-direction:column;justify-content:center;gap:12px"><div class="note a" style="margin:0"><p><b>The US</b> sits far right and only mid-height.</p></div><div class="note" style="margin:0"><p><b>Japan, Spain, Italy</b> spend a fraction of that and live longer.</p></div><div class="note g" style="margin:0"><p>Spending explains about half of the difference <b>(R² = 0.56)</b> — not all of it.</p></div><div style="font-size:20px;color:#8a99a8">Source: OECD, via 国金证券研究所</div></div></div></div></div><div class="slide "><div class="content"><h1>The American case</h1><div class="sub">No universal public cover — insurance is bought from firms that must make a profit.</div><div class="row mt" style="gap:18px;justify-content:center"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><img src="images/obamacare.png" alt="" style="max-height:210px;max-width:100%;width:auto;height:auto;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.12)"><div style="font-size:20px;color:#8a99a8;text-align:center;line-height:1.3">The 2010 attempt to widen cover — still fought over in court and at every election.</div></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><img src="images/insurance_news.png" alt="" style="max-height:210px;max-width:100%;width:auto;height:auto;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.12)"><div style="font-size:20px;color:#8a99a8;text-align:center;line-height:1.3">December 2024: a health-insurance chief executive was shot dead in Manhattan.</div></div></div><div class="note r mt" style="margin-top:auto"><p>A profit-making insurer earns most by covering the healthy and refusing the expensive. The poor end up under-insured, then face the bill alone — one illness can erase a family’s savings. The anger is the political symptom of an economic gap.</p></div><div class="band" style="margin-top:12px;margin-bottom:auto">A merit good left to the market is under-consumed — and when it is also expensive, the shortfall becomes a social conflict, not just an inefficient one</div></div></div><div class="slide "><div class="content"><h1>Demerit goods — the mirror image</h1><div class="row" style="align-items:center;gap:14px;margin:2px 0 10px"><div class="seg" id="seg"><button class="segbtn on" data-k="ads" onclick="setDem('ads')">Two adverts</button><button class="segbtn" data-k="data" onclick="setDem('data')">The money</button><button class="segbtn" data-k="cost" onclick="setDem('cost')">The cost</button></div><div class="sub" style="margin:0">Harm under-estimated, and shared.</div></div><div id="viewAds" style="display:flex;flex-direction:column;flex:1;min-height:0"><div class="row" style="gap:24px;justify-content:center;flex:0 0 auto;margin-top:auto;align-items:center"><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><img src="images/smoking_faces.jpg" alt="" style="max-height:300px;max-width:100%;width:auto;height:auto;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.12)"><div style="font-size:20px;color:#8a99a8;text-align:center;line-height:1.3">One warns: the harm is real, and it is not only yours.</div></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><img src="images/cig_packs.jpg" alt="" style="max-height:300px;max-width:100%;width:auto;height:auto;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.12)"><div style="font-size:20px;color:#8a99a8;text-align:center;line-height:1.3">One sells: the same product, dressed as a gift.</div></div></div><div class="note a" style="margin-top:14px;margin-bottom:auto"><p>Same good, two messages. A demerit good is one where the second message wins — and the buyer pays for the first one later.</p></div></div><div id="viewData" style="display:none;flex-direction:column;flex:1;min-height:0"><div class="row" style="gap:18px;flex:0 0 auto;align-items:flex-start"><div style="flex:1;min-width:0"><svg id="svgA" style="width:100%;height:290px"></svg></div><div style="flex:1;min-width:0"><svg id="svgB" style="width:100%;height:290px"></svg></div></div><div class="note" style="margin-top:8px"><p>China, 2019–2025, trillion yuan. <b>Tobacco tax and profit is about the size of the whole defence budget</b> — and total health spending is more than five times either.</p></div></div><div id="viewCost" style="display:none;flex-direction:column;flex:1;min-height:0"><div style="flex:0 0 auto"><svg id="barCost" style="width:100%;height:300px"></svg></div><div class="note r" style="margin-top:6px"><p><b>Tobacco brings in 1.60 trillion yuan a year — and costs more than that to clean up after.</b> Published estimates of the social cost range from 0.9 to 2.4 trillion yuan, and every one is larger than the revenue. Roughly, <b>one yuan of tobacco tax comes with 1.6 yuan of social cost</b>.</p></div></div></div></div><div class="slide "><div class="content"><h1>Tax is a policy choice</h1><div class="sub">VAT is the floor every good pays. The choice is what a government <b>adds on top</b> — or takes off.</div><div class="row mt" style="gap:16px;align-items:stretch;flex:1;min-height:0"><div class="taxcard g"><div class="pct">9%</div><h3>Reduced rate</h3><p><b>Fresh food</b> — agricultural products sit in the reduced VAT band.</p><p><b>Books, newspapers, magazines</b> — also 9%, not the standard 13%.</p><div class="why">Made cheaper on purpose: the benefit is private and social.</div></div><div class="taxcard a"><div class="pct">13%</div><h3>Standard rate, nothing extra</h3><p><b>Everyday packaged goods</b> — bottled water, snacks, clothing — pay 13% and nothing more.</p><div class="why">The default setting: neither encouraged nor discouraged.</div></div><div class="taxcard r"><div class="pct">13%<span> + excise</span></div><h3>Standard rate + excise</h3><p><b>Tobacco</b> — 36–56% excise + 11% wholesale</p><p><b>Alcohol</b> — 20% excise + a fixed charge per unit</p><p><b>Sugar-sweetened drinks</b> — <span class="tagp">proposed</span> long debated, <b>never adopted</b></p><div class="why">In force for tobacco and alcohol; only a paper for sugar.</div></div></div><div class="band" style="margin-top:12px">Same instrument, three settings: a <b>reduced</b> rate encourages, the <b>standard</b> rate is neutral, an <b>excise</b> discourages</div></div></div><div class="slide "><div class="content"><h1>Quick check</h1><div class="sub">Six questions.</div><div id="qz1" class="mt"></div></div></div><div class="slide "><div class="content"><h1>Five things to keep</h1><div class="sub">Say it before you see it — the button fills one blank at a time.</div><div class="txt" style="line-height:2.1;margin-top:8px"><p><b class="db">1.</b> Information failure: buyers or sellers lack the information needed for the best decisions — so resources are <span class="bl" data-a="misallocated"></span>.</p><p><b class="db">2.</b> When one party knows more than the other, it is <span class="bl" data-a="asymmetric"></span> information.</p><p><b class="db">3.</b> Merit goods are more beneficial than consumers realise, and they create <span class="bl" data-a="external benefits"></span>.</p><p><b class="db">4.</b> Demerit goods are more harmful than consumers realise, and they create <span class="bl" data-a="external costs"></span>.</p><p><b class="db">5.</b> Left to the market, merit goods are <span class="bl" data-a="under-consumed"></span> and demerit goods are over-consumed — that is market failure.</p></div><div class="row" style="gap:14px;margin-top:auto;align-items:center"><button class="big-btn" id="blBtn" onclick="revealNext()" style="min-width:190px">Next ▶</button><button class="big-btn ghost" onclick="resetBlanks()">Reset</button><div class="qfb" style="margin:0">Next: public goods — the goods the market does not supply at all.</div></div></div></div>
+<div class="slide closing"><div class="content" style="align-items:center;justify-content:center;text-align:center"><div class="course-tag" style="text-align:center;color:#94a3b3">IGCSE Economics · Section 2.9</div><h1 style="text-align:center;font-size:clamp(38px,4.6vw,58px);margin-top:6px">Information failure, merit &amp; demerit goods</h1><div style="font-size:clamp(18px,1.8vw,22px);color:#5b6b7b;margin-top:14px;max-width:760px">You cannot value what you do not know — and you cannot charge for a benefit that lands on someone else.</div><div style="margin-top:28px;padding:14px 26px;border-radius:14px;background:#EAF4FF;border-left:6px solid var(--blue);font-size:clamp(17px,1.7vw,20px);color:#1a3a5c">Next lesson · <b>Public goods</b></div><div class="author" style="margin-top:34px">DR. JIA · © 2026</div></div></div>
+
+<div class="nav"><button id="prevBtn">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 16</span><button id="nextBtn">▶</button></div></div>
+</div>
+<script>
+/* ══════ 分页导航 ══════ */
+var CUR = 0, SLIDES = [];
+function showSlide(i){
+  if(i < 0 || i >= SLIDES.length) return;
+  SLIDES[CUR].classList.remove('active');
+  CUR = i;
+  SLIDES[CUR].classList.add('active');
+  var dots = document.querySelectorAll('#dots span');
+  for(var k = 0; k < dots.length; k++) dots[k].className = (k === CUR) ? 'on' : '';
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SLIDES.length;
+  document.getElementById('prevBtn').disabled = (CUR === 0);
+  document.getElementById('nextBtn').disabled = (CUR === SLIDES.length - 1);
+  if(typeof onSlide === 'function') { try { onSlide(CUR); } catch(e){ console.error(e); } }
+}
+function nextSlide(){ showSlide(CUR + 1); }
+function prevSlide(){ showSlide(CUR - 1); }
+
+function bootDeck(){
+  SLIDES = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  SLIDES.forEach(function(s, i){
+    var d = document.createElement('span');
+    d.onclick = function(){ showSlide(i); };
+    dots.appendChild(d);
+  });
+  document.getElementById('prevBtn').onclick = prevSlide;
+  document.getElementById('nextBtn').onclick = nextSlide;
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){
+      e.preventDefault(); nextSlide();
+    }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); prevSlide(); }
+  });
+  document.querySelectorAll('.flip').forEach(function(f){
+    f.onclick = function(){ f.classList.toggle('on'); };
+  });
+  var m = location.search.match(/[?&]s=(\d+)/);
+  showSlide(m ? Math.min(+m[1], SLIDES.length - 1) : 0);
+}
+
+/* ══════ 拖拽分类 ══════ */
+function mountDC(rootId, chips, zones){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var h = '<div class="dc-pool" id="' + rootId + 'pool"></div>' +
+          '<div class="row" style="margin-top:12px">';
+  zones.forEach(function(z){
+    h += '<div class="zone" data-zone="' + z.id + '"><div class="zt">' + z.label + '</div></div>';
+  });
+  h += '</div><div class="row" style="margin-top:12px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  chips.forEach(function(c, i){
+    var el = document.createElement('div');
+    el.className = 'chip';
+    el.draggable = true;
+    el.textContent = c.t;
+    el.dataset.ans = c.a;
+    el.dataset.i = i;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    /* 点击选中 → 点击区域放下（触屏/白板更稳） */
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.zone').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+  pool.addEventListener('click', function(){ /* 点空白不做事 */ });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var zone = c.closest('.zone');
+      c.classList.remove('ok', 'no');
+      if(!zone){ return; }
+      if(zone.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '">' + right + ' / ' + total +
+      '</span> <span class="gray">correct</span>';
+  };
+}
+
+/* ══════ 测验（逐题） ══════ */
+function mountQuiz(rootId, QS){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var i = 0, score = 0;
+  function render(){
+    var q = QS[i];
+    var h = '<div class="qstem">' + q.s + '</div><div class="qopts">';
+    q.o.forEach(function(t, k){
+      h += '<button class="qopt" data-k="' + k + '">' + String.fromCharCode(65 + k) + '. &nbsp;' + t + '</button>';
+    });
+    h += '</div><div class="qfb" id="' + rootId + 'fb"></div>' +
+         '<div class="qmeta">Question ' + (i + 1) + ' / ' + QS.length + ' &nbsp;·&nbsp; score ' + score + '</div>';
+    root.innerHTML = h;
+    root.querySelectorAll('.qopt').forEach(function(b){
+      b.onclick = function(){
+        var k = +b.dataset.k;
+        root.querySelectorAll('.qopt').forEach(function(x){ x.disabled = true; });
+        if(k === q.a){ b.classList.add('correct'); score++; }
+        else {
+          b.classList.add('wrong');
+          root.querySelectorAll('.qopt')[q.a].classList.add('correct');
+        }
+        document.getElementById(rootId + 'fb').innerHTML = q.e;
+        var nb = document.createElement('button');
+        nb.className = 'big-btn'; nb.style.marginTop = '12px';
+        nb.textContent = (i + 1 < QS.length) ? 'Next \u279c' : 'See result \u2714';
+        nb.onclick = function(){
+          if(i + 1 < QS.length){ i++; render(); } else { finish(); }
+        };
+        root.appendChild(nb);
+      };
+    });
+  }
+  function finish(){
+    root.innerHTML = '<div class="result"><h2>Result</h2><div class="big">' +
+      score + ' / ' + QS.length + '</div>' +
+      '<button class="big-btn ghost" id="' + rootId + 'again">Try again</button></div>';
+    document.getElementById(rootId + 'again').onclick = function(){ i = 0; score = 0; render(); };
+  }
+  render();
+}
+
+/* ══════ SVG 小工具 ══════ */
+function mk(tag, attrs, parent){
+  var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function clearSvg(id){
+  var s = document.getElementById(id);
+  if(!s) return null;
+  while(s.firstChild) s.removeChild(s.firstChild);
+  return s;
+}
+/* 坐标轴：x 向右，y 向上（用像素高度换算） */
+function drawAxes(svg, box, xLabel, yLabel){
+  var x0 = box.x, y0 = box.y + box.h;
+  mk('line', {x1: x0, y1: y0, x2: x0 + box.w, y2: y0, stroke: '#333', 'stroke-width': 2}, svg);
+  mk('line', {x1: x0, y1: y0, x2: x0, y2: box.y, stroke: '#333', 'stroke-width': 2}, svg);
+  var t1 = mk('text', {x: x0 - 6, y: box.y - 8, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t1.textContent = yLabel;
+  var t2 = mk('text', {x: x0 + box.w, y: y0 + 26, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t2.textContent = xLabel;
+}
+
+
+/* ══════ 市场图（供求 + 平移 + 管制线） ══════ */
+/* 二分法求交点：D 与 S 都可能是平移过的，线性函数也能解，但统一用数值法更省事 */
+function solveP(cfg, k, m){
+  var lo = 0, hi = cfg.pmax;
+  for(var it = 0; it < 60; it++){
+    var mid = (lo + hi) / 2;
+    var gap = (cfg.d(mid) + k) - (cfg.s(mid) + m);
+    if(gap > 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function drawMarket(svgId, cfg, line, label, kind, k, m){
+  k = k || 0; m = m || 0;
+  var svg = clearSvg(svgId); if(!svg) return;
+  var W = 720, H = 520, pl = 76, pr = 30, pt = 24, pb = 56;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  function X(q){ return x0 + q / cfg.qmax * w; }
+  function Y(p){ return y0 - p / cfg.pmax * h; }
+
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:x0-8, y:pt-6, 'text-anchor':'end', 'font-size':24, fill:'#5b6b7b'}, svg);
+  ty.textContent = cfg.pl;
+  var tx = mk('text', {x:x0+w/2, y:y0+32, 'text-anchor':'middle', 'font-size':24, fill:'#5b6b7b'}, svg);
+  tx.textContent = cfg.ql;
+  var t0 = mk('text', {x:x0-10, y:y0+18, 'text-anchor':'end', 'font-size':24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  function curve(fn, shift, color, tag, dash, tagdy, tagAtStart){
+    var pts = [];
+    for(var i = 0; i <= 240; i++){
+      var p = cfg.pmax * i / 240, q = fn(p) + shift;
+      if(q >= -0.001 && q <= cfg.qmax) pts.push([X(q), Y(p)]);
+    }
+    if(pts.length < 2) return;
+    var d = pts.map(function(pt, i){ return (i ? 'L' : 'M') + pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' ');
+    mk('path', {d:d, fill:'none', stroke:color, 'stroke-width':dash ? 2 : 3,
+      'stroke-linecap':'round', 'stroke-dasharray': dash || 'none'}, svg);
+    if(tag){
+      var last = tagAtStart ? pts[0] : pts[pts.length-1];
+      var lb = mk('text', {x:last[0]+8, y:last[1]+(tagdy||0), 'font-size': 26, 'font-weight':700,
+        fill:color, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+      lb.textContent = tag;
+    }
+  }
+
+  var shifted = (k !== 0 || m !== 0);
+  if(shifted){
+    if(k !== 0) curve(cfg.d, 0, '#c8d2dd', 'D', '6 5', -12, true);
+    if(m !== 0) curve(cfg.s, 0, '#c8d2dd', 'S', '6 5', -8, false);
+  }
+  curve(cfg.d, k, '#2E4A6B', k !== 0 ? 'D1' : 'D', null, -12, true);
+  curve(cfg.s, m, '#1E88E5', m !== 0 ? 'S1' : 'S', null, m !== 0 ? -8 : 22, false);
+
+  /* 原均衡 */
+  if(shifted){
+    mk('circle', {cx:X(cfg.eqQ), cy:Y(cfg.eqP), r:4.5, fill:'#c8d2dd'}, svg);
+    mk('line', {x1:X(cfg.eqQ), y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:y0,
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+    mk('line', {x1:x0, y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:Y(cfg.eqP),
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  }
+
+  var eqP = solveP(cfg, k, m), eqQ = cfg.d(eqP) + k;
+  var ecol = shifted ? '#1A73E8' : '#2E4A6B';
+  mk('circle', {cx:X(eqQ), cy:Y(eqP), r:5.5, fill:ecol}, svg);
+  mk('line', {x1:X(eqQ), y1:Y(eqP), x2:X(eqQ), y2:y0,
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  mk('line', {x1:x0, y1:Y(eqP), x2:X(eqQ), y2:Y(eqP),
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+
+  var eqT = mk('text', {x:x0-10, y:Y(eqP)+6, 'text-anchor':'end', 'font-size':24,
+    fill: shifted ? '#1A73E8' : '#5b6b7b', 'font-weight': shifted ? 700 : 400,
+    stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  eqT.textContent = cfg.unit + (Math.round(eqP*10)/10);
+  if(shifted){
+    var eqT0 = mk('text', {x:x0-10, y:Y(cfg.eqP)+6, 'text-anchor':'end', 'font-size': 24,
+      fill:'#aab4c0', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+    eqT0.textContent = cfg.unit + cfg.eqP;
+  }
+
+  if(line === null || line === undefined) return {eqP:eqP, eqQ:eqQ};
+
+  var qd = cfg.d(line), qs = cfg.s(line);
+  var col = (kind === 'ceiling') ? '#C62828' : '#00838F';
+  mk('line', {x1:x0, y1:Y(line), x2:X(Math.min(cfg.qmax, Math.max(qd, qs))), y2:Y(line),
+    stroke:col, 'stroke-width':3.5}, svg);
+  var lt = mk('text', {x:x0+8, y:Y(line)-10, 'font-size': 26, 'font-weight':700, fill:col,
+    stroke:'#fff', 'stroke-width':5, 'paint-order':'stroke'}, svg);
+  lt.textContent = label;
+
+  var binding = (kind === 'ceiling') ? (line < eqP) : (line > eqP);
+  if(!binding) return {binding:false, qd:qd, qs:qs, gap:0};
+
+  mk('line', {x1:X(qd), y1:Y(line), x2:X(qd), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qs), y1:Y(line), x2:X(qs), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qd), y1:y0+16, x2:X(qs), y2:y0+16, stroke:col, 'stroke-width':3}, svg);
+  var gt = mk('text', {x:(X(qd)+X(qs))/2, y:y0+40, 'text-anchor':'middle', 'font-size': 26,
+    'font-weight':700, fill:col}, svg);
+  gt.textContent = Math.abs(qs - qd).toFixed(1).replace('.0','') + ' ' + cfg.qu;
+  return {binding:true, qd:qd, qs:qs, gap:Math.abs(qs - qd), eqP:eqP, eqQ:eqQ};
+}
+
+/* ══════ 四象限分类（带图片） ══════ */
+function mountQuad(rootId, items){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var QUADS = [
+    {id:'private', t:'PRIVATE GOOD',      d:'rival + excludable'},
+    {id:'common',  t:'COMMON RESOURCE',   d:'rival + non-excludable'},
+    {id:'club',    t:'CLUB GOOD',         d:'non-rival + excludable'},
+    {id:'public',  t:'PUBLIC GOOD',       d:'non-rival + non-excludable'}
+  ];
+  var h = '<div class="game"><div class="pool" id="' + rootId + 'pool">' +
+          '<div class="ph">DRAG INTO A QUADRANT</div></div><div class="quad-wrap">';
+  QUADS.forEach(function(q){
+    h += '<div class="quad" data-zone="' + q.id + '"><div class="qt">' + q.t +
+         '</div><div class="qd">' + q.d + '</div><div class="body"></div></div>';
+  });
+  h += '</div></div><div class="row" style="margin-top:10px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  items.forEach(function(it, i){
+    var el = document.createElement('div');
+    el.className = 'chip ' + (it.img ? 'imgchip' : 'small');
+    el.draggable = true;
+    el.dataset.ans = it.a;
+    el.dataset.i = i;
+    el.innerHTML = it.img ? '<img src="' + it.img + '" alt=""><span>' + it.t + '</span>' : it.t;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i); e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.quad').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.querySelector('.body').appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.querySelector('.body').appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var z = c.closest('.quad');
+      c.classList.remove('ok','no');
+      if(!z) return;
+      if(z.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '" style="font-size:30px">' +
+      right + ' / ' + total + '</span> <span class="gray">correct</span>';
+  };
+}
+var QUESTS = [
+ {s:'Information failure means',
+  o:['prices are too high','buyers or sellers lack the information needed for the best decision',
+     'the government has not published the data','firms keep secrets from rivals'],
+  a:1, e:'It causes misallocation, and so it is a cause of market failure.'},
+ {s:'Asymmetric information means',
+  o:['nobody has the information','information is out of date',
+     'one party knows more than the other','information costs money'],
+  a:2, e:'The gap between the two sides is what distorts the price \u2014 cars, insurance, healthcare.'},
+ {s:'A merit good is under-consumed because',
+  o:['it is too expensive to produce','consumers underestimate the benefit to themselves',
+     'firms cannot profit from it','the government bans advertising'],
+  a:1, e:'Information failure, plus the external benefits that the buyer never counts.'},
+ {s:'Which two ingredients make a good a merit good?',
+  o:['high price and high demand','information failure and external benefits',
+     'public provision and free access','scarcity and rationing'],
+  a:1, e:'Its own definition has two parts. Remove either one and it is no longer a merit good.'},
+ {s:'Health insurance is a merit good because',
+  o:['it is provided by the state','sicker people buy more of it, and treatment protects others too',
+     'it is expensive','insurers make a loss'],
+  a:1, e:'Adverse selection keeps the young and healthy out, and timely treatment has external benefits.'},
+ {s:'A demerit good is',
+  o:['over-consumed because the harm is underestimated','always illegal',
+     'a good the government produces','a good with no external costs'],
+  a:0, e:'The mirror image of a merit good: the buyer under-counts the harm to themselves and to others.'}
+];var TYPES = [
+ {s:'A used-car seller knows the engine is failing. The buyer does not.',
+  o:['Lack of information','Misleading information','Asymmetric information'],
+  a:2, e:'One side knows more than the other. This is Akerlof\u2019s \u201clemon\u201d problem.'},
+ {s:'A phone advert says \u201cbattery lasts two days\u201d. It lasts eight hours.',
+  o:['Lack of information','Misleading information','Asymmetric information'],
+  a:1, e:'The information exists but is false \u2014 it actively misleads rather than merely being missing.'},
+ {s:'You buy a vitamin supplement without knowing what the research says about it.',
+  o:['Lack of information','Misleading information','Asymmetric information'],
+  a:0, e:'The information is available somewhere; you simply do not have it.'},
+ {s:'A hospital knows the success rate of an operation. The patient does not.',
+  o:['Lack of information','Misleading information','Asymmetric information'],
+  a:2, e:'A clear information gap between the two sides of the same transaction.'}
+];
+var LSTEP = 0;
+var LPLAN = [
+  {gone: [], price: 'buyer offers \u00a582', n: 8,
+   cap: 'Round 1 \u2014 nobody can inspect what is under the paint, so one price has to cover all four grades.'},
+  {gone: [0, 4], price: 'buyer offers \u00a576', n: 6,
+   cap: 'Round 2 \u2014 at \u00a582 the excellent cars will not sell. They leave first.'},
+  {gone: [1, 5], price: 'buyer offers \u00a566', n: 4,
+   cap: 'Round 3 \u2014 with the best gone the average falls again, and the good cars go too.'},
+  {gone: [2, 6], price: 'buyer offers \u00a548', n: 2,
+   cap: 'Round 4 \u2014 only the fair and the lemons are left. The fair ones stop being worth selling.'},
+  {gone: [3, 7], price: 'no trade', n: 0,
+   cap: 'Round 5 \u2014 nobody will sell at \u00a548. The market has disappeared.'}
+];
+function lemonApply(k){
+  var p = LPLAN[k];
+  document.querySelectorAll('#lot .car').forEach(function(c){
+    if(p.gone.indexOf(+c.dataset.i) >= 0) c.classList.add('gone');
+  });
+  var tag = document.getElementById('ptag');
+  tag.classList.add('on');
+  tag.textContent = p.price;
+  tag.classList.toggle('low', p.n === 0);
+  document.getElementById('rcount').textContent = p.n + ' cars';
+  document.getElementById('lemonCap').innerHTML = '<p>' + p.cap + '</p>';
+  var b = document.getElementById('lemonBtn');
+  if(k >= LPLAN.length - 1){ b.disabled = true; b.textContent = 'Market gone'; }
+}
+function lemonStep(){
+  if(LSTEP >= LPLAN.length - 1) return;
+  LSTEP++;
+  lemonApply(LSTEP);
+}
+function lemonReset(){
+  LSTEP = 0;
+  document.querySelectorAll('#lot .car').forEach(function(c){ c.classList.remove('gone'); });
+  var tag = document.getElementById('ptag');
+  tag.classList.remove('low');
+  tag.textContent = LPLAN[0].price;
+  document.getElementById('rcount').textContent = LPLAN[0].n + ' cars';
+  document.getElementById('lemonCap').innerHTML = '<p>' + LPLAN[0].cap + '</p>';
+  var b = document.getElementById('lemonBtn');
+  b.disabled = false; b.textContent = 'Next round \u25b6';
+  lemonApply(0);
+}
+
+function stepChain(id){
+  var c = document.getElementById(id); if(!c) return;
+  var nds = c.querySelectorAll('.nd');
+  var i = +(c.dataset.i || 0);
+  if(i < nds.length){ nds[i].classList.add('on'); i++; c.dataset.i = i; }
+  if(i >= nds.length){
+    var b = document.getElementById(id + 'Btn');
+    if(b){ b.disabled = true; b.textContent = 'That is the loop'; }
+  }
+}
+function resetChain(id){
+  var c = document.getElementById(id); if(!c) return;
+  c.dataset.i = 0;
+  c.querySelectorAll('.nd').forEach(function(n){ n.classList.remove('on'); });
+  var b = document.getElementById(id + 'Btn');
+  if(b){ b.disabled = false; b.textContent = 'Next step \u25b6'; }
+}
+/* 两张小图：左＝国防 vs 烟草；右＝卫生总费用（量级不同，分开画） */
+function miniChart(id, years, series, ymax, ystep){
+  var svg = clearSvg(id); if(!svg) return;
+  var W = 440, H = 330, pl = 56, pr = 20, pt = 58, pb = 52;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  function X(i){ return x0 + w * i / (years.length - 1); }
+  function Y(v){ return y0 - v / ymax * h; }
+
+  for(var g = 0; g * ystep <= ymax + 0.001; g++){
+    var v = g * ystep;
+    mk('line', {x1:x0, y1:Y(v), x2:x0+w, y2:Y(v), stroke:'#e6eef6', 'stroke-width':1.5}, svg);
+    var lb = mk('text', {x:x0-8, y:Y(v)+6, 'text-anchor':'end', 'font-size':19, fill:'#8a99a8'}, svg);
+    lb.textContent = (+v.toFixed(1));
+  }
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt-8, stroke:'#333', 'stroke-width':2}, svg);
+
+  series.forEach(function(s, k){
+    var d = '';
+    s.v.forEach(function(val, i){ d += (i ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(val).toFixed(1); });
+    mk('path', {d:d, fill:'none', stroke:s.color, 'stroke-width':4, 'stroke-linecap':'round'}, svg);
+    s.v.forEach(function(val, i){
+      mk('circle', {cx:X(i), cy:Y(val), r:6, fill:s.color, stroke:'#fff', 'stroke-width':2}, svg);
+    });
+    var lg = mk('text', {x:x0, y:20 + k * 22, 'font-size':18, 'font-weight':700, fill:s.color}, svg);
+    lg.textContent = '\u25a0 ' + s.name;
+  });
+
+  years.forEach(function(y, i){
+    var t = mk('text', {x:X(i), y:y0+26, 'text-anchor':'middle', 'font-size':18, fill:'#5b6b7b'}, svg);
+    t.textContent = y.slice(2);
+  });
+}
+
+function drawCost(){
+  var svg = clearSvg('barCost'); if(!svg) return;
+  var W = 760, H = 300, pl = 300, pr = 90, pt = 16, pb = 40;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  var rows = [
+    {lab: 'Tax & profit, 2024', v: 1.60, c: '#2E4A6B'},
+    {lab: 'Social cost, 2025 (low)', v: 0.90, c: '#C62828'},
+    {lab: 'Disease burden, 2018', v: 1.52, c: '#C62828'},
+    {lab: 'Total cost, 2020 (high)', v: 2.43, c: '#8E1C1C'}
+  ];
+  var MX = 2.6;
+  function X(v){ return x0 + v / MX * w; }
+  var bh = h / rows.length * 0.58;
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  for(var g = 0; g <= 2.5; g += 0.5){
+    mk('line', {x1:X(g), y1:y0, x2:X(g), y2:pt, stroke:'#eef3f8', 'stroke-width':1.2}, svg);
+    var lb = mk('text', {x:X(g), y:y0+24, 'text-anchor':'middle', 'font-size':17,
+      fill:'#8a99a8'}, svg);
+    lb.textContent = g.toFixed(1);
+  }
+  rows.forEach(function(r, i){
+    var cy = pt + (h / rows.length) * (i + 0.5);
+    mk('rect', {x:X(0), y:cy - bh/2, width:X(r.v) - X(0), height:bh, fill:r.c, rx:4}, svg);
+    var nl = mk('text', {x:x0-12, y:cy+7, 'text-anchor':'end', 'font-size':19, fill:'#3d4d5c'}, svg);
+    nl.textContent = r.lab;
+    var vl = mk('text', {x:X(r.v)+10, y:cy+7, 'font-size':19, 'font-weight':800, fill:r.c}, svg);
+    vl.textContent = r.v.toFixed(2);
+  });
+}
+
+function drawLines(){
+  miniChart('svgA', ['2019','2020','2021','2022','2023','2024','2025'],
+    [{name: 'Defence', color: '#2E4A6B', v: [1.212, 1.268, 1.356, 1.450, 1.554, 1.666, 1.785]},
+     {name: 'Tobacco tax & profit', color: '#C62828',
+      v: [1.206, 1.280, 1.358, 1.441, 1.522, 1.601, 1.657]}],
+    2.0, 0.5);
+  miniChart('svgB', ['2019','2020','2021','2022','2023','2024'],
+    [{name: 'Total health spending', color: '#2E7D32',
+      v: [6.584, 7.218, 7.683, 8.533, 9.058, 9.090]}],
+    10, 2);
+}
+
+/* 广告 ↔ 数据 切换 */
+var DEM = 'ads';
+function setDem(kind){
+  DEM = kind;
+  document.getElementById('viewAds').style.display = (kind === 'ads') ? 'flex' : 'none';
+  document.getElementById('viewData').style.display = (kind === 'data') ? 'flex' : 'none';
+  document.getElementById('viewCost').style.display = (kind === 'cost') ? 'flex' : 'none';
+  document.querySelectorAll('#seg .segbtn').forEach(function(b){
+    b.classList.toggle('on', b.dataset.k === kind);
+  });
+  if(kind === 'data') drawLines();
+  if(kind === 'cost') drawCost();
+}
+
+function onSlide(i){ if(i === 11 && DEM === 'data') drawLines(); }
+window.addEventListener('DOMContentLoaded', function(){
+  bootDeck();
+  mountQuiz('qz1', QUESTS);
+  mountQuiz('qz2', TYPES);
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>
