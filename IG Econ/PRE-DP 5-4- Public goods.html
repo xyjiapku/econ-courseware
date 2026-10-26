@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 2-9a (3) - Public goods</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:21px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(20px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(20px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:20px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(20px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(20px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(20px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(20px,1.35vw,20px);}
+.zone .zt{width:100%;font-size:clamp(20px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:20px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:20px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:20px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:20px;}
+.chip.small{font-size:20px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(20px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:20px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+.card p, .note p, .qfb, .sub, .txt p, .ex p, .take p, .cell p, .data-table td{
+  font-size:clamp(22px,2vw,24px) !important;line-height:1.42;}
+.card h3, .ex h4, .take h4, .cell h4{font-size:clamp(21px,2vw,25px) !important;}
+.band{width:100%;border-radius:12px;padding:12px 20px;background:#14304d;color:#fff;
+  font-weight:700;text-align:center;}
+.big{width:100%;border-radius:16px;padding:18px 24px;border:3px solid var(--blue);
+  background:linear-gradient(180deg,#F4FAFF,#fff);}
+.big p{font-size:clamp(23px,2.2vw,28px);line-height:1.38;font-weight:700;color:#15334f;}
+.attrrow{display:flex;gap:22px;align-items:stretch;flex:1;min-height:0;}
+.attrrow .pic{flex:0 0 auto;display:flex;align-items:center}
+.attrrow .pic img{height:100%;width:auto;max-width:none;border-radius:14px;
+  box-shadow:0 4px 18px rgba(20,48,77,.16);}
+.attrrow .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;justify-content:center}
+.qm-wrap{display:grid;grid-template-columns:74px 1fr 1fr;grid-template-rows:34px 1fr 1fr;
+  gap:6px;width:100%;}
+.qm-wrap .qh,.qm-wrap .qv{display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:20px;color:#8a99a8;font-weight:700;line-height:1.15;}
+.qm-wrap .qm{border:2px solid #e2ecf6;border-radius:10px;background:#fff;display:flex;
+  align-items:center;justify-content:center;text-align:center;padding:8px 4px;font-size:20px;
+  color:#94a3b3;font-weight:700;min-height:70px;}
+.qm-wrap .qm.on{border-color:var(--blue);background:#EAF4FF;color:var(--darkblue);
+  box-shadow:0 3px 12px rgba(30,136,229,.18);}
+.ex{padding:7px 0;border-bottom:1px dashed #e2ecf6;}
+.ex:last-child{border-bottom:none;}
+.ex h4{color:var(--darkblue);margin-bottom:2px;}
+.ex p{color:#4a5b6b;}
+.take{display:flex;gap:14px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed #e2ecf6;}
+.take:last-child{border-bottom:none;}
+.txt .mk{display:inline-flex;width:24px;height:24px;border-radius:50%;background:#C62828;color:#fff;font-style:normal;font-size:20px;align-items:center;justify-content:center;vertical-align:2px;margin-right:2px;}
+.take b.n{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:20px;}
+.quad4{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;width:100%;flex:1;}
+.quad4 .cell{border:3px solid #e2ecf6;border-radius:14px;background:#fff;padding:10px 14px;
+  display:flex;flex-direction:column;gap:2px;}
+.quad4 .cell .cond{font-size:20px;color:var(--blue);font-weight:700;}
+.quad4 .cell.a{border-color:#2E4A6B;} .quad4 .cell.b{border-color:#C62828;}
+.quad4 .cell.c{border-color:#1E88E5;} .quad4 .cell.d{border-color:#2E7D32;}
+.dq{display:grid;grid-template-columns:320px 1fr;gap:18px;flex:1;min-height:0;width:100%;}
+.dq .rail{border-radius:16px;border:3px dashed #cfdcea;background:#FAFCFF;padding:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.dq .cardit{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px;
+  text-align:center;cursor:grab;user-select:none;box-shadow:0 4px 14px rgba(30,136,229,.16);}
+.dq .cardit img,.dq .cardit svg{max-height:150px;max-width:100%;border-radius:10px;display:block;
+  margin:0 auto 6px;}
+.dq .cardit .lb{font-size:22px;font-weight:800;color:var(--darkblue);}
+.dq .grid2{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;}
+.dq .qcell{border:3px solid #e2ecf6;border-radius:14px;background:#fff;padding:8px 10px;
+  display:flex;flex-direction:column;gap:4px;transition:.15s;cursor:pointer;}
+.dq .qcell .qt{font-size:20px;font-weight:800;color:#7b8b9b;letter-spacing:.3px;}
+.dq .qcell.over{border-color:var(--blue);background:#EAF4FF;}
+.dq .qcell.right{border-color:var(--green);background:#F2FAF4;}
+.dq .qcell.wrong{border-color:var(--red);background:#FEF6F5;}
+.dq .mini{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+.dq .mini span{display:inline-flex;align-items:center;gap:4px;background:#EAF4FF;color:#1a3a5c;
+  border-radius:999px;padding:3px 10px;font-size:20px;font-weight:700;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 2: The allocation of resources</div><h1>Public goods</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div style="position:absolute;bottom:110px;left:0;right:0;text-align:center;font-size:20px;color:#94a3b3">Beyond the name: rivalry, excludability &amp; real-world classifications</div><div class="botbar"></div></div><div class="slide "><div class="content"><h1>First test: rivalry</h1><div class="sub">Does my consumption take something away from you?</div><div class="attrrow mt"><div class="pic"><img src="images/cake.png" alt="" style="height:340px"></div><div class="txt"><div class="big"><p><b>Rival</b> — one person’s use leaves less for everyone else. The slice you eat is gone.</p></div><div class="note"><p><b>Non-rival</b> — an extra user takes nothing away. A radio broadcast, a lighthouse beam, a defence system: the same output serves one more person at no extra cost.</p></div><div class="qfb" style="margin:0">The test is about <b>what is left after me</b>, not about how many people want it.</div></div></div></div></div><div class="slide "><div class="content"><h1>Second test: excludability</h1><div class="sub">Can non-payers be kept out — at a reasonable cost?</div><div class="attrrow mt"><div class="pic"><img src="images/fence.png" alt="" style="height:340px"></div><div class="txt"><div class="big"><p><b>Excludable</b> — a fence, a gate, a ticket can stop people who do not pay.</p></div><div class="note"><p><b>Non-excludable</b> — once the good exists, nobody can be kept out. You cannot fence in the air over a city, or the light from a lighthouse, or the defence of a country.</p></div><div class="qfb" style="margin:0">The test is <b>technical and cheap</b>: a fence that costs more than the crop it protects is no exclusion at all.</div></div></div></div></div><div class="slide "><div class="content"><h1>Two tests, four types</h1><div class="sub">Answer both questions and the good falls into one cell.</div><table class="data-table" style="margin-top:8px"><tr><th></th><th>Excludable</th><th>Non-excludable</th></tr><tr><td class="b">Rival</td><td><b>Private goods</b><br>food, clothing, a bus seat</td><td><b>Common resources</b><br>fisheries, pastures, crowded roads</td></tr><tr><td class="b">Non-rival</td><td><b>Club goods</b><br>cinemas, toll bridges, pay TV</td><td><b>Pure public goods</b><br>defence, lighthouses, basic science</td></tr></table><div class="band" style="margin-top:14px">Only the bottom-right cell is a <b>pure public good</b> — it needs <b>both</b> non-rivalry and non-excludability, not either</div></div></div><div class="slide "><div class="content"><h1>Named “public” — actually club goods</h1><div class="sub">Excludable + non-rival (within capacity): a fee keeps non-payers out.</div><div class="row mt" style="align-items:stretch;gap:20px;flex:1;min-height:0"><div style="flex:1.6;min-width:0;display:flex;flex-direction:column;justify-content:center"><div class="ex"><h4>Public swimming pools, cinemas, bridges</h4><p>A ticket or toll excludes non-payers; when uncrowded one more user costs almost nothing.</p></div><div class="ex"><h4>Public libraries</h4><p>A library card is required, but enough stock keeps reading largely non-rival.</p></div><div class="ex"><h4>Cable / pay TV</h4><p>The encrypted signal excludes; an extra subscriber adds almost zero cost.</p></div><div class="ex"><h4>Toll roads (uncrowded)</h4><p>The booth excludes free riders; light traffic means low rivalry.</p></div></div><div style="flex:1;min-width:0;display:flex;align-items:center"><div class="qm-wrap"><div class="qh"></div><div class="qh">Excludable</div><div class="qh">Non-excl.</div><div class="qv">Rival</div><div class="qm">Private</div><div class="qm">Common</div><div class="qv">Non-rival</div><div class="qm on">Club</div><div class="qm">Public</div></div></div></div></div></div><div class="slide "><div class="content"><h1>Named “public” — actually common resources</h1><div class="sub">Non-excludable + rival: hard to keep people out, and one person’s use reduces what is left.</div><div class="row mt" style="align-items:stretch;gap:20px;flex:1;min-height:0"><div style="flex:1.6;min-width:0;display:flex;flex-direction:column;justify-content:center"><div class="ex"><h4>Public fisheries, pastures</h4><p>Anyone may fish or graze; the fish and grass are limited, so overuse depletes them.</p></div><div class="ex"><h4>Public ponds and rivers</h4><p>Villagers draw water freely; too much extraction lowers the water for everyone.</p></div><div class="ex"><h4>Congested public roads</h4><p>Open access, but once crowded each extra car slows the rest.</p></div><div class="ex"><h4>Clean air</h4><p>Hard to exclude polluters; beyond the air’s capacity it becomes scarce and rival.</p></div></div><div style="flex:1;min-width:0;display:flex;align-items:center"><div class="qm-wrap"><div class="qh"></div><div class="qh">Excludable</div><div class="qh">Non-excl.</div><div class="qv">Rival</div><div class="qm">Private</div><div class="qm on">Common</div><div class="qv">Non-rival</div><div class="qm">Club</div><div class="qm">Public</div></div></div></div></div></div><div class="slide "><div class="content"><h1>Named “public” — actually private goods</h1><div class="sub">Excludable + rival: labelled public, consumed like anything else.</div><div class="row mt" style="align-items:stretch;gap:20px;flex:1;min-height:0"><div style="flex:1.6;min-width:0;display:flex;flex-direction:column;justify-content:center"><div class="ex"><h4>Public buses, public toilets</h4><p>A seat or stall used by one person cannot be used by another at the same time; a fare excludes.</p></div><div class="ex"><h4>Public phone booths</h4><p>A coin is required, and only one person can use the phone.</p></div><div class="ex"><h4>Public housing</h4><p>Once allocated, others are excluded; every unit given out reduces the stock.</p></div></div><div style="flex:1;min-width:0;display:flex;align-items:center"><div class="qm-wrap"><div class="qh"></div><div class="qh">Excludable</div><div class="qh">Non-excl.</div><div class="qv">Rival</div><div class="qm on">Private</div><div class="qm">Common</div><div class="qv">Non-rival</div><div class="qm">Club</div><div class="qm">Public</div></div></div></div><div class="band" style="margin-top:10px">“Public” usually describes <b>the provider</b>, not the good</div></div></div><div class="slide "><div class="content"><h1>Case study: roads under different conditions</h1><div class="sub">Same asphalt, four quadrants — only crowding and the pricing technology change.</div><div class="row mt" style="gap:18px;align-items:stretch;flex:1;min-height:0"><div class="quad4" style="flex:1.35"><div class="cell a"><h4>Private good</h4><div class="cond">Crowded + tolled</div><p>Rival and excludable; allocated by price.</p></div><div class="cell b"><h4>Common resource</h4><div class="cond">Crowded + free</div><p>Open access with congestion — the commons risk.</p></div><div class="cell c"><h4>Club good</h4><div class="cond">Uncrowded + tolled</div><p>Excludable by toll, still non-rival while empty.</p></div><div class="cell d"><h4>Pure public good</h4><div class="cond">Uncrowded + free</div><p>Non-rival and non-excludable.</p></div></div><div style="flex:0 0 340px;display:flex;flex-direction:column;gap:10px;justify-content:center"><div><img src="images/toll_gate.jpg" alt="" style="width:100%;border-radius:12px;box-shadow:0 3px 14px rgba(20,48,77,.16)"><div style="font-size:20px;color:#8a99a8;text-align:center;margin-top:4px">A toll gate — exclusion made cheap</div></div><div><img src="images/traffic_jam.png" alt="" style="width:100%;border-radius:12px;box-shadow:0 3px 14px rgba(20,48,77,.16)"><div style="font-size:20px;color:#8a99a8;text-align:center;margin-top:4px">A jam — rivalry appears without any gate</div></div></div></div></div></div><div class="slide "><div class="content"><h1>The free-rider problem</h1><div class="sub">Why a firm will not build a lighthouse, however useful it is.</div><div class="row mt" style="align-items:center;gap:26px;flex:1;min-height:0"><div style="flex:0 0 380px;display:flex;align-items:center"><img src="images/lighthouse.png" alt="" style="width:100%;border-radius:14px;box-shadow:0 4px 18px rgba(20,48,77,.18)"></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px"><div class="note r" style="margin:0"><p><b>Non-excludable → you cannot charge.</b> Once the light is on, every ship sees it — including the ones that paid nothing.</p></div><div class="note r" style="margin:0"><p><b>Free rider → nobody pays.</b> Each owner waits for someone else to pay, because they get the light either way.</p></div><div class="note r" style="margin:0"><p><b>No revenue → no supply.</b> A private firm cannot cover its cost, so the good is not produced at all — not even a little.</p></div></div></div><div class="band" style="margin-top:12px">The market does not under-produce a pure public good — it produces <b>none</b></div></div></div><div class="slide "><div class="content"><h1>So how is it provided?</h1><div class="sub">If the price cannot do it, something else has to.</div><div class="row mt" style="gap:16px;align-items:stretch;flex:1;min-height:0"><div class="card" style="flex:1"><h3>Tax and provide</h3><p>The state pays out of taxation and provides it free at the point of use — defence, street lighting, flood defences.</p></div><div class="card t" style="flex:1"><h3>Make it excludable</h3><p>Turn it into a club good: a toll, a subscription, an encrypted signal. That is how pay TV and toll roads exist.</p></div><div class="card a" style="flex:1"><h3>Regulate or subsidise</h3><p>Require provision, or pay a private firm to supply it — road maintenance contracts, subsidies for basic research.</p></div></div><div class="band" style="margin-top:12px">Each answer moves the good out of the bottom-right cell — or takes the decision away from the market entirely</div></div></div><div class="slide "><div class="content"><h1>Put each one in its cell</h1><div class="sub">One at a time. Drag the card into a quadrant — or click it, then click the cell.</div><div class="dq mt" id="dq"><div class="rail" id="rail"></div><div class="grid2" id="grid2"><div class="qcell" data-q="private"><div class="qt">PRIVATE · rival + excludable</div><div class="mini"></div></div><div class="qcell" data-q="common"><div class="qt">COMMON · rival + non-excl.</div><div class="mini"></div></div><div class="qcell" data-q="club"><div class="qt">CLUB · non-rival + excludable</div><div class="mini"></div></div><div class="qcell" data-q="public"><div class="qt">PUBLIC · non-rival + non-excl.</div><div class="mini"></div></div></div></div><div class="qfb" id="dqfb" style="margin-top:8px"></div></div></div><div class="slide "><div class="content"><h1>Say it back</h1><div class="sub">Eight blanks. Two of them are the mistakes most often made.</div><div class="txt" style="margin-top:auto;line-height:1.95"><p><b class="db">1.</b> Every good is judged by two tests: rivalry and <span class="bl" data-a="excludability"></span>.</p><p><b class="db">2.</b> Rival means my use leaves <span class="bl" data-a="less"></span> for everyone else.</p><p><b class="db">3.</b> Non-excludable means you cannot stop <span class="bl" data-a="non-payers"></span> from consuming it.</p><p><b class="db">4.</b> They consume without paying — they are <span class="bl" data-a="free riders"></span>.</p><p><b class="db">5.</b> <i class="mk">!</i> With no way to charge, the market supplies <span class="bl" data-a="no"></span> pure public goods — not fewer, none.</p><p><b class="db">6.</b> A pure public good must be non-rival <span class="bl" data-a="and"></span> non-excludable.</p><p><b class="db">7.</b> <i class="mk">!</i> Everyday English: a “public” service is one the <span class="bl" data-a="government"></span> runs. Economics: a “public good” is one that is non-rival and non-excludable — <b>same word, different test</b>.</p><p><b class="db">8.</b> It is paid for out of <span class="bl" data-a="taxation"></span>.</p></div><div class="row" style="gap:12px;margin-top:18px;margin-bottom:auto;align-items:center"><button class="big-btn" id="blBtn" onclick="revealNext()" style="min-width:180px">Next ▶</button><button class="big-btn ghost" onclick="resetBlanks()">Reset</button><div class="qfb" style="margin:0">Next: competition, efficiency and monopoly.</div></div></div></div><div class="slide closing"><div class="content" style="align-items:center;justify-content:center;text-align:center"><div class="course-tag" style="text-align:center;color:#94a3b3">IGCSE Economics · Section 2.9</div><h1 style="text-align:center;font-size:clamp(38px,4.6vw,58px);margin-top:6px">Public goods</h1><div style="font-size:clamp(18px,1.8vw,22px);color:#5b6b7b;margin-top:14px;max-width:760px">“Public” describes the provider. Economics describes the consumption.</div><div style="margin-top:28px;padding:14px 26px;border-radius:14px;background:#EAF4FF;border-left:6px solid var(--blue);font-size:clamp(17px,1.7vw,20px);color:#1a3a5c">Next lesson · <b>Competition and monopoly</b></div><div class="author" style="margin-top:34px">DR. JIA · © 2026</div></div></div>
+
+<div class="nav"><button id="prevBtn">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 13</span><button id="nextBtn">▶</button></div></div>
+</div>
+<script>
+/* ══════ 分页导航 ══════ */
+var CUR = 0, SLIDES = [];
+function showSlide(i){
+  if(i < 0 || i >= SLIDES.length) return;
+  SLIDES[CUR].classList.remove('active');
+  CUR = i;
+  SLIDES[CUR].classList.add('active');
+  var dots = document.querySelectorAll('#dots span');
+  for(var k = 0; k < dots.length; k++) dots[k].className = (k === CUR) ? 'on' : '';
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SLIDES.length;
+  document.getElementById('prevBtn').disabled = (CUR === 0);
+  document.getElementById('nextBtn').disabled = (CUR === SLIDES.length - 1);
+  if(typeof onSlide === 'function') { try { onSlide(CUR); } catch(e){ console.error(e); } }
+}
+function nextSlide(){ showSlide(CUR + 1); }
+function prevSlide(){ showSlide(CUR - 1); }
+
+function bootDeck(){
+  SLIDES = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  SLIDES.forEach(function(s, i){
+    var d = document.createElement('span');
+    d.onclick = function(){ showSlide(i); };
+    dots.appendChild(d);
+  });
+  document.getElementById('prevBtn').onclick = prevSlide;
+  document.getElementById('nextBtn').onclick = nextSlide;
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){
+      e.preventDefault(); nextSlide();
+    }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); prevSlide(); }
+  });
+  document.querySelectorAll('.flip').forEach(function(f){
+    f.onclick = function(){ f.classList.toggle('on'); };
+  });
+  var m = location.search.match(/[?&]s=(\d+)/);
+  showSlide(m ? Math.min(+m[1], SLIDES.length - 1) : 0);
+}
+
+/* ══════ 拖拽分类 ══════ */
+function mountDC(rootId, chips, zones){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var h = '<div class="dc-pool" id="' + rootId + 'pool"></div>' +
+          '<div class="row" style="margin-top:12px">';
+  zones.forEach(function(z){
+    h += '<div class="zone" data-zone="' + z.id + '"><div class="zt">' + z.label + '</div></div>';
+  });
+  h += '</div><div class="row" style="margin-top:12px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  chips.forEach(function(c, i){
+    var el = document.createElement('div');
+    el.className = 'chip';
+    el.draggable = true;
+    el.textContent = c.t;
+    el.dataset.ans = c.a;
+    el.dataset.i = i;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    /* 点击选中 → 点击区域放下（触屏/白板更稳） */
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.zone').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+  pool.addEventListener('click', function(){ /* 点空白不做事 */ });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var zone = c.closest('.zone');
+      c.classList.remove('ok', 'no');
+      if(!zone){ return; }
+      if(zone.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '">' + right + ' / ' + total +
+      '</span> <span class="gray">correct</span>';
+  };
+}
+
+/* ══════ 测验（逐题） ══════ */
+function mountQuiz(rootId, QS){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var i = 0, score = 0;
+  function render(){
+    var q = QS[i];
+    var h = '<div class="qstem">' + q.s + '</div><div class="qopts">';
+    q.o.forEach(function(t, k){
+      h += '<button class="qopt" data-k="' + k + '">' + String.fromCharCode(65 + k) + '. &nbsp;' + t + '</button>';
+    });
+    h += '</div><div class="qfb" id="' + rootId + 'fb"></div>' +
+         '<div class="qmeta">Question ' + (i + 1) + ' / ' + QS.length + ' &nbsp;·&nbsp; score ' + score + '</div>';
+    root.innerHTML = h;
+    root.querySelectorAll('.qopt').forEach(function(b){
+      b.onclick = function(){
+        var k = +b.dataset.k;
+        root.querySelectorAll('.qopt').forEach(function(x){ x.disabled = true; });
+        if(k === q.a){ b.classList.add('correct'); score++; }
+        else {
+          b.classList.add('wrong');
+          root.querySelectorAll('.qopt')[q.a].classList.add('correct');
+        }
+        document.getElementById(rootId + 'fb').innerHTML = q.e;
+        var nb = document.createElement('button');
+        nb.className = 'big-btn'; nb.style.marginTop = '12px';
+        nb.textContent = (i + 1 < QS.length) ? 'Next \u279c' : 'See result \u2714';
+        nb.onclick = function(){
+          if(i + 1 < QS.length){ i++; render(); } else { finish(); }
+        };
+        root.appendChild(nb);
+      };
+    });
+  }
+  function finish(){
+    root.innerHTML = '<div class="result"><h2>Result</h2><div class="big">' +
+      score + ' / ' + QS.length + '</div>' +
+      '<button class="big-btn ghost" id="' + rootId + 'again">Try again</button></div>';
+    document.getElementById(rootId + 'again').onclick = function(){ i = 0; score = 0; render(); };
+  }
+  render();
+}
+
+/* ══════ SVG 小工具 ══════ */
+function mk(tag, attrs, parent){
+  var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function clearSvg(id){
+  var s = document.getElementById(id);
+  if(!s) return null;
+  while(s.firstChild) s.removeChild(s.firstChild);
+  return s;
+}
+/* 坐标轴：x 向右，y 向上（用像素高度换算） */
+function drawAxes(svg, box, xLabel, yLabel){
+  var x0 = box.x, y0 = box.y + box.h;
+  mk('line', {x1: x0, y1: y0, x2: x0 + box.w, y2: y0, stroke: '#333', 'stroke-width': 2}, svg);
+  mk('line', {x1: x0, y1: y0, x2: x0, y2: box.y, stroke: '#333', 'stroke-width': 2}, svg);
+  var t1 = mk('text', {x: x0 - 6, y: box.y - 8, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t1.textContent = yLabel;
+  var t2 = mk('text', {x: x0 + box.w, y: y0 + 26, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t2.textContent = xLabel;
+}
+
+
+/* ══════ 市场图（供求 + 平移 + 管制线） ══════ */
+/* 二分法求交点：D 与 S 都可能是平移过的，线性函数也能解，但统一用数值法更省事 */
+function solveP(cfg, k, m){
+  var lo = 0, hi = cfg.pmax;
+  for(var it = 0; it < 60; it++){
+    var mid = (lo + hi) / 2;
+    var gap = (cfg.d(mid) + k) - (cfg.s(mid) + m);
+    if(gap > 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function drawMarket(svgId, cfg, line, label, kind, k, m){
+  k = k || 0; m = m || 0;
+  var svg = clearSvg(svgId); if(!svg) return;
+  var W = 720, H = 520, pl = 76, pr = 30, pt = 24, pb = 56;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  function X(q){ return x0 + q / cfg.qmax * w; }
+  function Y(p){ return y0 - p / cfg.pmax * h; }
+
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:x0-8, y:pt-6, 'text-anchor':'end', 'font-size':24, fill:'#5b6b7b'}, svg);
+  ty.textContent = cfg.pl;
+  var tx = mk('text', {x:x0+w/2, y:y0+32, 'text-anchor':'middle', 'font-size':24, fill:'#5b6b7b'}, svg);
+  tx.textContent = cfg.ql;
+  var t0 = mk('text', {x:x0-10, y:y0+18, 'text-anchor':'end', 'font-size':24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  function curve(fn, shift, color, tag, dash, tagdy, tagAtStart){
+    var pts = [];
+    for(var i = 0; i <= 240; i++){
+      var p = cfg.pmax * i / 240, q = fn(p) + shift;
+      if(q >= -0.001 && q <= cfg.qmax) pts.push([X(q), Y(p)]);
+    }
+    if(pts.length < 2) return;
+    var d = pts.map(function(pt, i){ return (i ? 'L' : 'M') + pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' ');
+    mk('path', {d:d, fill:'none', stroke:color, 'stroke-width':dash ? 2 : 3,
+      'stroke-linecap':'round', 'stroke-dasharray': dash || 'none'}, svg);
+    if(tag){
+      var last = tagAtStart ? pts[0] : pts[pts.length-1];
+      var lb = mk('text', {x:last[0]+8, y:last[1]+(tagdy||0), 'font-size': 26, 'font-weight':700,
+        fill:color, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+      lb.textContent = tag;
+    }
+  }
+
+  var shifted = (k !== 0 || m !== 0);
+  if(shifted){
+    if(k !== 0) curve(cfg.d, 0, '#c8d2dd', 'D', '6 5', -12, true);
+    if(m !== 0) curve(cfg.s, 0, '#c8d2dd', 'S', '6 5', -8, false);
+  }
+  curve(cfg.d, k, '#2E4A6B', k !== 0 ? 'D1' : 'D', null, -12, true);
+  curve(cfg.s, m, '#1E88E5', m !== 0 ? 'S1' : 'S', null, m !== 0 ? -8 : 22, false);
+
+  /* 原均衡 */
+  if(shifted){
+    mk('circle', {cx:X(cfg.eqQ), cy:Y(cfg.eqP), r:4.5, fill:'#c8d2dd'}, svg);
+    mk('line', {x1:X(cfg.eqQ), y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:y0,
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+    mk('line', {x1:x0, y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:Y(cfg.eqP),
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  }
+
+  var eqP = solveP(cfg, k, m), eqQ = cfg.d(eqP) + k;
+  var ecol = shifted ? '#1A73E8' : '#2E4A6B';
+  mk('circle', {cx:X(eqQ), cy:Y(eqP), r:5.5, fill:ecol}, svg);
+  mk('line', {x1:X(eqQ), y1:Y(eqP), x2:X(eqQ), y2:y0,
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  mk('line', {x1:x0, y1:Y(eqP), x2:X(eqQ), y2:Y(eqP),
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+
+  var eqT = mk('text', {x:x0-10, y:Y(eqP)+6, 'text-anchor':'end', 'font-size':24,
+    fill: shifted ? '#1A73E8' : '#5b6b7b', 'font-weight': shifted ? 700 : 400,
+    stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  eqT.textContent = cfg.unit + (Math.round(eqP*10)/10);
+  if(shifted){
+    var eqT0 = mk('text', {x:x0-10, y:Y(cfg.eqP)+6, 'text-anchor':'end', 'font-size': 24,
+      fill:'#aab4c0', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+    eqT0.textContent = cfg.unit + cfg.eqP;
+  }
+
+  if(line === null || line === undefined) return {eqP:eqP, eqQ:eqQ};
+
+  var qd = cfg.d(line), qs = cfg.s(line);
+  var col = (kind === 'ceiling') ? '#C62828' : '#00838F';
+  mk('line', {x1:x0, y1:Y(line), x2:X(Math.min(cfg.qmax, Math.max(qd, qs))), y2:Y(line),
+    stroke:col, 'stroke-width':3.5}, svg);
+  var lt = mk('text', {x:x0+8, y:Y(line)-10, 'font-size': 26, 'font-weight':700, fill:col,
+    stroke:'#fff', 'stroke-width':5, 'paint-order':'stroke'}, svg);
+  lt.textContent = label;
+
+  var binding = (kind === 'ceiling') ? (line < eqP) : (line > eqP);
+  if(!binding) return {binding:false, qd:qd, qs:qs, gap:0};
+
+  mk('line', {x1:X(qd), y1:Y(line), x2:X(qd), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qs), y1:Y(line), x2:X(qs), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qd), y1:y0+16, x2:X(qs), y2:y0+16, stroke:col, 'stroke-width':3}, svg);
+  var gt = mk('text', {x:(X(qd)+X(qs))/2, y:y0+40, 'text-anchor':'middle', 'font-size': 26,
+    'font-weight':700, fill:col}, svg);
+  gt.textContent = Math.abs(qs - qd).toFixed(1).replace('.0','') + ' ' + cfg.qu;
+  return {binding:true, qd:qd, qs:qs, gap:Math.abs(qs - qd), eqP:eqP, eqQ:eqQ};
+}
+
+/* ══════ 四象限分类（带图片） ══════ */
+function mountQuad(rootId, items){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var QUADS = [
+    {id:'private', t:'PRIVATE GOOD',      d:'rival + excludable'},
+    {id:'common',  t:'COMMON RESOURCE',   d:'rival + non-excludable'},
+    {id:'club',    t:'CLUB GOOD',         d:'non-rival + excludable'},
+    {id:'public',  t:'PUBLIC GOOD',       d:'non-rival + non-excludable'}
+  ];
+  var h = '<div class="game"><div class="pool" id="' + rootId + 'pool">' +
+          '<div class="ph">DRAG INTO A QUADRANT</div></div><div class="quad-wrap">';
+  QUADS.forEach(function(q){
+    h += '<div class="quad" data-zone="' + q.id + '"><div class="qt">' + q.t +
+         '</div><div class="qd">' + q.d + '</div><div class="body"></div></div>';
+  });
+  h += '</div></div><div class="row" style="margin-top:10px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  items.forEach(function(it, i){
+    var el = document.createElement('div');
+    el.className = 'chip ' + (it.img ? 'imgchip' : 'small');
+    el.draggable = true;
+    el.dataset.ans = it.a;
+    el.dataset.i = i;
+    el.innerHTML = it.img ? '<img src="' + it.img + '" alt=""><span>' + it.t + '</span>' : it.t;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i); e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.quad').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.querySelector('.body').appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.querySelector('.body').appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var z = c.closest('.quad');
+      c.classList.remove('ok','no');
+      if(!z) return;
+      if(z.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '" style="font-size:30px">' +
+      right + ' / ' + total + '</span> <span class="gray">correct</span>';
+  };
+}
+
+var DQ_ITEMS = [
+  {k: 'private', lb: 'A slice of cake', html: '<img src="images/cake.png">'},
+  {k: 'private', lb: 'A pair of shoes', html: '<svg viewBox="0 0 120 120" height="150"><path d="M14 74 L14 54 Q30 50 44 58 L62 68 Q84 72 100 80 Q108 84 108 92 L14 92 Z" fill="#2E4A6B"/><rect x="14" y="92" width="94" height="8" rx="4" fill="#1b2f44"/></svg>'},
+  {k: 'common', lb: 'A crowded road', html: '<img src="images/traffic_jam.png">'},
+  {k: 'common', lb: 'A lake fishery', html: '<img src="images/lake_resort.png">'},
+  {k: 'common', lb: 'Open grazing land', html: '<img src="images/hills.png">'},
+  {k: 'club', lb: 'A toll road', html: '<img src="images/toll_gate.jpg">'},
+  {k: 'club', lb: 'Satellite TV', html: '<svg viewBox="0 0 120 120" height="150"><path d="M34 58 Q58 22 96 34 L84 74 Q56 86 34 58 Z" fill="#8FC4F0" stroke="#2E4A6B" stroke-width="4"/><circle cx="62" cy="52" r="6" fill="#2E4A6B"/><path d="M60 76 L60 96" stroke="#2E4A6B" stroke-width="6"/><rect x="46" y="96" width="28" height="8" rx="4" fill="#2E4A6B"/></svg>'},
+  {k: 'public', lb: 'National defence', html: '<svg viewBox="0 0 120 120" height="150"><path d="M60 12 L104 28 V62 C104 88 84 104 60 112 C36 104 16 88 16 62 V28 Z" fill="#2E4A6B"/><path d="M44 62 L56 74 L80 46" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+  {k: 'public', lb: 'Street lighting', html: '<svg viewBox="0 0 120 120" height="150"><rect x="56" y="30" width="8" height="72" fill="#2E4A6B"/><path d="M60 30 Q60 14 78 14" stroke="#2E4A6B" stroke-width="7" fill="none"/><circle cx="86" cy="18" r="9" fill="#F0B429"/></svg>'},
+  {k: 'public', lb: 'A lighthouse', html: '<img src="images/lighthouse.png">'}
+];
+var DQ_I = 0, DQ_SCORE = 0, DQ_PICK = null;
+
+function dqRender(){
+  var rail = document.getElementById('rail');
+  var fb = document.getElementById('dqfb');
+  if(DQ_I >= DQ_ITEMS.length){
+    rail.innerHTML = '<div style="text-align:center"><div style="font-size:46px;font-weight:900;'
+      + 'color:#1E88E5">' + DQ_SCORE + ' / ' + DQ_ITEMS.length + '</div>'
+      + '<div class="qfb">Every good is judged by the same two tests.</div></div>';
+    return;
+  }
+  var it = DQ_ITEMS[DQ_I];
+  rail.innerHTML = '<div class="cardit" id="dqcard" draggable="true">' + it.html +
+    '<div class="lb">' + it.lb + '</div></div>' +
+    '<div class="qfb" style="margin:0;text-align:center">' + (DQ_I + 1) + ' / ' +
+    DQ_ITEMS.length + '</div>';
+  var card = document.getElementById('dqcard');
+  card.addEventListener('dragstart', function(e){ e.dataTransfer.setData('text/plain', 'x'); });
+  card.addEventListener('click', function(){
+    DQ_PICK = it;
+    fb.innerHTML = 'Now click the cell it belongs to.';
+    card.style.outline = '4px solid #1E88E5';
+  });
+}
+
+function dqDrop(cell, item){
+  var q = cell.dataset.q;
+  var fb = document.getElementById('dqfb');
+  if(q === item.k){
+    cell.classList.add('right');
+    var mini = cell.querySelector('.mini');
+    var s = document.createElement('span');
+    s.textContent = '\u2713 ' + item.lb;
+    mini.appendChild(s);
+    DQ_SCORE++; DQ_I++; DQ_PICK = null;
+    fb.innerHTML = '<span class="green"><b>Correct.</b></span> It stays here.';
+    setTimeout(function(){ cell.classList.remove('right'); dqRender(); }, 550);
+  } else {
+    cell.classList.add('wrong');
+    fb.innerHTML = '<span class="dr"><b>Not quite.</b></span> Ask again: is it rival? is it '
+      + 'excludable?';
+    setTimeout(function(){ cell.classList.remove('wrong'); }, 650);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  bootDeck();
+  dqRender();
+  document.querySelectorAll('#grid2 .qcell').forEach(function(cell){
+    cell.addEventListener('dragover', function(e){ e.preventDefault(); cell.classList.add('over'); });
+    cell.addEventListener('dragleave', function(){ cell.classList.remove('over'); });
+    cell.addEventListener('drop', function(e){
+      e.preventDefault(); cell.classList.remove('over');
+      if(DQ_I < DQ_ITEMS.length) dqDrop(cell, DQ_ITEMS[DQ_I]);
+    });
+    cell.addEventListener('click', function(){ if(DQ_PICK) dqDrop(cell, DQ_PICK); });
+  });
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>
