@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 2-9a (1) - Market failure: external costs and benefits</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:21px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:19px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(19px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(10px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:19px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(19px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(19px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(19px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(16px,1.35vw,19px);}
+.zone .zt{width:100%;font-size:clamp(19px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:14px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:14px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:11.5px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:15px;}
+.chip.small{font-size:15px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(19px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:18px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+.hero{width:100%;border:3px solid var(--blue);border-radius:16px;padding:20px 26px;
+  background:linear-gradient(180deg,#F4FAFF,#fff);}
+.hero p{font-size:clamp(24px,2.6vw,34px);line-height:1.35;font-weight:800;color:#15334f;}
+.hero .src{font-size:16px;color:#7b8b9b;margin-top:8px;font-weight:600;letter-spacing:.3px;}
+
+.step3{display:flex;gap:14px;width:100%;}
+.step3 .col{flex:1;min-width:0;border-radius:14px;border:2px solid #e2ecf6;background:#fff;
+  padding:12px 14px;display:flex;flex-direction:column;}
+.step3 .col b.n{font-size:26px;line-height:1;color:#cfe0f2;font-weight:900;letter-spacing:-1px;}
+.step3 .col h3{font-size:clamp(18px,1.8vw,22px);margin:4px 0 4px;color:var(--darkblue);}
+.step3 .col p{font-size:clamp(16px,1.5vw,19px);color:#4a5b6b;line-height:1.4;}
+
+.band{width:100%;border-radius:12px;padding:12px 20px;background:#14304d;color:#fff;
+  font-size:clamp(19px,1.9vw,24px);font-weight:700;text-align:center;}
+
+/* 成本构成 */
+.causes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;}
+.causes .c{border:2px solid #dbe7f3;border-radius:11px;padding:8px 8px;text-align:center;background:#fff;}
+.causes .c b{display:block;font-size:16px;color:#7b8b9b;line-height:1.25;}
+.causes .c.on{border-color:var(--blue);background:#EAF4FF;}
+.causes .c.on b{color:var(--darkblue);}
+.causes .c i{font-style:normal;font-size:16px;color:#9aa5b1;}
+
+/* 公式块 */
+.formula{background:#14304d;color:#fff;border-radius:14px;padding:14px 18px;text-align:center;}
+.formula .t{font-size:16px;letter-spacing:1.6px;opacity:.65;font-weight:800;}
+.formula .e{font-size:clamp(21px,2.1vw,27px);font-weight:800;margin-top:5px;line-height:1.3;}
+.formula .e span{opacity:.55;font-weight:600;}
+.mistake{background:#FEF3F1;border-left:6px solid var(--red);border-radius:0 10px 10px 0;
+  padding:9px 14px;font-size:clamp(15px,1.45vw,18px);line-height:1.4;color:#7a2f26;}
+.mistake b{color:var(--red);}
+
+/* 账本 */
+.ledger{width:100%;border-collapse:separate;border-spacing:0 6px;}
+.ledger th{font-size:16px;color:#7b8b9b;text-align:left;padding:0 12px 4px;font-weight:800;letter-spacing:.4px;}
+.ledger th.s{color:var(--red);}
+.ledger td{background:#fff;border:2px solid #e2ecf6;padding:9px 14px;font-size:clamp(16px,1.6vw,20px);}
+.ledger td:first-child{border-radius:10px 0 0 10px;font-weight:700;color:var(--darkblue);width:130px;}
+.ledger td:last-child{border-radius:0 10px 10px 0;}
+.ledger tr.hid{display:none;}
+.ledger tr.hid.show{display:table-row;animation:rowIn .35s ease;}
+.ledger tr.hid:nth-child(4) td.s{transition-delay:.15s;}
+.ledger tr.hid2{display:none;}
+.ledger tr.hid2.show2{display:table-row;animation:rowIn .35s ease;}
+@keyframes rowIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+.ledger td.s{color:var(--red);font-weight:700;background:#FEF6F5;border-color:#f3d6d2;}
+.ledger td.g{color:#1e7a3c;font-weight:700;background:#F2FAF4;border-color:#cfe8d6;}
+
+/* 链条 */
+.chain{display:flex;align-items:stretch;gap:0;width:100%;max-height:210px;}
+.chain .nd{flex:1;min-width:0;background:#fff;border:2.5px solid #dbe7f3;border-radius:14px;
+  padding:14px 16px;opacity:.28;transition:.45s;display:flex;flex-direction:column;justify-content:center;}
+.chain .nd.on{opacity:1;border-color:var(--blue);box-shadow:0 4px 14px rgba(30,136,229,.12);}
+.chain .nd b{font-size:24px;color:#cfe0f2;line-height:1;}
+.chain .nd p{font-size:clamp(15px,1.5vw,18px);color:#3d4d5c;line-height:1.35;margin-top:5px;}
+.chain .arw{width:30px;display:flex;align-items:center;justify-content:center;color:#c3d3e2;font-size:20px;}
+
+/* 当事人卡 */
+.actor{flex:1;min-width:0;background:#fff;border:2.5px solid #e2ecf6;border-radius:14px;padding:12px 14px;
+  cursor:pointer;transition:.2s;display:flex;flex-direction:column;gap:4px;}
+.actor:hover{border-color:var(--blue);}
+.actor.on{border-color:var(--red);background:#FEF7F6;}
+.actor h4{font-size:clamp(18px,1.8vw,22px);color:var(--darkblue);}
+.actor .l{font-size:16px;color:#8a99a8;}
+.actor .ans{margin-top:6px;font-size:17px;color:#5b6b7b;opacity:0;transition:.3s;line-height:1.35;}
+.actor.on .ans{opacity:1;}
+.actor .ans b{color:var(--red);}
+
+.who{flex:1;min-width:0;background:#fff;border:2px solid #e2ecf6;border-radius:12px;padding:9px 12px;}
+.who h4{font-size:clamp(16px,1.6vw,19px);color:var(--darkblue);margin-bottom:2px;}
+.who p{font-size:clamp(14px,1.4vw,16.5px);color:#4a5b6b;line-height:1.35;}
+.who p .p{color:var(--red);}
+.seqcard{background:#fff;border:3px solid var(--blue);border-radius:16px;padding:26px 30px;
+  font-size:clamp(22px,2.4vw,30px);font-weight:700;color:var(--darkblue);text-align:center;line-height:1.35;}
+.seqbtns{display:flex;gap:14px;margin-top:16px;justify-content:center;}
+.seqbtns .big-btn{min-width:260px;}
+.growcol{justify-content:center;}
+.seg{display:inline-flex;flex:0 0 auto;border:2.5px solid var(--blue);border-radius:999px;overflow:hidden;background:#fff;}
+.segbtn{border:none;background:transparent;padding:8px 22px;font-size:18px;font-weight:800;white-space:nowrap;
+  color:var(--darkblue);cursor:pointer;font-family:inherit;transition:.15s;}
+.segbtn.on{background:var(--blue);color:#fff;}
+.floating{position:absolute;right:26px;bottom:78px;z-index:20;}
+.floating .big-btn{box-shadow:0 6px 18px rgba(20,48,77,.28);}
+#led td, #led th{padding:6px 12px;}
+#who td, #who th{padding:5px 12px;font-size:18px;}
+#who td:first-child{white-space:nowrap;font-weight:700;color:var(--darkblue);}
+#who th:first-child{width:120px;}
+.nb{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.numstep b{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;
+  font-size:18px;display:flex;align-items:center;justify-content:center;}
+.bl{display:inline-block;min-width:185px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+.numstep div{flex:1;min-width:0;font-size:clamp(16px,1.55vw,19px);color:#2b3a48;line-height:1.4;}
+/* ── 字号铁律：任何文字 ≥16px，正文 20px 起 ── */
+.slide .content{font-size:20px;}
+.card p, .note, .qfb{font-size:clamp(20px,1.9vw,23px) !important;line-height:1.45;}
+.sub{font-size:clamp(21px,2vw,25px) !important;}
+.card h3{font-size:clamp(20px,1.9vw,23px) !important;}
+.hero p{font-size:clamp(26px,2.7vw,35px);}
+.ledger td, .ledger th, .data-table td, .data-table th{font-size:19px !important;}
+.chain .nd p{font-size:19px !important;line-height:1.38;}
+.causes .c b{font-size:17.5px !important;line-height:1.22;}
+.causes .c i{font-size:16px !important;}
+.mistake{font-size:18px !important;}
+.author, .copy, .page{font-size:16px;}
+.slider-lbl{font-size:20px;}
+.ends span{font-size:17px;}
+
+/* 滑条面板：内容垂直居中，别顶在最上面 */
+.big-btn{white-space:nowrap;}
+.row.mt .svgbox svg{max-height:100%;}
+.ctl{height:100%;display:flex;flex-direction:column;justify-content:center;}
+
+/* 字号下限：投影上后排要看得清 */
+.card p, .note, .qfb{font-size:clamp(19px,1.85vw,23px) !important;line-height:1.42;}
+.sub{font-size:clamp(20px,2vw,25px) !important;}
+.chain .nd p{font-size:clamp(17px,1.6vw,19px) !important;color:#1b2733;line-height:1.42;}
+.chain .nd p b{color:#0d1a26;}
+.chain .nd b{font-size:30px;color:#8fb4d6;}
+.chain .nd.on b{color:var(--blue);}
+.chain .nd{opacity:.55;}
+.chain .nd.on{opacity:1;}
+.causes .c b{font-size:17px;}
+.mistake{font-size:clamp(16px,1.55vw,19px);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 2: The allocation of resources</div><h1>Market failure:<br>external costs &amp; benefits</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div style="position:absolute;bottom:110px;left:0;right:0;text-align:center;font-size:clamp(16px,1.5vw,19px);color:#94a3b3">The market was doing fine. Then the river turned grey.</div><div class="botbar"></div></div><div class="slide "><div class="content"><h1>First: why we trusted the market</h1><div class="sub">Three claims, all about the same thing — that resources end up where they are wanted.</div><div class="step3 mt" style="flex:0 0 auto"><div class="col"><b class="n">01</b><h3>Allocative</h3><p>resources go to the goods consumers value most highly — spending is the vote</p></div><div class="col"><b class="n">02</b><h3>Productive</h3><p>each good is made at the lowest possible average cost — waste is competed away</p></div><div class="col"><b class="n">03</b><h3>Dynamic</h3><p>products and methods keep improving, because a rival is always close behind</p></div></div><div class="row" style="gap:14px;margin-top:10px;align-items:flex-start"><div style="flex:1;text-align:center"><svg id="eff1" style="width:100%;height:180px"></svg></div><div style="flex:1;text-align:center"><svg id="eff2" style="width:100%;height:180px"></svg></div><div style="flex:1;text-align:center"><svg id="eff3" style="width:100%;height:180px"></svg></div></div><div class="band" style="margin-top:12px">All three rest on one foundation: <u>the price mechanism</u>.</div></div></div><div class="slide "><div class="content"><h1>So: market failure</h1><div class="hero mt"><p>Market failure occurs when the price mechanism fails to allocate resources efficiently.</p><div class="src">IGCSE 2.9 · in other words, the market’s answer to “how much?” is not society’s answer</div></div><div class="row mt" style="gap:14px"><div class="card" style="flex:1"><h3>Not a collapse</h3><p>goods are still made and sold. The market is working — to the wrong quantity.</p></div><div class="card t" style="flex:1"><h3>Not greed</h3><p>the firm answers the question it was asked, with a price that is missing something.</p></div></div><div class="sub" style="margin-top:14px">Causes of market failure (2.9.3) — today we take the third.</div><div class="causes" style="margin-top:8px"><div class="c"><b>Public goods</b><i>2 of 3</i></div><div class="c"><b>Merit &amp; demerit goods</b><i>2 of 3</i></div><div class="c on"><b>External costs &amp; benefits</b><i>today</i></div><div class="c"><b>Abuse of monopoly power</b><i>3 of 3</i></div></div><div class="qfb" style="margin-top:8px">Merit goods and demerit goods are both rooted in <b>information failure</b> — the buyer misjudges the benefit or the harm. That is the next lesson.</div></div></div><div class="slide "><div class="content"><h1>A steel factory in your city</h1><div class="sub">It makes steel. It also discharges wastewater into the river.</div><div class="row mt" style="gap:14px"><div style="flex:1;min-width:0"><img src="images/steel_plant.jpg" alt="" style="width:100%;height:250px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.08)"><div style="font-size:16px;color:#8a99a8;margin-top:6px;text-align:center">It makes steel — and employs 2,000 people</div></div><div style="flex:1;min-width:0"><img src="images/sewage.jpg" alt="" style="width:100%;height:250px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.08)"><div style="font-size:16px;color:#8a99a8;margin-top:6px;text-align:center">It discharges wastewater into the river</div></div><div style="flex:1;min-width:0"><img src="images/city_river.png" alt="" style="width:100%;height:250px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.08)"><div style="font-size:16px;color:#8a99a8;margin-top:6px;text-align:center">The river runs through the city</div></div></div><div class="note mt"><p>The firm pays for ore, labour and machines. It does <b>not</b> pay for the river. So the price of steel is missing something — and everyone downstream pays it instead.</p></div></div></div><div class="slide "><div class="content"><h1>Two accounts, one decision</h1><div class="sub">Not only what is given up — also what is received.</div><table class="ledger mt" id="led"><tr><th>The decision</th><th>The firm’s account</th><th class="s">Society’s account</th></tr><tr><td class="g">Gets</td><td class="g">money from selling the steel</td><td class="g s">the steel itself — 2,000 jobs, and a city that needs it</td></tr><tr><td>Pays for</td><td>ore, coal, labour — all at the market price</td><td>the same ore, coal and labour</td></tr><tr class="hid"><td>Pays for</td><td>— nothing else</td><td class="s">the river, the air, the town’s water — unpaid</td></tr></table><div class="sub" style="margin-top:6px;margin-bottom:2px">So who exactly is “society”? Four people, one river.</div><table class="ledger" id="who" style="margin-top:4px"><tr><th></th><th>Decides?</th><th>Gets</th><th class="s">Pays</th></tr><tr><td>The factory</td><td class="g">yes</td><td class="g">the money</td><td class="s">nothing for the river</td></tr><tr class="hid2"><td>The fisher</td><td>no</td><td>nothing</td><td class="s">a smaller catch</td></tr><tr class="hid2"><td>The family</td><td>no</td><td>nothing</td><td class="s">bottled water</td></tr><tr class="hid2"><td>The council</td><td>no</td><td>nothing</td><td class="s">a treatment plant</td></tr></table><div class="row" style="align-items:center;gap:14px;margin-top:6px"><div class="qfb" style="margin:0" id="whoNote">Press once for the unpaid row, then each person.</div><button class="big-btn" id="whoBtn" onclick="stepWho()" style="margin-left:auto;min-width:190px">Next ▶</button></div></div></div><div class="slide "><div class="content"><h1>Name it: an external cost</h1><div class="row mt" style="align-items:stretch;gap:18px"><div class="svgbox" style="flex:1;min-width:0"><svg id="actorSvg" viewBox="0 0 660 400"></svg></div><div style="flex:1.05;min-width:0;display:flex;flex-direction:column;gap:10px;justify-content:center"><div class="card r" style="padding:9px 14px"><h3 style="font-size:20px">Private cost</h3><p>the cost borne by the firm or consumer that takes the decision</p></div><div class="card r" style="padding:9px 14px"><h3 style="font-size:20px">External cost</h3><p>a cost imposed on third parties who are not part of the transaction</p></div><div class="mistake">Do not write <i>social</i> when you mean <i>external</i>. Social cost includes the firm’s own cost as well.</div></div></div><div class="formula" style="margin-top:14px;padding:16px 20px"><div class="e" style="font-size:clamp(24px,2.3vw,31px);white-space:nowrap">SOCIAL COST <span>=</span> private cost <span>+</span> external cost</div></div></div></div><div class="slide "><div class="content"><h1>External cost: too much is produced</h1><div class="sub">Drag the external cost — then walk the four steps.</div><div class="row mt" style="align-items:stretch;height:348px"><div class="svgbox" style="flex:1.4;min-width:0"><svg id="negSvg" style="width:100%;height:100%"></svg></div><div style="flex:1;min-width:0;display:flex"><div class="panel ctl" style="flex:1;width:100%"><div class="slider-lbl">External cost per tonne → <span id="extv">¥2.0</span></div><input type="range" id="extQ" min="0" max="4" step="0.5" value="2"><div class="ends"><span>¥0</span><span>¥4</span></div><div class="readout mt" id="extRead" style="margin-top:14px"></div></div></div></div><div class="row" style="align-items:stretch;gap:12px;margin-top:6px"><div class="chain" id="ch1" data-i="1" style="flex:1;max-height:104px"><div class="nd on"><b>1</b><p>Price covers only <b>private</b> cost</p></div><div class="arw">→</div><div class="nd"><b>2</b><p>More output looks profitable</p></div><div class="arw">→</div><div class="nd"><b>3</b><p>Output passes society’s optimum</p></div><div class="arw">→</div><div class="nd"><b>4</b><p>Too many resources in steel</p></div></div><button class="big-btn" id="ch1Btn" onclick="stepChain('ch1')" style="align-self:center;min-width:160px;font-size:20px">Next ▶</button></div><div class="qfb" id="ch1Note" style="opacity:0;transition:.4s">Nobody behaved badly. The price was simply told too little.</div></div></div><div class="slide "><div class="content"><h1>The other direction</h1><div class="sub">The city’s rubbish is burned to make electricity. Neighbours breathe cleaner air — and pay nothing.</div><div class="row mt" style="gap:14px"><div style="flex:1;min-width:0"><img src="images/rubbish.jpg" alt="" style="width:100%;height:250px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.08)"><div style="font-size:16px;color:#8a99a8;margin-top:6px;text-align:center">Without it: rubbish on the street</div></div><div style="flex:1;min-width:0"><img src="images/waste_plant.png" alt="" style="width:100%;height:250px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.08)"><div style="font-size:16px;color:#8a99a8;margin-top:6px;text-align:center">The plant burns it to make electricity</div></div><div style="flex:1;min-width:0"><img src="images/plaza.jpg" alt="" style="width:100%;height:250px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 2px 10px rgba(20,48,77,.08)"><div style="font-size:16px;color:#8a99a8;margin-top:6px;text-align:center">Neighbours get cleaner air, unpaid</div></div></div><div class="note g mt"><p>Now the bystander <b>gains</b>. The firm still cannot charge them, so the benefit never shows up in the price.</p></div></div></div><div class="slide "><div class="content"><h1>Name it: an external benefit</h1><div class="row mt" style="align-items:stretch;gap:18px"><div class="svgbox" style="flex:1;min-width:0"><svg id="benSvg" viewBox="0 0 660 400"></svg></div><div style="flex:1.05;min-width:0;display:flex;flex-direction:column;gap:10px;justify-content:center"><div class="card g" style="padding:9px 14px"><h3 style="font-size:20px">Private benefit</h3><p>the benefit received by the buyer or firm that takes the decision</p></div><div class="card g" style="padding:9px 14px"><h3 style="font-size:20px">External benefit</h3><p>a benefit received by third parties who are not part of the transaction</p></div><div class="mistake" style="background:#F2FAF4;border-left-color:var(--green);color:#1d5c37">Do not write <i>social</i> when you mean <i>external</i>. Social benefit includes the buyer’s own gain as well.</div></div></div><div class="formula" style="background:#14603a;margin-top:14px;padding:16px 20px"><div class="e" style="font-size:clamp(23px,2.2vw,30px);white-space:nowrap">SOCIAL BENEFIT <span>=</span> private benefit <span>+</span> external benefit</div></div></div></div><div class="slide "><div class="content"><h1>External benefit: too little is produced</h1><div class="row" style="align-items:center;gap:12px;margin:2px 0 8px"><div class="seg" id="seg"><button class="segbtn" data-k="cost" onclick="setChain('cost')">External cost</button><button class="segbtn on" data-k="ben" onclick="setChain('ben')">External benefit</button></div><div class="sub" style="margin:0">Drag the external benefit — then walk the four steps.</div></div><div class="row mt" style="align-items:stretch;height:348px"><div class="svgbox" style="flex:1.4;min-width:0"><svg id="posSvg" style="width:100%;height:100%"></svg></div><div style="flex:1;min-width:0;display:flex"><div class="panel ctl" style="flex:1;width:100%"><div class="slider-lbl">External benefit per unit → <span id="benv">¥2.0</span></div><input type="range" id="benQ" min="0" max="4" step="0.5" value="2"><div class="ends"><span>¥0</span><span>¥4</span></div><div class="readout mt" id="benRead" style="margin-top:14px"></div></div></div></div><div class="row" style="align-items:stretch;gap:12px;margin-top:6px"><div class="chain" id="ch2" data-i="1" style="flex:1;max-height:104px"></div><button class="big-btn" id="ch2Btn" onclick="stepChain('ch2')" style="align-self:center;min-width:160px;font-size:20px">Next ▶</button></div><div class="qfb" id="ch2Note" style="opacity:0;transition:.4s"></div></div></div><div class="slide "><div class="content"><h1>Cost or benefit — and to whom?</h1><div class="sub">One at a time. Six cases, and you have seen both directions now.</div><div id="dc1" class="mt growcol"></div></div></div><div class="slide "><div class="content"><h1>Who put a name to this — and what does his tax do?</h1><div class="row mt fill" style="align-items:stretch;gap:22px"><div style="flex:1.5;min-width:0;display:flex;flex-direction:column;gap:8px"><div class="svgbox" style="height:318px"><svg id="taxSvg" style="height:100%;width:100%"></svg></div><table style="width:100%;border-collapse:separate;border-spacing:0 6px"><tr><td style="width:40px;vertical-align:middle"><div class="nb">1</div></td><td style="font-size:18px;line-height:1.35;color:#2b3a48">A tax equal to the external cost goes on the producer — a <b>Pigouvian tax</b>.</td></tr><tr><td style="vertical-align:middle"><div class="nb">2</div></td><td style="font-size:18px;line-height:1.35;color:#2b3a48">It lifts <b>Sp</b> onto <b>Ss</b>.</td></tr><tr><td style="vertical-align:middle"><div class="nb">3</div></td><td style="font-size:18px;line-height:1.35;color:#2b3a48">Output falls from <b>Qp</b> to <b>Qs</b>.</td></tr></table></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><img src="images/pigou.jpg" alt="" style="width:150px;height:186px;object-fit:cover;border-radius:10px;box-shadow:0 6px 20px rgba(20,48,77,.2)"><div style="text-align:center;font-size:17px;font-weight:800;color:#2E4A6B;letter-spacing:.4px;line-height:1.35">ARTHUR CECIL PIGOU<br><span style="font-weight:600;color:#7b8b9b">1877–1959 · Cambridge</span></div><div class="note" style="margin-top:2px"><p>He asked what Marshall left open: if the firm’s cost and the city’s cost are different numbers, which one should the price reflect?</p></div></div></div></div></div><div class="slide "><div class="content"><h1>Quick check</h1><div class="sub">Six questions.</div><div id="qz1" class="mt"></div></div></div><div class="slide "><div class="content"><h1>Five things to keep</h1><div class="sub">Say it before you see it — the button fills one blank at a time.</div><div class="txt" style="line-height:2.1;margin-top:8px"><p><b class="db">1.</b> All three efficiencies rest on the <span class="bl" data-a="price mechanism"></span>.</p><p><b class="db">2.</b> Market failure: the price mechanism fails to allocate resources <span class="bl" data-a="efficiently"></span>.</p><p><b class="db">3.</b> Private cost + external cost = <span class="bl" data-a="social cost"></span>.</p><p><b class="db">4.</b> Private benefit + external benefit = <span class="bl" data-a="social benefit"></span>.</p><p><b class="db">5.</b> An external cost gives <span class="bl" data-a="over-production"></span>; an external benefit gives <span class="bl" data-a="under-production"></span>.</p></div><div class="row" style="gap:14px;margin-top:auto;align-items:center"><button class="big-btn" id="blBtn" onclick="revealNext()" style="min-width:200px">Next ▶</button><button class="big-btn ghost" onclick="resetBlanks()">Reset</button><div class="qfb" style="margin:0">Next lesson: information failure, merit and demerit goods.</div></div></div></div><div class="slide closing"><div class="content" style="align-items:center;justify-content:center;text-align:center"><div class="course-tag" style="text-align:center;color:#94a3b3">IGCSE Economics · Section 2.9</div><h1 style="text-align:center;font-size:clamp(38px,4.6vw,58px);margin-top:6px">External costs &amp; benefits</h1><div style="font-size:clamp(18px,1.8vw,22px);color:#5b6b7b;margin-top:14px;max-width:760px">The price was told too little. Everything that follows is about putting the rest of the information back into it.</div><div style="margin-top:28px;padding:14px 26px;border-radius:14px;background:#EAF4FF;border-left:6px solid var(--blue);font-size:clamp(17px,1.7vw,20px);color:#1a3a5c">Next lesson · <b>Information failure, merit and demerit goods</b></div><div class="author" style="margin-top:34px">DR. JIA · © 2026</div></div></div>
+<div class="nav"><button id="prevBtn">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 15</span><button id="nextBtn">▶</button></div></div>
+</div>
+<script>
+/* ══════ 分页导航 ══════ */
+var CUR = 0, SLIDES = [];
+function showSlide(i){
+  if(i < 0 || i >= SLIDES.length) return;
+  SLIDES[CUR].classList.remove('active');
+  CUR = i;
+  SLIDES[CUR].classList.add('active');
+  var dots = document.querySelectorAll('#dots span');
+  for(var k = 0; k < dots.length; k++) dots[k].className = (k === CUR) ? 'on' : '';
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SLIDES.length;
+  document.getElementById('prevBtn').disabled = (CUR === 0);
+  document.getElementById('nextBtn').disabled = (CUR === SLIDES.length - 1);
+  if(typeof onSlide === 'function') { try { onSlide(CUR); } catch(e){ console.error(e); } }
+}
+function nextSlide(){ showSlide(CUR + 1); }
+function prevSlide(){ showSlide(CUR - 1); }
+
+function bootDeck(){
+  SLIDES = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  SLIDES.forEach(function(s, i){
+    var d = document.createElement('span');
+    d.onclick = function(){ showSlide(i); };
+    dots.appendChild(d);
+  });
+  document.getElementById('prevBtn').onclick = prevSlide;
+  document.getElementById('nextBtn').onclick = nextSlide;
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){
+      e.preventDefault(); nextSlide();
+    }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); prevSlide(); }
+  });
+  document.querySelectorAll('.flip').forEach(function(f){
+    f.onclick = function(){ f.classList.toggle('on'); };
+  });
+  var m = location.search.match(/[?&]s=(\d+)/);
+  showSlide(m ? Math.min(+m[1], SLIDES.length - 1) : 0);
+}
+
+/* ══════ 拖拽分类 ══════ */
+function mountDC(rootId, chips, zones){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var h = '<div class="dc-pool" id="' + rootId + 'pool"></div>' +
+          '<div class="row" style="margin-top:12px">';
+  zones.forEach(function(z){
+    h += '<div class="zone" data-zone="' + z.id + '"><div class="zt">' + z.label + '</div></div>';
+  });
+  h += '</div><div class="row" style="margin-top:12px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  chips.forEach(function(c, i){
+    var el = document.createElement('div');
+    el.className = 'chip';
+    el.draggable = true;
+    el.textContent = c.t;
+    el.dataset.ans = c.a;
+    el.dataset.i = i;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    /* 点击选中 → 点击区域放下（触屏/白板更稳） */
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.zone').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+  pool.addEventListener('click', function(){ /* 点空白不做事 */ });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var zone = c.closest('.zone');
+      c.classList.remove('ok', 'no');
+      if(!zone){ return; }
+      if(zone.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '">' + right + ' / ' + total +
+      '</span> <span class="gray">correct</span>';
+  };
+}
+
+/* ══════ 测验（逐题） ══════ */
+function mountQuiz(rootId, QS){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var i = 0, score = 0;
+  function render(){
+    var q = QS[i];
+    var h = '<div class="qstem">' + q.s + '</div><div class="qopts">';
+    q.o.forEach(function(t, k){
+      h += '<button class="qopt" data-k="' + k + '">' + String.fromCharCode(65 + k) + '. &nbsp;' + t + '</button>';
+    });
+    h += '</div><div class="qfb" id="' + rootId + 'fb"></div>' +
+         '<div class="qmeta">Question ' + (i + 1) + ' / ' + QS.length + ' &nbsp;·&nbsp; score ' + score + '</div>';
+    root.innerHTML = h;
+    root.querySelectorAll('.qopt').forEach(function(b){
+      b.onclick = function(){
+        var k = +b.dataset.k;
+        root.querySelectorAll('.qopt').forEach(function(x){ x.disabled = true; });
+        if(k === q.a){ b.classList.add('correct'); score++; }
+        else {
+          b.classList.add('wrong');
+          root.querySelectorAll('.qopt')[q.a].classList.add('correct');
+        }
+        document.getElementById(rootId + 'fb').innerHTML = q.e;
+        var nb = document.createElement('button');
+        nb.className = 'big-btn'; nb.style.marginTop = '12px';
+        nb.textContent = (i + 1 < QS.length) ? 'Next \u279c' : 'See result \u2714';
+        nb.onclick = function(){
+          if(i + 1 < QS.length){ i++; render(); } else { finish(); }
+        };
+        root.appendChild(nb);
+      };
+    });
+  }
+  function finish(){
+    root.innerHTML = '<div class="result"><h2>Result</h2><div class="big">' +
+      score + ' / ' + QS.length + '</div>' +
+      '<button class="big-btn ghost" id="' + rootId + 'again">Try again</button></div>';
+    document.getElementById(rootId + 'again').onclick = function(){ i = 0; score = 0; render(); };
+  }
+  render();
+}
+
+/* ══════ SVG 小工具 ══════ */
+function mk(tag, attrs, parent){
+  var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function clearSvg(id){
+  var s = document.getElementById(id);
+  if(!s) return null;
+  while(s.firstChild) s.removeChild(s.firstChild);
+  return s;
+}
+/* 坐标轴：x 向右，y 向上（用像素高度换算） */
+function drawAxes(svg, box, xLabel, yLabel){
+  var x0 = box.x, y0 = box.y + box.h;
+  mk('line', {x1: x0, y1: y0, x2: x0 + box.w, y2: y0, stroke: '#333', 'stroke-width': 2}, svg);
+  mk('line', {x1: x0, y1: y0, x2: x0, y2: box.y, stroke: '#333', 'stroke-width': 2}, svg);
+  var t1 = mk('text', {x: x0 - 6, y: box.y - 8, 'text-anchor': 'end',
+    'font-size': 15, fill: '#5b6b7b'}, svg);
+  t1.textContent = yLabel;
+  var t2 = mk('text', {x: x0 + box.w, y: y0 + 26, 'text-anchor': 'end',
+    'font-size': 15, fill: '#5b6b7b'}, svg);
+  t2.textContent = xLabel;
+}
+
+
+/* ══════ 市场图（供求 + 平移 + 管制线） ══════ */
+/* 二分法求交点：D 与 S 都可能是平移过的，线性函数也能解，但统一用数值法更省事 */
+function solveP(cfg, k, m){
+  var lo = 0, hi = cfg.pmax;
+  for(var it = 0; it < 60; it++){
+    var mid = (lo + hi) / 2;
+    var gap = (cfg.d(mid) + k) - (cfg.s(mid) + m);
+    if(gap > 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function drawMarket(svgId, cfg, line, label, kind, k, m){
+  k = k || 0; m = m || 0;
+  var svg = clearSvg(svgId); if(!svg) return;
+  var W = 720, H = 520, pl = 76, pr = 30, pt = 24, pb = 56;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  function X(q){ return x0 + q / cfg.qmax * w; }
+  function Y(p){ return y0 - p / cfg.pmax * h; }
+
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:x0-8, y:pt-6, 'text-anchor':'end', 'font-size':15, fill:'#5b6b7b'}, svg);
+  ty.textContent = cfg.pl;
+  var tx = mk('text', {x:x0+w/2, y:y0+32, 'text-anchor':'middle', 'font-size':15, fill:'#5b6b7b'}, svg);
+  tx.textContent = cfg.ql;
+  var t0 = mk('text', {x:x0-10, y:y0+18, 'text-anchor':'end', 'font-size':15, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  function curve(fn, shift, color, tag, dash, tagdy, tagAtStart){
+    var pts = [];
+    for(var i = 0; i <= 240; i++){
+      var p = cfg.pmax * i / 240, q = fn(p) + shift;
+      if(q >= -0.001 && q <= cfg.qmax) pts.push([X(q), Y(p)]);
+    }
+    if(pts.length < 2) return;
+    var d = pts.map(function(pt, i){ return (i ? 'L' : 'M') + pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' ');
+    mk('path', {d:d, fill:'none', stroke:color, 'stroke-width':dash ? 2 : 3,
+      'stroke-linecap':'round', 'stroke-dasharray': dash || 'none'}, svg);
+    if(tag){
+      var last = tagAtStart ? pts[0] : pts[pts.length-1];
+      var lb = mk('text', {x:last[0]+8, y:last[1]+(tagdy||0), 'font-size':17, 'font-weight':700,
+        fill:color, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+      lb.textContent = tag;
+    }
+  }
+
+  var shifted = (k !== 0 || m !== 0);
+  if(shifted){
+    if(k !== 0) curve(cfg.d, 0, '#c8d2dd', 'D', '6 5', -12, true);
+    if(m !== 0) curve(cfg.s, 0, '#c8d2dd', 'S', '6 5', -8, false);
+  }
+  curve(cfg.d, k, '#2E4A6B', k !== 0 ? 'D1' : 'D', null, -12, true);
+  curve(cfg.s, m, '#1E88E5', m !== 0 ? 'S1' : 'S', null, m !== 0 ? -8 : 22, false);
+
+  /* 原均衡 */
+  if(shifted){
+    mk('circle', {cx:X(cfg.eqQ), cy:Y(cfg.eqP), r:4.5, fill:'#c8d2dd'}, svg);
+    mk('line', {x1:X(cfg.eqQ), y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:y0,
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+    mk('line', {x1:x0, y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:Y(cfg.eqP),
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  }
+
+  var eqP = solveP(cfg, k, m), eqQ = cfg.d(eqP) + k;
+  var ecol = shifted ? '#1A73E8' : '#2E4A6B';
+  mk('circle', {cx:X(eqQ), cy:Y(eqP), r:5.5, fill:ecol}, svg);
+  mk('line', {x1:X(eqQ), y1:Y(eqP), x2:X(eqQ), y2:y0,
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  mk('line', {x1:x0, y1:Y(eqP), x2:X(eqQ), y2:Y(eqP),
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+
+  var eqT = mk('text', {x:x0-10, y:Y(eqP)+6, 'text-anchor':'end', 'font-size':15,
+    fill: shifted ? '#1A73E8' : '#5b6b7b', 'font-weight': shifted ? 700 : 400,
+    stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  eqT.textContent = cfg.unit + (Math.round(eqP*10)/10);
+  if(shifted){
+    var eqT0 = mk('text', {x:x0-10, y:Y(cfg.eqP)+6, 'text-anchor':'end', 'font-size':14,
+      fill:'#aab4c0', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+    eqT0.textContent = cfg.unit + cfg.eqP;
+  }
+
+  if(line === null || line === undefined) return {eqP:eqP, eqQ:eqQ};
+
+  var qd = cfg.d(line), qs = cfg.s(line);
+  var col = (kind === 'ceiling') ? '#C62828' : '#00838F';
+  mk('line', {x1:x0, y1:Y(line), x2:X(Math.min(cfg.qmax, Math.max(qd, qs))), y2:Y(line),
+    stroke:col, 'stroke-width':3.5}, svg);
+  var lt = mk('text', {x:x0+8, y:Y(line)-10, 'font-size':16, 'font-weight':700, fill:col,
+    stroke:'#fff', 'stroke-width':5, 'paint-order':'stroke'}, svg);
+  lt.textContent = label;
+
+  var binding = (kind === 'ceiling') ? (line < eqP) : (line > eqP);
+  if(!binding) return {binding:false, qd:qd, qs:qs, gap:0};
+
+  mk('line', {x1:X(qd), y1:Y(line), x2:X(qd), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qs), y1:Y(line), x2:X(qs), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qd), y1:y0+16, x2:X(qs), y2:y0+16, stroke:col, 'stroke-width':3}, svg);
+  var gt = mk('text', {x:(X(qd)+X(qs))/2, y:y0+40, 'text-anchor':'middle', 'font-size':16,
+    'font-weight':700, fill:col}, svg);
+  gt.textContent = Math.abs(qs - qd).toFixed(1).replace('.0','') + ' ' + cfg.qu;
+  return {binding:true, qd:qd, qs:qs, gap:Math.abs(qs - qd), eqP:eqP, eqQ:eqQ};
+}
+
+/* ══════ 四象限分类（带图片） ══════ */
+function mountQuad(rootId, items){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var QUADS = [
+    {id:'private', t:'PRIVATE GOOD',      d:'rival + excludable'},
+    {id:'common',  t:'COMMON RESOURCE',   d:'rival + non-excludable'},
+    {id:'club',    t:'CLUB GOOD',         d:'non-rival + excludable'},
+    {id:'public',  t:'PUBLIC GOOD',       d:'non-rival + non-excludable'}
+  ];
+  var h = '<div class="game"><div class="pool" id="' + rootId + 'pool">' +
+          '<div class="ph">DRAG INTO A QUADRANT</div></div><div class="quad-wrap">';
+  QUADS.forEach(function(q){
+    h += '<div class="quad" data-zone="' + q.id + '"><div class="qt">' + q.t +
+         '</div><div class="qd">' + q.d + '</div><div class="body"></div></div>';
+  });
+  h += '</div></div><div class="row" style="margin-top:10px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  items.forEach(function(it, i){
+    var el = document.createElement('div');
+    el.className = 'chip ' + (it.img ? 'imgchip' : 'small');
+    el.draggable = true;
+    el.dataset.ans = it.a;
+    el.dataset.i = i;
+    el.innerHTML = it.img ? '<img src="' + it.img + '" alt=""><span>' + it.t + '</span>' : it.t;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i); e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.quad').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.querySelector('.body').appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.querySelector('.body').appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var z = c.closest('.quad');
+      c.classList.remove('ok','no');
+      if(!z) return;
+      if(z.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '" style="font-size:30px">' +
+      right + ' / ' + total + '</span> <span class="gray">correct</span>';
+  };
+}
+var QUESTS = [
+ {s:'What does market failure mean?',
+  o:['a firm goes out of business','the price mechanism fails to allocate resources efficiently',
+     'prices rise too quickly','consumers stop buying'],
+  a:1, e:'That is the syllabus wording. The market is still working \u2014 it produces an answer, but not society\u2019s answer.'},
+ {s:'An external cost is',
+  o:['a cost the firm pays its suppliers','a cost that falls on someone who did not choose the transaction',
+     'a firm\u2019s fixed cost','a cost that rises with output'],
+  a:1, e:'Because the firm never pays it, it never enters the price \u2014 so the price is wrong.'},
+ {s:'Social cost equals',
+  o:['private cost minus external cost','private cost plus external cost',
+     'external cost alone','total revenue minus total cost'],
+  a:1, e:'Society gives up both: what the firm pays, plus the harm done to others.'},
+ {s:'When production creates an external cost, the free market will',
+  o:['produce too little','produce too much','reach the social optimum','stop producing'],
+  a:1, e:'The firm works from Sp, which ignores the external cost. Sp meets D at Qp, to the right of Qs.'},
+ {s:'A vaccination programme creates an external benefit. Left to the market,',
+  o:['it will be over-provided','it will be under-provided','output will be at the social optimum','its price will be too high'],
+  a:1, e:'Buyers count only their own benefit, so demand is Dp rather than Ds, and Qp falls short of Qs.'},
+ {s:'Which is an example of an external benefit?',
+  o:['a factory dumping waste in a river','a neighbour\u2019s loud music at midnight',
+     'a firm fitting a lift into the public library','a car emitting exhaust fumes'],
+  a:2, e:'The lift helps people who never paid for it \u2014 a benefit falling on third parties.'}
+];
+/* ══════ 市场图：IGCSE 记号 Sp/Ss、Dp/Ds、Qp/Qs ══════ */
+var QMAX = 14, PMAX = 16;
+
+function axes(svg, x0, y0, w) {
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:26, stroke:'#333', 'stroke-width':2}, svg);
+  var a = mk('text', {x:x0-8, y:20, 'text-anchor':'end', 'font-size':26, fill:'#5b6b7b'}, svg);
+  a.textContent = 'Price';
+  var b = mk('text', {x:x0+w/2, y:y0+64, 'text-anchor':'middle', 'font-size':26, fill:'#5b6b7b'}, svg);
+  b.textContent = 'Quantity';
+  var c = mk('text', {x:x0-10, y:y0+18, 'text-anchor':'end', 'font-size':26, fill:'#5b6b7b'}, svg);
+  c.textContent = '0';
+}
+function lab(svg, x, y, txt, color, anchor) {
+  var t = mk('text', {x:x, y:y, 'text-anchor':anchor||'start', 'font-size':26, 'font-weight':700,
+    fill:color, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  t.textContent = txt;
+}
+function bracket(svg, X, y, q1, q2, color, txt) {
+  mk('line', {x1:X(q1), y1:y, x2:X(q2), y2:y, stroke:color, 'stroke-width':3}, svg);
+  mk('line', {x1:X(q1), y1:y-6, x2:X(q1), y2:y+6, stroke:color, 'stroke-width':3}, svg);
+  mk('line', {x1:X(q2), y1:y-6, x2:X(q2), y2:y+6, stroke:color, 'stroke-width':3}, svg);
+  lab(svg, (X(q1)+X(q2))/2, y-9, txt, color, 'middle');
+}
+
+function drawNeg(){
+  var e = +document.getElementById('extQ').value;
+  var svg = clearSvg('negSvg'); if(!svg) return;
+  var W=720, H=520, pl=86, pr=92, pt=26, pb=58;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var x0=pl, y0=H-pb, w=W-pl-pr, h=H-pt-pb;
+  function X(q){ return x0 + q/QMAX*w; } function Y(p){ return y0 - p/PMAX*h; }
+  function Sp(q){ return 2 + 0.6*q; } function Ss(q){ return Sp(q) + e; } function D(q){ return 14 - 0.8*q; }
+  axes(svg, x0, y0, w);
+  function seg(fn, color){ mk('line', {x1:X(0), y1:Y(fn(0)), x2:X(QMAX), y2:Y(fn(QMAX)),
+    stroke:color, 'stroke-width':3}, svg); }
+  seg(D, '#2E4A6B'); seg(Sp, '#1E88E5');
+  if(e > 0.01) seg(Ss, '#C62828');
+  var qp = 12/1.4, qs = (12-e)/1.4;
+  lab(svg, X(QMAX)+8, Y(D(QMAX))+22, 'D', '#2E4A6B');
+  lab(svg, X(QMAX)+8, Y(Sp(QMAX))+20, 'Sp', '#1E88E5');
+  if(e > 0.01) lab(svg, X(QMAX)+8, Y(Ss(QMAX))+20, 'Ss', '#C62828');
+  mk('line', {x1:X(qp), y1:y0, x2:X(qp), y2:Y(D(qp)), stroke:'#c9d3dd', 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  lab(svg, X(qp)+6, y0+20, 'Qp', '#5b6b7b');
+  if(e > 0.01){
+    mk('line', {x1:X(qs), y1:y0, x2:X(qs), y2:Y(D(qs)), stroke:'#C62828', 'stroke-width':1.5,
+      'stroke-dasharray':'4 4'}, svg);
+    lab(svg, X(qs)-6, y0+20, 'Qs', '#C62828', 'end');
+    bracket(svg, X, y0-30, qs, qp, '#C62828', 'over-produced');
+  }
+  document.getElementById('extv').textContent = '\u00a5' + e.toFixed(1);
+  document.getElementById('extRead').innerHTML = (e < 0.01)
+    ? '<b class="gray">No external cost \u2014 Ss sits on Sp.</b> The market quantity <i>is</i> society\u2019s.'
+    : 'Market output <b>Qp = ' + qp.toFixed(1) + '</b>. Society wants <b class="dr">Qs = ' + qs.toFixed(1) +
+      '</b>. The market makes <b>' + (qp-qs).toFixed(1) + ' too many</b>.';
+}
+
+function drawPos(){
+  var b = +document.getElementById('benQ').value;
+  var svg = clearSvg('posSvg'); if(!svg) return;
+  var W=720, H=520, pl=86, pr=92, pt=26, pb=58;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var x0=pl, y0=H-pb, w=W-pl-pr, h=H-pt-pb;
+  function X(q){ return x0 + q/QMAX*w; } function Y(p){ return y0 - p/PMAX*h; }
+  function S(q){ return 1 + q; } function Dp(q){ return 10 - 0.8*q; } function Ds(q){ return Dp(q) + b; }
+  axes(svg, x0, y0, w);
+  function seg(fn, color){ mk('line', {x1:X(0), y1:Y(fn(0)), x2:X(QMAX), y2:Y(fn(QMAX)),
+    stroke:color, 'stroke-width':3}, svg); }
+  seg(S, '#1E88E5'); seg(Dp, '#2E4A6B');
+  if(b > 0.01) seg(Ds, '#2E7D32');
+  var qp = 9/1.8, qs = (9+b)/1.8;
+  lab(svg, X(QMAX)+8, Y(S(QMAX))-8, 'S', '#1E88E5');
+  lab(svg, X(QMAX)+8, Y(Dp(QMAX))+22, 'Dp', '#2E4A6B');
+  if(b > 0.01) lab(svg, X(QMAX)+8, Y(Ds(QMAX))+22, 'Ds', '#2E7D32');
+  mk('line', {x1:X(qp), y1:y0, x2:X(qp), y2:Y(Dp(qp)), stroke:'#c9d3dd', 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  lab(svg, X(qp)-6, y0+20, 'Qp', '#5b6b7b', 'end');
+  if(b > 0.01){
+    mk('line', {x1:X(qs), y1:y0, x2:X(qs), y2:Y(Ds(qs)), stroke:'#2E7D32', 'stroke-width':1.5,
+      'stroke-dasharray':'4 4'}, svg);
+    lab(svg, X(qs)+6, y0+20, 'Qs', '#2E7D32');
+    bracket(svg, X, y0-30, qp, qs, '#2E7D32', 'under-produced');
+  }
+  document.getElementById('benv').textContent = '\u00a5' + b.toFixed(1);
+  document.getElementById('benRead').innerHTML = (b < 0.01)
+    ? '<b class="gray">No external benefit \u2014 Ds sits on Dp.</b> The market quantity <i>is</i> society\u2019s.'
+    : 'Market output <b>Qp = ' + qp.toFixed(1) + '</b>. Society wants <b class="g">Qs = ' + qs.toFixed(1) +
+      '</b>. The market makes <b>' + (qs-qp).toFixed(1) + ' too few</b>.';
+}
+
+
+/* ══════ 三方关系图 ══════ */
+function drawActors(){
+  var svg = clearSvg('actorSvg'); if(!svg) return;
+  var defs = mk('defs', {}, svg);
+  ['#2E4A6B', '#C62828'].forEach(function(col, i){
+    var m = mk('marker', {id: 'ah' + i, markerUnits: 'userSpaceOnUse', markerWidth: 16,
+      markerHeight: 16, refX: 14, refY: 8, orient: 'auto'}, defs);
+    mk('path', {d: 'M0,0 L16,8 L0,16 z', fill: col}, m);
+  });
+
+  function box(x, y, w, h, title, sub, color){
+    mk('rect', {x:x, y:y, width:w, height:h, rx:14, fill:'#fff', stroke:color, 'stroke-width':3}, svg);
+    var t = mk('text', {x:x+w/2, y:y+h/2-2, 'text-anchor':'middle', 'font-size':22,
+      'font-weight':800, fill:color}, svg);
+    t.textContent = title;
+    var u = mk('text', {x:x+w/2, y:y+h/2+22, 'text-anchor':'middle', 'font-size':22, fill:'#7b8b9b'}, svg);
+    u.textContent = sub;
+  }
+  box(30, 160, 180, 80, 'The firm', 'makes the steel', '#2E4A6B');
+  box(440, 44, 180, 80, 'The buyer', 'pays the price', '#1E88E5');
+  box(440, 276, 180, 80, 'The bystander', 'downstream', '#C62828');
+
+  mk('line', {x1:216, y1:188, x2:432, y2:98, stroke:'#1E88E5', 'stroke-width':3.5,
+    'marker-end':'url(#ah0)'}, svg);
+  lab(svg, 300, 122, 'price paid', '#1E88E5', 'middle');
+
+  mk('line', {x1:216, y1:212, x2:432, y2:300, stroke:'#C62828', 'stroke-width':3.5,
+    'stroke-dasharray':'9 7', 'marker-end':'url(#ah1)'}, svg);
+  lab(svg, 322, 252, 'never paid', '#C62828', 'middle');
+
+  var note = mk('text', {x:330, y:378, 'text-anchor':'middle', 'font-size':18, fill:'#7b8b9b'}, svg);
+  note.textContent = 'The solid line is a transaction. The dashed line is an externality.';
+}
+
+/* ══════ 假设开关 ══════ */
+function flipAssumption(){
+  var sw = document.getElementById('sw'), box = document.getElementById('swBox');
+  sw.classList.toggle('on');
+  var off = sw.classList.contains('on');
+  sw.querySelector('span').textContent = off ? 'Someone else IS affected' : 'Nobody else is affected';
+  document.getElementById('swA').style.display = off ? 'none' : 'block';
+  document.getElementById('swB').style.display = off ? 'block' : 'none';
+}
+
+/* ══════ 账本 ══════ */
+function showLedger(){
+  var t = document.getElementById('led'), b = document.getElementById('ledBtn');
+  t.classList.add('show');
+  b.textContent = 'That is the gap';
+  b.disabled = true;
+}
+
+/* ══════ 链条 ══════ */
+var CHAIN_I = 1;
+function stepChain(){
+  var nds = document.querySelectorAll('.chain .nd');
+  if(CHAIN_I < nds.length){ nds[CHAIN_I].classList.add('on'); CHAIN_I++; }
+  if(CHAIN_I >= nds.length){
+    var b = document.getElementById('chainBtn');
+    b.textContent = 'All four, in order';
+    b.disabled = true;
+    document.getElementById('chainNote').style.opacity = 1;
+  }
+}
+function resetChain(){
+  CHAIN_I = 0;
+  document.querySelectorAll('.chain .nd').forEach(function(n){ n.classList.remove('on'); });
+  var b = document.getElementById('chainBtn'); b.disabled = false; b.textContent = 'Next step \u25b6';
+  document.getElementById('chainNote').style.opacity = 0;
+}
+
+/* ══════ 当事人 ══════ */
+function pickActor(el){
+  document.querySelectorAll('.actor').forEach(function(a){ a.classList.remove('on'); });
+  el.classList.add('on');
+}
+
+function onSlide(i){
+  if(i === 6) drawActors();
+  if(i === 9) drawNeg();
+  if(i === 10) drawPos();
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  bootDeck();
+  var a = document.getElementById('extQ'); if(a) a.addEventListener('input', drawNeg);
+  var c = document.getElementById('benQ'); if(c) c.addEventListener('input', drawPos);
+  mountSeq('dc1', [
+    {t:'Room-mates shout while gaming until 2 a.m.', a:'cost'},
+    {t:'A student keeps green plants on the balcony', a:'benefit'},
+    {t:'A factory pumps warm water into the river', a:'cost'},
+    {t:'A firm fits a lift into the old public library', a:'benefit'},
+    {t:'A restaurant leaves its bins on the pavement', a:'cost'},
+    {t:'A farmer plants trees along the roadside', a:'benefit'}
+  ], [{id:'cost', label:'EXTERNAL COST'}, {id:'benefit', label:'EXTERNAL BENEFIT'}]);
+  mountQuiz('qz1', QUESTS);
+});
+
+/* ══════ 覆盖：链条分页 ══════ */
+var CH_DEF = {
+  ben: ['Price reflects only <b>buyer\u2019s</b> benefit',
+        'More output looks unprofitable',
+        'Output stops short of society\u2019s optimum',
+        'Too few resources in clean air'],
+  cost: ['Price covers only <b>private</b> cost',
+         'More output looks profitable',
+         'Output passes society\u2019s optimum',
+         'Too many resources in steel']
+};
+var CH_NOTE = {
+  ben: 'Same machinery, opposite sign \u2014 and the same conclusion.',
+  cost: 'Notice: nobody behaved badly. The price was simply told too little.'
+};
+function setChain(kind){
+  var c = document.getElementById('ch2'); if(!c) return;
+  var arr = CH_DEF[kind], h = '';
+  for(var i = 0; i < arr.length; i++){
+    h += '<div class="nd' + (i === 0 ? ' on' : '') + '"><b>' + (i+1) + '</b><p>' + arr[i] + '</p></div>';
+    if(i < 3) h += '<div class="arw">\u2192</div>';
+  }
+  c.innerHTML = h;
+  c.dataset.i = 1;
+  var b = document.getElementById('ch2Btn');
+  if(b){ b.disabled = false; b.textContent = 'Next step \u25b6'; }
+  var n = document.getElementById('ch2Note');
+  if(n){ n.textContent = CH_NOTE[kind]; n.style.opacity = 0; }
+  document.querySelectorAll('#seg .segbtn').forEach(function(x){
+    x.classList.toggle('on', x.dataset.k === kind);
+  });
+}
+
+function stepChain(id){
+  var c = document.getElementById(id); if(!c) return;
+  var nds = c.querySelectorAll('.nd');
+  var i = +(c.dataset.i || 0);
+  if(i < nds.length){ nds[i].classList.add('on'); i++; c.dataset.i = i; }
+  if(i >= nds.length){
+    var b = document.getElementById(id + 'Btn');
+    if(b){ b.disabled = true; b.textContent = 'All four, in order'; }
+    var n = document.getElementById(id + 'Note'); if(n) n.style.opacity = 1;
+  }
+}
+function resetChain(id){
+  var c = document.getElementById(id); if(!c) return;
+  c.dataset.i = 0;
+  c.querySelectorAll('.nd').forEach(function(n){ n.classList.remove('on'); });
+  var b = document.getElementById(id + 'Btn');
+  if(b){ b.disabled = false; b.textContent = 'Next step \u25b6'; }
+  var n = document.getElementById(id + 'Note'); if(n) n.style.opacity = 0;
+}
+
+/* ══════ 三张效率图 ══════ */
+function drawEff(){
+  /* 起点在纵轴 (44,60)，终点在横轴 (270,200)：两端都落在轴上 */
+  function ppc(t, out){
+    var x = 44 + 226 * t, y = 60 + 140 * Math.pow(t, 1.6);
+    if(out){ x = 44 + (x - 44) * out; y = 200 - (200 - y) * out; }
+    return [x, y];
+  }
+  var s = clearSvg('eff1');
+  if(s){
+    s.setAttribute('viewBox', '0 0 320 240');
+    mk('line', {x1:44, y1:200, x2:300, y2:200, stroke:'#333', 'stroke-width':2}, s);
+    mk('line', {x1:44, y1:200, x2:44, y2:40, stroke:'#333', 'stroke-width':2}, s);
+    mk('line', {x1:60, y1:60, x2:270, y2:185, stroke:'#2E4A6B', 'stroke-width':3}, s);
+    mk('line', {x1:60, y1:185, x2:270, y2:60, stroke:'#1E88E5', 'stroke-width':3}, s);
+    mk('line', {x1:165, y1:200, x2:165, y2:122, stroke:'#9aa5b1', 'stroke-width':1.5, 'stroke-dasharray':'4 4'}, s);
+    mk('line', {x1:44, y1:122, x2:165, y2:122, stroke:'#9aa5b1', 'stroke-width':1.5, 'stroke-dasharray':'4 4'}, s);
+    mk('circle', {cx:165, cy:122, r:5, fill:'#1A73E8'}, s);
+    lab(s, 276, 190, 'D', '#2E4A6B'); lab(s, 276, 62, 'S', '#1E88E5');
+    lab(s, 38, 126, 'P', '#5b6b7b', 'end'); lab(s, 165, 218, 'Q', '#5b6b7b', 'middle');
+    lab(s, 20, 52, 'Price', '#7b8b9b', 'start'); lab(s, 300, 228, 'Quantity', '#7b8b9b', 'end');
+  }
+  var s2 = clearSvg('eff2');
+  if(s2){
+    s2.setAttribute('viewBox', '0 0 320 240');
+    mk('line', {x1:44, y1:200, x2:300, y2:200, stroke:'#333', 'stroke-width':2}, s2);
+    mk('line', {x1:44, y1:200, x2:44, y2:40, stroke:'#333', 'stroke-width':2}, s2);
+    var d = '';
+    for(var i = 0; i <= 40; i++){ var p = ppc(i / 40); d += (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }
+    mk('path', {d:d, fill:'none', stroke:'#1E88E5', 'stroke-width':3.5}, s2);
+    var q = ppc(0.55);
+    mk('line', {x1:q[0], y1:200, x2:q[0], y2:q[1], stroke:'#9aa5b1', 'stroke-width':1.5, 'stroke-dasharray':'4 4'}, s2);
+    mk('line', {x1:44, y1:q[1], x2:q[0], y2:q[1], stroke:'#9aa5b1', 'stroke-width':1.5, 'stroke-dasharray':'4 4'}, s2);
+    mk('circle', {cx:q[0], cy:q[1], r:6, fill:'#C62828', stroke:'#fff', 'stroke-width':2}, s2);
+    lab(s2, 20, 52, 'Good A', '#7b8b9b', 'start');
+    lab(s2, 300, 228, 'Good B', '#7b8b9b', 'end');
+    lab(s2, q[0] + 12, q[1] - 18, 'on the frontier', '#C62828');
+  }
+  var s3 = clearSvg('eff3');
+  if(s3){
+    s3.setAttribute('viewBox', '0 0 320 240');
+    var df = mk('defs', {}, s3);
+    var mm = mk('marker', {id:'effArr', markerUnits:'userSpaceOnUse', markerWidth:14,
+      markerHeight:14, refX:12, refY:7, orient:'auto'}, df);
+    mk('path', {d:'M0,0 L14,7 L0,14 z', fill:'#2E7D32'}, mm);
+    mk('line', {x1:44, y1:200, x2:300, y2:200, stroke:'#333', 'stroke-width':2}, s3);
+    mk('line', {x1:44, y1:200, x2:44, y2:40, stroke:'#333', 'stroke-width':2}, s3);
+    function path(out, color, dash, wd){
+      var dd = '';
+      for(var i = 0; i <= 40; i++){ var p = ppc(i / 40, out); dd += (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }
+      mk('path', {d:dd, fill:'none', stroke:color, 'stroke-width':wd, 'stroke-dasharray': dash || 'none'}, s3);
+    }
+    path(null, '#9aa5b1', '7 5', 2.5);
+    path(1.28, '#1E88E5', null, 3.5);
+    var a = ppc(0.62), b = ppc(0.62, 1.28);
+    mk('line', {x1:a[0], y1:a[1], x2:b[0], y2:b[1], stroke:'#2E7D32', 'stroke-width':2.5,
+      'marker-end':'url(#effArr)'}, s3);
+    lab(s3, 20, 52, 'Good A', '#7b8b9b', 'start');
+    lab(s3, 300, 228, 'Good B', '#7b8b9b', 'end');
+    lab(s3, b[0] + 6, b[1] + 4, 'growth', '#2E7D32');
+  }
+}
+
+/* ══════ 外部收益三方图（镜像） ══════ */
+function drawBenActors(){
+  var svg = clearSvg('benSvg'); if(!svg) return;
+  var defs = mk('defs', {}, svg);
+  var m = mk('marker', {id:'ahG', markerUnits:'userSpaceOnUse', markerWidth:16,
+    markerHeight:16, refX:14, refY:8, orient:'auto'}, defs);
+  mk('path', {d:'M0,0 L16,8 L0,16 z', fill:'#2E7D32'}, m);
+  var m2 = mk('marker', {id:'ahB', markerUnits:'userSpaceOnUse', markerWidth:16,
+    markerHeight:16, refX:14, refY:8, orient:'auto'}, defs);
+  mk('path', {d:'M0,0 L16,8 L0,16 z', fill:'#1E88E5'}, m2);
+  function box(x, y, w, h, title, sub, color, dashed){
+    mk('rect', {x:x, y:y, width:w, height:h, rx:14, fill:'#fff', stroke:color, 'stroke-width':3,
+      'stroke-dasharray': dashed ? '8 6' : 'none'}, svg);
+    var t = mk('text', {x:x+w/2, y:y+h/2-2, 'text-anchor':'middle', 'font-size':22,
+      'font-weight':800, fill:color}, svg);
+    t.textContent = title;
+    var u = mk('text', {x:x+w/2, y:y+h/2+20, 'text-anchor':'middle', 'font-size':20, fill:'#7b8b9b'}, svg);
+    u.textContent = sub;
+  }
+  box(30, 160, 180, 80, 'The plant', 'makes electricity', '#2E4A6B', false);
+  box(440, 44, 180, 80, 'The buyer', 'pays the price', '#1E88E5', false);
+  box(440, 276, 180, 80, 'The neighbours', 'pay nothing', '#2E7D32', true);
+  mk('line', {x1:216, y1:188, x2:432, y2:98, stroke:'#1E88E5', 'stroke-width':3.5,
+    'marker-end':'url(#ahB)'}, svg);
+  lab(svg, 300, 122, 'price paid', '#1E88E5', 'middle');
+  mk('line', {x1:216, y1:212, x2:432, y2:300, stroke:'#2E7D32', 'stroke-width':3.5,
+    'stroke-dasharray':'9 7', 'marker-end':'url(#ahG)'}, svg);
+  lab(svg, 322, 252, 'never paid for', '#2E7D32', 'middle');
+  var n = mk('text', {x:330, y:378, 'text-anchor':'middle', 'font-size':18, fill:'#7b8b9b'}, svg);
+  n.textContent = 'Same shape, opposite arrow.';
+}
+
+/* ══════ 庇古税 ══════ */
+function drawTax(){
+  var svg = clearSvg('taxSvg'); if(!svg) return;
+  var W=460, H=380, pl=54, pr=44, pt=20, pb=48;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var x0=pl, y0=H-pb, w=W-pl-pr, h=H-pt-pb, QM=14, PM=16, e=2.4;
+  function X(q){ return x0 + q/QM*w; } function Y(p){ return y0 - p/PM*h; }
+  function Sp(q){ return 2 + 0.6*q; } function Ss(q){ return Sp(q) + e; } function D(q){ return 14 - 0.8*q; }
+  var df = mk('defs', {}, svg);
+  var mm = mk('marker', {id:'taxArr', markerUnits:'userSpaceOnUse', markerWidth:14,
+    markerHeight:14, refX:12, refY:7, orient:'auto'}, df);
+  mk('path', {d:'M0,0 L14,7 L0,14 z', fill:'#2E7D32'}, mm);
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:X(0), y1:Y(D(0)), x2:X(QM), y2:Y(D(QM)), stroke:'#2E4A6B', 'stroke-width':3}, svg);
+  mk('line', {x1:X(0), y1:Y(Sp(0)), x2:X(QM), y2:Y(Sp(QM)), stroke:'#1E88E5', 'stroke-width':3}, svg);
+  mk('line', {x1:X(0), y1:Y(Ss(0)), x2:X(QM), y2:Y(Ss(QM)), stroke:'#C62828', 'stroke-width':3,
+    'stroke-dasharray':'8 6'}, svg);
+  var qp = 12/1.4, qs = (12-e)/1.4;
+  mk('line', {x1:X(qp), y1:y0, x2:X(qp), y2:Y(D(qp)), stroke:'#c9d3dd', 'stroke-width':1.5, 'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qs), y1:y0, x2:X(qs), y2:Y(D(qs)), stroke:'#C62828', 'stroke-width':1.5, 'stroke-dasharray':'4 4'}, svg);
+  lab(svg, X(QM)+7, Y(D(QM))+16, 'D', '#2E4A6B');
+  lab(svg, X(QM)+7, Y(Sp(QM))+16, 'Sp', '#1E88E5');
+  lab(svg, X(QM)+7, Y(Ss(QM))+16, 'Ss', '#C62828');
+  lab(svg, X(qp)+5, y0+19, 'Qp', '#5b6b7b');
+  lab(svg, X(qs)-5, y0+19, 'Qs', '#C62828', 'end');
+  var ax = X(6.6), ay1 = Y(Sp(6.6)), ay2 = Y(Ss(6.6));
+  mk('line', {x1:ax, y1:ay1, x2:ax, y2:ay2+7, stroke:'#2E7D32', 'stroke-width':3, 'marker-end':'url(#taxArr)'}, svg);
+  lab(svg, ax-7, (ay1+ay2)/2+1, 'tax', '#2E7D32', 'end');
+}
+
+/* ══════ 逐题分类 ══════ */
+function mountSeq(rootId, items){
+  var root = document.getElementById(rootId); if(!root) return;
+  var i = 0, score = 0;
+  function render(){
+    if(i >= items.length){ finish(); return; }
+    var it = items[i];
+    root.innerHTML =
+      '<div class="seqcard">' + it.t + '</div>' +
+      '<div class="seqbtns">' +
+      '<button class="big-btn" data-z="cost" style="background:#C62828">EXTERNAL COST</button>' +
+      '<button class="big-btn" data-z="benefit" style="background:#2E7D32">EXTERNAL BENEFIT</button>' +
+      '</div>' +
+      '<div class="qfb" id="' + rootId + 'fb" style="text-align:center;margin-top:12px;min-height:52px"></div>' +
+      '<div class="qmeta" id="' + rootId + 'mt" style="text-align:center">' + (i+1) + ' / ' + items.length + '</div>';
+    root.querySelectorAll('.seqbtns .big-btn').forEach(function(b){
+      b.onclick = function(){
+        var ok = (b.dataset.z === it.a);
+        root.querySelectorAll('.seqbtns .big-btn').forEach(function(x){ x.disabled = true; });
+        b.style.outline = '5px solid ' + (ok ? '#1b5e20' : '#b71c1c');
+        b.style.outlineOffset = '2px';
+        if(ok) score++;
+        document.getElementById(rootId + 'fb').innerHTML =
+          (ok ? '<span class="green"><b>Correct.</b></span> ' : '<span class="dr"><b>Not quite.</b></span> ') + it.e;
+        var nb = document.createElement('button');
+        nb.className = 'big-btn'; nb.style.marginTop = '12px';
+        nb.textContent = (i + 1 < items.length) ? 'Next \u279c' : 'See result';
+        nb.onclick = function(){ i++; render(); };
+        document.getElementById(rootId + 'mt').appendChild(nb);
+      };
+    });
+  }
+  function finish(){
+    root.innerHTML = '<div class="result"><h2>Result</h2><div class="big">' + score + ' / ' +
+      items.length + '</div><div class="qfb" style="margin-top:10px">Every case is a third-party effect \u2014 '
+      'the only question is which way it runs.</div></div>';
+  }
+  render();
+}
+
+/* ══════ 页码映射 ══════ */
+function onSlide(i){
+  if(i === 1) drawEff();
+  if(i === 5) drawActors();
+  if(i === 6) drawNeg();
+  if(i === 8) drawBenActors();
+  if(i === 9){ drawPos(); setChain('ben'); }
+  if(i === 11) drawTax();
+}
+
+/* ══════ 分步揭示（第 5 页） ══════ */
+var WHO_N = 0;
+function stepWho(){
+  var led = document.getElementById('led');
+  var rows = document.querySelectorAll('#who .hid2');
+  if(WHO_N === 0){ var r = led ? led.querySelectorAll('.hid') : []; for(var k=0;k<r.length;k++) r[k].classList.add('show'); }
+  else if(WHO_N - 1 < rows.length){ rows[WHO_N - 1].classList.add('show2'); }
+  WHO_N++;
+  var total = 1 + rows.length;
+  var b = document.getElementById('whoBtn');
+  var n = document.getElementById('whoNote');
+  if(WHO_N >= total){
+    if(b){ b.disabled = true; b.textContent = 'That is all \u2714'; }
+    if(n) n.innerHTML = 'The factory decides and is paid. The other three decide nothing, are paid nothing, ' +
+      'and pick up the cost. <b>That is what \u201cexternal\u201d means.</b>';
+  } else if(n && WHO_N === 1){
+    n.innerHTML = 'One of them decides. All four pay \u2014 but not the same way.';
+  }
+}
+
+/* ══════ 填空揭示（小结页） ══════ */
+var BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(BL_I < bs.length){
+    bs[BL_I].textContent = bs[BL_I].dataset.a;
+    bs[BL_I].classList.add('on');
+    BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && BL_I >= bs.length){ b.disabled = true; b.textContent = 'All five \u2714'; }
+}
+function resetBlanks(){
+  BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>
