@@ -226,7 +226,6 @@
   <div class="meta">Dr. Jia · © 2026</div>
 </section>
 
-
 <section class="slide" id="s2">
   <div class="tag">Unit 4 · Lesson 11 · The market</div>
   <h2>A market you never see &mdash; and every bank lives in it</h2>
@@ -247,222 +246,153 @@
   </div>
 </section>
 
-
 <section class="slide" id="s3">
-  <div class="tag">Unit 4 · Lesson 11 · The graph</div>
-  <h2>Two axes &mdash; and one side of the market the Fed owns</h2>
+  <div class="tag">Unit 4 &middot; Lesson 11 &middot; The graph</div>
+  <h2>The graph, drawn once &mdash; then we move it</h2>
   <div class="stage">
-    <div class="two" style="flex:1 0 auto;">
-      <div class="col">
-        <svg viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;">
-          <line x1="90" y1="350" x2="520" y2="350" stroke="#1f2d3d" stroke-width="2.5"/>
-          <line x1="90" y1="350" x2="90" y2="50" stroke="#1f2d3d" stroke-width="2.5"/>
-          <text x="90" y="36" font-size="22" fill="#5b7288">Policy rate</text>
-          <text x="305" y="400" text-anchor="middle" font-size="22" fill="#5b7288">Quantity of reserves</text>
-          <text x="80" y="368" text-anchor="end" font-size="22" fill="#5b7288">0</text>
-          <line x1="370" y1="60" x2="370" y2="350" stroke="#d9534f" stroke-width="4.5"/>
-          <text x="358" y="74" text-anchor="end" font-size="22" font-weight="700" fill="#a94442">S</text>
-          <text x="358" y="122" text-anchor="end" font-size="22" fill="#a94442">the Fed sets the quantity</text>
+    <div style="display:flex;gap:1.5vw;flex:1 1 auto;align-items:stretch;">
+      <div style="flex:1.35;min-width:0;display:flex;align-items:center;justify-content:center;">
+        <svg id="sgSvg" viewBox="0 0 720 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:52vh;">
+          <g id="sgA" style="opacity:0">
+            <line x1="90" y1="370" x2="690" y2="370" stroke="#1f2d3d" stroke-width="2.5"/>
+            <line x1="90" y1="370" x2="90" y2="50" stroke="#1f2d3d" stroke-width="2.5"/>
+            <text x="390" y="410" text-anchor="middle" font-size="24" fill="#5b7288">Quantity of reserves</text>
+            <text x="90" y="36" font-size="24" fill="#5b7288">Policy rate</text>
+            <text x="80" y="388" text-anchor="end" font-size="24" fill="#5b7288">0</text>
+          </g>
+          <g id="sgB" style="opacity:0">
+            <line x1="470" y1="70" x2="470" y2="370" stroke="#d9534f" stroke-width="5"/>
+            <text x="458" y="64" text-anchor="end" font-size="24" font-weight="800" fill="#a94442">S</text>
+            <text x="492" y="352" text-anchor="end" font-size="24" fill="#a94442">the Fed decides the quantity</text>
+          </g>
+          <g id="sgC" style="opacity:0">
+            <line x1="90" y1="120" x2="690" y2="120" stroke="#a97422" stroke-width="4" stroke-dasharray="10 6"/>
+            <text x="682" y="110" text-anchor="end" font-size="24" font-weight="700" fill="#a97422">discount rate &mdash; ceiling</text>
+            <polyline points="90,120 258,120 690,330" fill="none" stroke="#1CADE4" stroke-width="5.5" stroke-linejoin="round"/>
+            <text x="600" y="288" font-size="24" font-weight="800" fill="#0e7fae">D</text>
+          </g>
+          <g id="sgD" style="opacity:0">
+            <circle cx="470" cy="235" r="11" fill="#0e7fae"/>
+            <line x1="90" y1="235" x2="470" y2="235" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/>
+            <text x="82" y="243" text-anchor="end" font-size="24" font-weight="700" fill="#5b7288">i&#8321;</text>
+            <text x="478" y="228" font-size="24" font-weight="700" fill="#5b7288">E&#8321;</text>
+          </g>
         </svg>
       </div>
-      <div class="col">
-        <div class="card"><h3>Horizontal &mdash; quantity of reserves</h3><p>How many reserves the whole banking system is holding at the Fed at a moment in time.</p></div>
-        <div class="card"><h3>Vertical &mdash; policy rate</h3><p>The <b>price</b> of borrowing those reserves overnight. Price on the vertical axis, quantity on the horizontal &mdash; the usual way.</p></div>
-        <div class="card win"><h3>Why the supply curve is vertical</h3><p>Reserves are not mined or grown: <b>only the Fed can create them</b>. So the quantity supplied is whatever the Fed has chosen &mdash; and it does not respond to the rate.</p></div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.8vh;justify-content:center;">
+        <div class="aim" id="sgS1" style="padding:.6vh .9vw;"><div class="no">1</div><div><div class="at">Axes first</div><div class="ad">Rate up, quantity of reserves across.</div></div></div>
+        <div class="aim" id="sgS2" style="padding:.6vh .9vw;"><div class="no">2</div><div><div class="at">Supply: a vertical line</div><div class="ad">Only the Fed can create reserves &mdash; so the quantity is a <b>decision</b>, not a slope.</div></div></div>
+        <div class="aim" id="sgS3" style="padding:.6vh .9vw;"><div class="no">3</div><div><div class="at">Demand: capped by the discount rate</div><div class="ad">Banks need reserves to settle; above the ceiling they borrow from the Fed instead.</div></div></div>
+        <div class="aim" id="sgS4" style="padding:.6vh .9vw;"><div class="no">4</div><div><div class="at">Where they cross</div><div class="ad">That is <b>i<sub>ff</sub></b> &mdash; the policy rate, made by banks bidding for reserves.</div></div></div>
+        <div class="btnrow" style="margin-top:.6vh;justify-content:center;">
+          <button class="btn" onclick="sgNext()">Next step &#9654;</button>
+          <button class="btn ghost" onclick="sgAll()">Show all</button>
+          <button class="btn ghost" onclick="sgReset()">Reset</button>
+        </div>
       </div>
     </div>
-    <div class="s-foot">
-      <div class="hl amber">Supply is a <b>decision</b>, not a slope. Banks then bid for the reserves that exist.</div>
-    </div>
+    <div class="s-foot"><div class="hl">No floor is drawn here: this is the <b>scarce</b> regime. The only administered price is the <b>ceiling</b> &mdash; the rate still has to be found by the market.</div></div>
   </div>
 </section>
-
 
 <section class="slide" id="s4">
-  <div class="tag">Unit 4 &middot; Lesson 11 &middot; Demand</div>
-  <h2>Why banks want reserves &mdash; and why demand slopes down</h2>
+  <div class="tag">Unit 4 &middot; Lesson 11 &middot; One rate, two markets</div>
+  <h2>Scarce reserves: the reserve market sets the rate, the money market uses it</h2>
   <div class="stage">
-    <div class="two" style="flex:1 0 auto;">
-      <div class="col">
-        <svg viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:470px;height:auto;align-self:center;">
-          <line x1="90" y1="350" x2="520" y2="350" stroke="#1f2d3d" stroke-width="2.5"/>
-          <line x1="90" y1="350" x2="90" y2="50" stroke="#1f2d3d" stroke-width="2.5"/>
-          <text x="90" y="36" font-size="27" fill="#5b7288">Policy rate</text>
-          <text x="305" y="400" text-anchor="middle" font-size="27" fill="#5b7288">Quantity of reserves</text>
-          <text x="80" y="368" text-anchor="end" font-size="27" fill="#5b7288">0</text>
-          <text x="286" y="118" font-size="27" fill="#5b7288">a high rate makes</text>
-          <text x="286" y="160" font-size="27" fill="#5b7288">holding reserves costly</text>
-          <polyline points="120,90 200,90" fill="none" stroke="#b9c6d2" stroke-width="2.5" stroke-dasharray="9 7"/>
-          <polyline points="200,90 400,330" fill="none" stroke="#1CADE4" stroke-width="6.5" stroke-linejoin="round"/>
-          <polyline points="400,330 500,330" fill="none" stroke="#b9c6d2" stroke-width="2.5" stroke-dasharray="9 7"/>
-          <text x="208" y="232" font-size="27" font-weight="700" fill="#0e7fae">the market prices</text>
-          <text x="208" y="274" font-size="27" font-weight="700" fill="#0e7fae">this segment</text>
-          <text x="486" y="312" text-anchor="middle" font-size="27" font-weight="700" fill="#0e7fae">D</text>
-        </svg>
-      </div>
-      <div class="col">
-        <div class="card"><h3>Needed to settle payments</h3><p>Every payment a bank makes ends in reserves moving between Fed accounts. Required reserves are the legal minimum; clearing needs come on top.</p></div>
-        <div class="card"><h3>Reserves earn almost nothing</h3><p>Money parked at the Fed cannot be lent to a firm. Holding it has an <b>opportunity cost</b>: the rate you gave up.</p></div>
-        <div class="card win"><h3>Hence the downward slope</h3><p>The higher the overnight rate, the more it costs to sit on reserves &mdash; so banks hold <b>fewer</b>.</p></div>
-      </div>
+    <div style="display:flex;gap:1.6vw;flex:1 1 auto;align-items:center;">
+      <div style="flex:1;min-width:0;"><svg id="lkA" viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="width:100%;max-width:500px;height:auto;margin:0 auto;">
+        <text x="84" y="32" font-size="27" font-weight="800" fill="#0e7fae">Reserve market</text>
+        <line x1="84" y1="330" x2="540" y2="330" stroke="#1f2d3d" stroke-width="2.5"/>
+        <line x1="84" y1="330" x2="84" y2="52" stroke="#1f2d3d" stroke-width="2.5"/>
+        <g id="lkAT" font-size="26" fill="#8a9aab"></g>
+        <text x="312" y="386" text-anchor="middle" font-size="26" fill="#5b7288">Reserves, $bn</text>
+        <text x="40" y="200" font-size="26" fill="#5b7288" text-anchor="middle" transform="rotate(-90 40 200)">Policy rate, %</text>
+        <line id="lkCeil" x1="84" y1="120" x2="540" y2="120" stroke="#a97422" stroke-width="3" stroke-dasharray="9 6"/>
+        <text id="lkCeilT" x="536" y="112" text-anchor="end" font-size="26" font-weight="700" fill="#a97422">discount 6.5%</text>
+        <polyline id="lkD" points="" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-linejoin="round"/>
+        <text id="lkDLab" x="510" y="60" font-size="26" font-weight="800" fill="#0e7fae">D</text>
+        <line id="lkS" x1="300" y1="60" x2="300" y2="330" stroke="#d9534f" stroke-width="4"/>
+        <text id="lkSLab" x="308" y="76" font-size="26" font-weight="800" fill="#a94442">S</text>
+        <line id="lkGy" x1="84" y1="200" x2="300" y2="200" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <line id="lkGx" x1="300" y1="200" x2="300" y2="330" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <circle id="lkDot" cx="300" cy="200" r="10" fill="#0e7fae"/>
+      </svg></div>
+      <div style="flex:1;min-width:0;"><svg id="lkB" viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="width:100%;max-width:500px;height:auto;margin:0 auto;">
+        <text x="84" y="32" font-size="27" font-weight="800" fill="#0e7fae">Money market</text>
+        <line x1="84" y1="330" x2="540" y2="330" stroke="#1f2d3d" stroke-width="2.5"/>
+        <line x1="84" y1="330" x2="84" y2="52" stroke="#1f2d3d" stroke-width="2.5"/>
+        <g id="lkBT" font-size="26" fill="#8a9aab"></g>
+        <text x="312" y="386" text-anchor="middle" font-size="26" fill="#5b7288">Money, $bn</text>
+        <text x="40" y="200" font-size="26" fill="#5b7288" text-anchor="middle" transform="rotate(-90 40 200)">Same rate, %</text>
+        <polyline id="lkMD" points="" fill="none" stroke="#a97422" stroke-width="4.5" stroke-linejoin="round"/>
+        <text id="lkMDLab" x="470" y="276" font-size="26" font-weight="800" fill="#a97422">MD</text>
+        <line id="lkMS" x1="300" y1="60" x2="300" y2="330" stroke="#d9534f" stroke-width="4"/>
+        <text id="lkMSLab" x="308" y="76" font-size="26" font-weight="800" fill="#a94442">MS</text>
+        <line id="lkGy2" x1="84" y1="200" x2="300" y2="200" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <line id="lkGx2" x1="300" y1="200" x2="300" y2="330" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <circle id="lkDot2" cx="300" cy="200" r="10" fill="#0e7fae"/>
+        
+      </svg></div>
     </div>
-    <div class="s-foot">
-      <div class="hl">Banks want reserves to run the payments system. The <b>sloping</b> segment is the part the market prices &mdash; the flat ends belong to the Fed.</div>
+    <div style="display:flex;gap:1.6vw;align-items:flex-start;flex:0 0 auto;margin-top:.8vh;">
+      <div class="hl" id="lkNote" style="flex:1.25;margin:0;min-height:11vh;display:flex;align-items:center;">i<sub>ff</sub> = <b>4.7%</b> &middot; money = <b>$412bn</b></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:.5vh;">
+        <div class="slidenote" style="display:flex;align-items:center;gap:.6vw;">Discount rate <b id="lkDiscV" style="min-width:3.4em;">6.5%</b>
+          <input type="range" id="lkDisc" min="4" max="7" step="0.1" value="6.5" oninput="lkDraw()" style="flex:1;min-width:0;"></div>
+        <div class="slidenote" style="display:flex;align-items:center;gap:.6vw;">Reserve ratio <b id="lkRrV" style="min-width:3.4em;">10%</b>
+          <input type="range" id="lkRr" min="8" max="16" step="0.5" value="10" oninput="lkDraw()" style="flex:1;min-width:0;"></div>
+        <div class="slidenote" style="display:flex;align-items:center;gap:.6vw;">Reserves, $bn <b id="lkQV" style="min-width:3.4em;">60</b>
+          <input type="range" id="lkQ" min="50" max="100" step="1" value="60" oninput="lkDraw()" style="flex:1;min-width:0;"></div>
+      </div>
     </div>
   </div>
 </section>
 
+<section class="slide" id="s5">
+  <div class="tag">Unit 4 &middot; Lesson 11 &middot; Where the reserves came from</div>
+  <h2>Then the flood came &mdash; and the old rulebook broke</h2>
+  <div class="stage">
+    <div style="display:flex;gap:1.8vw;flex:1 1 auto;align-items:center;">
+      <div style="flex:1;min-width:0;"><svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;"><text x="90" y="34" font-size="30" font-weight="800" fill="#1f2d3d">Reserve balances at the Fed</text><text x="40" y="200" text-anchor="middle" font-size="26" fill="#5b7288" transform="rotate(-90 40 200)">$ trillions</text><line x1="90" y1="340" x2="750" y2="340" stroke="#1f2d3d" stroke-width="2.5"/><line x1="90" y1="340" x2="90" y2="55" stroke="#1f2d3d" stroke-width="2.5"/><text x="80" y="349" text-anchor="end" font-size="26" fill="#8a9aab">0</text><text x="80" y="274" text-anchor="end" font-size="26" fill="#8a9aab">1</text><text x="80" y="199" text-anchor="end" font-size="26" fill="#8a9aab">2</text><text x="80" y="124" text-anchor="end" font-size="26" fill="#8a9aab">3</text><text x="90" y="392" text-anchor="middle" font-size="26" fill="#8a9aab">2000</text><text x="237" y="392" text-anchor="middle" font-size="26" fill="#8a9aab">2010</text><text x="467" y="392" text-anchor="middle" font-size="26" fill="#8a9aab">2018</text><text x="703" y="392" text-anchor="middle" font-size="26" fill="#8a9aab">2026</text><polyline points="98,338 165,338 177,267 199,255 229,115 255,194 281,75 311,82 341,100 372,98 420,98" fill="none" stroke="#1CADE4" stroke-width="5.5" stroke-linejoin="round"/><text x="150" y="300" font-size="26" font-weight="700" fill="#0e7fae">2008: QE begins</text><text x="430" y="150" font-size="26" font-weight="700" fill="#0e7fae">peak ≈ $4.2T</text></svg></div>
+      <div style="flex:1;min-width:0;"><svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;"><text x="90" y="34" font-size="30" font-weight="800" fill="#0e7fae">2008: too much, no floor</text><text x="40" y="200" text-anchor="middle" font-size="26" fill="#5b7288" transform="rotate(-90 40 200)">Policy rate, %</text><line x1="90" y1="340" x2="750" y2="340" stroke="#1f2d3d" stroke-width="2.5"/><line x1="90" y1="340" x2="90" y2="55" stroke="#1f2d3d" stroke-width="2.5"/><text x="80" y="349" text-anchor="end" font-size="26" fill="#8a9aab">0</text><text x="80" y="199" text-anchor="end" font-size="26" fill="#8a9aab">2</text><text x="80" y="206" text-anchor="end" font-size="26" fill="#8a9aab">4</text><text x="80" y="135" text-anchor="end" font-size="26" fill="#8a9aab">6</text><text x="80" y="64" text-anchor="end" font-size="26" fill="#8a9aab">8</text><line x1="90" y1="108" x2="750" y2="108" stroke="#a97422" stroke-width="3" stroke-dasharray="9 6"/><text x="96" y="134" font-size="26" font-weight="700" fill="#a97422">discount 6.5%</text><polyline points="90,108 245,108 585,326" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-linejoin="round"/><text x="736" y="308" font-size="26" font-weight="800" fill="#0e7fae">D</text><line x1="363" y1="70" x2="363" y2="340" stroke="#b9c6d2" stroke-width="3.5" stroke-dasharray="8 6"/><text x="354" y="96" text-anchor="end" font-size="26" fill="#8a9aab">S 2007</text><line x1="717" y1="70" x2="717" y2="340" stroke="#d9534f" stroke-width="4.5"/><text x="708" y="96" text-anchor="end" font-size="26" font-weight="800" fill="#a94442">S 2009</text><circle cx="717" cy="326" r="10" fill="#d9534f"/><text x="543" y="301" font-size="26" font-weight="700" fill="#a94442">0.1%</text><text x="420" y="400" text-anchor="middle" font-size="26" fill="#5b7288">Reserves, $bn</text></svg></div>
+    </div>
+    <div class="s-foot"><div class="hl amber">Left: the quantity exploded. Right: under the <b>old</b> rulebook that quantity slid the market to <b>0.1%</b> &mdash; with no floor to catch it.</div></div>
+  </div>
+</section>
 
 <section class="slide" id="s6">
-  <div class="tag">Unit 4 · Lesson 11 · The corridor</div>
-  <h2>A ceiling and a floor &mdash; the Fed&rsquo;s two prices</h2>
+  <div class="tag">Unit 4 · Lesson 11 · The new lever</div>
+  <h2>IORB &mdash; pay banks to hold reserves</h2>
   <div class="stage">
-    <div class="two" style="flex:1 0 auto;">
+    <div class="hl" style="flex:0 0 auto;">The old tools could not drain a flood this size: selling the securities back would take years, and the reserve requirement is a blunt instrument. So the Fed changed what it <b>charged</b>, not what it held.</div>\r\n    <div class="two" style="flex:1 0 auto;">
       <div class="col">
-        <svg viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;">
-          <line x1="110" y1="350" x2="110" y2="50" stroke="#1f2d3d" stroke-width="2.5"/>
-          <text x="100" y="40" text-anchor="end" font-size="22" fill="#5b7288">rate</text>
-          <text x="102" y="344" text-anchor="end" font-size="22" fill="#5b7288">0</text>
-          <rect x="150" y="120" width="330" height="150" rx="10" fill="#e3f4fb" stroke="#1CADE4" stroke-width="2"/>
-          <text x="315" y="202" text-anchor="middle" font-size="22" fill="#0e7fae">the market rate sits here</text>
-          <line x1="110" y1="90" x2="510" y2="90" stroke="#d9534f" stroke-width="4.5"/>
-          <text x="150" y="80" font-size="22" font-weight="700" fill="#a94442">discount rate &mdash; the ceiling</text>
-          <line x1="110" y1="300" x2="510" y2="300" stroke="#1CADE4" stroke-width="4.5"/>
-          <text x="150" y="332" font-size="22" font-weight="700" fill="#0e7fae">IORB &mdash; the floor</text>
-        </svg>
-      </div>
+        <div class="card"><h3>October 2008</h3><p>Congress authorised the Fed to pay <b>interest on reserve balances</b>. First payments: December 2008. Since July 2021, one single rate: <b>IORB</b>.</p></div>
+        </div>
       <div class="col">
-        <div class="card warn"><h3>Ceiling &mdash; the discount rate</h3><p>A bank short of reserves can always borrow from the Fed's discount window. So <b>nobody pays more</b> in the market than the Fed charges.</p></div>
-        <div class="card"><h3>Floor &mdash; IORB</h3><p><b>Interest on reserve balances</b>: the rate the Fed pays banks for the reserves they park with it. <b>Nobody lends below</b> what the Fed pays for holding.</p></div>
+        <div class="fig" style="flex:1 0 auto;">
+          <svg viewBox="0 0 660 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:34vh;">
+            <line x1="76" y1="250" x2="616" y2="250" stroke="#cfe0ee" stroke-width="3"/>
+            <text x="68" y="256" text-anchor="end" font-size="22" fill="#5b7288">0</text>
+            <line x1="76" y1="120" x2="616" y2="120" stroke="#1CADE4" stroke-width="4" stroke-dasharray="10 6"/>
+            <text x="68" y="126" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">IORB</text>
+            <circle cx="150" cy="100" r="10" fill="#e6a23c"/>
+            <circle cx="260" cy="92" r="10" fill="#e6a23c"/>
+            <circle cx="380" cy="96" r="10" fill="#e6a23c"/>
+            <circle cx="500" cy="88" r="10" fill="#e6a23c"/>
+            <text x="320" y="285" text-anchor="middle" font-size="22" fill="#5b7288">every overnight trade sits at or above the floor &mdash; never below</text>
+          </svg>
+          <span>No bank lends below what the Fed pays for waiting</span>
+        </div>
       </div>
     </div>
+    <div class="hl amber" style="flex:0 0 auto;">The awkward years: reserves became ample in <b>2008</b> but the Fed kept describing a scarce-reserve system until <b>January 2019</b> &mdash; it steered the rate with <b>IORB</b> the whole time. The reserve requirement itself was cut to <b>0% in March 2020</b>, which is why the quantity of reserves no longer does anything.</div>
     <div class="s-foot">
-      <div class="hl green">A ceiling and a floor turn a market into a <b>corridor</b>: the Fed does not have to guess the rate, it just has to fence it in.</div>
+      <div class="hl green">A price set by an announced rate, not by scarcity &mdash; economists call these <b>administered rates</b>.</div>
     </div>
   </div>
 </section>
-<section class="slide" id="s5">
-  <div class="tag">Unit 4 &middot; Lesson 11 &middot; The shape</div>
-  <h2>The shape that makes this market special</h2>
-  <div class="stage">
-    <div class="hl" style="padding:.5vh 1vw;line-height:1.35;">Official demand shape: <b>flat at the ceiling &rarr; downward-sloping &rarr; flat at the floor</b>. Where the supply line lands decides which segment rules the price.</div>
-    <div style="flex:1 0 auto;display:flex;gap:1.6vw;">
-      <div style="flex:1.4;min-width:0;">
-        <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" id="dmSvg" style="width:100%;max-height:46vh;">
-          <line x1="80" y1="370" x2="870" y2="370" stroke="#1f2d3d" stroke-width="2"/>
-          <line x1="80" y1="370" x2="80" y2="50" stroke="#1f2d3d" stroke-width="2"/>
-          <text x="475" y="408" text-anchor="middle" font-size="22" fill="#5b7288">Quantity of reserves</text>
-          <text x="40" y="30" font-size="22" fill="#5b7288">Policy rate</text>
-          <text x="66" y="78" text-anchor="end" font-size="22" fill="#5b7288">6%</text>
-          <text x="66" y="220" text-anchor="end" font-size="22" fill="#5b7288">3%</text>
-          <text x="66" y="376" text-anchor="end" font-size="22" fill="#5b7288">0</text>
-          <line id="dmDisc" x1="80" y1="120" x2="870" y2="120" stroke="#d9534f" stroke-width="4" stroke-dasharray="10 6"/>
-          <text id="dmDiscT" x="862" y="111" text-anchor="end" font-size="22" font-weight="700" fill="#a94442">discount 5.00% &mdash; ceiling</text>
-          <polyline id="dmD" points="80,120 232.7,120 352.7,175 870,175" fill="none" stroke="#1f2d3d" stroke-width="4"/>
-          <text id="dmDLab" x="640" y="161" font-size="22" fill="#1f2d3d">demand</text>
-          <line id="dmIorb" x1="80" y1="175" x2="870" y2="175" stroke="#1CADE4" stroke-width="4" stroke-dasharray="10 6"/>
-          <text id="dmIorbT" x="862" y="166" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">IORB 3.90%</text>
-          <line id="dmS" x1="600" y1="70" x2="600" y2="370" stroke="#d9534f" stroke-width="4"/>
-          <circle id="dmDot" cx="600" cy="175" r="11" fill="#d9534f"/>
-        </svg>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1vh;justify-content:center;">
-        <div class="sliderbox" style="margin-bottom:0;">
-          <input type="range" id="discRange" min="3.0" max="6.0" step="0.05" value="5.0" oninput="dmSlide()">
-          <div class="slideval" id="discVal">Discount 5.00%</div>
-        </div>
-        <div class="sliderbox" style="margin-bottom:0;">
-          <input type="range" id="sRange" min="100" max="850" step="5" value="600" oninput="dmSlide()">
-          <div class="slideval" id="sVal">Reserves &asymp; $2.7T</div>
-        </div>
-        <div class="sliderbox" style="margin-bottom:0;">
-          <input type="range" id="iorbRange" min="0" max="4.6" step="0.05" value="3.9" oninput="dmSlide()">
-          <div class="slideval" id="iorbVal">IORB 3.90%</div>
-        </div>
-        <div class="slidenote" id="dmNote" style="text-align:left;">Ample zone: shifting reserves moves nothing &mdash; IORB sets the rate.</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:1.2vw;margin-top:.7vh;">
-      <div class="hl" style="flex:1;line-height:1.3;padding:.55vh 1vw;"><b>Limited reserves</b> (before 2008): supply is small, so it cuts the <b>sloped</b> middle &mdash; the rate moves whenever S moves.</div>
-      <div class="hl amber" style="flex:1;line-height:1.3;padding:.55vh 1vw;"><b>Ample reserves</b> (now): supply is huge, so it cuts the <b>flat</b> bottom &mdash; shifting S changes nothing, and IORB sets the rate.</div>
-    </div>
-    <div class="s-foot">
-      <div class="hl green">The ceiling and the floor are drawn far apart here so the three segments are visible; today&rsquo;s real gap is only about <b>10 basis points</b>.</div>
-    </div>
-  </div>
-</section>
-
 
 <section class="slide" id="s7">
-  <div class="tag">Unit 4 &middot; Lesson 11 &middot; Where the reserves came from</div>
-  <h2>Then the flood came</h2>
-  <div class="stage">
-    <div class="svgwrap" style="flex:0 0 auto;">
-      <svg viewBox="0 0 960 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:46vh;">
-        <text x="60" y="26" font-size="25" font-weight="700" fill="#1f2d3d">Reserve balances held at the Fed, $ trillions</text>
-        <line x1="60" y1="380" x2="930" y2="380" stroke="#cfe0ee" stroke-width="3"/>
-        <line x1="60" y1="290" x2="930" y2="290" stroke="#e3f4fb" stroke-width="2"/>
-        <line x1="60" y1="200" x2="930" y2="200" stroke="#e3f4fb" stroke-width="2"/>
-        <line x1="60" y1="110" x2="930" y2="110" stroke="#e3f4fb" stroke-width="2"/>
-        <text x="52" y="372" text-anchor="end" font-size="24" fill="#5b7288">0</text>
-        <text x="52" y="282" text-anchor="end" font-size="24" fill="#5b7288">1</text>
-        <text x="52" y="192" text-anchor="end" font-size="24" fill="#5b7288">2</text>
-        <text x="52" y="102" text-anchor="end" font-size="24" fill="#5b7288">3</text>
-        <polyline points="70,377 250,377 280,293 340,278 420,110 490,205 560,62 640,70 720,92 800,89 930,89" fill="none" stroke="#1CADE4" stroke-width="5" stroke-linejoin="round"/>
-        <circle cx="280" cy="293" r="8" fill="#d9534f"/>
-        <text x="290" y="330" font-size="24" font-weight="700" fill="#a94442">2008: QE begins</text>
-        <circle cx="560" cy="62" r="8" fill="#e6a23c"/>
-        <text x="566" y="98" font-size="24" font-weight="700" fill="#a97422">2021 peak ≈ $4.2T</text>
-        <text x="70" y="412" text-anchor="middle" font-size="24" fill="#5b7288">2000</text>
-        <text x="340" y="412" text-anchor="middle" font-size="24" fill="#5b7288">2010</text>
-        <text x="610" y="412" text-anchor="middle" font-size="24" fill="#5b7288">2018</text>
-        <text x="930" y="412" text-anchor="middle" font-size="24" fill="#5b7288">2026</text>
-        <text x="70" y="352" font-size="24" fill="#5b7288">≈ $45B</text>
-        <text x="905" y="80" text-anchor="end" font-size="24" font-weight="700" fill="#0e7fae">≈ $3.2T</text>
-      </svg>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.9vw;margin-top:1vh;">
-      <div class="aim" style="padding:.7vh .8vw;"><div class="no" style="width:2.2vw;min-width:38px;height:2.2vw;min-height:38px;">1</div><div><div class="at" style="font-size:clamp(22px,2.3vh,26px);">The Fed buys a security</div><div class="ad">In the open market.</div></div></div>
-      <div class="aim" style="padding:.7vh .8vw;"><div class="no" style="width:2.2vw;min-width:38px;height:2.2vw;min-height:38px;">2</div><div><div class="at" style="font-size:clamp(22px,2.3vh,26px);">It pays with reserves it creates</div><div class="ad">A keystroke, no printing press.</div></div></div>
-      <div class="aim" style="padding:.7vh .8vw;"><div class="no" style="width:2.2vw;min-width:38px;height:2.2vw;min-height:38px;">3</div><div><div class="at" style="font-size:clamp(22px,2.3vh,26px);">Both sides of its balance sheet grow</div><div class="ad">+ securities, + reserves.</div></div></div>
-      <div class="aim" style="padding:.7vh .8vw;"><div class="no" style="width:2.2vw;min-width:38px;height:2.2vw;min-height:38px;">4</div><div><div class="at" style="font-size:clamp(22px,2.3vh,26px);">Those reserves are the banks' money</div><div class="ad">What the Fed <b>owes</b> is what banks <b>hold</b>.</div></div></div>
-    </div>
-
-    <div class="s-foot">
-      <div class="hl amber">Selling assets could have drained them. Instead the Fed kept reserves <b>ample</b> &mdash; and needed a new way to steer the rate.</div>
-    </div>
-  </div>
-</section>
-
-
-
-
-
-
-
-<section class="slide" id="s9">
-  <div class="tag">Unit 4 · Lesson 11 · Why the old tool broke</div>
-  <h2>You cannot drain a flood with a teaspoon</h2>
-  <div class="stage">
-    <div class="two" style="flex:1 0 auto;">
-      <div class="col">
-        <div class="card lose"><h3>The old lever</h3><p>Adding or draining a few billion worked when reserves were scarce &mdash; it tilted the whole market.</p></div>
-        <div class="card lose"><h3>After QE</h3><p>With trillions parked at the Fed, a few billion is a rounding error. Banks have no reason to fight over reserves that are not scarce.</p></div>
-      </div>
-      <div class="col">
-        <div class="card win"><h3>The rate went numb</h3><p>Open market operations lost their grip: the fed funds rate sat near zero whatever the Desk did &mdash; even as the Fed tried to normalise.</p></div>
-      </div>
-    </div>
-    <div class="s-foot">
-      <div class="hl">The quantity lever was broken &mdash; so from 2008 the Fed set the <b>price</b> directly instead.</div>
-    </div>
-  </div>
-</section>
-
-
-
-<section class="slide" id="s8b">
   <div class="tag">Unit 4 &middot; Lesson 11 &middot; Real world check</div>
   <h2>Two regimes &mdash; and who runs which</h2>
   <div class="stage">
@@ -497,64 +427,52 @@
   </div>
 </section>
 
-<section class="slide" id="s10">
-  <div class="tag">Unit 4 · Lesson 11 · The new lever</div>
-  <h2>IORB &mdash; pay banks to hold reserves</h2>
+<section class="slide" id="s8">
+  <div class="tag">Unit 4 &middot; Lesson 11 &middot; The floor regime &mdash; drive it</div>
+  <h2>Ample reserves: the floor sets the price, the quantity stops mattering</h2>
   <div class="stage">
-    <div class="two" style="flex:1 0 auto;">
-      <div class="col">
-        <div class="card"><h3>October 2008</h3><p>Congress authorised the Fed to pay <b>interest on reserve balances</b>. First payments: December 2008. Since July 2021, one single rate: <b>IORB</b>.</p></div>
-        </div>
-      <div class="col">
-        <div class="fig" style="flex:1 0 auto;">
-          <svg viewBox="0 0 660 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:34vh;">
-            <line x1="76" y1="250" x2="616" y2="250" stroke="#cfe0ee" stroke-width="3"/>
-            <text x="68" y="256" text-anchor="end" font-size="22" fill="#5b7288">0</text>
-            <line x1="76" y1="120" x2="616" y2="120" stroke="#1CADE4" stroke-width="4" stroke-dasharray="10 6"/>
-            <text x="68" y="126" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">IORB</text>
-            <circle cx="150" cy="100" r="10" fill="#e6a23c"/>
-            <circle cx="260" cy="92" r="10" fill="#e6a23c"/>
-            <circle cx="380" cy="96" r="10" fill="#e6a23c"/>
-            <circle cx="500" cy="88" r="10" fill="#e6a23c"/>
-            <text x="320" y="285" text-anchor="middle" font-size="22" fill="#5b7288">every overnight trade sits at or above the floor &mdash; never below</text>
-          </svg>
-          <span>No bank lends below what the Fed pays for waiting</span>
-        </div>
+    <div style="display:flex;gap:1.6vw;flex:1 1 auto;align-items:center;">
+      <div style="flex:1;min-width:0;"><svg id="faA" viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;max-width:495px;margin:0 auto;">
+        <text x="84" y="34" font-size="27" font-weight="800" fill="#0e7fae">Reserve market</text>
+        <line x1="84" y1="340" x2="530" y2="340" stroke="#1f2d3d" stroke-width="2.5"/>
+        <line x1="84" y1="340" x2="84" y2="52" stroke="#1f2d3d" stroke-width="2.5"/>
+<text x="76" y="348" text-anchor="end" font-size="26" fill="#8a9aab">0</text><text x="76" y="276" text-anchor="end" font-size="26" fill="#8a9aab">2</text><text x="76" y="204" text-anchor="end" font-size="26" fill="#8a9aab">4</text><text x="76" y="132" text-anchor="end" font-size="26" fill="#8a9aab">6</text><text x="76" y="60" text-anchor="end" font-size="26" fill="#8a9aab">8</text>        <text x="34" y="210" text-anchor="middle" font-size="26" fill="#5b7288" transform="rotate(-90 34 210)">Policy rate, %</text>
+        <text x="307" y="384" text-anchor="middle" font-size="26" fill="#5b7288">Reserves, $bn</text>
+        <line id="faCeil" x1="84" y1="76" x2="530" y2="76" stroke="#a97422" stroke-width="3" stroke-dasharray="9 6"/>
+        <text id="faCeilT" x="92" y="68" text-anchor="start" font-size="26" font-weight="700" fill="#a97422">discount &mdash; ceiling</text>
+        <polyline id="faD" points="" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-linejoin="round"/>
+        <line id="faFloor" x1="84" y1="196" x2="530" y2="196" stroke="#0e7fae" stroke-width="3.5"/>
+        <text id="faFloorT" x="526" y="188" text-anchor="end" font-size="26" font-weight="800" fill="#0e7fae">IORB &mdash; floor</text>
+        <line id="faS" x1="400" y1="60" x2="400" y2="340" stroke="#d9534f" stroke-width="4.5"/>
+        <text id="faST" x="408" y="96" font-size="26" font-weight="800" fill="#a94442">S</text><text id="faDT" x="480" y="300" font-size="26" font-weight="800" fill="#0e7fae">D</text>
+        <line id="faGy" x1="84" y1="196" x2="400" y2="196" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <circle id="faDot" cx="400" cy="196" r="10" fill="#0e7fae"/>
+      </svg></div>
+      <div style="flex:1;min-width:0;"><svg id="faB" viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;max-width:495px;margin:0 auto;">
+        <text x="84" y="34" font-size="27" font-weight="800" fill="#0e7fae">Money market</text>
+        <line x1="84" y1="340" x2="530" y2="340" stroke="#1f2d3d" stroke-width="2.5"/>
+        <line x1="84" y1="340" x2="84" y2="52" stroke="#1f2d3d" stroke-width="2.5"/>
+        <text x="34" y="210" text-anchor="middle" font-size="26" fill="#5b7288" transform="rotate(-90 34 210)">Same rate, %</text>
+        <text x="307" y="384" text-anchor="middle" font-size="26" fill="#5b7288">Money, $bn</text>
+        <polyline id="faMD" points="" fill="none" stroke="#a97422" stroke-width="4.5" stroke-linejoin="round"/>
+        <line id="faMS" x1="400" y1="60" x2="400" y2="340" stroke="#d9534f" stroke-width="4.5"/><text id="faMST" x="408" y="96" font-size="26" font-weight="800" fill="#a94442">MS</text><text id="faMDT" x="480" y="286" font-size="26" font-weight="800" fill="#a97422">MD</text>
+        <line id="faGy2" x1="84" y1="196" x2="400" y2="196" stroke="#8a9aab" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <circle id="faDot2" cx="400" cy="196" r="10" fill="#0e7fae"/>
+      </svg></div>
+    </div>
+    <div style="display:flex;gap:1.6vw;align-items:flex-start;flex:0 0 auto;margin-top:.8vh;">
+      <div class="hl" id="faNote" style="flex:1.25;margin:0;line-height:1.5;">i = <b>3.90%</b><br>money = <b>$500bn</b><br><span style="color:var(--sub);">the floor is pricing it</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:.5vh;">
+        <div class="slidenote" style="display:flex;align-items:center;gap:.6vw;">IORB <b id="faIV" style="min-width:3.4em;">3.90%</b><input type="range" id="faI" min="1" max="6" step="0.05" value="3.9" oninput="faDraw()" style="flex:1;min-width:0;"></div>
+        <div class="slidenote" style="display:flex;align-items:center;gap:.6vw;">Reserves <b id="faQV" style="min-width:3.4em;">90</b><input type="range" id="faQ" min="50" max="120" step="1" value="90" oninput="faDraw()" style="flex:1;min-width:0;"></div>
+        <div class="slidenote" style="display:flex;align-items:center;gap:.6vw;">Discount <b id="faDV" style="min-width:3.4em;">6.5%</b><input type="range" id="faDc" min="4" max="7" step="0.1" value="6.5" oninput="faDraw()" style="flex:1;min-width:0;"></div>
       </div>
     </div>
-    <div class="s-foot">
-      <div class="hl green">A price set by an announced rate, not by scarcity &mdash; economists call these <b>administered rates</b>.</div>
-    </div>
+    <div class="s-foot" style="margin-top:.4vh;"><div class="hl amber">Move the supply line anywhere along the flat part &mdash; <b>nothing in either panel moves</b>. Only the floor does the pricing now.</div></div>
   </div>
 </section>
 
-
-
-<section class="slide" id="s11">
-  <div class="tag">Unit 4 · Lesson 11 · Two floors</div>
-  <h2>The floor system &mdash; banks and everyone else</h2>
-  <div class="stage">
-    <div class="two" style="flex:1 0 auto;">
-      <div class="col">
-        <div class="card"><h3>IORB &mdash; the floor for banks</h3><p>Only banks hold reserve accounts at the Fed. For them, IORB is the risk-free fallback.</p></div>
-      </div>
-      <div class="col">
-        <div class="card warn"><h3>ON RRP &mdash; the floor for non-banks</h3><p>Money market funds cannot hold reserves. The Fed's overnight reverse repo facility (since 2013) lends them the same floor: they lend to the Fed overnight against Treasury collateral.</p></div>
-      </div>
-    </div>
-    <p class="subline" style="margin-top:.9vh;">ON RRP usage peaked near <b>$2.5 trillion</b> (Dec 2022) when it out-paid the market &mdash; and has since drained close to zero.</p>
-    <div class="s-foot">
-      <div class="hl">Two floors, one purpose: nothing borrows or lends overnight below the Fed's prices.</div>
-    </div>
-  </div>
-</section>
-
-
-
-
-
-
-<section class="slide" id="s13">
+<section class="slide" id="s9">
   <div class="tag">Unit 4 &middot; Lesson 11 &middot; Today&rsquo;s prices and how the pieces fit</div>
   <h2>The administered rates, right now</h2>
   <div class="stage">
@@ -590,10 +508,7 @@
   </div>
 </section>
 
-
-
-
-<section class="slide" id="s15">
+<section class="slide" id="s10">
   <div class="tag">Unit 4 · Lesson 11 · Real data (FRED: IORB)</div>
   <h2>The floor has travelled &mdash; 2008 to 2026</h2>
   <div class="stage">
@@ -623,12 +538,7 @@
   </div>
 </section>
 
-
-
-
-
-
-<section class="slide" id="s17">
+<section class="slide" id="s11">
   <div class="tag">Unit 4 &middot; Lesson 11 &middot; Worth thinking about</div>
   <h2>Money that earns money &mdash; both sides</h2>
   <div class="stage">
@@ -653,42 +563,44 @@
   </div>
 </section>
 
-
-
-
-
-
-<section class="slide" id="s19">
-  <div class="tag">Unit 4 &middot; Lesson 11 &middot; Before you move on</div>
-  <h2>What to walk out with &mdash; fill the blanks</h2>
+<section class="slide" id="s12">
+  <div class="tag">Unit 4 &middot; Lesson 11 &middot; The whole toolkit</div>
+  <h2>Every lever the central bank has &mdash; and where each one shows up</h2>
   <div class="stage">
-    <div style="display:flex;gap:1.4vw;flex:1 0 auto;">
-      <div style="flex:1.6;min-width:0;display:flex;flex-direction:column;">
-        <div class="drill" style="flex:1 1 auto;">
-          <div class="drow"><span class="dn">1</span><p><b>Two regimes.</b> <span class="fill" data-a="limited">____</span> reserves: the money supply moves the rate; <span class="fill" data-a="ample">____</span>: only <span class="fill" data-a="administered">____</span> rates do.</p></div>
-          <div class="drow"><span class="dn">2</span><p><b>The lever today.</b> The Fed&rsquo;s key tool is interest on <span class="fill" data-a="reserves">____</span>, a <span class="fill" data-a="floor">____</span> no bank lends below.</p></div>
-          <div class="drow"><span class="dn">3</span><p><b>The ceiling.</b> Nobody pays more than the <span class="fill" data-a="discount rate">____</span> &mdash; a short bank borrows from the Fed instead.</p></div>
-        </div>
-        <div class="btnrow" style="margin-top:.4vh;justify-content:center;">
-          <button class="btn" onclick="fillNext()">Reveal next answer</button>
-          <button class="btn ghost" onclick="fillAll()">Reveal all</button>
-          <button class="btn ghost" onclick="fillReset()">Hide all</button>
-        </div>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:.7vh;justify-content:center;">
-        <p class="cn" style="margin:0;">Three ways students lose points:</p>
-        <div class="hl amber" style="padding:.6vh .9vw;">1 &middot; Two graphs. Limited: S moves the rate; ample: administered rates do.</div>
-        <div class="hl amber" style="padding:.6vh .9vw;">2 &middot; IORB is set, not traded. The Board sets it; the market forms around it.</div>
-        <div class="hl amber" style="padding:.6vh .9vw;">3 &middot; rr = 0%. Banks still settle payments nightly.</div>
-      </div>
-    </div>
-    <div class="s-foot">
-      <div class="hl amber">Next: the loanable funds market.</div>
-    </div>
+    <table style="flex:1 1 auto;">
+      <tr><th style="width:23%">Tool</th><th style="width:30%">What it does</th><th>Which diagram it moves</th><th style="width:18%">Today</th></tr>
+      <tr><td class="l"><b>Open market operations</b></td><td class="l">Buys or sells securities, changing the quantity of reserves</td><td class="l">Reserve supply &mdash; vertical line shifts. The workhorse in the scarce regime</td><td class="l">Still used, but to keep the rate inside the range, not to set it</td></tr>
+      <tr><td class="l"><b>Discount rate</b></td><td class="l">The rate the Fed charges on emergency lending</td><td class="l">Reserve demand &mdash; the <b>ceiling</b></td><td class="l">Ceiling; rarely binds</td></tr>
+      <tr><td class="l"><b>IORB</b></td><td class="l">Interest paid on reserves held at the Fed</td><td class="l">Reserve demand &mdash; the <b>floor</b></td><td class="l">The main instrument</td></tr>
+      <tr><td class="l"><b>Reserve requirement</b></td><td class="l">Legal minimum reserves per deposit</td><td class="l">Reserve demand (right/left) and the money multiplier</td><td class="l">0% since 2020 &mdash; dormant</td></tr>
+      <tr><td class="l"><b>Large-scale asset purchases</b></td><td class="l">QE: buys long-term assets in size</td><td class="l">Supply of reserves, far to the right &mdash; and long rates</td><td class="l">Crisis tool</td></tr>
+    </table>
+    <div class="s-foot"><div class="hl">Same toolkit, different levers depending on the regime: <b>quantity</b> when reserves are scarce, <b>price</b> (the floor) when they are ample.</div></div>
   </div>
 </section>
 
-<section class="slide cover" id="s21">
+<section class="slide" id="s13">
+  <div class="tag">Unit 4 &middot; Lesson 11 &middot; Key takeaways</div>
+  <h2>What to walk out with &mdash; fill the blanks</h2>
+  <div class="stage">
+    <div class="drill">
+      <div class="drow"><span class="dn">1</span><p><b>Two regimes.</b> In <span class="fill" data-a="limited">____</span> reserves the quantity sets the rate; in <span class="fill" data-a="ample">____</span> reserves only <span class="fill" data-a="administered">____</span> rates do.</p></div>
+      <div class="drow"><span class="dn">2</span><p><b>The lever today.</b> The Fed pays interest on <span class="fill" data-a="reserves">____</span> &mdash; a <span class="fill" data-a="floor">____</span> no bank lends below.</p></div>
+      <div class="drow"><span class="dn">3</span><p><b>The ceiling.</b> Nobody pays above the <span class="fill" data-a="discount rate">____</span> &mdash; a short bank borrows from the Fed instead.</p></div>
+      <div class="drow"><span class="dn">4</span><p><b>The demand.</b> Reserve demand slopes <span class="fill" data-a="down">____</span>, because holding reserves has an <span class="fill" data-a="opportunity cost">____</span>.</p></div>
+      <div class="drow"><span class="dn">5</span><p><b>Why 2020 matters.</b> The reserve requirement was cut to <span class="fill" data-a="0%">____</span> in March 2020, so moving the quantity no longer moves the <span class="fill" data-a="rate">____</span>.</p></div>
+      <div class="drow"><span class="dn">6</span><p><b>The break.</b> QE pushed the supply line far right; with no floor the rate slid to <span class="fill" data-a="zero">____</span>, and in 2019 a reserve shortage showed up in the <span class="fill" data-a="repo">____</span> market.</p></div>
+    </div>
+    <div class="btnrow" style="margin-top:.6vh;justify-content:center;">
+      <button class="btn" onclick="fillNext()">Reveal next answer</button>
+      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+      <button class="btn ghost" onclick="fillReset()">Hide all</button>
+    </div>
+    <div class="s-foot"><div class="hl">Eleven blanks, six lines &mdash; if these come out without hesitating, the market for reserves is yours.</div></div>
+  </div>
+</section>
+
+<section class="slide cover" id="s14">
   <div class="tag">Wrap-up</div>
   <h1>Thank you!</h1>
   <p>Scarce world: the quantity tool. Ample world: administered prices.</p>
@@ -702,7 +614,7 @@
 <nav>
   <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
   <div class="dots" id="dots"></div>
-  <div class="pageinfo" id="pageinfo">1 / 16</div>
+  <div class="pageinfo" id="pageinfo">1 / 14</div>
   <div class="copy">© 2026 Dr. Jia</div>
   <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
 </nav>
@@ -760,52 +672,155 @@ function fillReset(){ fillIdx = 0; fillEls.forEach(f=>{ f.classList.remove("done
    调 discount 时斜段既不平移、也不改陡缓，只是变长变短。 */
 const R0 = 6.40;                  /* 图左边界处（x=80）的隐含利率 = 图顶 6.40% */
 const X0 = 80;
-const K  = (55 / 120) / 50;       /* %/x 单位：斜段视觉坡度 ≈25°，与政策无关 */
-function dmSlide(){
-  let S = +document.getElementById("sRange").value;
-  const iorb = +document.getElementById("iorbRange").value;
-  let disc = +document.getElementById("discRange").value;
-  if (disc < iorb + 0.25) { disc = iorb + 0.25; }
-  const yOf = r => 370 - r * 50;
-  const rateD = x => R0 - K * (x - X0);        /* 那条固定的需求曲线 */
-  const xAt = r => X0 + (R0 - r) / K;          /* 曲线上利率为 r 的数量 */
-  const Xc = Math.max(X0, Math.min(xAt(disc), 860));   /* 天花板与曲线的交点 */
-  const Xf = Math.max(Xc, Math.min(xAt(iorb), 860));   /* 地板与曲线的交点 */
-  const rateOf = x => x <= Xc ? disc : (x >= Xf ? iorb : rateD(x));
-  const market = rateOf(S);
-  const res = (S - 80) / (850 - 80) * 4.0;
-  document.getElementById("sVal").textContent = "Reserves \u2248 $" + res.toFixed(1) + "T";
-  document.getElementById("iorbVal").textContent = "IORB " + iorb.toFixed(2) + "%";
-  document.getElementById("discVal").textContent = "Discount " + disc.toFixed(2) + "%";
-  /* demand: 天花板平台 -> 固定曲线上被露出的那一段 -> 地板平台 */
-  document.getElementById("dmD").setAttribute("points",
-    "80," + yOf(disc).toFixed(1) + " " + Xc.toFixed(1) + "," + yOf(disc).toFixed(1) + " " +
-    Xf.toFixed(1) + "," + yOf(iorb).toFixed(1) + " 870," + yOf(iorb).toFixed(1));
-  document.getElementById("dmDLab").setAttribute("y", (yOf(rateOf(640)) - 14).toFixed(1));
-  document.getElementById("dmS").setAttribute("x1", S);
-  document.getElementById("dmS").setAttribute("x2", S);
-  document.getElementById("dmDisc").setAttribute("y1", yOf(disc).toFixed(1));
-  document.getElementById("dmDisc").setAttribute("y2", yOf(disc).toFixed(1));
-  document.getElementById("dmDiscT").setAttribute("y", (yOf(disc) - 9).toFixed(1));
-  document.getElementById("dmDiscT").textContent = "discount " + disc.toFixed(2) + "% \u2014 ceiling";
-  document.getElementById("dmIorb").setAttribute("y1", yOf(iorb).toFixed(1));
-  document.getElementById("dmIorb").setAttribute("y2", yOf(iorb).toFixed(1));
-  document.getElementById("dmIorbT").setAttribute("y", (yOf(iorb) - 9).toFixed(1));
-  document.getElementById("dmIorbT").textContent = "IORB " + iorb.toFixed(2) + "%";
-  document.getElementById("dmDot").setAttribute("cx", S);
-  document.getElementById("dmDot").setAttribute("cy", yOf(market).toFixed(1));
-  const note = document.getElementById("dmNote");
-  if (S > Xf) {
-    note.textContent = "Ample zone ($" + res.toFixed(1) + "T): supply cuts the FLAT floor \u2014 shifting reserves moves nothing, IORB (" + iorb.toFixed(2) + "%) sets the rate.";
-  } else if (S <= Xc) {
-    note.textContent = "Extremely scarce ($" + res.toFixed(1) + "T): supply cuts the top flat part \u2014 the rate is stuck at the ceiling (" + disc.toFixed(2) + "%).";
-  } else {
-    note.textContent = "Scarce zone ($" + res.toFixed(1) + "T): supply cuts the SLOPED part \u2014 shifting reserves DOES move the rate (" + market.toFixed(2) + "%).";
+const K  = (55 / 120) / 50;       const SG = ["sgA", "sgB", "sgC", "sgD"];
+let sgN = 0;
+function sgPaint() {
+  SG.forEach(function (id, i) { document.getElementById(id).style.opacity = i < sgN ? "1" : "0"; });
+  ["sgS1", "sgS2", "sgS3", "sgS4"].forEach(function (id, i) {
+    const el = document.getElementById(id);
+    if (el) el.style.opacity = i < sgN ? "1" : ".35";
+  });
+}
+function sgNext() { if (sgN < SG.length) { sgN++; sgPaint(); } }
+function sgAll() { sgN = SG.length; sgPaint(); }
+function sgReset() { sgN = 0; sgPaint(); }
+
+/* ═══════════ 两市场联动（移植自 three-market lab 的做法） ═══════════
+   储备市场：需求是一条直线 i = A − B·Q（rr 把它整条平移），贴现率只做截断；
+   货币市场：MS 摆到让 MD 正好在 i_ff 出清（同一个利率的两种画法）。
+   参数 A=8.0(%)、B=0.055、MD: i = 8 − 0.008M（$bn）、Q ∈ [0,140]、rr ∈ [8%,16%]。 */
+const LKA = 8.0, LKB = 0.055, LKMD = 0.008, LGY = 84, LGB = 540, LGT = 52, LGb = 330;
+const lkY = r => LGb - r / 8 * (LGb - LGT);
+const lkXA = q => LGY + q / 140 * (LGB - LGY);
+const lkXB = m => LGY + m / 800 * (LGB - LGY);
+function lkTicks() {
+  let a = "", b = "";
+  [0, 2, 4, 6, 8].forEach(function (r) {
+    a += '<text x="76" y="' + (lkY(r) + 7) + '" text-anchor="end">' + r + '</text>';
+    b += '<text x="76" y="' + (lkY(r) + 7) + '" text-anchor="end">' + r + '</text>';
+  });
+  [0, 70, 140].forEach(function (q) { a += '<text x="' + lkXA(q) + '" y="348" text-anchor="middle">' + q + '</text>'; });
+  [0, 400, 800].forEach(function (m) { b += '<text x="' + lkXB(m) + '" y="348" text-anchor="middle">' + m + '</text>'; });
+  document.getElementById("lkAT").innerHTML = a;
+  document.getElementById("lkBT").innerHTML = b;
+}
+function lkDraw() {
+  const disc = +document.getElementById("lkDisc").value;
+  const rr = +document.getElementById("lkRr").value / 100;
+  const Q = +document.getElementById("lkQ").value;
+  document.getElementById("lkDiscV").textContent = disc.toFixed(1) + "%";
+  document.getElementById("lkRrV").textContent = Math.round(rr * 100) + "%";
+  document.getElementById("lkQV").textContent = Q;
+  const raw = LKA - LKB * (Q - 500 * (rr - 0.10));
+  const i = Math.max(0, Math.min(disc, raw));
+  const M = Math.max(0, (8 - i) / LKMD);
+  // 需求：先水平（被贴现率压平）到与斜线相交的 Q，再沿斜线走
+  const sh = 500 * (rr - 0.10);
+  const qStar = (LKA - disc) / LKB + sh;          // 斜线与天花板相交处
+  let pts = [];
+  if (qStar > 0) pts.push(lkXA(0).toFixed(1) + "," + lkY(Math.min(disc, LKA + LKB * sh)).toFixed(1));
+  for (let q = Math.max(0, qStar); q <= 140; q += 2) {
+    const r = LKA - LKB * (q - sh);
+    if (r < 0) break;
+    pts.push(lkXA(q).toFixed(1) + "," + lkY(r).toFixed(1));
   }
+  document.getElementById("lkD").setAttribute("points", pts.join(" "));
+  document.getElementById("lkCeil").setAttribute("y1", lkY(disc));
+  document.getElementById("lkCeil").setAttribute("y2", lkY(disc));
+  document.getElementById("lkCeilT").setAttribute("y", lkY(disc) - 8);
+  document.getElementById("lkCeilT").textContent = "discount " + disc.toFixed(1) + "%";
+  document.getElementById("lkS").setAttribute("x1", lkXA(Q));
+  document.getElementById("lkS").setAttribute("x2", lkXA(Q));
+  document.getElementById("lkSLab").setAttribute("x", lkXA(Q) + 8);
+  document.getElementById("lkDot").setAttribute("cx", lkXA(Q));
+  document.getElementById("lkDot").setAttribute("cy", lkY(i));
+  ["y1", "y2"].forEach(function (k) { document.getElementById("lkGy").setAttribute(k, lkY(i)); });
+  document.getElementById("lkGy").setAttribute("x1", 84);
+  document.getElementById("lkGy").setAttribute("x2", lkXA(Q));
+  document.getElementById("lkGx").setAttribute("y1", lkY(i));
+  document.getElementById("lkGx").setAttribute("y2", 330);
+  document.getElementById("lkGx").setAttribute("x1", lkXA(Q));
+  document.getElementById("lkGx").setAttribute("x2", lkXA(Q));
+  document.getElementById("lkMD").setAttribute("points",
+    [0, 8].map(r => lkXB((8 - r) / LKMD).toFixed(1) + "," + lkY(r).toFixed(1)).join(" "));
+  document.getElementById("lkMS").setAttribute("x1", lkXB(M));
+  document.getElementById("lkMS").setAttribute("x2", lkXB(M));
+  document.getElementById("lkMSLab").setAttribute("x", lkXB(M) + 8);
+  document.getElementById("lkDot2").setAttribute("cx", lkXB(M));
+  document.getElementById("lkDot2").setAttribute("cy", lkY(i));
+  ["y1", "y2"].forEach(function (k) { document.getElementById("lkGy2").setAttribute(k, lkY(i)); });
+  document.getElementById("lkGy2").setAttribute("x1", 84);
+  document.getElementById("lkGy2").setAttribute("x2", lkXB(M));
+  document.getElementById("lkGx2").setAttribute("y1", lkY(i));
+  document.getElementById("lkGx2").setAttribute("y2", 330);
+  document.getElementById("lkGx2").setAttribute("x1", lkXB(M));
+  document.getElementById("lkGx2").setAttribute("x2", lkXB(M));
+  document.getElementById("lkNote").innerHTML =
+    "i<sub>ff</sub> = <b>" + i.toFixed(1) + "%</b> &middot; money = <b>$" + Math.round(M) + "bn</b> &middot; " +
+    (raw > disc ? "<b>the ceiling binds</b> &mdash; the discount window sets the price" : "the slope sets the price");
+}
+
+
+/* ═══════════════ 充裕制度联动（p9）：只用地板定价，数量无关 ═══════════════ */
+const FA = { A: 8.0, B: 0.075, MD: 0.008, X0: 84, X1: 530, Y0: 52, Y1: 340 };
+function faY(r) { return FA.Y1 - r / 8 * (FA.Y1 - FA.Y0); }
+function faXA(q) { return FA.X0 + q / 140 * (FA.X1 - FA.X0); }
+function faXB(m) { return FA.X0 + m / 900 * (FA.X1 - FA.X0); }
+function faDraw() {
+  const iorb = +document.getElementById("faI").value;
+  const Q = +document.getElementById("faQ").value;
+  const disc = +document.getElementById("faDc").value;
+  document.getElementById("faIV").textContent = iorb.toFixed(2) + "%";
+  document.getElementById("faQV").textContent = Q;
+  document.getElementById("faDV").textContent = disc.toFixed(1) + "%";
+  const raw = FA.A - FA.B * Q;
+  const i = Math.max(iorb, Math.min(disc, raw));      // 地板/天花板只截断
+  const M = Math.max(0, (8 - i) / FA.MD);
+  // 储备需求：顶端压平在 disc，之后沿斜线；底端被 IORB 托住
+  let pts = [];
+  const qStar = (FA.A - disc) / FA.B;
+  pts.push(faXA(0).toFixed(1) + "," + faY(disc).toFixed(1));
+  for (let q = Math.max(0, qStar); q <= 140; q += 2) {
+    const r = FA.A - FA.B * q;
+    if (r < iorb) { pts.push(faXA(q).toFixed(1) + "," + faY(iorb).toFixed(1)); break; }
+    pts.push(faXA(q).toFixed(1) + "," + faY(r).toFixed(1));
+  }
+  pts.push(faXA(140).toFixed(1) + "," + faY(Math.max(iorb, Math.min(disc, FA.A - FA.B * 140))).toFixed(1));
+  document.getElementById("faD").setAttribute("points", pts.join(" "));
+  document.getElementById("faCeil").setAttribute("y1", faY(disc));
+  document.getElementById("faCeil").setAttribute("y2", faY(disc));
+  document.getElementById("faCeilT").setAttribute("y", faY(disc) - 8);
+  document.getElementById("faCeilT").textContent = "discount " + disc.toFixed(1) + "%";
+  document.getElementById("faFloor").setAttribute("y1", faY(iorb));
+  document.getElementById("faFloor").setAttribute("y2", faY(iorb));
+  document.getElementById("faFloorT").setAttribute("y", faY(iorb) - 8);
+  document.getElementById("faFloorT").textContent = "IORB " + iorb.toFixed(2) + "% \u2014 floor";
+  document.getElementById("faS").setAttribute("x1", faXA(Q));
+  document.getElementById("faS").setAttribute("x2", faXA(Q));
+  document.getElementById("faST").setAttribute("x", faXA(Q) + 8);
+  document.getElementById("faDot").setAttribute("cx", faXA(Q));
+  document.getElementById("faDot").setAttribute("cy", faY(i));
+  document.getElementById("faGy").setAttribute("y1", faY(i));
+  document.getElementById("faGy").setAttribute("y2", faY(i));
+  document.getElementById("faGy").setAttribute("x2", faXA(Q));
+  document.getElementById("faMD").setAttribute("points",
+    [0, 8].map(r => faXB((8 - r) / FA.MD).toFixed(1) + "," + faY(r).toFixed(1)).join(" "));
+  document.getElementById("faMS").setAttribute("x1", faXB(M));
+  document.getElementById("faMS").setAttribute("x2", faXB(M));
+  document.getElementById("faDot2").setAttribute("cx", faXB(M));
+  document.getElementById("faDot2").setAttribute("cy", faY(i));
+  document.getElementById("faGy2").setAttribute("y1", faY(i));
+  document.getElementById("faGy2").setAttribute("y2", faY(i));
+  document.getElementById("faGy2").setAttribute("x2", faXB(M));
+  document.getElementById("faNote").innerHTML =
+    "i = <b>" + i.toFixed(2) + "%</b><br>money = <b>$" + Math.round(M) + "bn</b><br><span style=\"color:var(--sub);\">" +
+    (raw < iorb ? "the floor is pricing it" : "the slope is still pricing it") + "</span>";
 }
 
 /* ═══════════ 初始化 ═══════════ */
-dmSlide();
+sgPaint();
+lkDraw(); lkTicks();
+faDraw();
 try{
   const hashInit = parseInt(location.hash.slice(1)||"0",10);
   if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
