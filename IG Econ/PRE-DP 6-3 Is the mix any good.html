@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 2-10a (3) - Is the mix any good</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:21px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(20px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(20px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:20px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(20px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(20px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(20px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(20px,1.35vw,20px);}
+.zone .zt{width:100%;font-size:clamp(20px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:20px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:20px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:20px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:20px;}
+.chip.small{font-size:20px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(20px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:20px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+.slide .content{justify-content:center !important;}
+.note p, .qfb, .sub, .txt p, .band, .lead{font-size:clamp(21px,1.95vw,24px) !important;
+  line-height:1.42;}
+.band{width:100%;border-radius:12px;padding:10px 22px;background:#14304d;color:#fff;
+  font-weight:700;text-align:center;}
+.steps{width:100%;display:flex;flex-direction:column;gap:10px;}
+.steps .st{display:grid;grid-template-columns:54px 1fr;gap:12px;align-items:start;}
+.steps .n{width:54px;height:54px;border-radius:50%;background:#EAF4FF;color:#12507e;
+  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;}
+.steps .st.alt .n{background:#F2FAF4;color:#1d5c37;}
+.steps h4{font-size:clamp(21px,1.95vw,24px);color:#2E4A6B;margin-bottom:1px;}
+.steps p{font-size:clamp(20px,1.85vw,22px);color:#4a5b6b;line-height:1.35;}
+.defbox{width:100%;border-radius:12px;border:3px solid #C62828;background:#FEF6F5;
+  padding:10px 16px;}
+.defbox b.k{color:#8c2a22;}
+.defbox p{font-size:clamp(20px,1.9vw,23px);line-height:1.42;color:#3d2f2d;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0;width:100%;flex:1;min-height:0;}
+.two .side{padding:0 24px 0 0;}
+.two .side + .side{padding:0 0 0 24px;border-left:2px solid #e2ecf6;}
+.two h3{font-size:clamp(22px,2.1vw,26px);margin-bottom:6px;}
+.two .side.f h3{color:#1d5c37;} .two .side.a h3{color:#8c2a22;}
+.two li{font-size:clamp(20px,1.85vw,22px);line-height:1.4;color:#3d4d5c;margin-bottom:8px;
+  list-style:none;padding-left:20px;position:relative;}
+.two li:before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;
+  background:#2E7D32;}
+.two .side.a li:before{background:#C62828;}
+.content{justify-content:center;}
+.zoomable.zoom{position:fixed;inset:0;margin:auto;max-height:94vh;max-width:94vw;width:auto;height:auto;z-index:10000;background:#fff;padding:12px;border-radius:10px;box-shadow:0 0 0 100vmax rgba(8,20,32,.9);cursor:zoom-out;}
+.flip{perspective:1200px;cursor:pointer;height:100%;min-height:300px;}
+.flip .inner{position:relative;width:100%;height:100%;transition:transform .65s ease;
+  transform-style:preserve-3d;}
+.flip.on .inner{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;
+  background:#fff;border:2px solid #e2ecf6;}
+.flip .face.back{transform:rotateY(180deg);}
+.flip .hint{position:absolute;right:10px;bottom:8px;font-size:20px;color:#9aa8b6;}
+.scale-wrap{position:relative;width:100%;}
+.pans{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:-6px;}
+.pan{border-radius:12px;padding:10px 14px;transition:opacity .4s;}
+.pan.cost{background:#FEF6F5;border:3px solid #C62828;}
+.pan.ben{background:#F2FAF4;border:3px solid #2E7D32;}
+.pan h4{font-size:20px;margin-bottom:4px;}
+.pan.cost h4{color:#8c2a22;} .pan.ben h4{color:#1d5c37;}
+.pan li{font-size:clamp(20px,1.65vw,20px);line-height:1.32;color:#3d4d5c;
+  list-style:none;padding-left:14px;position:relative;margin-bottom:4px;}
+.pan li:before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;
+  border-radius:50%;background:currentColor;opacity:.5;}
+.pans .pan ul{opacity:0;transition:opacity .35s;}
+.pans.show .pan ul{opacity:1;}
+.content > .band:first-child{margin-top:0;}
+.em{color:#12507e;font-weight:800;}
+.num{font-size:clamp(30px,3vw,40px);font-weight:900;color:#1E88E5;line-height:1;}
+.num small{font-size:20px;font-weight:700;color:#7b8b9b;display:block;margin-top:2px;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 2: The allocation of resources</div><h1>Is the mix any good?</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div style="position:absolute;bottom:110px;left:0;right:0;text-align:center;font-size:20px;color:#94a3b3">Lesson 3 of 3 · what can go wrong, and how to weigh it up</div><div class="botbar"></div></div><div class="slide "><div class="content"><div style="font-size:18px;letter-spacing:.12em;color:#1E88E5;font-weight:800">LESSON 3 OF 3</div><h1 style="margin-top:2px">Eight instruments, one question</h1><div class="sub">Nothing new is added today. The toolkit is complete — we only ask whether it works.</div><div style="display:grid;grid-template-columns:1.25fr 1fr;gap:26px;flex:1;min-height:0;margin-top:10px;align-items:center"><div><div style="display:flex;flex-wrap:wrap;gap:8px"><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Tax</span><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Subsidy</span><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Regulation</span><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Quota</span><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Max / min price</span><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Direct provision</span><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Information</span><span style="display:inline-block;background:#F4F7FA;border:2px solid #dbe5ee;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#2E4A6B">Competition policy</span><span style="display:inline-block;background:#FDF9EC;border:2px solid #C9A227;border-radius:999px;padding:6px 16px;font-size:19px;font-weight:700;color:#8a6b12">Tradeable permits</span></div><p class="lead" style="margin-top:16px">Each one can correct a market failure. Each one can also make things worse. <b>Which happens depends on information, incentives and execution — not on good intentions.</b></p></div><div style="border-left:3px solid #e2ecf6;padding-left:20px"><div style="font-size:17px;color:#7b8b9b;font-weight:700;letter-spacing:.1em">WHAT THIS LESSON DOES</div><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px"><div style="font-size:18px;line-height:1.35;color:#5b6b7b"><b style="font-size:20px;color:#12507e">1 · Government failure</b><br>when the cure is worse</div><div style="font-size:18px;line-height:1.35;color:#5b6b7b"><b style="font-size:20px;color:#12507e">2 · Two cities</b><br>the same policy, two outcomes</div><div style="font-size:18px;line-height:1.35;color:#5b6b7b"><b style="font-size:20px;color:#12507e">3 · The balance sheet</b><br>what the mix adds, what it costs</div><div style="font-size:18px;line-height:1.35;color:#5b6b7b"><b style="font-size:20px;color:#12507e">4 · Weighing it up</b><br>cost against benefit, then the last instrument</div></div></div></div><div class="band" style="margin-top:10px">The last pill — permits — is saved for the end, because it is the one instrument that <b>creates a market</b> instead of replacing one</div></div></div><div class="slide "><div class="content"><h1>Government failure</h1><div class="defbox" style="margin-top:4px"><p><b class="k">Government failure</b> — an intervention leads to a <b>worse allocation of resources</b> than the market would have produced on its own: the cure becomes part of the disease.</p></div><div class="row mt" style="gap:12px;align-items:stretch;flex:1;min-height:0;margin-top:10px"><div class="card" style="flex:1"><h3>Information</h3><p>The regulator knows less about cost than the firm does.</p></div><div class="card t" style="flex:1"><h3>Incentives</h3><p>No rival, no need to cut cost or improve.</p></div><div class="card a" style="flex:1"><h3>Politics</h3><p>Elections and lobbies outrank returns.</p></div><div class="card" style="flex:1"><h3>Execution</h3><p>Rules cost money to police, and can be captured.</p></div></div><div class="band" style="margin-top:10px">Two pages now: one where the state got it right, one where it got it wrong</div></div></div><div class="slide "><div class="content"><h1>When the state bets well: Hefei</h1><div class="sub">A city that bought into industries before they were popular.</div><div style="display:grid;grid-template-columns:1.05fr 1fr;gap:20px;flex:1;min-height:0;margin-top:2px"><div class="steps" style="justify-content:center"><div class="st"><div class="n">2008</div><div><h4>Displays · BOE</h4><p>City backing built a generation-6 LCD line when panel makers were losing money. Hefei now makes a large share of the world’s screens.</p></div></div><div class="st alt"><div class="n">2016</div><div><h4>Memory · CXMT</h4><p>ChangXin Memory was founded with local capital — China’s first serious DRAM maker.</p></div></div><div class="st"><div class="n">2020</div><div><h4>Cars · NIO</h4><p>A stake in a carmaker close to collapse; the stake multiplied and the supply chain followed.</p></div></div><div class="st alt"><div class="n">Why</div><div><h4>Bought, not subsidised</h4><p>Each bet bought equity and a chain. Money bought <b>capacity</b>.</p></div></div></div><div class="flip" style="height:100%;align-self:stretch"><div class="inner"><div class="face" style="padding:10px;justify-content:flex-start"><div style="width:100%;height:100%;display:grid;grid-template-rows:repeat(3,1fr);gap:10px;padding-bottom:18px"><div style="background:#fff;border:2px solid #eef3f8;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden"><img src="images/cp/hero_boe.png" alt="" style="width:100%;height:100%;object-fit:contain"></div><div style="background:#fff;border:2px solid #eef3f8;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="images/cp/hero_cxmt.png" alt="" style="width:100%;height:100%;object-fit:contain"></div><div style="background:#fff;border:2px solid #eef3f8;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden"><img src="images/cp/hero_nio.png" alt="" style="width:100%;height:100%;object-fit:contain"></div></div><div class="hint">click to see where</div></div><div class="face back" style="padding:10px"><img src="images/cp/hefei_map.jpg" alt="" style="height:100%;width:auto;max-width:100%;object-fit:contain"><div class="hint">click to go back</div></div></div></div></div></div></div><div class="slide "><div class="content"><h1>When the state bets badly</h1><div class="sub">The same playbook, copied by cities with no chain and industries with no buyers.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;min-height:0"><img src="images/cp/solar_fence.jpg" alt="" style="flex:1;width:100%;min-height:0;object-fit:contain;background:#fff;border-radius:10px"><div style="border-left:6px solid #C62828;padding-left:12px;margin-top:8px"><p style="font-size:clamp(18px,1.75vw,21px);line-height:1.35;color:#3d4d5c"><b style="color:#8c2a22">Too much of a good thing.</b> Capacity reached twice world demand, prices halved, the largest makers lost money. When panels become fencing, the subsidy bought capacity nobody needed.</p></div></div><div style="display:flex;flex-direction:column;min-height:0"><img src="images/cp/shuisi.jpg" alt="" style="flex:1;width:100%;min-height:0;object-fit:contain;background:#fff;border-radius:10px"><div style="border-left:6px solid #C62828;padding-left:12px;margin-top:8px"><p style="font-size:clamp(18px,1.75vw,21px);line-height:1.35;color:#3d4d5c"><b style="color:#8c2a22">A building nobody visits.</b> A poor county borrowed heavily to raise a landmark in a valley with no visitors. Debt taken on for a return that never existed.</p></div></div></div></div></div><div class="slide "><div class="content"><div style="position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden"><img src="images/cp/shuisi.jpg" alt="" style="width:100%;height:100%;object-fit:cover;filter:saturate(.9)"><div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,20,32,.9) 0%,rgba(8,20,32,.62) 48%,rgba(8,20,32,.05) 100%)"></div><div style="position:absolute;left:52px;top:50%;transform:translateY(-50%);max-width:560px;color:#fff"><div style="font-size:21px;letter-spacing:.14em;opacity:.75">GUIZHOU · SHUISI COUNTY</div><h1 style="color:#fff;font-size:clamp(30px,3.1vw,42px);line-height:1.24;margin:12px 0 6px">This building is called<br>水司楼.</h1><p style="font-size:21px;line-height:1.45;opacity:.92;margin-bottom:14px">A tower of timber and concrete in a poor valley, built on borrowed money.</p><div style="display:flex;gap:30px"><div><div style="font-size:34px;font-weight:900;color:#ffb4a8">¥40 bn</div><div style="font-size:17px;opacity:.8">county debt</div></div><div><div style="font-size:34px;font-weight:900;color:#ffb4a8">~40 yrs</div><div style="font-size:17px;opacity:.8">of fiscal revenue</div></div><div><div style="font-size:34px;font-weight:900;color:#ffb4a8">¥108k</div><div style="font-size:17px;opacity:.8">debt per person</div></div></div><p style="font-size:18px;opacity:.75;margin-top:10px">Interest alone runs at roughly ¥4 bn a year — about ¥10,000 for every resident, before a single classroom is paid for.</p></div></div></div></div><div class="slide "><div class="content"><h1>The balance sheet</h1><div class="sub">Every argument on the left has a matching cost on the right.</div><div class="two mt" style="margin-top:6px"><div class="side f"><h3>What the mix adds</h3><ul style="padding:0;margin:0"><li><b>Public and merit goods.</b> No firm would supply defence to everyone.</li><li><b>External costs are curbed.</b> The polluter pays, so less is produced.</li><li><b>Equality.</b> Taxes and benefits reach those the market left out.</li><li><b>Choice survives.</b> Most goods are still made by competing private firms.</li><li><b>Stability.</b> Spending holds demand up in a slump.</li></ul></div><div class="side a"><h3>What it costs</h3><ul style="padding:0;margin:0"><li><b>Government failure.</b> The cure can waste more than the disease.</li><li><b>Higher taxes.</b> Every service is paid for, and taxes weaken incentives.</li><li><b>Bureaucracy.</b> No profit test, no rival, no pressure to improve.</li><li><b>Less innovation.</b> Regulation lowers the reward for risk.</li><li><b>Enforcement.</b> Rules cost money to police and can be captured.</li></ul></div></div><div class="band" style="margin-top:8px">So the exam question is never “is the state good?” — it is <b>which intervention, here, at what cost</b></div></div></div><div class="slide "><div class="content"><h1>Evaluating = weighing cost against benefit</h1><div class="sub">Not “is the state good?” but “is this worth what it costs?”</div><div style="display:grid;grid-template-columns:1fr 1.05fr;gap:22px;flex:1;min-height:0;align-items:center"><div style="display:flex;align-items:center;justify-content:center;min-width:0"><svg viewBox="0 0 380 260" style="width:100%"><line x1="40" y1="60" x2="340" y2="84" stroke="#2E4A6B" stroke-width="6" stroke-linecap="round"/><polygon points="190,72 172,150 208,150" fill="#8a99a8"/><rect x="150" y="150" width="80" height="14" rx="6" fill="#8a99a8"/><line x1="70" y1="62" x2="70" y2="112" stroke="#8a99a8" stroke-width="2"/><path d="M28 112 h84 l-12 46 h-60 z" fill="#FEF6F5" stroke="#C62828" stroke-width="3"/><text x="70" y="142" text-anchor="middle" font-size="18" fill="#8c2a22" font-weight="700">cost</text><line x1="310" y1="80" x2="310" y2="118" stroke="#8a99a8" stroke-width="2"/><path d="M268 118 h84 l-12 46 h-60 z" fill="#F2FAF4" stroke="#2E7D32" stroke-width="3"/><text x="310" y="148" text-anchor="middle" font-size="18" fill="#1d5c37" font-weight="700">benefit</text><text x="190" y="200" text-anchor="middle" font-size="17" fill="#5b6b7b">if this pan is heavier, do it</text><text x="190" y="228" text-anchor="middle" font-size="15" fill="#7b8b9b">and only while it stays heavier</text></svg></div><div style="display:flex;flex-direction:column;justify-content:center;gap:8px"><p class="lead"><b>1 · Name the failure</b> — what is being corrected, and how.</p><p class="lead"><b>2 · List the cost</b> — money, administration, and the opportunity cost.</p><p class="lead"><b>3 · List the benefit</b> — health, output, time, and who receives it.</p><p class="lead"><b>4 · Compare, then conclude</b> — “worth it <b>if</b>…”, naming the condition.</p><p class="qfb" style="margin-top:2px">Cost-benefit analysis is this comparison written down.</p></div></div></div></div><div class="slide "><div class="content"><h1>Cost-benefit in practice: coal-to-gas in rural Hebei</h1><div class="sub">Ask the class first: what is gained, what is paid? Then weigh it.</div><div style="display:grid;grid-template-columns:330px 1fr;gap:22px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;justify-content:center"><img src="images/cp/gas_hebei.png" alt="" style="width:100%;max-height:392px;object-fit:contain;border-radius:10px;box-shadow:0 4px 14px rgba(20,48,77,.16)"><div style="font-size:18px;color:#8a99a8;margin-top:6px">Gas meters on a village wall, Hebei.</div></div><div style="display:flex;flex-direction:column;justify-content:center"><svg viewBox="0 0 520 72" style="width:100%"><line x1="46" y1="26" x2="474" y2="40" stroke="#2E4A6B" stroke-width="7" stroke-linecap="round"/><polygon points="260,34 240,70 280,70" fill="#8a99a8"/><line x1="86" y1="28" x2="86" y2="52" stroke="#C62828" stroke-width="3"/><line x1="434" y1="40" x2="434" y2="60" stroke="#2E7D32" stroke-width="3"/></svg><div class="pans" id="pans"><div class="pan cost"><h4>COST</h4><ul style="padding:0;margin:0"><li>Gas costs more than coal</li><li>Pipes and meters to be paid for</li><li>Cold snap, short supply: homes go cold</li></ul></div><div class="pan ben"><h4>BENEFIT</h4><ul style="padding:0;margin:0"><li>Cleaner air, less smoke</li><li>Fewer chest and heart illnesses</li><li>A city visitors want to come to</li></ul></div></div><div class="row" style="gap:14px;margin-top:12px;align-items:center"><button class="big-btn" id="revealBtn" style="min-width:250px;font-size:19px">Show the two pans</button><p class="lead" style="margin:0;color:#14304d">Worth it <b>if</b> the health gain is large and the gas supply holds — it can lose on both counts.</p></div></div></div></div></div><div class="slide "><div class="content"><h1>Two ways to cap a quantity</h1><div class="sub">Both fix <b>how much</b> is allowed. Only one lets the right to do it be bought and sold.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px"><div style="border:3px solid #C62828;border-radius:12px;background:#FEF6F5;padding:16px 20px"><div style="font-size:23px;font-weight:900;color:#8c2a22">QUOTA</div><p style="font-size:25px;line-height:1.45;color:#3d4d5c;margin-top:4px">A limit set by the government on the <b>quantity</b> of a product that can be supplied, extracted or imported.</p></div><div style="border:3px solid #2E7D32;border-radius:12px;background:#F2FAF4;padding:16px 20px"><div style="font-size:23px;font-weight:900;color:#1d5c37">TRADEABLE PERMIT</div><p style="font-size:25px;line-height:1.45;color:#3d4d5c;margin-top:4px">A permit allowing a firm to emit up to a stated amount, which firms may <b>buy and sell</b>; the permits issued add up to a <b>cap</b>.</p></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:30px"><div style="border-top:5px solid #8a99a8;padding-top:10px"><div style="font-size:23px;font-weight:800;color:#2E4A6B">Resource extraction</div><p style="font-size:22px;color:#5b6b7b;margin-top:6px">rare earths · fish · timber</p></div><div style="border-top:5px solid #8a99a8;padding-top:10px"><div style="font-size:23px;font-weight:800;color:#2E4A6B">Pollution</div><p style="font-size:22px;color:#5b6b7b;margin-top:6px">SO₂ · waste water · industrial emissions</p></div><div style="border-top:5px solid #1E88E5;padding-top:10px"><div style="font-size:23px;font-weight:800;color:#2E4A6B">Carbon</div><p style="font-size:22px;color:#5b6b7b;margin-top:6px">EU ETS 2005 · China’s national market 2021</p></div></div><div class="band" style="margin-top:22px">Quota = a number nobody may exceed. Permit = the same number, <b>plus a market that moves it to the cheapest user</b></div></div></div><div class="slide "><div class="content"><h1>Two firms, one cap</h1><div class="sub">The cap is shared out. Then the two firms discover they are not equally good at cutting.</div><div style="display:grid;grid-template-columns:1fr 220px 1fr;gap:14px;flex:1;min-height:0;align-items:center;margin-top:6px"><div style="border:3px solid #2E7D32;border-radius:14px;background:#F2FAF4;padding:22px"><div style="font-size:24px;font-weight:900;color:#1d5c37">FIRM A</div><p style="font-size:23px;line-height:1.4;color:#3d4d5c;margin-top:6px">can cut a tonne for <b>€20</b></p><div style="margin-top:10px;font-size:23px;color:#3d4d5c">permits held: <b>100 t</b></div><div style="margin-top:10px;background:#fff;border-radius:8px;padding:8px 12px;font-size:22px;color:#1d5c37">cuts 200 t — and sells 100</div></div><div style="text-align:center"><svg viewBox="0 0 220 120" style="width:100%"><path d="M10 40 H210" stroke="#1E88E5" stroke-width="4" marker-end="url(#a)"/><text x="110" y="30" text-anchor="middle" font-size="17" fill="#12507e">sells 100 permits</text><path d="M210 86 H10" stroke="#C62828" stroke-width="4" marker-end="url(#b)"/><text x="110" y="108" text-anchor="middle" font-size="17" fill="#8c2a22">pays €50 each</text><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1E88E5"/></marker><marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#C62828"/></marker></defs></svg><div style="font-size:17px;color:#7b8b9b;margin-top:4px">the permit price does the bargaining</div></div><div style="border:3px solid #C62828;border-radius:14px;background:#FEF6F5;padding:22px"><div style="font-size:24px;font-weight:900;color:#8c2a22">FIRM B</div><p style="font-size:23px;line-height:1.4;color:#3d4d5c;margin-top:6px">can cut a tonne for <b>€90</b></p><div style="margin-top:10px;font-size:23px;color:#3d4d5c">permits held: <b>100 t</b></div><div style="margin-top:10px;background:#fff;border-radius:8px;padding:8px 12px;font-size:22px;color:#8c2a22">cuts 0 — and buys 100</div></div></div><div class="band" style="margin-top:10px">Total cut is the same — but it happened where it cost <b>€20</b>, not €90</div></div></div><div class="slide "><div class="content"><h1>What a permit is worth</h1><div class="sub">The price is the whole policy: it tells every firm, without a regulator visiting, how much its pollution costs.</div><div style="display:grid;grid-template-columns:1.5fr 1fr;gap:22px;flex:1;min-height:0;align-items:center;margin-top:2px"><svg viewBox="0 0 430 260" style="width:100%"><line x1="46" y1="214" x2="404" y2="214" stroke="#333" stroke-width="2"/><line x1="46" y1="214" x2="46" y2="18" stroke="#333" stroke-width="2"/><text x="40" y="22" text-anchor="end" font-size="14" fill="#333" font-weight="700">€</text><text x="400" y="234" text-anchor="end" font-size="14" fill="#333">year</text><polyline points="62,206 110,196 158,192 206,150 254,86 302,74 350,110" fill="none" stroke="#1E88E5" stroke-width="4"/><circle cx="62" cy="206" r="4" fill="#1E88E5"/><circle cx="110" cy="196" r="4" fill="#1E88E5"/><circle cx="158" cy="192" r="4" fill="#1E88E5"/><circle cx="206" cy="150" r="4" fill="#1E88E5"/><circle cx="254" cy="86" r="4" fill="#1E88E5"/><circle cx="302" cy="74" r="4" fill="#1E88E5"/><circle cx="350" cy="110" r="4" fill="#1E88E5"/><text x="62" y="230" text-anchor="middle" font-size="13" fill="#5b6b7b">2018</text><text x="158" y="230" text-anchor="middle" font-size="13" fill="#5b6b7b">2020</text><text x="254" y="230" text-anchor="middle" font-size="13" fill="#5b6b7b">2022</text><text x="350" y="230" text-anchor="middle" font-size="13" fill="#5b6b7b">2024</text><text x="58" y="196" text-anchor="end" font-size="13" fill="#7b8b9b">15</text><text x="58" y="86" text-anchor="end" font-size="13" fill="#7b8b9b">85</text><text x="304" y="62" text-anchor="middle" font-size="13" fill="#1E88E5" font-weight="700">~ €85</text></svg><div style="display:flex;flex-direction:column;justify-content:center;gap:9px"><p class="lead"><b>EU allowance, € a tonne:</b> about 15 in 2018, near 85 at the 2022–23 peak, around 65 today.</p><p class="lead"><b>China’s national market</b> trades far lower — roughly ¥70–100 a tonne — which is why economists argue the cap is still loose.</p><p class="lead" style="color:#8a6b12"><b>Read the line, not the words:</b> when the price rises, every firm re-checks whether polluting is still cheaper than cleaning up.</p></div></div><div class="band" style="margin-top:6px">A cap nobody trades is just a rule; a cap with a price becomes a decision every firm makes for itself</div></div></div><div class="slide "><div class="content"><h1>Say it back</h1><div class="sub">Five blanks — and the words that carry the marks are in colour.</div><div class="txt" style="margin-top:4px;line-height:1.8"><p><b class="db">1.</b> <span class="em">Government failure</span> means an intervention gives a <span class="bl" data-a="worse allocation"></span> than the market would have produced.</p><p><b class="db">2.</b> Its sources are <span class="em">information</span>, <span class="em">incentives</span>, <span class="em">politics</span> and <span class="bl" data-a="execution"></span>.</p><p><b class="db">3.</b> For the mix: <span class="em">public and merit goods</span>, less <span class="em">external cost</span>, more <span class="em">equality</span>, more <span class="bl" data-a="stability"></span>.</p><p><b class="db">4.</b> Against: <span class="em">government failure</span>, higher <span class="bl" data-a="taxes"></span>, <span class="em">bureaucracy</span> and less innovation.</p><p><b class="db">5.</b> Evaluating means comparing the <span class="em">benefit</span> of a policy with its <span class="bl" data-a="cost"></span>.</p></div><div class="row" style="gap:12px;margin-top:22px;align-items:center"><button class="big-btn" id="blBtn" onclick="revealNext()" style="min-width:180px">Next ▶</button><button class="big-btn ghost" onclick="resetBlanks()">Reset</button><div class="qfb" style="margin:0">End of Section 2.</div></div></div></div><div class="slide "><div class="content"><div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center"><h1 style="font-size:clamp(38px,4.2vw,56px)">Thank you</h1><div style="font-size:26px;color:#5b6b7b;margin-top:12px">Any questions?</div><div style="width:120px;height:5px;background:#1E88E5;border-radius:3px;margin:26px 0"></div><div style="font-size:24px;color:#2E4A6B">Next · <b>Revision of Section 2</b> — market failure and the mixed economy</div></div></div></div>
+</div>
+<div class="nav" style="position:fixed;z-index:9999;pointer-events:auto"><button id="prevBtn" onclick="go(CUR-1)">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy" style="margin-right:14px">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 14</span><button id="nextBtn" onclick="go(CUR+1)">▶</button></div></div>
+<script>
+var SL = [], CUR = 0;
+function go(i){
+  if(!SL.length){ SL = Array.prototype.slice.call(document.querySelectorAll('.slide')); }
+  if(i < 0 || i >= SL.length) return;
+  SL[CUR].classList.remove('active');
+  CUR = i;
+  SL[CUR].classList.add('active');
+  var d = document.getElementById('dots').children;
+  for(var k = 0; k < d.length; k++) d[k].className = (k === CUR ? 'on' : '');
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SL.length;
+}
+function initDeck(){
+  SL = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SL.forEach(function(_, i){
+    var sp = document.createElement('span');
+    sp.className = (i === 0 ? 'on' : '');
+    sp.onclick = function(){ go(i); };
+    dots.appendChild(sp);
+  });
+  var q = location.search.replace('?', '').split('&'), want = 0;
+  for(var i = 0; i < q.length; i++){
+    var kv = q[i].split('=');
+    if(kv[0] === 's' && kv[1]) want = parseInt(kv[1], 10) || 0;
+  }
+  go(want);
+  var pb = document.getElementById('prevBtn'), nb = document.getElementById('nextBtn');
+  if(pb) pb.onclick = function(){ go(CUR - 1); };
+  if(nb) nb.onclick = function(){ go(CUR + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight') go(CUR + 1);
+    if(e.key === 'ArrowLeft') go(CUR - 1);
+    if(e.key === 'Escape'){ var z = document.querySelector('.zoomable.zoom'); if(z) z.classList.remove('zoom'); }
+  });
+}
+window.addEventListener('DOMContentLoaded', function(){
+  initDeck();
+  document.querySelectorAll('.zoomable').forEach(function(img){
+    img.addEventListener('click', function(){ img.classList.toggle('zoom'); });
+  });
+  document.querySelectorAll('.flip').forEach(function(f){
+    f.addEventListener('click', function(){ f.classList.toggle('on'); });
+  });
+  var btn = document.getElementById('revealBtn');
+  if(btn) btn.addEventListener('click', function(){
+    var p = document.getElementById('pans');
+    p.classList.toggle('show');
+    btn.textContent = p.classList.contains('show') ? 'Hide them again' : 'Show the two pans';
+  });
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 2-10a (1) - Mixed economic systems</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:21px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(20px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(20px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:20px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(20px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(20px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(20px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(20px,1.35vw,20px);}
+.zone .zt{width:100%;font-size:clamp(20px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:20px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:20px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:20px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:20px;}
+.chip.small{font-size:20px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(20px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:20px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+.note p, .qfb, .sub, .txt p, .band, .lead{font-size:clamp(22px,2vw,24px) !important;
+  line-height:1.45;}
+.band{width:100%;border-radius:12px;padding:11px 22px;background:#14304d;color:#fff;
+  font-weight:700;text-align:center;}
+.quote{width:100%;border-left:10px solid #8C2A22;background:#FBF3F1;border-radius:12px;
+  padding:18px 24px;box-sizing:border-box;}
+.quote p{font-size:clamp(26px,2.5vw,34px);line-height:1.35;color:#3a2a26;font-style:italic;}
+.quote .who{font-size:21px;color:#8a7a75;font-style:normal;margin-top:10px;}
+.duo{display:grid;grid-template-columns:1fr 1fr;width:100%;flex:1;min-height:0;}
+.duo .col{padding:0 26px 0 0;min-width:0;}
+.duo .col + .col{padding:0 0 0 26px;border-left:2px solid #e2ecf6;}
+.duo h3{font-size:clamp(23px,2.2vw,28px);margin:8px 0 6px;}
+.duo .col.a h3{color:#12507e;} .duo .col.b h3{color:#1d5c37;}
+.duo p{font-size:clamp(21px,1.95vw,24px);line-height:1.5;color:#3d4d5c;margin-bottom:8px;}
+.duo .def{color:#15334f;}
+.duo .bigdef{font-size:clamp(26px,2.5vw,32px);line-height:1.3;font-weight:800;color:#12507e;margin:2px 0 6px;}
+.duo .col.b .bigdef{color:#1d5c37;}
+.steps{width:100%;display:flex;flex-direction:column;gap:12px;}
+.steps .st{display:grid;grid-template-columns:58px 1fr;gap:14px;align-items:start;}
+.steps .n{width:58px;height:58px;border-radius:50%;background:#EAF4FF;color:#12507e;
+  display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;}
+.steps .st.alt .n{background:#F2FAF4;color:#1d5c37;}
+.steps h4{font-size:clamp(22px,2vw,25px);color:#2E4A6B;margin-bottom:2px;}
+.steps p{font-size:clamp(20px,1.9vw,23px);color:#4a5b6b;line-height:1.38;}
+.tools{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;
+  gap:12px 24px;width:100%;flex:1;min-height:0;}
+.tools .t{border-top:3px solid #EAF4FF;display:flex;flex-direction:column;gap:3px;padding-top:6px;}
+.tools .t b{font-size:clamp(21px,2vw,24px);color:#12507e;}
+.tools .t span{font-size:clamp(20px,1.85vw,22px);color:#4a5b6b;line-height:1.36;}
+.demo{width:100%;height:100%;border:0;border-radius:12px;background:#fff;display:block;}
+.bigpic{max-height:100%;width:auto;max-width:100%;border-radius:14px;
+  box-shadow:0 6px 22px rgba(20,48,77,.18);}
+.tl-cap{font-size:20px;color:#8a99a8;margin-top:10px;line-height:1.35;}
+.reason{display:inline-block;background:#14304d;color:#fff;border-radius:999px;
+  padding:4px 18px;font-size:20px;font-weight:800;margin-bottom:6px;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 2: The allocation of resources</div><h1>Mixed economic systems</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div style="position:absolute;bottom:110px;left:0;right:0;text-align:center;font-size:20px;color:#94a3b3">Lesson 1 of 2 · from the crisis to the mix</div><div class="botbar"></div></div><div class="slide "><div class="content"><h1>Microeconomics and macroeconomics</h1><div class="sub">Same economy, two questions.</div><div class="duo mt"><div class="col a"><svg viewBox="0 0 300 120" style="width:100%;max-height:118px">
+<line x1="150" y1="18" x2="150" y2="104" stroke="#cfd8e3" stroke-width="3"/>
+<circle cx="86" cy="52" r="14" fill="#1E88E5"/><rect x="72" y="68" width="28" height="30" rx="8"
+ fill="#1E88E5"/>
+<circle cx="214" cy="52" r="14" fill="#2E7D32"/><rect x="200" y="68" width="28" height="30" rx="8"
+ fill="#2E7D32"/>
+<path d="M104 62 H196" stroke="#2E4A6B" stroke-width="3" stroke-dasharray="7 6"/>
+<path d="M124 46 q6 -10 14 0" stroke="#C9A227" stroke-width="3" fill="none"/>
+<text x="150" y="40" text-anchor="middle" font-size="17" fill="#5b6b7b">price</text>
+<text x="86" y="112" text-anchor="middle" font-size="17" fill="#12507e">buyer</text>
+<text x="214" y="112" text-anchor="middle" font-size="17" fill="#1d5c37">seller</text>
+</svg><h3>Microeconomics</h3><p class="bigdef">The study of <u>individual markets</u>.</p><p class="def">One household, one firm, one price: what to buy, what to produce, what to charge.</p></div><div class="col b"><svg viewBox="0 0 300 120" style="width:100%;max-height:118px">
+<rect x="14" y="38" width="86" height="44" rx="8" fill="#EAF4FF" stroke="#1E88E5" stroke-width="2.5"/>
+<text x="57" y="66" text-anchor="middle" font-size="16" fill="#12507e">households</text>
+<rect x="200" y="38" width="86" height="44" rx="8" fill="#F2FAF4" stroke="#2E7D32"
+ stroke-width="2.5"/>
+<text x="243" y="66" text-anchor="middle" font-size="16" fill="#1d5c37">firms</text>
+<path d="M100 50 H196" stroke="#1E88E5" stroke-width="3" marker-end="url(#m1)"/>
+<path d="M200 72 H104" stroke="#2E7D32" stroke-width="3" marker-end="url(#m2)"/>
+<text x="150" y="40" text-anchor="middle" font-size="15" fill="#12507e">spending</text>
+<text x="150" y="92" text-anchor="middle" font-size="15" fill="#1d5c37">income</text>
+<defs><marker id="m1" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="#1E88E5"/></marker>
+<marker id="m2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+<path d="M0,0 L0,6 L8,3 z" fill="#2E7D32"/></marker></defs>
+</svg><h3>Macroeconomics</h3><p class="bigdef">The study of <u>the economy as a whole</u>.</p><p class="def">Total output, total employment, the price level — and what government spending and taxation do to them.</p></div></div><div class="band" style="margin-top:8px">One person&rsquo;s spending is another person&rsquo;s income</div></div></div><div class="slide "><div class="content"><h1>The classical answer: supply creates its own demand</h1><div class="sub">Run it. Nothing should go wrong — that was the claim.</div><div style="flex:1;min-height:0;margin-top:4px"><iframe class="demo" src="assets/demo_say.html"></iframe></div><div class="band" style="margin-top:8px">Say&rsquo;s Law: producing something creates exactly the income to buy it back</div></div></div><div class="slide "><div class="content"><h1>Marx: the circle has an exit</h1><div class="sub">Run it again — this time profit leaves the loop and does not all return.</div><div style="flex:1;min-height:0;margin-top:4px"><iframe class="demo" src="assets/demo_marx.html"></iframe></div><div class="band" style="margin-top:8px">The crisis is not a malfunction — it is the system working as designed</div></div></div><div class="slide "><div class="content"><div style="display:grid;grid-template-columns:280px 1fr;gap:34px;align-items:center;height:100%;width:100%;min-height:0"><div style="text-align:center;min-width:0"><img src="images/mixed/m_p02_1.png" alt="" style="max-height:380px;max-width:100%;border-radius:14px;box-shadow:0 8px 26px rgba(20,48,77,.22)"><div style="font-size:21px;color:#8a99a8;margin-top:10px">Karl Marx &middot; 1818&ndash;1883</div></div><div style="min-width:0"><div class="quote"><p>In this sense, the theory of the Communists may be summed up in the single sentence: abolition of <b style="color:#8C2A22;font-weight:900">private property</b>.</p><div class="who">The Communist Manifesto, 1848</div></div><p class="lead" style="margin-top:22px;color:#5b6b7b">If ownership causes the crisis, the cure is to change who owns.</p></div></div></div></div><div class="slide "><div class="content"><h1>They tried it — and it failed differently</h1><div class="sub">Abolishing private property removed the crisis. It replaced it with something worse.</div><div style="display:grid;grid-template-columns:1.15fr 1fr;gap:26px;flex:1;min-height:0;margin-top:4px"><div style="display:flex;flex-direction:column;justify-content:center"><img class="bigpic" src="images/mixed/m_p07_2.jpg" alt=""><div style="font-size:20px;color:#8a99a8;margin-top:8px">1991: the statues came down before the shortage did.</div></div><div class="steps"><div class="st"><div class="n">1</div><div><h4>No prices, no signal</h4><p>Nothing tells a planner that steel is piling up and shoes are short.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Quotas, not wants</h4><p>Output is counted in tonnes, so tonnes get made — wanted or not.</p></div></div><div class="st"><div class="n">3</div><div><h4>No reward for doing it better</h4><p>No profit, no competition, no reason to improve.</p></div></div><div class="st alt"><div class="n">4</div><div><h4>The result</h4><p>Shortages, queues, waste — and eventually collapse.</p></div></div></div></div></div></div><div class="slide "><div class="content"><h1>Keynes: the circle can be restarted</h1><div class="sub">Same model, one new actor — the government. Watch what the injection does.</div><div style="flex:1;min-height:0;margin-top:4px"><iframe class="demo" src="assets/demo_keynes.html"></iframe></div><div class="band" style="margin-top:8px">Private ownership survives; the public sector is born as a stabiliser</div></div></div><div class="slide "><div class="content"><h1>What Keynes proposed</h1><div class="sub">If the private sector will not spend, the state spends for it — and the circle turns again.</div><div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin-top:2px"><svg viewBox="0 0 880 300" style="width:100%;max-height:100%">
+<rect x="40" y="60" width="190" height="86" rx="12" fill="#EAF4FF" stroke="#1E88E5"
+ stroke-width="3"/>
+<text x="135" y="100" text-anchor="middle" font-size="23" fill="#12507e" font-weight="700">
+Households</text>
+<text x="135" y="128" text-anchor="middle" font-size="19" fill="#5b6b7b">spend / save</text>
+<rect x="650" y="60" width="190" height="86" rx="12" fill="#F2FAF4" stroke="#2E7D32"
+ stroke-width="3"/>
+<text x="745" y="100" text-anchor="middle" font-size="23" fill="#1d5c37" font-weight="700">
+Firms</text>
+<text x="745" y="128" text-anchor="middle" font-size="19" fill="#5b6b7b">produce / pay</text>
+<path d="M230 82 H640" stroke="#1E88E5" stroke-width="4" marker-end="url(#k1)"/>
+<text x="435" y="72" text-anchor="middle" font-size="20" fill="#12507e">spending</text>
+<path d="M650 124 H240" stroke="#2E7D32" stroke-width="4" marker-end="url(#k2)"/>
+<text x="435" y="146" text-anchor="middle" font-size="20" fill="#1d5c37">income</text>
+<rect x="330" y="200" width="220" height="72" rx="12" fill="#14304d"/>
+<text x="440" y="234" text-anchor="middle" font-size="23" fill="#fff" font-weight="700">
+Government</text>
+<text x="440" y="260" text-anchor="middle" font-size="19" fill="#cfe0f2">spends G</text>
+<path d="M400 200 V170 Q400 160 412 160 H560" stroke="#C9A227" stroke-width="4" fill="none"/>
+<path d="M560 160 Q610 160 620 150" stroke="#C9A227" stroke-width="4" fill="none"
+ marker-end="url(#k3)"/>
+<text x="300" y="196" font-size="20" fill="#8a6b12">injection</text>
+<path d="M135 60 V30" stroke="#C62828" stroke-width="4" marker-end="url(#k4)"/>
+<text x="152" y="34" font-size="19" fill="#8c2a22">saving (leak)</text>
+<defs>
+<marker id="k1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L9,3 z" fill="#1E88E5"/></marker>
+<marker id="k2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L9,3 z" fill="#2E7D32"/></marker>
+<marker id="k3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L9,3 z" fill="#C9A227"/></marker>
+<marker id="k4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L9,3 z" fill="#C62828"/></marker>
+</defs></svg></div><div class="note" style="margin-top:6px"><p>Borrow if you must: a deficit is spending today that a growing economy pays back tomorrow. And do not wait for wages to fall — &ldquo;in the long run we are all dead.&rdquo;</p></div></div></div><div class="slide "><div class="content"><h1>Two roads out of the plan</h1><div class="sub">China was not the only one — from the mid-1980s, planned economies let prices and private firms back in.</div><div style="display:grid;grid-template-columns:1.05fr 1fr;gap:26px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;justify-content:center;min-width:0"><svg viewBox="0 0 620 200" style="width:100%">
+<line x1="30" y1="100" x2="595" y2="100" stroke="#cfd8e3" stroke-width="4"/>
+<circle cx="80" cy="100" r="9" fill="#1E88E5"/>
+<text x="80" y="74" text-anchor="middle" font-size="21" font-weight="700" fill="#12507e">1979</text>
+<text x="80" y="134" text-anchor="middle" font-size="19" fill="#4a5b6b">China</text>
+<text x="80" y="160" text-anchor="middle" font-size="17" fill="#7b8b9b">household responsibility</text>
+<circle cx="240" cy="100" r="9" fill="#1E88E5"/>
+<text x="240" y="74" text-anchor="middle" font-size="21" font-weight="700" fill="#12507e">1986</text>
+<text x="240" y="134" text-anchor="middle" font-size="19" fill="#4a5b6b">Vietnam</text>
+<text x="240" y="160" text-anchor="middle" font-size="17" fill="#7b8b9b">Doi Moi</text>
+<circle cx="400" cy="100" r="9" fill="#1E88E5"/>
+<text x="400" y="74" text-anchor="middle" font-size="21" font-weight="700" fill="#12507e">1989-91</text>
+<text x="400" y="134" text-anchor="middle" font-size="19" fill="#4a5b6b">Eastern Europe</text>
+<text x="400" y="160" text-anchor="middle" font-size="17" fill="#7b8b9b">the wall falls</text>
+<circle cx="550" cy="100" r="9" fill="#1E88E5"/>
+<text x="550" y="74" text-anchor="middle" font-size="21" font-weight="700" fill="#12507e">1991</text>
+<text x="550" y="134" text-anchor="middle" font-size="19" fill="#4a5b6b">India</text>
+<text x="550" y="160" text-anchor="middle" font-size="17" fill="#7b8b9b">licences end</text>
+</svg><img src="images/mixed/m_p07_1.png" alt="" style="max-height:118px;margin-top:12px;border-radius:10px;box-shadow:0 4px 14px rgba(20,48,77,.14)"><div style="font-size:19px;color:#8a99a8;margin-top:8px;line-height:1.3">1979, and the slogan that carried it: keep the line for a hundred years.</div></div><div class="steps"><div class="st"><div class="n">1</div><div><h4>Let prices work</h4><p>Vietnam’s Doi Moi (1986) ended collective farming and let farmers sell at market prices.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Allow private firms</h4><p>India’s 1991 reform dismantled the licence system that told firms what they could produce.</p></div></div><div class="st"><div class="n">3</div><div><h4>Open to trade</h4><p>Poland freed prices in 1990 and privatised state industry; Eastern Europe moved in months.</p></div></div><div class="st alt"><div class="n">4</div><div><h4>But not wholesale</h4><p>The state kept schools, health and the utilities — which is what made the result <b>mixed</b>.</p></div></div></div></div></div></div><div class="slide "><div class="content"><h1>And the other road: the West built a welfare state</h1><div class="sub">The same decades, the opposite direction — market economies adding a public sector.</div><div style="display:grid;grid-template-columns:1fr 1.25fr;gap:24px;flex:1;min-height:0;margin-top:4px"><div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px"><img class="bigpic" src="images/mixed/m_p06_3.png" alt="" style="max-height:330px"><div style="font-size:20px;color:#8a99a8">The New Deal, 1933 · and the European poster tradition it fed</div></div><div class="steps"><div class="st"><div class="n">1</div><div><h4>United States · 1933</h4><p>Roosevelt’s New Deal: public works, bank regulation, and social insurance in 1935.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Britain · 1945</h4><p>The Labour government nationalised coal, rail and steel, and founded the NHS in 1948 — health free at the point of use.</p></div></div><div class="st"><div class="n">3</div><div><h4>France · 1945–75</h4><p>Banks and energy nationalised, and a national plan set investment targets for industry.</p></div></div><div class="st alt"><div class="n">4</div><div><h4>Scandinavia</h4><p>Social democracy: high taxes, universal benefits, active labour-market policy.</p></div></div></div></div><div class="band" style="margin-top:10px">One side left the plan, the other built a public sector — both ended up <b>mixed</b></div></div></div><div class="slide "><div class="content"><h1>Three definitions, word for word</h1><div class="sub">The mark is in <b>who owns and controls</b> — and in <b>both</b>.</div><div style="border-left:8px solid #1E88E5;padding-left:18px;margin-top:12px"><p style="font-size:clamp(22px,2vw,25px);line-height:1.5"><b style="color:#12507e">Mixed economic system</b> — an economy that includes features of <b>both</b> a planned and a market system: some firms are privately owned, and some are owned by the state.</p></div><div class="row mt" style="gap:18px;align-items:stretch;height:250px;margin-top:14px"><div style="flex:1;min-width:0;border:3px solid #2E7D32;border-radius:14px;background:#F2FAF4;padding:16px 20px;display:flex;flex-direction:column;justify-content:center"><h3 style="font-size:clamp(22px,2vw,26px);color:#1d5c37;margin-bottom:8px">Public sector</h3><p style="font-size:clamp(21px,1.95vw,24px);line-height:1.5;color:#3d4d5c">The part of the economy <b>owned and controlled by the government</b>; decisions are taken by public bodies, not in pursuit of profit.</p></div><div style="flex:1;min-width:0;border:3px solid #C9A227;border-radius:14px;background:#FDF9EC;padding:16px 20px;display:flex;flex-direction:column;justify-content:center"><h3 style="font-size:clamp(22px,2vw,26px);color:#8a6b12;margin-bottom:8px">Private sector</h3><p style="font-size:clamp(21px,1.95vw,24px);line-height:1.5;color:#3d4d5c">The part of the economy <b>owned and controlled by individuals and firms</b>; decisions are taken in pursuit of <b>profit</b>.</p></div></div></div></div><div class="slide "><div class="content"><div class="reason">REASON 1</div><h1 style="margin-top:2px">To correct market failure</h1><div class="sub">The four types you met in 2.9 — none of them self-corrects.</div><div class="row mt" style="gap:26px;align-items:stretch;flex:1;min-height:0"><div style="flex:0 0 300px;display:flex;flex-direction:column;justify-content:center;gap:12px"><p class="lead">Every one has the same shape: <b>the price does not carry the whole story</b>.</p><p class="lead">Someone outside the transaction gains or loses, and nobody pays.</p><p class="lead" style="color:#8c2a22">Left alone, none of them corrects itself.</p></div><div style="flex:1;min-width:0"><table class="data-table"><tr><th>Type</th><th>What goes wrong</th></tr><tr><td class="b">Public goods</td><td>non-excludable → free riders → supplied by nobody</td></tr><tr><td class="b">Merit goods</td><td>under-consumed — benefit under-estimated</td></tr><tr><td class="b">Demerit goods</td><td>over-consumed — harm under-estimated</td></tr><tr><td class="b">External costs &amp; benefits</td><td>the price misses the spillover</td></tr><tr><td class="b">Monopoly power</td><td>one seller sets the price, restricts output</td></tr></table></div></div></div></div><div class="slide "><div class="content"><div style="font-size:18px;letter-spacing:.12em;color:#1E88E5;font-weight:800">THE TOOLKIT</div><h1 style="margin-top:2px">Nine instruments — the complete list</h1><div class="sub">Everything a government can do about market failure. From the next page, we start on the examples.</div><div class="tools" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:9px 14px;margin-top:6px"><div class="t"><b>1 · Tax</b><span>Raises the price of what is over-produced.</span></div><div class="t"><b>2 · Subsidy</b><span>Lowers the price of what is under-produced.</span></div><div class="t"><b>3 · Regulation</b><span>Forbids or requires: standards, limits.</span></div><div class="t"><b>4 · Quota</b><span>Caps the quantity that may be supplied or extracted.</span></div><div class="t"><b>5 · Max / min price</b><span>Overrides the price the market would set.</span></div><div class="t"><b>6 · Direct provision</b><span>The state supplies it: rail, grid, water.</span></div><div class="t"><b>7 · Information</b><span>Corrects the misjudgement: labels, warnings.</span></div><div class="t"><b>8 · Competition policy</b><span>Restrains monopoly; opens the market.</span></div><div class="t" style="border-width:3px;border-color:#C9A227;background:#FDF9EC"><b style="color:#8a6b12">9 · Tradeable permits</b><span>Creates a market in the right to pollute — taken last, in lesson 3.</span></div></div><div class="band" style="margin-top:8px">Why the ninth is left to the end: it only makes sense once you have seen the other eight fail to be <b>efficient</b></div></div></div><div class="slide "><div class="content"><h1>Worked example 1: a polluting factory</h1><div class="sub">Private cost is below social cost. The firm over-produces; the river pays.</div><div style="display:grid;grid-template-columns:1fr 1.3fr;gap:26px;flex:1;min-height:0;margin-top:4px"><div style="display:flex;flex-direction:column;justify-content:center"><img class="bigpic" src="images/sewage.jpg" alt=""><div style="font-size:20px;color:#8a99a8;margin-top:8px">The cost exists — it is just not in the price.</div></div><div class="steps"><div class="st"><div class="n">1</div><div><h4>Tax the discharge</h4><p>A charge per unit lifts private cost towards social cost.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Regulate the limit</h4><p>A cap, monitored and fined, fixes the damage directly.</p></div></div><div class="st"><div class="n">3</div><div><h4>Subsidise the fix</h4><p>Pay part of the cleaner equipment, so abating is cheaper than polluting.</p></div></div><div class="st alt"><div class="n">4</div><div><h4>Publish the data</h4><p>Buyers and neighbours change behaviour faster than a regulator can.</p></div></div></div></div></div></div><div class="slide "><div class="content"><h1>Worked example 2: education</h1><div class="sub">A merit good — and the clearest case for supplying rather than nudging.</div><div style="display:grid;grid-template-columns:1.3fr 1fr;gap:26px;flex:1;min-height:0;margin-top:4px"><div class="steps"><div class="st"><div class="n">1</div><div><h4>Direct provision</h4><p>The state builds and runs schools and pays the teachers. Families pay nothing at the gate — a price would keep some out.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Subsidy</h4><p>Free meals, textbooks, transport — lowering the cost that stops attendance.</p></div></div><div class="st"><div class="n">3</div><div><h4>Regulation</h4><p>A school-leaving age, a national curriculum, qualified teachers.</p></div></div><div class="st alt"><div class="n">4</div><div><h4>Information</h4><p>Tell families what the returns to schooling are — the misjudgement is half the failure.</p></div></div></div><div style="display:flex;flex-direction:column;justify-content:center"><img class="bigpic" src="images/edu_wall.jpg" alt=""><div style="font-size:20px;color:#8a99a8;margin-top:8px">A village wall: finish middle school before going out to work.</div></div></div></div></div><div class="slide "><div class="content"><div class="reason">REASON 2</div><h1 style="margin-top:2px">Because allocative efficiency is not the only goal</h1><div class="sub">A market can be efficient and still produce a society nobody wants.</div><div class="steps" style="margin-top:14px"><div class="st"><div class="n">1</div><div><h4>Equity</h4><p>An efficient allocation can leave a child hungry. Redistribution is a judgement about fairness, not a correction of inefficiency.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Stability</h4><p>Boom and bust is not the market clearing — it is the market hurting most those least able to carry it.</p></div></div><div class="st"><div class="n">3</div><div><h4>Security</h4><p>Food, energy, defence: some things a country will not leave to whoever is cheapest.</p></div></div><div class="st alt"><div class="n">4</div><div><h4>Political stability</h4><p>A society that leaves whole regions out does not stay peaceful. Intervention buys legitimacy as well as output.</p></div></div></div><div class="band" style="margin-top:12px">So intervention is not a <b>second best</b> wheeled in when markets fail — it is a chosen part of the mix</div></div></div><div class="slide "><div class="content"><h1>Say it back</h1><div class="sub">Six blanks before we stop.</div><div class="txt" style="margin-top:6px;line-height:1.9"><p><b class="db">1.</b> A mixed economic system includes features of <b>both</b> a planned and a <span class="bl" data-a="market"></span> system.</p><p><b class="db">2.</b> The public sector is owned and controlled by the <span class="bl" data-a="government"></span>.</p><p><b class="db">3.</b> The private sector is owned and controlled by individuals and firms, and its decisions are taken in pursuit of <span class="bl" data-a="profit"></span>.</p><p><b class="db">4.</b> Governments intervene first to correct <span class="bl" data-a="market failure"></span> — public goods, merit and demerit goods, external costs, monopoly.</p><p><b class="db">5.</b> The <b>nine</b> instruments run from tax and subsidy, through quota and price controls, to direct <span class="bl" data-a="provision"></span>, information, competition policy and tradeable permits.</p><p><b class="db">6.</b> They also intervene for <span class="bl" data-a="equity"></span>, stability and security — allocative efficiency is not the only goal.</p></div><div class="row" style="gap:12px;margin-top:22px;align-items:center"><button class="big-btn" id="blBtn" onclick="revealNext()" style="min-width:180px">Next ▶</button><button class="big-btn ghost" onclick="resetBlanks()">Reset</button><div class="qfb" style="margin:0">Next: the instruments — and what each one does in practice.</div></div></div></div><div class="slide "><div class="content"><div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center"><h1 style="font-size:clamp(38px,4.2vw,56px)">Thank you</h1><div style="font-size:26px;color:#5b6b7b;margin-top:12px">Any questions?</div><div style="width:120px;height:5px;background:#1E88E5;border-radius:3px;margin:26px 0"></div><div style="font-size:24px;color:#2E4A6B">Next lesson · <b>The instruments</b> — competition policy, price controls and the rest</div></div></div></div></div>
+<div class="nav" style="position:fixed;z-index:9999;pointer-events:auto"><button id="prevBtn" onclick="go(CUR-1)">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 18</span><button id="nextBtn" onclick="go(CUR+1)">▶</button></div></div>
+<script>
+var SL = [], CUR = 0;
+function go(i){
+  if(!SL.length){
+    SL = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  }
+  if(i < 0 || i >= SL.length) return;
+  SL[CUR].classList.remove('active');
+  CUR = i;
+  SL[CUR].classList.add('active');
+  var d = document.getElementById('dots').children;
+  for(var k = 0; k < d.length; k++) d[k].className = (k === CUR ? 'on' : '');
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SL.length;
+}
+function initDeck(){
+  SL = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SL.forEach(function(_, i){
+    var sp = document.createElement('span');
+    sp.className = (i === 0 ? 'on' : '');
+    sp.onclick = function(){ go(i); };
+    dots.appendChild(sp);
+  });
+  var q = location.search.replace('?', '').split('&');
+  var want = 0;
+  for(var i = 0; i < q.length; i++){
+    var kv = q[i].split('=');
+    if(kv[0] === 's' && kv[1]) want = parseInt(kv[1], 10) || 0;
+  }
+  go(want);
+  var pb = document.getElementById('prevBtn');
+  var nb = document.getElementById('nextBtn');
+  if(pb) pb.onclick = function(){ go(CUR - 1); };
+  if(nb) nb.onclick = function(){ go(CUR + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight') go(CUR + 1);
+    if(e.key === 'ArrowLeft') go(CUR - 1);
+  });
+}
+window.addEventListener('DOMContentLoaded', initDeck);
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>

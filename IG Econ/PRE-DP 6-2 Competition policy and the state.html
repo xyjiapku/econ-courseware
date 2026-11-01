@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 2-10a (2) - Competition policy and the state</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:21px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(20px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(20px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:20px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(20px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(20px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(20px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(20px,1.35vw,20px);}
+.zone .zt{width:100%;font-size:clamp(20px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:20px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:20px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:20px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:20px;}
+.chip.small{font-size:20px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(20px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:20px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+.note p, .qfb, .sub, .txt p, .band, .lead{font-size:clamp(22px,2vw,24px) !important;
+  line-height:1.45;}
+.band{width:100%;border-radius:12px;padding:11px 22px;background:#14304d;color:#fff;
+  font-weight:700;text-align:center;}
+.steps{width:100%;display:flex;flex-direction:column;gap:12px;}
+.steps .st{display:grid;grid-template-columns:58px 1fr;gap:14px;align-items:start;}
+.steps .n{width:58px;height:58px;border-radius:50%;background:#EAF4FF;color:#12507e;
+  display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;}
+.steps .st.alt .n{background:#F2FAF4;color:#1d5c37;}
+.steps h4{font-size:clamp(22px,2vw,25px);color:#2E4A6B;margin-bottom:2px;}
+.steps p{font-size:clamp(20px,1.9vw,23px);color:#4a5b6b;line-height:1.38;}
+.tools{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;
+  gap:14px 20px;width:100%;flex:1;min-height:0;}
+.tools .t{border:2px solid #EAF4FF;border-radius:12px;display:flex;flex-direction:column;
+  gap:3px;padding:10px 14px;background:#fff;}
+.tools .t b{font-size:clamp(21px,2vw,24px);color:#12507e;}
+.tools .t span{font-size:clamp(20px,1.85vw,22px);color:#4a5b6b;line-height:1.36;}
+.tools .t.hi{border-color:#1E88E5;background:#F4FAFF;box-shadow:0 4px 14px rgba(30,136,229,.12);}
+.bigpic{max-height:100%;width:auto;max-width:100%;border-radius:12px;
+  box-shadow:0 5px 18px rgba(20,48,77,.16);}
+.num{font-size:clamp(38px,4.2vw,54px);font-weight:900;color:#1E88E5;line-height:1;}
+.num small{font-size:20px;font-weight:700;color:#7b8b9b;display:block;margin-top:2px;}
+.defbox{width:100%;border-radius:12px;border:3px solid #1E88E5;background:#F4FAFF;
+  padding:12px 18px;}
+.defbox b.k{color:#12507e;}
+.defbox p{font-size:clamp(21px,1.95vw,24px);line-height:1.45;color:#15334f;}
+.zoomable{cursor:zoom-in;}
+.zoomable.zoom{position:fixed;inset:0;margin:auto;max-height:94vh;max-width:94vw;width:auto;
+  height:auto;z-index:10000;background:#fff;padding:12px;border-radius:10px;
+  box-shadow:0 0 0 100vmax rgba(8,20,32,.88);cursor:zoom-out;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 2: The allocation of resources</div><h1>Competition policy &amp; the state</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div style="position:absolute;bottom:110px;left:0;right:0;text-align:center;font-size:20px;color:#94a3b3">Lesson 2 of 2 · the instruments a mixed economy uses</div><div class="botbar"></div></div><div class="slide "><div class="content"><div style="font-size:18px;letter-spacing:.12em;color:#1E88E5;font-weight:800">THE TOOLKIT</div><h1 style="margin-top:2px">Eight of the nine, one at a time</h1><div class="sub">Everything a mixed economy can do about market failure. We take them one at a time from here.</div><div class="tools" style="grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:12px 16px;margin-top:8px"><div class="t"><b>Tax</b><span>Raises the price of what is over-produced.</span></div><div class="t"><b>Subsidy</b><span>Lowers the price of what is under-produced.</span></div><div class="t"><b>Regulation</b><span>Forbids or requires: standards, limits.</span></div><div class="t"><b>Quota</b><span>Caps the quantity that may be supplied or extracted.</span></div><div class="t"><b>Max / min price</b><span>Overrides the price the market would set.</span></div><div class="t hi"><b>Direct provision</b><span>The state supplies it: rail, grid, water.</span></div><div class="t"><b>Information</b><span>Corrects the misjudgement.</span></div><div class="t hi"><b>Competition policy</b><span>Restrains monopoly; opens the market.</span></div></div><div class="band" style="margin-top:10px">Four work through the <b>price</b>, three through <b>quantity or rules</b>, one by <b>changing who sells</b></div></div></div><div class="slide "><div class="content"><h1>Competition policy</h1><div class="sub">Government action to keep markets competitive — and to stop a firm using the power it already has.</div><div class="defbox" style="margin-top:6px"><p><b class="k">Competition policy</b> — the laws and regulators a government uses to <b>prevent firms from restricting competition</b>: stopping them fixing prices, abusing a dominant position, or merging into one.</p></div><div style="display:grid;grid-template-columns:1fr 430px;gap:22px;flex:1;min-height:0;margin-top:8px"><div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px 16px"><div class="card" style="padding:10px 14px"><h3 style="font-size:21px">Prohibit</h3><p style="font-size:19px">Exclusive dealing, price fixing, predatory pricing.</p></div><div class="card t" style="padding:10px 14px"><h3 style="font-size:21px">Block mergers</h3><p style="font-size:19px">Two large firms must not become one that can do as it likes.</p></div><div class="card a" style="padding:10px 14px"><h3 style="font-size:21px">Break up</h3><p style="font-size:19px">When the position is already entrenched.</p></div><div class="card" style="padding:10px 14px"><h3 style="font-size:21px">Open the market</h3><p style="font-size:19px">Imports, a second licence.</p></div></div><div style="display:flex;flex-direction:column;justify-content:center"><img src="images/cp/trusts_cartoon.png" alt="" style="width:100%;border-radius:10px;box-shadow:0 5px 16px rgba(20,48,77,.16)"><div style="font-size:18px;color:#8a99a8;margin-top:6px">The trusts, drawn in 1900: one rule for everyone else.</div></div></div></div></div><div class="slide "><div class="content"><h1>2026: the Ctrip case</h1><div class="sub">How a firm becomes dominant, what it does with that power, and what the regulator did about it.</div><div style="display:grid;grid-template-columns:1fr 290px;gap:22px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;justify-content:center;gap:7px"><div class="row" style="gap:24px;align-items:flex-end"><div class="num" style="font-size:36px">56%<small>bookings, 2024</small></div><div class="num" style="font-size:36px;color:#2E7D32">~70%<small>with Tongcheng</small></div><div class="num" style="font-size:36px;color:#8a6b12">32%<small>net margin</small></div></div><p class="lead" style="margin-top:2px">That share let it set the terms every hotel had to accept:</p><p class="lead">1. <b>Get on or get out.</b> Top-badged hotels sold only on Ctrip.</p><p class="lead">2. <b>Lowest price on the web.</b> Everyone else had to match anyone, enforced by software that cut prices automatically.</p><p class="lead">3. <b>Penalties.</b> Less traffic, loss of the badge, deducted deposits.</p><p class="lead" style="color:#8c2a22"><b>Fine:</b> ¥5.18 bn in July 2026 — 7.5% of sales, after a six-month investigation.</p></div><div style="display:flex;flex-direction:column;justify-content:center"><img src="images/cp/ctrip.jpg" alt="" style="width:100%;max-height:392px;object-fit:contain;border-radius:12px;box-shadow:0 5px 18px rgba(20,48,77,.16)"></div></div></div></div><div class="slide "><div class="content"><h1>Blocking a merger</h1><div class="sub">A merger removes a rival without removing any cost — the cheapest thing a regulator can refuse.</div><div style="display:grid;grid-template-columns:1fr 1.1fr;gap:24px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;justify-content:center"><img src="images/cp/a_p02_1.png" alt="" style="width:100%;border-radius:12px;box-shadow:0 5px 18px rgba(20,48,77,.16)"><div style="font-size:18px;color:#8a99a8;margin-top:6px">AT&amp;T and T-Mobile USA, 2011: $39 bn, refused.</div></div><div style="display:flex;flex-direction:column;justify-content:center;gap:10px"><p class="lead"><b>What was proposed.</b> In 2011 AT&amp;T, America’s second-largest carrier, agreed to buy T-Mobile USA for <b>$39 bn</b> — turning four national networks into three.</p><p class="lead"><b>Why it was stopped.</b> The antitrust review found the deal would raise prices for millions of subscribers, and that no efficiency gain could offset the loss of a rival.</p><p class="lead"><b>What it cost to stop.</b> Nothing but a refusal — no fine, no break-up order, no compensation.</p><p class="lead" style="color:#8c2a22">Contrast Ctrip: cleared to merge in 2015, and fined in 2026 for the dominance that merger helped create.</p></div></div></div></div><div class="slide "><div class="content"><h1>1911: the Standard Oil break-up</h1><div class="sub">The case that made “break it up” a real option. Click the chart to enlarge it.</div><div style="display:grid;grid-template-columns:1.3fr 1fr;gap:24px;flex:1;min-height:0;margin-top:4px"><div style="display:flex;flex-direction:column;justify-content:center;min-width:0"><img class="bigpic zoomable" src="images/cp/a_p03_1.png" alt=""><div style="font-size:19px;color:#8a99a8;margin-top:6px">One company, 34 successors — click to enlarge.</div></div><div style="display:flex;flex-direction:column;justify-content:center;gap:10px"><div class="row" style="gap:26px"><div class="num">90%<small>US refining, 1904</small></div><div class="num" style="color:#2E7D32">34<small>companies after 1911</small></div></div><p class="lead">Standard Oil controlled refining, pipelines and rail rebates; rivals could not reach the market on equal terms.</p><p class="lead">The Sherman Act (1890) made that illegal. In 1911 the Supreme Court ordered the company <b>dissolved</b>.</p><p class="lead">Exxon, Mobil, Chevron, Amoco came out of it — competition returned by <b>ending</b> the monopoly.</p></div></div></div></div><div class="slide "><div class="content"><h1>China: breaking the postal and telecom monopoly</h1><div class="sub">A state monopoly dismantled from the inside — and a postal market opened to private firms.</div><div style="display:grid;grid-template-columns:1.25fr 1fr;gap:22px;flex:1;min-height:0;margin-top:0"><div style="display:flex;flex-direction:column;justify-content:center;min-width:0"><svg viewBox="0 0 620 290" style="width:100%">
+<rect x="240" y="6" width="140" height="38" rx="8" fill="#EAF4FF" stroke="#1E88E5" stroke-width="3"/>
+<text x="310" y="31" text-anchor="middle" font-size="18" fill="#12507e" font-weight="700">邮电部</text>
+<path d="M310 44 V62 M100 62 H440 M100 62 V76 M270 62 V76 M440 62 V76"
+ stroke="#8a99a8" stroke-width="3" fill="none"/>
+<rect x="40" y="76" width="120" height="36" rx="8" fill="#F2FAF4" stroke="#2E7D32" stroke-width="2.5"/>
+<text x="100" y="100" text-anchor="middle" font-size="17" fill="#1d5c37">中国邮政</text>
+<rect x="210" y="76" width="120" height="36" rx="8" fill="#EAF4FF" stroke="#1E88E5" stroke-width="2.5"/>
+<text x="270" y="100" text-anchor="middle" font-size="17" fill="#12507e">中国电信</text>
+<rect x="380" y="76" width="120" height="36" rx="8" fill="#FDF9EC" stroke="#C9A227" stroke-width="2.5"/>
+<text x="440" y="100" text-anchor="middle" font-size="17" fill="#8a6b12">中国联通</text>
+<path d="M270 112 V128 M210 128 H330 M210 128 V144 M270 128 V144 M330 128 V144"
+ stroke="#8a99a8" stroke-width="3" fill="none"/>
+<rect x="150" y="144" width="118" height="36" rx="8" fill="#EAF4FF" stroke="#1E88E5" stroke-width="2.5"/>
+<text x="209" y="168" text-anchor="middle" font-size="17" fill="#12507e">中国电信</text>
+<rect x="282" y="144" width="118" height="36" rx="8" fill="#EAF4FF" stroke="#1E88E5" stroke-width="2.5"/>
+<text x="341" y="168" text-anchor="middle" font-size="17" fill="#12507e">中国移动</text>
+<rect x="414" y="144" width="118" height="36" rx="8" fill="#F2FAF4" stroke="#2E7D32" stroke-width="2.5"/>
+<text x="473" y="168" text-anchor="middle" font-size="17" fill="#1d5c37">中国卫通</text>
+<path d="M100 112 V206" stroke="#C62828" stroke-width="3" fill="none"/>
+<path d="M14 206 H100" stroke="#C62828" stroke-width="3" fill="none"/>
+<text x="16" y="196" font-size="15" fill="#8c2a22">private capital</text>
+<circle cx="100" cy="206" r="5" fill="#C62828"/>
+<path d="M100 206 V226" stroke="#C62828" stroke-width="3" marker-end="url(#ar)" fill="none"/>
+<rect x="24" y="228" width="152" height="34" rx="8" fill="#FEF6F5" stroke="#C62828" stroke-width="2.5"/>
+<text x="100" y="251" text-anchor="middle" font-size="16" fill="#8c2a22">民营快递 SF · ZTO</text>
+<text x="310" y="288" text-anchor="middle" font-size="15" fill="#7b8b9b">
+1998 post split off · 1999 telecom split</text>
+<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L0,6 L9,3 z" fill="#C62828"/></marker></defs>
+</svg><div class="row" style="gap:14px;margin-top:6px;justify-content:center;align-items:center"><img src="images/cp/a_p04_2.png" alt="" style="height:66px"><img src="images/cp/a_p04_4.jpg" alt="" style="height:66px;border-radius:8px"></div><div style="font-size:18px;color:#8a99a8;text-align:center;margin-top:2px">China Post · and the three carriers that replaced one</div></div><div class="steps" style="justify-content:center"><div class="st"><div class="n">1</div><div><h4>A second operator</h4><p>Unicom (1994) was licensed to compete — the barrier removed, not the firm punished.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Then split it</h4><p>1998: post separated. 1999: telecom split into fixed, mobile and satellite.</p></div></div><div class="st"><div class="n">3</div><div><h4>The postal market opens</h4><p>Private capital was allowed in: SF, ZTO, YTO, STO. Cheap delivery is what made e-commerce possible.</p></div></div></div></div></div></div><div class="slide "><div class="content"><h1>Where competition would be wasteful</h1><div class="sub">Not that two firms could not run a network — duplicating it would halve the use.</div><div style="display:grid;grid-template-columns:1fr 1.05fr;gap:24px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;justify-content:center;gap:10px"><svg viewBox="0 0 360 150" style="width:100%"><rect x="16" y="50" width="96" height="48" rx="8" fill="#EAF4FF" stroke="#1E88E5" stroke-width="3"/><text x="64" y="80" text-anchor="middle" font-size="17" fill="#12507e">homes</text><rect x="248" y="50" width="96" height="48" rx="8" fill="#F2FAF4" stroke="#2E7D32" stroke-width="3"/><text x="296" y="80" text-anchor="middle" font-size="17" fill="#1d5c37">plant</text><path d="M112 74 H248" stroke="#2E4A6B" stroke-width="9"/><text x="180" y="62" text-anchor="middle" font-size="16" fill="#2E4A6B">one wire</text><text x="180" y="126" text-anchor="middle" font-size="16" fill="#7b8b9b">cheapest way to supply</text></svg><div class="row" style="gap:16px;align-items:center;justify-content:center"><img src="images/cp/logo_grid.png" alt="" style="height:104px"><img src="images/cp/logo_rail.png" alt="" style="height:104px"></div></div><div style="display:flex;flex-direction:column;justify-content:center;gap:12px"><div class="note"><p><b>The grid.</b> Generation can be private and competitive; transmission is one natural monopoly.</p></div><div class="note"><p><b>The track.</b> One asset, many trains — the state owns the network and licenses operators.</p></div><div class="note"><p><b>Water.</b> One set of pipes under every street, so the supplier is a public utility.</p></div><p class="lead" style="color:#8c2a22">Competition policy has nothing to split here — the network itself is the monopoly. So: regulate the price, or own it.</p></div></div></div></div><div class="slide "><div class="content"><h1>But a state firm can be inefficient</h1><div class="sub">The absence of a rival removes the pressure that keeps any firm sharp.</div><div class="steps" style="margin-top:10px"><div class="st"><div class="n">1</div><div><h4>No rival, no benchmark</h4><p>With nothing to compare against, waste is hard even to see.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>Soft budget</h4><p>Losses are covered by the state, so carelessness is not paid for by the firm.</p></div></div><div class="st"><div class="n">3</div><div><h4>Many masters</h4><p>Employment, price stability and regional policy may outrank efficiency.</p></div></div><div class="st alt"><div class="n">4</div><div><h4>Weak incentives</h4><p>No profit share, no share price, no takeover — less reason to improve.</p></div></div></div></div></div><div class="slide "><div class="content"><h1>Privatisation</h1><div class="defbox" style="margin-top:6px"><p><b class="k">Privatisation</b> — the sale of state-owned firms or assets <b>to the private sector</b>.</p></div><div style="display:grid;grid-template-columns:1fr 1.1fr;gap:24px;flex:1;min-height:0;margin-top:12px"><div style="display:flex;flex-direction:column;justify-content:center;gap:10px"><p class="lead">Britain from 1984: telecom, gas, water, the railways. China from the 1990s: small state firms sold, the largest kept.</p><p class="lead">Why sell? To raise money, to bring in competition, and to put the firm under the discipline of a share price.</p></div><div style="display:flex;flex-direction:column;justify-content:center"><img src="images/cp/a_p04_3.png" alt="" style="width:100%;border-radius:12px;box-shadow:0 5px 18px rgba(20,48,77,.16)"><div style="font-size:19px;color:#8a99a8;margin-top:6px">Courier services opened to private firms — the privatisation that built e-commerce.</div></div></div></div></div><div class="slide "><div class="content"><h1>Nationalisation</h1><div class="defbox" style="margin-top:6px"><p><b class="k">Nationalisation</b> — a government taking a private sector industry <b>into state ownership</b>.</p></div><div class="steps" style="margin-top:14px"><div class="st"><div class="n">1</div><div><h4>Britain, 1945–51</h4><p>The Attlee government took coal, the railways, steel and the hospitals into public ownership — the NHS began in 1948.</p></div></div><div class="st alt"><div class="n">2</div><div><h4>France, 1945</h4><p>Banks, coal and electricity were nationalised, and a national plan set investment targets for industry.</p></div></div><div class="st"><div class="n">3</div><div><h4>Why take it?</h4><p>Private owners would not rebuild after the war; the industry served the country, not a shareholder.</p></div></div></div><div class="band" style="margin-top:10px">Britain nationalised the railways in 1948 and privatised them again in the 1990s</div></div></div><div class="slide "><div class="content"><h1>Price controls</h1><div class="sub">A legal price the market may not reach — so demand and supply no longer meet.</div><div class="row" style="gap:22px;flex:1;min-height:0;margin-top:2px"><div style="flex:1;min-width:0;display:flex;flex-direction:column"><div class="defbox" style="border-color:#1E88E5;background:#F4FAFF;padding:8px 14px"><p style="font-size:clamp(18px,1.75vw,21px)"><b style="color:#12507e">Maximum price</b> — below equilibrium → <b>shortage</b> (rent control)</p></div><svg viewBox="0 0 430 300" style="width:100%"><line x1="70" y1="250" x2="406" y2="250" stroke="#333" stroke-width="2"/><line x1="70" y1="250" x2="70" y2="40" stroke="#333" stroke-width="2"/><text x="52.0" y="44.0" text-anchor="end" font-size="16" fill="#333" font-weight="700">P</text><text x="402.0" y="270.0" text-anchor="start" font-size="16" fill="#333" font-weight="700">Q</text><line x1="70.0" y1="40.0" x2="400.0" y2="250.0" stroke="#1E88E5" stroke-width="3"/><line x1="70.0" y1="222.0" x2="400.0" y2="82.0" stroke="#2E7D32" stroke-width="3"/><line x1="66" y1="182.8" x2="360.4" y2="182.8" stroke="#C62828" stroke-width="3" stroke-dasharray="9 6"/><line x1="162.4" y1="182.8" x2="162.4" y2="250.0" stroke="#9aa8b6" stroke-width="2" stroke-dasharray="6 5"/><line x1="294.4" y1="182.8" x2="294.4" y2="250.0" stroke="#9aa8b6" stroke-width="2" stroke-dasharray="6 5"/><line x1="162.4" y1="193.8" x2="294.4" y2="193.8" stroke="#C62828" stroke-width="4"/><text x="228.4" y="214.8" text-anchor="middle" font-size="15" fill="#8c2a22" font-weight="700">shortage</text><text x="76.0" y="54.0" text-anchor="start" font-size="16" fill="#1E88E5" font-weight="700">D</text><text x="380.0" y="78.0" text-anchor="end" font-size="16" fill="#2E7D32" font-weight="700">S</text><text x="60.0" y="187.8" text-anchor="end" font-size="14" fill="#C62828" font-weight="700">Pmax</text><text x="162.4" y="268.0" text-anchor="middle" font-size="14" fill="#5b6b7b">Qs</text><text x="294.4" y="268.0" text-anchor="middle" font-size="14" fill="#5b6b7b">Qd</text></svg></div><div style="flex:1;min-width:0;display:flex;flex-direction:column"><div class="defbox" style="border-color:#C62828;background:#FEF6F5;padding:8px 14px"><p style="font-size:clamp(18px,1.75vw,21px)"><b style="color:#8c2a22">Minimum price</b> — above equilibrium → <b>surplus</b> (minimum wage)</p></div><svg viewBox="0 0 430 300" style="width:100%"><line x1="70" y1="250" x2="406" y2="250" stroke="#333" stroke-width="2"/><line x1="70" y1="250" x2="70" y2="40" stroke="#333" stroke-width="2"/><text x="52.0" y="44.0" text-anchor="end" font-size="16" fill="#333" font-weight="700">P</text><text x="402.0" y="270.0" text-anchor="start" font-size="16" fill="#333" font-weight="700">Q</text><line x1="70.0" y1="40.0" x2="400.0" y2="250.0" stroke="#1E88E5" stroke-width="3"/><line x1="70.0" y1="222.0" x2="400.0" y2="82.0" stroke="#2E7D32" stroke-width="3"/><line x1="66" y1="115.6" x2="360.4" y2="115.6" stroke="#C62828" stroke-width="3" stroke-dasharray="9 6"/><line x1="188.8" y1="115.6" x2="188.8" y2="250.0" stroke="#9aa8b6" stroke-width="2" stroke-dasharray="6 5"/><line x1="320.8" y1="115.6" x2="320.8" y2="250.0" stroke="#9aa8b6" stroke-width="2" stroke-dasharray="6 5"/><line x1="188.8" y1="104.6" x2="320.8" y2="104.6" stroke="#C62828" stroke-width="4"/><text x="254.8" y="95.6" text-anchor="middle" font-size="15" fill="#8c2a22" font-weight="700">surplus</text><text x="76.0" y="54.0" text-anchor="start" font-size="16" fill="#1E88E5" font-weight="700">D</text><text x="380.0" y="78.0" text-anchor="end" font-size="16" fill="#2E7D32" font-weight="700">S</text><text x="60.0" y="120.6" text-anchor="end" font-size="14" fill="#C62828" font-weight="700">Pmin</text><text x="188.8" y="268.0" text-anchor="middle" font-size="14" fill="#5b6b7b">Qd</text><text x="320.8" y="268.0" text-anchor="middle" font-size="14" fill="#5b6b7b">Qs</text></svg></div></div></div></div><div class="slide "><div class="content"><h1>Maximum price in practice: rent control</h1><div class="sub">The ceiling protects the tenant inside the flat — and shrinks the supply of flats for everyone after them.</div><div style="display:grid;grid-template-columns:1fr 250px;gap:22px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;justify-content:center;gap:12px"><div style="border-left:8px solid #C62828;background:#FEF6F5;border-radius:10px;padding:12px 16px"><p style="font-size:clamp(19px,1.8vw,22px);line-height:1.4"><b style="color:#8c2a22">Paris — the ceiling bites.</b> Rent is capped, so building becomes unprofitable and landlords let flats decay. Supply grows more slowly than demand: the shortage is managed, not removed.</p></div><div style="border-left:8px solid #2E7D32;background:#F2FAF4;border-radius:10px;padding:12px 16px"><p style="font-size:clamp(19px,1.8vw,22px);line-height:1.4"><b style="color:#1d5c37">China, land reform — the ceiling does nothing.</b> “Reduce rent and interest” created no shortage, because the supply of farmland is fixed by nature, not by the return on it.</p></div><p class="lead">The difference is not the policy — it is whether <b>supply responds to price</b>.</p></div><div style="display:flex;flex-direction:column;justify-content:center"><img src="images/cp/paris_protest.png" alt="" style="width:100%;max-height:360px;object-fit:contain;border-radius:10px;box-shadow:0 5px 16px rgba(20,48,77,.16)"></div></div></div></div><div class="slide "><div class="content"><h1>Minimum price in practice: the minimum wage</h1><div class="sub">The textbook says a floor creates a surplus of workers. The evidence says the surplus can disappear — and that is what the Nobel was for.</div><div style="display:grid;grid-template-columns:1fr 1.05fr;gap:24px;flex:1;min-height:0;margin-top:2px"><div style="display:flex;flex-direction:column;justify-content:center;min-width:0"><svg viewBox="0 0 430 300" style="width:100%"><line x1="70" y1="250" x2="406" y2="250" stroke="#333" stroke-width="2"/><line x1="70" y1="250" x2="70" y2="40" stroke="#333" stroke-width="2"/><text x="52.0" y="44.0" text-anchor="end" font-size="16" fill="#333" font-weight="700">P</text><text x="402.0" y="270.0" text-anchor="start" font-size="16" fill="#333" font-weight="700">Q</text><line x1="70.0" y1="40.0" x2="400.0" y2="250.0" stroke="#c3cedb" stroke-width="2.5" stroke-dasharray="6 5"/><line x1="202.0" y1="40.0" x2="400.0" y2="166.0" stroke="#1E88E5" stroke-width="3"/><line x1="70.0" y1="222.0" x2="400.0" y2="82.0" stroke="#2E7D32" stroke-width="3"/><line x1="66" y1="115.6" x2="360.4" y2="115.6" stroke="#C62828" stroke-width="3" stroke-dasharray="9 6"/><circle cx="320.8" cy="115.6" r="7" fill="#1E88E5"/><text x="60.0" y="120.6" text-anchor="end" font-size="14" fill="#C62828" font-weight="700">Pmin</text><text x="76.0" y="54.0" text-anchor="start" font-size="16" fill="#b9c6d3" font-weight="700">D</text><text x="206.0" y="52.0" text-anchor="start" font-size="16" fill="#1E88E5" font-weight="700">D′</text><text x="380.0" y="78.0" text-anchor="end" font-size="16" fill="#2E7D32" font-weight="700">S</text><text x="320.8" y="268.0" text-anchor="middle" font-size="14" fill="#5b6b7b">Q</text></svg><div style="font-size:18px;color:#5b6b7b;margin-top:2px">Wages rise → productivity rises → demand for labour shifts to D′; at Pmin the two curves meet.</div></div><div style="display:flex;flex-direction:column;justify-content:center;gap:9px"><p class="lead"><b>The natural experiment.</b> New Jersey raised its minimum wage in 1992; neighbouring Pennsylvania did not. Card and Krueger compared fast-food jobs on both sides of the border.</p><p class="lead"><b>The result.</b> Employment in New Jersey did not fall relative to Pennsylvania — the surplus never showed up.</p><p class="lead"><b>The prize.</b> David Card shared the 2021 Nobel for it: a natural experiment answered a question the model alone could not.</p><p class="lead" style="color:#8a6b12">So the exam answer is conditional — a large rise, with elastic demand, still costs jobs.</p></div></div></div></div><div class="slide "><div class="content"><h1>The eight, all together</h1><div class="sub">One line each — and the example that carried it.</div><table class="data-table" style="margin-top:4px"><tr><th>Instrument</th><th>What it does</th><th>Example</th></tr><tr><td class="b">Tax / subsidy</td><td>changes the price</td><td>carbon tax; vaccine subsidy</td></tr><tr><td class="b">Regulation</td><td>forbids or requires</td><td>emission limits</td></tr><tr><td class="b">Quota</td><td>caps the quantity</td><td>fishing; rare earths; imports</td></tr><tr><td class="b">Max / min price</td><td>overrides the price</td><td>rent control; minimum wage</td></tr><tr><td class="b">Direct provision</td><td>the state supplies it</td><td>the electricity grid</td></tr><tr><td class="b">Information</td><td>corrects the misjudgement</td><td>labelling</td></tr><tr><td class="b">Competition policy</td><td>ends or restrains monopoly</td><td>Standard Oil 1911; Ctrip 2026</td></tr><tr><td class="b">Ownership change</td><td>nationalise / privatise</td><td>British Railways 1948; BT 1984</td></tr></table><div class="band" style="margin-top:8px">The ninth — <b>tradeable permits</b> — comes at the end of lesson 3, once we have asked which of these actually work</div></div></div><div class="slide "><div class="content"><div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center"><h1 style="font-size:clamp(38px,4.2vw,56px)">Thank you</h1><div style="font-size:26px;color:#5b6b7b;margin-top:12px">Any questions?</div><div style="width:120px;height:5px;background:#1E88E5;border-radius:3px;margin:26px 0"></div><div style="font-size:24px;color:#2E4A6B">Next lesson · <b>Government failure, and the case for and against the mixed economy</b></div></div></div></div>
+</div>
+<div class="nav" style="position:fixed;z-index:9999;pointer-events:auto"><button id="prevBtn" onclick="go(CUR-1)">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 14</span><button id="nextBtn" onclick="go(CUR+1)">▶</button></div></div>
+<script>
+var SL = [], CUR = 0;
+function go(i){
+  if(!SL.length){ SL = Array.prototype.slice.call(document.querySelectorAll('.slide')); }
+  if(i < 0 || i >= SL.length) return;
+  SL[CUR].classList.remove('active');
+  CUR = i;
+  SL[CUR].classList.add('active');
+  var d = document.getElementById('dots').children;
+  for(var k = 0; k < d.length; k++) d[k].className = (k === CUR ? 'on' : '');
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SL.length;
+}
+function initDeck(){
+  SL = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SL.forEach(function(_, i){
+    var sp = document.createElement('span');
+    sp.className = (i === 0 ? 'on' : '');
+    sp.onclick = function(){ go(i); };
+    dots.appendChild(sp);
+  });
+  var q = location.search.replace('?', '').split('&'), want = 0;
+  for(var i = 0; i < q.length; i++){
+    var kv = q[i].split('=');
+    if(kv[0] === 's' && kv[1]) want = parseInt(kv[1], 10) || 0;
+  }
+  go(want);
+  var pb = document.getElementById('prevBtn'), nb = document.getElementById('nextBtn');
+  if(pb) pb.onclick = function(){ go(CUR - 1); };
+  if(nb) nb.onclick = function(){ go(CUR + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight') go(CUR + 1);
+    if(e.key === 'ArrowLeft') go(CUR - 1);
+    if(e.key === 'Escape'){
+      var z = document.querySelector('.zoomable.zoom'); if(z) z.classList.remove('zoom');
+    }
+  });
+  document.querySelectorAll('.zoomable').forEach(function(img){
+    img.addEventListener('click', function(){ img.classList.toggle('zoom'); });
+  });
+}
+window.addEventListener('DOMContentLoaded', initDeck);
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>
