@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 3.1b - Banking</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:23px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:22px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(20px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(20px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(20px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(20px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(20px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(20px,1.35vw,20px);}
+.zone .zt{width:100%;font-size:clamp(20px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:22px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:22px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:22px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:22px;}
+.chip.small{font-size:22px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(20px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:22px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+.slide{padding:2px 40px 92px;}
+
+.slide .content{margin-left:auto !important;margin-right:auto !important;
+  max-width:1340px !important;}
+
+
+.slide .content h1{font-size:clamp(26px,2.5vw,29px) !important;line-height:1.2;}
+.defbox{padding:6px 14px !important;}
+.defbox p{font-size:23px !important;line-height:1.35 !important;}
+.band{padding:6px 18px !important;}
+
+.lead, .note p, .sub, .band{line-height:1.26 !important;}
+.defbox p{line-height:1.28 !important;}
+.band{padding:4px 14px !important;margin-top:4px !important;}
+
+.big{font-size:clamp(24px,2.2vw,26px) !important;line-height:1.25 !important;}
+.lead{line-height:1.28 !important;}
+
+.slide .content{justify-content:center;}
+.slide .content > h1{margin-top:0;margin-bottom:2px;}
+.slide .content p[style*="font-size:24px"]{font-size:clamp(24px,2.1vw,29px) !important;line-height:1.3 !important;}
+.slide .content h1{font-size:clamp(30px,3vw,44px) !important;letter-spacing:-.01em;padding-left:14px;border-left:7px solid #1E88E5;line-height:1.1;}
+.defbox2{background:#F4FAFF;border-left:8px solid #1E88E5;
+  border-radius:10px;padding:10px 16px;}
+.dlabel{font-size:22px;letter-spacing:.18em;color:#7b9ec4;font-weight:800;}
+.dtext{font-size:27px;font-weight:700;color:#15334f;line-height:1.25;margin-top:3px;}
+.dsub{font-size:23px;font-style:italic;color:#5b6b7b;line-height:1.3;margin-top:5px;}
+.tagline{font-size:22px;letter-spacing:.14em;color:#1E88E5;font-weight:800;border:2px solid #bcd9f5;border-radius:999px;padding:2px 12px;}
+.tcard{background:#F7FAFD;border-left:5px solid #dbe5ee;border-radius:10px;padding:9px 15px;}
+.tcard.warn{background:#FEF6F5;border-left-color:#f0c9c4;}
+.tcard.blue{background:#F4FAFF;border-left-color:#bcd9f5;}
+.slide .content h1{width:auto !important;}
+.slide .content > div:first-child{flex:0 0 auto;}
+.slide .content > .sub{margin-top:0;margin-bottom:0 !important;}
+.band{margin-top:6px !important;padding:5px 16px !important;}
+
+.slide .content{justify-content:flex-start !important;padding-top:10px;}
+.slide .content > div{min-height:0;}
+.slide .content img{max-height:none;}
+
+.lead, .note p, .qfb, .sub, .band{font-size:clamp(24px,2.15vw,30px) !important;line-height:1.34;}
+.band{width:100%;border-radius:12px;padding:10px 22px;background:#14304d;color:#fff;
+  font-weight:700;text-align:center;}
+.defbox{width:100%;border-radius:12px;border:3px solid #1E88E5;background:#F4FAFF;padding:10px 16px;}
+.defbox p{font-size:clamp(24px,1.85vw,24px);line-height:1.42;color:#15334f;}
+.defbox b.k{color:#12507e;}
+.fn{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;width:100%;}
+.fn .item{border-left:6px solid #1E88E5;padding:8px 14px;background:#F9FBFD;border-radius:8px;}
+.fn h4{font-size:clamp(24px,1.9vw,24px);color:#12507e;margin-bottom:3px;}
+.fn p{font-size:clamp(24px,1.75vw,24px);line-height:1.35;color:#4a5b6b;}
+.q{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;width:100%;}
+.q .row{display:flex;gap:10px;align-items:baseline;font-size:clamp(24px,1.8vw,24px);color:#3d4d5c;}
+.q .row b{color:#2E4A6B;}
+.ans{color:#12507e;font-weight:800;opacity:0;transition:opacity .3s;}
+.q.show .ans{opacity:1;}
+table.tick{width:100%;border-collapse:collapse;}
+table.tick th,table.tick td{border-bottom:1px solid #e2ecf6;padding:11px 13px;
+  font-size:clamp(24px,1.85vw,24px);text-align:center;color:#3d4d5c;line-height:1.35;}
+table.tick th{color:#12507e;font-weight:800;background:#F4FAFF;}
+table.tick td.l{text-align:left;}
+.big{font-size:clamp(26px,2.6vw,32px);font-weight:900;color:#12507e;line-height:1.2;}
+.tl{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;margin-top:4px;}
+.tl .stop{text-align:center;border-top:5px solid #1E88E5;padding-top:8px;}
+.tl .stop:nth-child(even){border-top-color:#2E7D32;}
+.tl .yr{font-size:22px;font-weight:800;color:#12507e;}
+.tl .nm{font-size:clamp(24px,1.6vw,24px);color:#3d4d5c;line-height:1.25;margin-top:2px;}
+.tl .fx{font-size:22px;color:#7b8b9b;line-height:1.2;margin-top:4px;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide "><div class="content" style="padding-bottom:0"><div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center"><div style="font-size:22px;letter-spacing:.3em;color:#1E88E5;font-weight:800">SECTION 3.1</div><h1 style="border:0;padding:0;text-align:center;font-size:clamp(46px,5.4vw,74px);margin-top:10px">Banking</h1><div style="width:120px;height:6px;background:#1E88E5;border-radius:3px;margin:18px auto"></div><div style="font-size:28px;color:#5b6b7b">Lesson 2 of 2 · commercial &amp; central banks</div><div style="font-size:22px;color:#8a99a8;margin-top:26px">PRE-DP Economics · Dr. Jia</div></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Commercial banks</h1><span class="tagline">DEFINITION</span></div><div class="defbox2" style="margin-top:10px"><div class="dlabel">DEFINITION</div><p class="dtext">banks which <b>aim to make a profit</b> by providing a range of banking services to <b>households and firms</b>.</p><p class="dsub">Three main functions: accept deposits, lend, enable payments.</p></div><div style="display:grid;grid-template-columns:1.05fr .95fr;gap:26px;flex:1;min-height:0;margin-top:14px"><div style="display:flex;flex-direction:column;gap:10px;justify-content:center"><div style="display:flex;align-items:center;gap:14px;background:#F7FAFD;border-radius:12px;padding:14px 16px"><div style="font-size:30px;font-weight:900;color:#bcd9f5;line-height:1">1</div><div><div style="font-size:25px;font-weight:800;color:#15334f">Accept deposits</div><div style="font-size:22px;color:#5b6b7b">current and savings accounts</div></div></div><div style="display:flex;align-items:center;gap:14px;background:#F7FAFD;border-radius:12px;padding:14px 16px"><div style="font-size:30px;font-weight:900;color:#bcd9f5;line-height:1">2</div><div><div style="font-size:25px;font-weight:800;color:#15334f">Make loans</div><div style="font-size:22px;color:#5b6b7b">mortgages, overdrafts, business loans</div></div></div><div style="display:flex;align-items:center;gap:14px;background:#F7FAFD;border-radius:12px;padding:14px 16px"><div style="font-size:30px;font-weight:900;color:#bcd9f5;line-height:1">3</div><div><div style="font-size:25px;font-weight:800;color:#15334f">Move money</div><div style="font-size:22px;color:#5b6b7b">payments, transfers, cards</div></div></div><div style="display:flex;align-items:center;gap:14px;background:#F7FAFD;border-radius:12px;padding:14px 16px"><div style="font-size:30px;font-weight:900;color:#bcd9f5;line-height:1">4</div><div><div style="font-size:25px;font-weight:800;color:#15334f">Exchange currency</div><div style="font-size:22px;color:#5b6b7b">at the counter</div></div></div></div><img src="images/money/bank_logos.png" alt="" style="width:100%;height:100%;object-fit:contain;align-self:center;max-height:420px;border-radius:12px"></div><div class="band" style="margin-top:10px">Four services, one purpose: turn idle deposits into loans</div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Where the money comes from</h1><span class="tagline">MECHANISM</span></div><div class="sub">A deposit is what the bank <b>owes</b>; a loan is what it <b>owns</b>. The gap between the two rates is its income.</div><div style="flex:1;display:flex;flex-direction:column;justify-content:center"><div style="display:grid;grid-template-columns:1fr 1fr;gap:28px"><div style="display:flex;flex-direction:column;gap:12px"><div style="font-size:22px;font-weight:900;letter-spacing:.06em;color:#12507e">ASSETS · what it owns</div><div style="display:flex;align-items:center;justify-content:space-between;background:#F4FAFF;border-radius:10px;padding:18px 20px"><div style="font-size:22px;color:#15334f">Loans to households</div><div style="font-size:23px;font-weight:800;color:#12507e">4.5%</div></div><div style="display:flex;align-items:center;justify-content:space-between;background:#F4FAFF;border-radius:10px;padding:18px 20px"><div style="font-size:22px;color:#15334f">Loans to firms</div><div style="font-size:23px;font-weight:800;color:#12507e">4.5%</div></div><div style="display:flex;align-items:center;justify-content:space-between;background:#F4FAFF;border-radius:10px;padding:18px 20px"><div style="font-size:22px;color:#15334f">Reserves at the central bank</div><div style="font-size:23px;font-weight:800;color:#12507e">0%</div></div></div><div style="display:flex;flex-direction:column;gap:12px"><div style="font-size:22px;font-weight:900;letter-spacing:.06em;color:#8c2a22">LIABILITIES · what it owes</div><div style="display:flex;align-items:center;justify-content:space-between;background:#FEF6F5;border-radius:10px;padding:18px 20px"><div style="font-size:22px;color:#15334f">Your deposit</div><div style="font-size:23px;font-weight:800;color:#8c2a22">1.5%</div></div><div style="display:flex;align-items:center;justify-content:space-between;background:#FEF6F5;border-radius:10px;padding:18px 20px"><div style="font-size:22px;color:#15334f">Other deposits</div><div style="font-size:23px;font-weight:800;color:#8c2a22">1.2%</div></div><div style="display:flex;align-items:center;justify-content:space-between;background:#FEF6F5;border-radius:10px;padding:18px 20px"><div style="font-size:22px;color:#15334f">Borrowing from other banks</div><div style="font-size:23px;font-weight:800;color:#8c2a22">3%</div></div></div></div><div class="tcard blue" style="margin-top:16px;padding:18px;text-align:center"><p style="font-size:26px;line-height:1.3;color:#12507e">Profit = interest on loans − interest on deposits</p></div></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">What the spread really is in China</h1><span class="tagline">REAL DATA</span></div><div class="sub">Net interest margin (NIM) of Chinese commercial banks — the gap as a share of assets.</div><div style="display:grid;grid-template-columns:1.15fr .85fr;gap:26px;flex:1;min-height:0;align-items:center;margin-top:10px"><div style="display:flex;align-items:flex-end;gap:24px;height:100%;padding-bottom:6px;border-bottom:4px solid #dbe5ee"><div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px"><div style="font-size:24px;font-weight:900;color:#1E88E5">1.69%</div><div style="width:100%;height:210px;background:#BBD9F0;border-radius:10px 10px 0 0"></div><div style="font-size:22px;color:#5b6b7b">2023</div></div><div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px"><div style="font-size:24px;font-weight:900;color:#1E88E5">1.52%</div><div style="width:100%;height:178px;background:#7FB3DC;border-radius:10px 10px 0 0"></div><div style="font-size:22px;color:#5b6b7b">2024</div></div><div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px"><div style="font-size:24px;font-weight:900;color:#1E88E5">1.42%</div><div style="width:100%;height:158px;background:#1E88E5;border-radius:10px 10px 0 0"></div><div style="font-size:22px;color:#5b6b7b">2025</div></div></div><div style="display:flex;flex-direction:column;gap:10px"><div class="tcard" style="padding:12px 16px"><p style="font-size:23px;line-height:1.3;color:#3d4d5c">2025: big banks <b>1.30%</b>, joint-stock <b>1.56%</b>, city <b>1.37%</b>, rural <b>1.60%</b>.</p></div><div class="tcard warn" style="padding:12px 16px"><p style="font-size:23px;line-height:1.3;color:#8c2a22">Ten basis points lost in one year — the spread is <b>thinning</b>, not vanishing.</p></div><div class="tcard" style="padding:12px 16px"><p style="font-size:22px;line-height:1.3;color:#7b8b9b">Source: 国家金融监督管理总局, Q4 2025 banking indicators.</p></div></div></div><div class="band" style="margin-top:10px">Profits still grew 2.3% in 2025 — by lending <b>more</b>, not by charging more</div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Banking without interest</h1><span class="tagline">EXTENSION</span></div><div class="sub">Islamic finance forbids <b>riba</b> — interest. Four ways round it:</div><div style="display:grid;grid-template-columns:1.3fr .7fr;gap:22px;flex:1;min-height:0;margin-top:10px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start"><div class="tcard" style="padding:20px 20px;display:flex;flex-direction:column;justify-content:center;gap:6px"><div style="font-size:25px;font-weight:900;color:#12507e">Murabaha</div><div style="font-size:22px;color:#5b6b7b">cost-plus</div><p style="font-size:22px;line-height:1.28;color:#3d4d5c">The bank buys the goods and resells at a stated mark-up.</p></div><div class="tcard" style="padding:20px 20px;display:flex;flex-direction:column;justify-content:center;gap:6px"><div style="font-size:25px;font-weight:900;color:#12507e">Mudarabah</div><div style="font-size:22px;color:#5b6b7b">profit-sharing</div><p style="font-size:22px;line-height:1.28;color:#3d4d5c">Bank provides capital, firm does the work.</p></div><div class="tcard" style="padding:20px 20px;display:flex;flex-direction:column;justify-content:center;gap:6px"><div style="font-size:25px;font-weight:900;color:#12507e">Musharakah</div><div style="font-size:22px;color:#5b6b7b">partnership</div><p style="font-size:22px;line-height:1.28;color:#3d4d5c">Both put in capital and share the risk.</p></div><div class="tcard" style="padding:20px 20px;display:flex;flex-direction:column;justify-content:center;gap:6px"><div style="font-size:25px;font-weight:900;color:#12507e">Ijara</div><div style="font-size:22px;color:#5b6b7b">leasing</div><p style="font-size:22px;line-height:1.28;color:#3d4d5c">The bank owns the asset and rents it out.</p></div></div><div style="display:flex;flex-direction:column;gap:6px;min-height:0"><img src="images/money/bank_islamic.png" alt="" style="width:100%;flex:1 1 0;min-height:0;object-fit:cover;object-position:center;border-radius:12px"><div style="font-size:22px;color:#8a99a8">Riyadh · a Sharia-compliant market</div></div></div><div class="tcard warn" style="margin-top:12px;padding:14px 18px"><p style="font-size:24px;line-height:1.3;color:#8c2a22">Same three functions, different form — but the saver gets a <b>share of profit</b>, not a fixed rate.</p></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Why a bank run is frightening</h1><span class="tagline">MECHANISM</span></div><div class="sub">A bank keeps only a fraction of deposits as cash — that is how lending works, not fraud.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1;min-height:0;align-items:center;margin-top:8px"><div style="display:flex;flex-direction:column;gap:10px;height:100%;min-height:0"><img src="images/money/bank_baoshang.png" alt="" style="width:100%;flex:1 1 0;min-height:0;object-fit:cover;border-radius:14px"><div class="tcard warn" style="padding:12px 16px"><p style="font-size:22px;line-height:1.3;color:#8c2a22"><b>China, 2019.</b> Baoshang Bank ran out of cash; the PBOC took it over and guaranteed the deposits.</p></div></div><div style="display:flex;flex-direction:column;gap:14px;justify-content:center"><div style="font-size:23px;color:#5b6b7b">Every ¥100 deposited:</div><div style="display:flex;height:74px;border-radius:12px;overflow:hidden"><div style="width:12%;background:#1E88E5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900">12</div><div style="width:88%;background:#E8EEF4;color:#2E4A6B;display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:800">88 lent out</div></div><div class="tcard" style="padding:12px 16px"><p style="font-size:22px;line-height:1.3;color:#3d4d5c">Cash stays liquid; loans come back in years. That is the business model.</p></div><div class="tcard warn" style="padding:14px 16px"><p style="font-size:23px;line-height:1.3;color:#8c2a22">If everyone asks on the <b>same day</b>, the bank is <b>illiquid, not insolvent</b> — so the central bank lends.</p></div></div></div><div class="band" style="margin-top:10px">Confidence, not cash, is what keeps a bank standing</div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">The central bank</h1><span class="tagline">DEFINITION</span></div><div class="defbox2" style="margin-top:8px"><div class="dlabel">DEFINITION</div><p class="dtext">a <b>government-owned</b> bank that runs <b>monetary policy</b> and acts as <b>lender of last resort</b>.</p><p class="dsub">One per country — in China, the People’s Bank of China.</p></div><div style="display:grid;grid-template-columns:1.15fr .85fr;gap:24px;flex:1;min-height:0;margin-top:12px"><div style="display:flex;flex-direction:column;gap:8px;justify-content:center"><div style="display:flex;align-items:flex-start;gap:12px;background:#F7FAFD;border-radius:12px;padding:11px 14px"><div style="font-size:22px;font-weight:900;color:#1E88E5;min-width:26px">1</div><div><div style="font-size:24px;font-weight:800;color:#15334f;line-height:1.2">Issues notes and coins</div><div style="font-size:22px;color:#5b6b7b;line-height:1.2">the only source of cash</div></div></div><div style="display:flex;align-items:flex-start;gap:12px;background:#F7FAFD;border-radius:12px;padding:11px 14px"><div style="font-size:22px;font-weight:900;color:#1E88E5;min-width:26px">2</div><div><div style="font-size:24px;font-weight:800;color:#15334f;line-height:1.2">Banker to the government</div><div style="font-size:22px;color:#5b6b7b;line-height:1.2">taxes in, spending out</div></div></div><div style="display:flex;align-items:flex-start;gap:12px;background:#F7FAFD;border-radius:12px;padding:11px 14px"><div style="font-size:22px;font-weight:900;color:#1E88E5;min-width:26px">3</div><div><div style="font-size:24px;font-weight:800;color:#15334f;line-height:1.2">Banker to the banks</div><div style="font-size:22px;color:#5b6b7b;line-height:1.2">they settle with each other here</div></div></div><div style="display:flex;align-items:flex-start;gap:12px;background:#F7FAFD;border-radius:12px;padding:11px 14px"><div style="font-size:22px;font-weight:900;color:#1E88E5;min-width:26px">4</div><div><div style="font-size:24px;font-weight:800;color:#15334f;line-height:1.2">Lender of last resort</div><div style="font-size:22px;color:#5b6b7b;line-height:1.2">lends when nobody else will</div></div></div><div style="display:flex;align-items:flex-start;gap:12px;background:#F7FAFD;border-radius:12px;padding:11px 14px"><div style="font-size:22px;font-weight:900;color:#1E88E5;min-width:26px">5</div><div><div style="font-size:24px;font-weight:800;color:#15334f;line-height:1.2">Sets the interest rate</div><div style="font-size:22px;color:#5b6b7b;line-height:1.2">monetary policy</div></div></div></div><img src="images/money/bank_pboc.png" alt="" style="width:100%;height:100%;min-height:0;object-fit:cover;border-radius:12px"></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">The Hong Kong exception</h1><span class="tagline">CASE</span></div><div class="sub">No central bank of its own — yet a currency that works.</div><div style="display:grid;grid-template-columns:.95fr 2.05fr;gap:24px;flex:1;min-height:0;align-items:center;margin-top:8px"><div style="display:flex;flex-direction:column;gap:12px"><div class="tcard" style="padding:14px 16px"><div style="font-size:22px;font-weight:900;color:#12507e">HKMA acts as the central bank</div><p style="font-size:22px;line-height:1.3;color:#3d4d5c;margin-top:4px">Runs monetary policy and supervises banks — a currency board, not a central bank.</p></div><div class="tcard" style="padding:14px 16px"><div style="font-size:22px;font-weight:900;color:#12507e">The dollar is pegged</div><p style="font-size:22px;line-height:1.3;color:#3d4d5c;margin-top:4px">HK$7.75–7.85 to US$1 since 1983 — the peg, not a rate decision, is the anchor.</p></div></div><div style="display:flex;flex-direction:column;gap:8px"><img id="noteA" src="images/money/bank_hknote2.png" onclick="flipNote()" alt="" style="width:100%;height:390px;object-fit:contain;cursor:pointer;border-radius:10px"><img id="noteB" src="images/money/bank_hknote.png" onclick="flipNote()" alt="" style="width:100%;height:390px;object-fit:contain;display:none;border-radius:10px"><div id="noteCap" style="font-size:22px;color:#8a6b12;text-align:center">Bank of China (Hong Kong) — tap to flip</div></div></div><div class="band" style="margin-top:10px">Formally certificates of indebtedness; in practice just money</div><script>var nf=0;function flipNote(){nf=1-nf;document.getElementById("noteA").style.display=nf?"none":"block";document.getElementById("noteB").style.display=nf?"block":"none";document.getElementById("noteCap").textContent=nf?"Issued by Bank of China (Hong Kong) — tap to flip":"Issued by HSBC — tap to flip";}</script></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Commercial vs central bank</h1><span class="tagline">COMPARISON</span></div><div class="sub">Same word, different owners, different customers, different purpose.</div><div style="display:flex;flex-direction:column;gap:5px;flex:1;margin-top:10px"><div style="display:grid;grid-template-columns:.85fr 1.15fr 1.15fr;gap:4px"><div style="background:#F7FAFD;border-radius:10px 10px 0 0"></div><div style="padding:10px 18px;background:#DCEBFA;border-radius:10px 10px 0 0;font-size:23px;font-weight:900;letter-spacing:.06em;color:#12507e">COMMERCIAL</div><div style="padding:10px 18px;background:#FBE3E0;border-radius:10px 10px 0 0;font-size:23px;font-weight:900;letter-spacing:.06em;color:#8c2a22">CENTRAL</div></div><div style="flex:1;display:grid;grid-template-columns:.85fr 1.15fr 1.15fr;gap:4px;align-items:stretch"><div style="display:flex;align-items:center;padding:26px 20px;font-size:23px;color:#7b8b9b;background:#F7FAFD;border-radius:0">Owned by</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#F4FAFF;border-radius:0">shareholders</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#FEF6F5;border-radius:0">the state</div></div><div style="flex:1;display:grid;grid-template-columns:.85fr 1.15fr 1.15fr;gap:4px;align-items:stretch"><div style="display:flex;align-items:center;padding:26px 20px;font-size:23px;color:#7b8b9b;background:#F7FAFD;border-radius:0">Customers</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#F4FAFF;border-radius:0">households and firms</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#FEF6F5;border-radius:0">the government and the banks</div></div><div style="flex:1;display:grid;grid-template-columns:.85fr 1.15fr 1.15fr;gap:4px;align-items:stretch"><div style="display:flex;align-items:center;padding:26px 20px;font-size:23px;color:#7b8b9b;background:#F7FAFD;border-radius:0">Motive</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#F4FAFF;border-radius:0">profit</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#FEF6F5;border-radius:0">public policy</div></div><div style="flex:1;display:grid;grid-template-columns:.85fr 1.15fr 1.15fr;gap:4px;align-items:stretch"><div style="display:flex;align-items:center;padding:26px 20px;font-size:23px;color:#7b8b9b;background:#F7FAFD;border-radius:0">Main job</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#F4FAFF;border-radius:0">take deposits, make loans</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#FEF6F5;border-radius:0">issue cash, set the interest rate</div></div><div style="flex:1;display:grid;grid-template-columns:.85fr 1.15fr 1.15fr;gap:4px;align-items:stretch"><div style="display:flex;align-items:center;padding:26px 20px;font-size:23px;color:#7b8b9b;background:#F7FAFD;border-radius:10px 10px 0 0">If it fails</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#F4FAFF;border-radius:10px 10px 0 0">depositors may lose money</div><div style="padding:26px 20px;font-size:22px;color:#15334f;background:#FEF6F5;border-radius:10px 10px 0 0">the currency loses trust</div></div></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Sort it: which bank?</h1><span class="tagline">GAME</span></div><div class="sub">Eight situations — drop each one into a column. It stays there.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;min-height:0;margin-top:8px;grid-template-rows:1fr;align-content:stretch"><div style="display:flex;flex-direction:column;gap:6px;min-height:0"><div style="font-size:25px;font-weight:900;color:#12507e;border-bottom:4px solid #1E88E5;padding-bottom:4px">COMMERCIAL</div><div id="binC" style="flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:6px;background:#F8FBFE;border:3px dashed #cfdbe8;border-radius:12px;padding:8px"><div class="ph" style="font-size:22px;color:#b0bcc8;text-align:center;margin-top:18px">cards land here</div></div></div><div style="display:flex;flex-direction:column;gap:6px;min-height:0"><div style="font-size:25px;font-weight:900;color:#8c2a22;border-bottom:4px solid #C62828;padding-bottom:4px">CENTRAL</div><div id="binB" style="flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:6px;background:#FEFBFA;border:3px dashed #ecd6d2;border-radius:12px;padding:8px"><div class="ph" style="font-size:22px;color:#d8c3bf;text-align:center;margin-top:18px">cards land here</div></div></div></div><div id="gcard" style="margin-top:12px;flex:0 0 auto;background:#F7FAFD;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:16px"><div id="gmeta" style="font-size:23px;color:#7b8b9b;min-width:70px">1 / 8</div><div id="gtext" style="flex:1;font-size:29px;line-height:1.3;color:#15334f"></div><div id="gscore" style="font-size:23px;color:#7b8b9b">0 / 0</div></div><div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-top:10px"><button id="gC" class="big-btn" style="font-size:26px;padding:14px">→ Commercial</button><button id="gB" class="big-btn" style="font-size:26px;padding:14px;background:#FEF6F5;color:#8c2a22;border:2px solid #C62828">→ Central</button><button id="gR" class="big-btn ghost" style="font-size:22px;padding:12px 18px">Restart</button></div><script>var GI=[["A firm wants an overdraft to cover wages.", "C"], ["The government needs an account for tax receipts.", "B"], ["Shops need more \u00a5100 notes before a holiday.", "C"], ["You want a mortgage for a flat.", "C"], ["One bank cannot settle with another today.", "B"], ["Nobody will lend to a bank in trouble.", "B"], ["A student opens a savings account.", "C"], ["The interest rate for the whole economy is set.", "B"]];var gi=0,gs=0;function gShow(){if(gi>=GI.length){document.getElementById("gmeta").textContent="DONE";document.getElementById("gtext").textContent="All eight sorted — press Restart";return;}document.getElementById("gmeta").textContent=(gi+1)+" / "+GI.length;document.getElementById("gtext").textContent=GI[gi][0];}function gPick(k){if(gi>=GI.length)return;var item=GI[gi],ok=(k===item[1]);if(ok)gs++;var ph=document.querySelectorAll(".ph");for(var q=0;q<ph.length;q++){ph[q].remove();}var bin=document.getElementById(k==="C"?"binC":"binB");var chip=document.createElement("div");chip.style.cssText="font-size:22px;line-height:1.28;padding:8px 11px;border-radius:8px;"+(ok?"background:#EAF5EC;color:#1d5c37":"background:#FDECEA;color:#8c2a22");chip.textContent=(ok?"✓ ":"✗ ")+item[0];bin.appendChild(chip);document.getElementById("gscore").textContent=gs+" / "+(gi+1);gi++;gShow();}window.addEventListener("DOMContentLoaded",function(){if(!document.getElementById("gcard"))return;gShow();document.getElementById("gC").onclick=function(){gPick("C");};document.getElementById("gB").onclick=function(){gPick("B");};document.getElementById("gR").onclick=function(){gi=0;gs=0;document.getElementById("binC").innerHTML="";document.getElementById("binB").innerHTML="";document.getElementById("gscore").textContent="0 / 0";gShow();};});</script></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Six sentences that cover 3.1</h1><span class="tagline">SUMMARY</span></div><div class="sub">Say the answer first, then click the gap.</div><div style="display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center;margin-top:8px"><div style="display:flex;align-items:baseline;gap:8px;background:#F7FAFD;border-radius:10px;padding:11px 16px;font-size:23px;line-height:1.4;color:#3d4d5c"><span style="color:#b0bcc8;font-size:22px;min-width:22px">1</span><div>A commercial bank aims to make a <span class="fill" data-ans="profit" data-w="110" onclick="rev(this)" style="display:inline-block;min-width:110px;border-bottom:3px solid #1E88E5;color:#1E88E5;font-weight:800;cursor:pointer;text-align:center">&nbsp;</span> by providing banking services.</div></div><div style="display:flex;align-items:baseline;gap:8px;background:#F7FAFD;border-radius:10px;padding:11px 16px;font-size:23px;line-height:1.4;color:#3d4d5c"><span style="color:#b0bcc8;font-size:22px;min-width:22px">2</span><div>Its main functions are to accept <span class="fill" data-ans="deposits" data-w="120" onclick="rev(this)" style="display:inline-block;min-width:120px;border-bottom:3px solid #1E88E5;color:#1E88E5;font-weight:800;cursor:pointer;text-align:center">&nbsp;</span>, make loans and enable payments.</div></div><div style="display:flex;align-items:baseline;gap:8px;background:#F7FAFD;border-radius:10px;padding:11px 16px;font-size:23px;line-height:1.4;color:#3d4d5c"><span style="color:#b0bcc8;font-size:22px;min-width:22px">3</span><div>A central bank is <span class="fill" data-ans="government-owned" data-w="210" onclick="rev(this)" style="display:inline-block;min-width:210px;border-bottom:3px solid #1E88E5;color:#1E88E5;font-weight:800;cursor:pointer;text-align:center">&nbsp;</span> and operates monetary policy.</div></div><div style="display:flex;align-items:baseline;gap:8px;background:#F7FAFD;border-radius:10px;padding:11px 16px;font-size:23px;line-height:1.4;color:#3d4d5c"><span style="color:#b0bcc8;font-size:22px;min-width:22px">4</span><div>Only the central bank may <span class="fill" data-ans="issue notes and coins" data-w="260" onclick="rev(this)" style="display:inline-block;min-width:260px;border-bottom:3px solid #1E88E5;color:#1E88E5;font-weight:800;cursor:pointer;text-align:center">&nbsp;</span>.</div></div><div style="display:flex;align-items:baseline;gap:8px;background:#F7FAFD;border-radius:10px;padding:11px 16px;font-size:23px;line-height:1.4;color:#3d4d5c"><span style="color:#b0bcc8;font-size:22px;min-width:22px">5</span><div>It is the banker to the <span class="fill" data-ans="government" data-w="160" onclick="rev(this)" style="display:inline-block;min-width:160px;border-bottom:3px solid #1E88E5;color:#1E88E5;font-weight:800;cursor:pointer;text-align:center">&nbsp;</span> and to the commercial banks.</div></div><div style="display:flex;align-items:baseline;gap:8px;background:#F7FAFD;border-radius:10px;padding:11px 16px;font-size:23px;line-height:1.4;color:#3d4d5c"><span style="color:#b0bcc8;font-size:22px;min-width:22px">6</span><div>When no one else will lend, it acts as <span class="fill" data-ans="lender of last resort" data-w="270" onclick="rev(this)" style="display:inline-block;min-width:270px;border-bottom:3px solid #1E88E5;color:#1E88E5;font-weight:800;cursor:pointer;text-align:center">&nbsp;</span>.</div></div></div><div style="display:flex;justify-content:center;gap:14px;margin-top:8px"><button id="fnext" class="big-btn" style="font-size:22px;padding:8px 20px">Next gap ▶</button><button id="fall" class="big-btn ghost" style="font-size:22px;padding:8px 20px">Reveal all</button></div><script>var fi=0,fall=false;function rev(el){el.textContent=el.dataset.ans;el.style.color="#12507e";el.style.borderBottomColor="#12507e";}function hide(el){el.innerHTML="&nbsp;";el.style.color="#1E88E5";el.style.borderBottomColor="#1E88E5";}function nextGap(){var a=document.querySelectorAll(".fill");if(fi>=a.length){fi=0;return;}rev(a[fi]);fi++;}function toggleAll(){var a=document.querySelectorAll(".fill");fall=!fall;a.forEach(function(e){fall?rev(e):hide(e);});document.getElementById("fall").textContent=fall?"Hide all":"Reveal all";}window.addEventListener("DOMContentLoaded",function(){if(!document.getElementById("fnext"))return;document.getElementById("fnext").onclick=nextGap;document.getElementById("fall").onclick=toggleAll;});</script></div></div><div class="slide "><div class="content" style="padding-bottom:0"><div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center"><h1 style="border:0;padding:0;text-align:center;font-size:clamp(44px,5vw,68px)">Thank you</h1><div style="font-size:26px;color:#5b6b7b;margin-top:12px">Any questions?</div><div style="width:120px;height:6px;background:#1E88E5;border-radius:3px;margin:22px auto"></div><div style="font-size:24px;color:#2E4A6B">Next · <b>3.2</b> — households and saving</div></div></div></div>
+</div>
+<div class="nav" style="position:fixed;z-index:9999;pointer-events:auto"><button id="prevBtn" onclick="go(CUR-1)">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy" style="margin-right:14px">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 12</span><button id="nextBtn" onclick="go(CUR+1)">▶</button></div></div>
+<script>
+var SL = [], CUR = 0;
+function go(i){
+  if(!SL.length){ SL = Array.prototype.slice.call(document.querySelectorAll('.slide')); }
+  if(i < 0 || i >= SL.length) return;
+  SL[CUR].classList.remove('active');
+  CUR = i;
+  SL[CUR].classList.add('active');
+  var d = document.getElementById('dots').children;
+  for(var k = 0; k < d.length; k++) d[k].className = (k === CUR ? 'on' : '');
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SL.length;
+}
+function initDeck(){
+  SL = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SL.forEach(function(_, i){
+    var sp = document.createElement('span');
+    sp.className = (i === 0 ? 'on' : '');
+    sp.onclick = function(){ go(i); };
+    dots.appendChild(sp);
+  });
+  var q = location.search.replace('?', '').split('&'), want = 0;
+  for(var i = 0; i < q.length; i++){
+    var kv = q[i].split('=');
+    if(kv[0] === 's' && kv[1]) want = parseInt(kv[1], 10) || 0;
+  }
+  go(want);
+  var pb = document.getElementById('prevBtn'), nb = document.getElementById('nextBtn');
+  if(pb) pb.onclick = function(){ go(CUR - 1); };
+  if(nb) nb.onclick = function(){ go(CUR + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight') go(CUR + 1);
+    if(e.key === 'ArrowLeft') go(CUR - 1);
+  });
+  var qb = document.getElementById('qaBtn');
+  if(qb) qb.addEventListener('click', function(){
+    var box = document.getElementById('qa');
+    box.classList.toggle('show');
+    qb.textContent = box.classList.contains('show') ? 'Hide answers' : 'Show answers';
+  });
+}
+
+var QS = [
+  ["A shop prices a sandwich at ¥12.", "U", "Prices quoted in one unit — nothing is being paid yet."],
+  ["You keep ¥500 for next term.", "S", "Held to be spent later — that is storing value."],
+  ["You pay ¥12 for the sandwich.", "M", "The note is accepted by the shop — exchange."],
+  ["A firm agrees to pay in 60 days.", "D", "The debt is fixed in money and settled later."],
+  ["Two cars are priced ¥80,000 and ¥120,000.", "U", "Two prices, one unit, immediately comparable."],
+  ["You borrow ¥3,000 and repay ¥3,300 next year.", "D", "Principal and interest both fixed now."]
+];
+var qI = 0, qDone = false;
+function qRender(){
+  var q = QS[qI];
+  document.getElementById('qmeta').textContent = 'QUESTION ' + (qI + 1) + ' OF ' + QS.length;
+  document.getElementById('qtext').textContent = q[0];
+  document.getElementById('qfeed').textContent = '';
+  var box = document.getElementById('qopts');
+  box.innerHTML = '';
+  [['M','Medium of exchange'],['U','Unit of account'],['S','Store of value'],
+   ['D','Standard for deferred payment']].forEach(function(p){
+    var b = document.createElement('button');
+    b.className = 'big-btn ghost';
+    b.style.fontSize = '21px'; b.style.padding = '10px 14px'; b.style.textAlign = 'left';
+    b.innerHTML = '<b>' + p[0] + '</b> · ' + p[1];
+    b.onclick = function(){
+      if(qDone) return;
+      qDone = true;
+      var ok = (p[0] === q[1]);
+      document.getElementById('qfeed').innerHTML = (ok ? '✓ ' : '✗ ') + q[2];
+      document.getElementById('qfeed').style.color = ok ? '#1d5c37' : '#8c2a22';
+      b.style.borderColor = ok ? '#2E7D32' : '#C62828';
+    };
+    box.appendChild(b);
+  });
+  qDone = false;
+  document.getElementById('qnext').textContent = (qI === QS.length - 1) ? 'Restart' : 'Next ▶';
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  initDeck();
+  var box = document.getElementById('qbox');
+  if(box){
+    qRender();
+    document.getElementById('qnext').onclick = function(){
+      qI = (qI + 1) % QS.length; qRender();
+    };
+    document.getElementById('qreset').onclick = function(){ qI = 0; qRender(); };
+  }
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>

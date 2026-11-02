@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 3.1a - Money</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:21px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:20px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(20px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(20px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:20px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(20px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(20px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(20px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(20px,1.35vw,20px);}
+.zone .zt{width:100%;font-size:clamp(20px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:20px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:20px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:20px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:20px;}
+.chip.small{font-size:20px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(20px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:20px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+.slide{padding:2px 40px 92px;}
+
+.slide .content{margin-left:auto !important;margin-right:auto !important;
+  max-width:1340px !important;}
+
+
+.slide .content h1{font-size:clamp(26px,2.5vw,29px) !important;line-height:1.2;}
+.defbox{padding:6px 14px !important;}
+.defbox p{font-size:21px !important;line-height:1.35 !important;}
+.band{padding:6px 18px !important;}
+
+.lead, .note p, .sub, .band{line-height:1.26 !important;}
+.defbox p{line-height:1.28 !important;}
+.band{padding:4px 14px !important;margin-top:4px !important;}
+
+.big{font-size:clamp(24px,2.2vw,26px) !important;line-height:1.25 !important;}
+.lead{line-height:1.28 !important;}
+
+.slide .content{justify-content:center;}
+.slide .content > h1{margin-top:0;margin-bottom:2px;}
+.slide .content p[style*="font-size:24px"]{font-size:clamp(24px,2.1vw,29px) !important;line-height:1.3 !important;}
+.slide .content h1{font-size:clamp(30px,3vw,44px) !important;letter-spacing:-.01em;padding-left:14px;border-left:7px solid #1E88E5;line-height:1.1;}
+.defbox2{background:#F4FAFF;border-left:8px solid #1E88E5;
+  border-radius:10px;padding:10px 16px;}
+.dlabel{font-size:20px;letter-spacing:.18em;color:#7b9ec4;font-weight:800;}
+.dtext{font-size:27px;font-weight:700;color:#15334f;line-height:1.25;margin-top:3px;}
+.dsub{font-size:21px;font-style:italic;color:#5b6b7b;line-height:1.3;margin-top:5px;}
+.tagline{font-size:20px;letter-spacing:.14em;color:#1E88E5;font-weight:800;border:2px solid #bcd9f5;border-radius:999px;padding:2px 12px;}
+.tcard{background:#F7FAFD;border-left:5px solid #dbe5ee;border-radius:10px;padding:9px 15px;}
+.tcard.warn{background:#FEF6F5;border-left-color:#f0c9c4;}
+.tcard.blue{background:#F4FAFF;border-left-color:#bcd9f5;}
+.slide .content h1{width:auto !important;}
+.slide .content > div:first-child{flex:0 0 auto;}
+.slide .content > .sub{margin-top:0;margin-bottom:0 !important;}
+.band{margin-top:6px !important;padding:5px 16px !important;}
+
+.slide .content{justify-content:flex-start !important;padding-top:10px;}
+.slide .content > div{min-height:0;}
+.slide .content img{max-height:none;}
+
+.lead, .note p, .qfb, .sub, .band{font-size:clamp(24px,2.15vw,30px) !important;line-height:1.34;}
+.band{width:100%;border-radius:12px;padding:10px 22px;background:#14304d;color:#fff;
+  font-weight:700;text-align:center;}
+.defbox{width:100%;border-radius:12px;border:3px solid #1E88E5;background:#F4FAFF;padding:10px 16px;}
+.defbox p{font-size:clamp(24px,1.85vw,24px);line-height:1.42;color:#15334f;}
+.defbox b.k{color:#12507e;}
+.fn{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;width:100%;}
+.fn .item{border-left:6px solid #1E88E5;padding:8px 14px;background:#F9FBFD;border-radius:8px;}
+.fn h4{font-size:clamp(24px,1.9vw,24px);color:#12507e;margin-bottom:3px;}
+.fn p{font-size:clamp(24px,1.75vw,24px);line-height:1.35;color:#4a5b6b;}
+.q{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;width:100%;}
+.q .row{display:flex;gap:10px;align-items:baseline;font-size:clamp(24px,1.8vw,24px);color:#3d4d5c;}
+.q .row b{color:#2E4A6B;}
+.ans{color:#12507e;font-weight:800;opacity:0;transition:opacity .3s;}
+.q.show .ans{opacity:1;}
+table.tick{width:100%;border-collapse:collapse;}
+table.tick th,table.tick td{border-bottom:1px solid #e2ecf6;padding:11px 13px;
+  font-size:clamp(24px,1.85vw,24px);text-align:center;color:#3d4d5c;line-height:1.35;}
+table.tick th{color:#12507e;font-weight:800;background:#F4FAFF;}
+table.tick td.l{text-align:left;}
+.big{font-size:clamp(26px,2.6vw,32px);font-weight:900;color:#12507e;line-height:1.2;}
+.tl{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;margin-top:4px;}
+.tl .stop{text-align:center;border-top:5px solid #1E88E5;padding-top:8px;}
+.tl .stop:nth-child(even){border-top-color:#2E7D32;}
+.tl .yr{font-size:20px;font-weight:800;color:#12507e;}
+.tl .nm{font-size:clamp(24px,1.6vw,24px);color:#3d4d5c;line-height:1.25;margin-top:2px;}
+.tl .fx{font-size:20px;color:#7b8b9b;line-height:1.2;margin-top:4px;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 3: Microeconomic decision-makers</div><h1>Money</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div style="position:absolute;bottom:110px;left:0;right:0;text-align:center;font-size:20px;color:#94a3b3">Lesson 1 of 2 · four functions, seven tests, and what money is becoming</div><div class="botbar"></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Adam Smith’s guess</h1><span class="tagline">BEFORE MONEY</span></div><div class="sub">In 1776 he asked how people traded before money — and answered: by barter.</div><div style="display:grid;grid-template-columns:1fr 2fr;gap:26px;flex:1;min-height:0;align-items:center;margin-top:8px"><img src="images/money/smith.png" alt="" style="width:100%;height:auto;max-height:100%;object-fit:contain;border-radius:10px"><div style="display:flex;flex-direction:column;gap:12px;justify-content:center"><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#15334f">“When the division of labour first began, this power of exchanging must have been very much clogged… one man wants to buy, and another wants to sell, and they cannot.”</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>His picture:</b> goods straight for goods — the fish to whoever had shoes.</p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22"><b>The catch:</b> that needs a perfect match.</p></div><div class="tcard blue"><p style="font-size:24px;line-height:1.26;color:#12507e"><b>His fix:</b> money — what it does, from the next page.</p></div></div></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Medium of exchange</h1><span class="tagline">FUNCTION 1 OF 4</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;flex:1;min-height:0;align-items:stretch;margin-top:10px"><div style="display:flex;flex-direction:column;gap:12px;justify-content:center"><div class="defbox2"><div class="dlabel">DEFINITION</div><p class="dtext">generally acceptable <b>for buying and selling</b>.</p><p class="dsub">One thing everybody takes — so the trade splits into two easy halves.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c">Under barter one person must want your fish <b>and</b> have shoes. With money you sell to anyone, then buy from anyone else.</p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22">Without it, trade stops at your neighbours.</p></div></div><div style="min-height:0;display:flex;align-items:stretch"><img src="images/money/fit_bu.png" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:10px"></div></div><div class="band" style="margin-top:10px"><b style="color:#fff">IN PRACTICE · </b>A shovel was the tool everyone used and wore out fast, so everyone would take one — and Chinese <b>bu coins</b> kept its shape long after the tool was gone.</div></div></div><div class="slide "><div class="content"><div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:stretch;flex:1;min-height:0"><div style="display:flex;flex-direction:column;gap:12px;justify-content:center"><div style="display:flex;align-items:baseline;gap:14px"><h1 style="margin:0">Unit of account</h1><span style="font-size:20px;letter-spacing:.12em;color:#1E88E5;font-weight:800">FUNCTION 2 OF 4</span></div><div class="defbox2"><div class="dlabel">DEFINITION</div><p class="dtext">it <b>places a value on an item</b> so prices can be expressed and compared.</p><p class="dsub">One measuring rod — instead of a price for every pair of goods.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c">Under barter every price must be quoted in every other good: 10 goods give <b>45</b> ratios, 100 goods give <b>4,950</b>.</p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22">Without it buyers cannot compare, and a firm cannot add up what it owns.</p></div></div><div style="display:flex;align-items:center"><div style="width:100%;background:#FFFCF3;border:2px solid #E2D9C2;border-radius:8px;box-shadow:0 8px 20px rgba(40,30,10,.16);padding:12px 16px;font-family:Georgia,'Times New Roman',serif"><div style="text-align:center;font-size:20px;letter-spacing:.26em;color:#8a7a5c;font-weight:700">THE MORNING CUP</div><div style="text-align:center;font-size:20px;color:#b0a184">coffee &amp; bread · since 2019</div><div style="height:1px;background:#D9CFB6;margin:8px 0 6px"></div><div style="display:flex;align-items:baseline;font-size:24px;color:#3d3527"><span>Espresso</span><span style="flex:1;border-bottom:1px dotted #C6BB9E;margin:0 8px"></span><span>¥18</span></div><div style="display:flex;align-items:baseline;font-size:24px;color:#3d3527;margin-top:4px"><span>Latte</span><span style="flex:1;border-bottom:1px dotted #C6BB9E;margin:0 8px"></span><span>¥26</span></div><div style="display:flex;align-items:baseline;font-size:24px;color:#3d3527;margin-top:4px"><span>Sandwich</span><span style="flex:1;border-bottom:1px dotted #C6BB9E;margin:0 8px"></span><span>¥22</span></div><div style="height:1px;background:#D9CFB6;margin:8px 0 6px"></div><div style="text-align:center;font-size:20px;color:#a99a7d;font-style:italic">every price in one unit</div></div></div></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Store of value</h1><span class="tagline">FUNCTION 3 OF 4</span></div><div class="defbox2" style="margin-top:10px"><div class="dlabel">DEFINITION</div><p class="dtext">it can be <b>saved</b> and remain acceptable for spending later.</p><p class="dsub">Value you can carry forward — earn now, spend later.</p></div><div style="display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center;margin-top:18px"><div class="tcard" style="padding:16px 20px"><p style="font-size:26px;line-height:1.32;color:#3d4d5c">Income arrives in lumps; spending is continuous — money bridges the gap. <b style="color:#8c2a22">Without it, everyone spends at once or hoards goods that decay.</b></p></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:36px;max-width:1040px;height:300px;margin:20px auto"><div class="tcard warn" style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:100%"><div style="font-size:64px;line-height:1">🐟</div><div style="font-size:22px;color:#8c2a22;font-weight:700;text-align:center">fish rots in days</div></div><div class="tcard warn" style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:100%"><div style="font-size:64px;line-height:1">🌾</div><div style="font-size:22px;color:#8c2a22;font-weight:700;text-align:center">grain spoils</div></div><div class="tcard warn" style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:100%"><div style="font-size:64px;line-height:1">🐄</div><div style="font-size:22px;color:#8c2a22;font-weight:700;text-align:center">cattle die</div></div></div></div><div class="band" style="margin-top:10px"><b style="color:#fff">IN PRACTICE · </b>A deposit kept for next term’s fees — unless prices run away from it.</div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Standard for deferred payment</h1><span class="tagline">FUNCTION 4 OF 4</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;flex:1;min-height:0;align-items:stretch;margin-top:10px"><div style="display:flex;flex-direction:column;gap:12px;justify-content:center"><div class="defbox2"><div class="dlabel">DEFINITION</div><p class="dtext">it allows people to <b>borrow now and repay later</b>.</p><p class="dsub">A debt written in money — borrow today, repay the same number later.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c">Lending needs a unit that keeps its meaning. Borrow three sacks of rice and repay three sacks: if the harvest doubles, the loan changed without anyone agreeing to it.</p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22">Credit disappears at once.</p></div></div><div style="min-height:0;display:flex;align-items:stretch"><img src="images/money/fit_deferred.png" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:10px"></div></div><div class="band" style="margin-top:10px"><b style="color:#fff">IN PRACTICE · </b>A ¥3,000 loan repaid as ¥3,300 next year — both sums fixed at the start.</div></div></div><div class="slide "><div class="content"><h1>Which function is at work?</h1><div class="sub">One at a time — choose, then check.</div><div id="qbox" style="margin-top:14px"><div class="qmeta" id="qmeta" style="font-size:20px;color:#7b8b9b;letter-spacing:.08em">QUESTION 1 OF 6</div><p id="qtext" style="font-size:clamp(24px,2.4vw,30px);line-height:1.35;color:#15334f;margin-top:8px;min-height:86px">A shop prices a sandwich at ¥12.</p><div id="qopts" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px"></div><div id="qfeed" style="font-size:21px;line-height:1.4;color:#2E4A6B;margin-top:14px;min-height:60px"></div></div><div class="row" style="gap:12px;margin-top:14px"><button class="big-btn" id="qnext" style="min-width:150px">Next ▶</button><button class="big-btn ghost" id="qreset">Start again</button><div class="qfb" style="margin:0">M exchange · U account · S value · D deferred</div></div></div></div><div class="slide "><div class="content"><h1>Money has a history</h1><div class="sub">Each form solved a problem the last one could not — step through them.</div><div id="a1" style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1;min-height:0;align-items:start;margin-top:6px"><div style="height:100%;display:flex;align-items:center"><img class="a1-img" data-i="0" src="images/money/fit_commodity.png" alt="" style="display:block;width:100%;height:430px;object-fit:contain;border-radius:10px"><img class="a1-img" data-i="1" src="images/money/fit_coinfirst.png" alt="" style="display:none;width:100%;height:430px;object-fit:contain;border-radius:10px"><img class="a1-img" data-i="2" src="images/money/fit_paper.png" alt="" style="display:none;width:100%;height:430px;object-fit:contain;border-radius:10px"><img class="a1-img" data-i="3" src="images/money/fit_rmb.png" alt="" style="display:none;width:100%;height:430px;object-fit:contain;border-radius:10px"></div><div style="display:flex;flex-direction:column;gap:8px"><div class="a1-txt" data-i="0" style="padding:8px 14px;border-left:6px solid #1E88E5;border-radius:8px;background:#F4FAFF"><div style="font-size:22px;font-weight:900;color:#12507e">before coins</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">Shells, salt, cloth. Accepted, but impossible to cut into change.</p></div><div class="a1-txt" data-i="1" style="padding:8px 14px;border-left:6px solid #e2ecf6;border-radius:8px;background:transparent"><div style="font-size:22px;font-weight:900;color:#8a99a8">c.600 BC · Lydia</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">A stamp on weighed metal. Portable and homogeneous at last.</p></div><div class="a1-txt" data-i="2" style="padding:8px 14px;border-left:6px solid #e2ecf6;border-radius:8px;background:transparent"><div style="font-size:22px;font-weight:900;color:#8a99a8">Song China · jiaozi</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">Paper for large sums. Light to carry, but it needs trust.</p></div><div class="a1-txt" data-i="3" style="padding:8px 14px;border-left:6px solid #e2ecf6;border-radius:8px;background:transparent"><div style="font-size:22px;font-weight:900;color:#8a99a8">today</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">Notes, cards, phones. Fast and cheap — and almost no metal at all.</p></div><div class="row" style="gap:10px;margin-top:4px"><button class="big-btn ghost" onclick="a1Go(-1)" style="min-width:60px">◀</button><button class="big-btn ghost" onclick="a1Go(1)" style="min-width:60px">▶</button><span id="a1-num" style="font-size:20px;color:#7b8b9b">1 / 4</span></div><p style="font-size:20px;color:#2E4A6B;margin-top:4px">Every new form wins on one attribute and <b>trades away another</b>.</p></div></div><script>var a1n=0;function a1Go(d){var box=document.getElementById("a1");var n=box.querySelectorAll(".a1-img"),t=box.querySelectorAll(".a1-txt");a1n=(a1n+d+n.length)%n.length;for(var i=0;i<n.length;i++){n[i].style.display=(i===a1n)?"block":"none";t[i].style.borderLeftColor=(i===a1n)?"#1E88E5":"#e2ecf6";t[i].style.background=(i===a1n)?"#F4FAFF":"transparent";t[i].querySelector("div").style.color=(i===a1n)?"#12507e":"#8a99a8";}document.getElementById("a1-num").textContent=(a1n+1)+" / "+n.length;}</script></div></div><div class="slide "><div class="content"><h1>A coin is a promise about metal</h1><div class="sub">Weighing silver and trusting a stamp are two different things.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;min-height:0;align-items:stretch;margin-top:6px"><img src="images/money/fit_unit.png" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:10px"><div style="display:flex;flex-direction:column;gap:10px;justify-content:center"><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>Metal as money:</b> value = weight × purity — every trade needs a scale.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>Metal as a coin:</b> value = <b>face value</b> — the mint guarantees the metal.</p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22"><b>The risk:</b> clip the edges and the stamp becomes a lie.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#7b8b9b"><b>Gresham:</b> bad money drives out good.</p></div></div></div></div></div><div class="slide "><div class="content"><h1>Newton and the recoinage</h1><div class="sub">1696: silver worth less than its coin.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;min-height:0;align-items:stretch;margin-top:6px"><div style="display:flex;flex-direction:column;gap:10px;justify-content:center"><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>The problem.</b> People clipped the edges — the metal was worth having.</p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22"><b>The result.</b> Full-weight coins were hoarded; clipped ones stayed.</p></div><div class="tcard blue"><p style="font-size:24px;line-height:1.26;color:#12507e"><b>The fix.</b> Re-mint at full weight with <b>milled edges</b>.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#15334f"><b>So: no intrinsic value is a feature.</b></p></div></div><div style="display:flex;flex-direction:column;gap:10px;min-height:0"><img src="images/money/newton.png" alt="" style="width:100%;flex:1 1 0;min-height:0;object-fit:contain;border-radius:8px"><img src="images/money/fit_rim.png" alt="" style="width:100%;flex:1 1 0;min-height:0;object-fit:contain;border-radius:8px"></div></div></div></div><div class="slide "><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="margin:0">Seven things money must be</h1><span class="tagline">CHARACTERISTICS</span></div><div class="sub">Miss one and the item stops working as money — the small line gives the failure behind it.</div><div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:14px;flex:1;min-height:0;margin-top:10px"><div style="background:#F4FAFF;border-left:7px solid #1E88E5;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#12507e">Acceptable</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">cigarettes in a POW camp</p></div><div style="background:#F4FAFF;border-left:7px solid #1E88E5;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#12507e">Limited</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">not leaves, not pebbles</p></div><div style="background:#F7FAFD;border-left:7px solid #8a99a8;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#2E4A6B">Durable</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">a fish fails here</p></div><div style="background:#F7FAFD;border-left:7px solid #8a99a8;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#2E4A6B">Portable</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">gold fails for small trades</p></div><div style="background:#F7FAFD;border-left:7px solid #8a99a8;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#2E4A6B">Divisible</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">shells cannot make change</p></div><div style="background:#F7FAFD;border-left:7px solid #8a99a8;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#2E4A6B">Homogeneous</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">one cow is not another</p></div><div style="background:#F7FAFD;border-left:7px solid #8a99a8;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#2E4A6B">Recognisable</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">a note needs no assay</p></div><div style="background:#FDF9EC;border-left:7px solid #C9A227;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#8a6b12">No intrinsic value</div><p style="font-size:22px;line-height:1.25;color:#4a5b6b;margin-top:4px">nothing to clip or melt</p></div></div><div class="band" style="margin-top:10px">Functions are what money <i>does</i>; characteristics are what an item must <i>be</i></div></div></div><div class="slide "><div class="content"><h1>When supply is not limited</h1><div class="sub">Print enough of it and money stops being money.</div><div id="a2" style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1;min-height:0;align-items:start;margin-top:6px"><div style="height:100%;display:flex;align-items:center"><img class="a2-img" data-i="0" src="images/money/fit_infl_weimar.png" alt="" style="display:block;width:100%;height:430px;object-fit:contain;border-radius:10px"><img class="a2-img" data-i="1" src="images/money/fit_infl_china.png" alt="" style="display:none;width:100%;height:430px;object-fit:contain;border-radius:10px"><img class="a2-img" data-i="2" src="images/money/fit_infl_recent.png" alt="" style="display:none;width:100%;height:430px;object-fit:contain;border-radius:10px"><img class="a2-img" data-i="3" src="images/money/fit_venezuela.png" alt="" style="display:none;width:100%;height:430px;object-fit:contain;border-radius:10px"></div><div style="display:flex;flex-direction:column;gap:8px"><div class="a2-txt" data-i="0" style="padding:8px 14px;border-left:6px solid #1E88E5;border-radius:8px;background:#F4FAFF"><div style="font-size:22px;font-weight:900;color:#12507e">Germany 1921–24</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">Notes printed to pay reparations; prices re-set daily.</p></div><div class="a2-txt" data-i="1" style="padding:8px 14px;border-left:6px solid #e2ecf6;border-radius:8px;background:transparent"><div style="font-size:22px;font-weight:900;color:#8a99a8">China 1948–49</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">The gold yuan lost its value within months.</p></div><div class="a2-txt" data-i="2" style="padding:8px 14px;border-left:6px solid #e2ecf6;border-radius:8px;background:transparent"><div style="font-size:22px;font-weight:900;color:#8a99a8">Zimbabwe 2008</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">A 100 trillion dollar note bought a loaf.</p></div><div class="a2-txt" data-i="3" style="padding:8px 14px;border-left:6px solid #e2ecf6;border-radius:8px;background:transparent"><div style="font-size:22px;font-weight:900;color:#8a99a8">Venezuela 2018–21</div><p style="font-size:20px;line-height:1.25;color:#4a5b6b">Banknotes sold by weight, not by count.</p></div><div class="row" style="gap:10px;margin-top:4px"><button class="big-btn ghost" onclick="a2Go(-1)" style="min-width:60px">◀</button><button class="big-btn ghost" onclick="a2Go(1)" style="min-width:60px">▶</button><span id="a2-num" style="font-size:20px;color:#7b8b9b">1 / 4</span></div><p style="font-size:20px;color:#2E4A6B;margin-top:4px">In all four the <b>quantity</b> of money exploded; what collapsed first was <b>acceptability</b>.</p></div></div><script>var a2n=0;function a2Go(d){var box=document.getElementById("a2");var n=box.querySelectorAll(".a2-img"),t=box.querySelectorAll(".a2-txt");a2n=(a2n+d+n.length)%n.length;for(var i=0;i<n.length;i++){n[i].style.display=(i===a2n)?"block":"none";t[i].style.borderLeftColor=(i===a2n)?"#1E88E5":"#e2ecf6";t[i].style.background=(i===a2n)?"#F4FAFF":"transparent";t[i].querySelector("div").style.color=(i===a2n)?"#12507e":"#8a99a8";}document.getElementById("a2-num").textContent=(a2n+1)+" / "+n.length;}</script></div></div><div class="slide "><div class="content"><h1>Forms of money today</h1><div class="sub">Three ways to hold it — and one legal idea that is not a fourth form.</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1;min-height:0;margin-top:10px"><div class="tcard blue" style="display:flex;flex-direction:column;justify-content:center"><div style="font-size:28px;font-weight:900;color:#12507e">Coins</div><p style="font-size:24px;line-height:1.3;color:#4a5b6b;margin-top:6px">Small purchases and change. Legal tender up to a stated value.</p></div><div class="tcard blue" style="display:flex;flex-direction:column;justify-content:center"><div style="font-size:28px;font-weight:900;color:#12507e">Banknotes</div><p style="font-size:24px;line-height:1.3;color:#4a5b6b;margin-top:6px">Larger purchases; the bulk of cash. Legal tender without limit.</p></div><div class="tcard" style="display:flex;flex-direction:column;justify-content:center"><div style="font-size:28px;font-weight:900;color:#2E4A6B">Bank accounts</div><p style="font-size:24px;line-height:1.3;color:#4a5b6b;margin-top:6px">The largest form by value; moved by card or phone.</p></div></div><div class="tcard warn" style="margin-top:14px"><div style="font-size:26px;font-weight:900;color:#8c2a22">But only cash is legal tender</div><p style="font-size:24px;line-height:1.3;color:#3d2d29;margin-top:4px"><b>Legal tender</b> — any form of payment which, by law, must be accepted in settlement of a debt. A shop may refuse a card; it cannot refuse a note.</p></div></div></div><div class="slide "><div class="content"><h1>Digital currency</h1><div class="sub">Money that exists only in electronic form — the one thing that makes CBDC different.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0;margin-top:10px"><div class="tcard" style="display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#1d5c37">Already digital: a bank account</div><p style="font-size:24px;line-height:1.3;color:#3d4d5c;margin-top:6px">Your balance is a <b>claim on a bank</b>. If the bank fails, you queue with everyone else.</p></div><div class="tcard blue" style="display:flex;flex-direction:column;justify-content:center"><div style="font-size:26px;font-weight:900;color:#12507e">New: central bank digital currency</div><p style="font-size:24px;line-height:1.3;color:#3d4d5c;margin-top:6px">A <b>claim on the central bank</b>. No bank to fail; cheaper and open to the unbanked.</p></div></div><div class="band" style="margin-top:12px">The only question that matters: <b>who owes you the money</b> — a bank, or the state? Both can be hacked.</div></div></div><div class="slide "><div class="content"><div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:stretch;flex:1;min-height:0"><div style="display:flex;flex-direction:column;gap:12px;justify-content:center"><div style="display:flex;align-items:baseline;gap:14px"><h1 style="margin:0">Virtual currency</h1><span style="font-size:20px;color:#8a6b12;font-weight:800;letter-spacing:.08em">EXTENSION</span></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>Bitcoin is not money yet.</b> It is a financial asset — valuable, tradable, and priced in money.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>Cryptocurrency</b> — online only, over 10,000 of them; held for investment, and its value swings sharply.</p></div><div class="tcard blue"><p style="font-size:22px;line-height:1.3;color:#1d5c37">Seven tests: <b>limited ✓ divisible ✓ portable ✓</b></p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22"><b>But acceptable ✗ and stable in value ✗</b> — so it works as an asset, not as money.</p></div></div><img src="images/money/fit_crypto.png" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:10px"></div></div></div><div class="slide "><div class="content"><h1>Smith was half right</h1><div class="sub">Extension · exchange is ancient, but barter was not how most people traded.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;min-height:0;align-items:stretch;margin-top:6px"><div style="display:flex;flex-direction:column;gap:12px;justify-content:center"><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>Exchange is very old.</b> Obsidian and salt moved hundreds of kilometres before coins.</p></div><div class="tcard"><p style="font-size:24px;line-height:1.26;color:#3d4d5c"><b>But not by barter.</b> Traditional societies ran on <b>reciprocity</b> — gifts, sharing, credit.</p></div><div class="tcard warn"><p style="font-size:24px;line-height:1.26;color:#8c2a22">Money made exchange <b>impersonal</b>; that is what changed.</p></div></div><img src="images/money/fit_cowrie.png" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:10px"></div></div></div><div class="slide "><div class="content"><h1>Money in one picture</h1><div class="sub">Form · function · characteristic — the three questions behind every answer.</div><div style="display:grid;grid-template-rows:1fr 1fr;gap:16px;flex:1;min-height:0;margin-top:10px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;min-height:0"><div style="display:flex;flex-direction:column;gap:10px;height:100%"><div style="font-size:24px;font-weight:900;letter-spacing:.1em;color:#1E88E5;border-bottom:4px solid #1E88E5;padding-bottom:6px">FORMS</div><div style="flex:1 1 0;display:flex;align-items:center;font-size:26px;line-height:1.25;color:#12507e;font-weight:700;background:#DCEBFA;border-left:6px solid #1E88E5;border-radius:10px;padding:8px 16px">Coins — small change, legal tender</div><div style="flex:1 1 0;display:flex;align-items:center;font-size:26px;line-height:1.25;color:#12507e;font-weight:700;background:#DCEBFA;border-left:6px solid #1E88E5;border-radius:10px;padding:8px 16px">Banknotes — legal tender, no limit</div><div style="flex:1 1 0;display:flex;align-items:center;font-size:26px;line-height:1.25;color:#12507e;font-weight:700;background:#DCEBFA;border-left:6px solid #1E88E5;border-radius:10px;padding:8px 16px">Bank accounts — the largest by value</div><div style="flex:0 0 auto;display:flex;align-items:center;font-size:24px;line-height:1.25;color:#8a6b12;background:#FDF9EC;border:2px dashed #C9A227;border-radius:10px;padding:8px 16px">Digital — new, not yet legal tender</div></div><div style="display:flex;flex-direction:column;gap:10px;height:100%"><div style="font-size:24px;font-weight:900;letter-spacing:.1em;color:#1d5c37;border-bottom:4px solid #2E7D32;padding-bottom:6px">FUNCTIONS</div><div style="flex:1 1 0;display:flex;align-items:center;font-size:26px;line-height:1.25;color:#3d4d5c;background:#F7FAFD;border-radius:10px;padding:8px 16px">M · medium of exchange</div><div style="flex:1 1 0;display:flex;align-items:center;font-size:26px;line-height:1.25;color:#3d4d5c;background:#F7FAFD;border-radius:10px;padding:8px 16px">U · unit of account</div><div style="flex:1 1 0;display:flex;align-items:center;font-size:26px;line-height:1.25;color:#3d4d5c;background:#F7FAFD;border-radius:10px;padding:8px 16px">S · store of value</div><div style="flex:1 1 0;display:flex;align-items:center;font-size:26px;line-height:1.25;color:#3d4d5c;background:#F7FAFD;border-radius:10px;padding:8px 16px">D · deferred payment</div></div></div><div style="display:flex;flex-direction:column;gap:8px;min-height:0"><div style="font-size:24px;font-weight:900;letter-spacing:.1em;color:#8a6b12;border-bottom:4px solid #C9A227;padding-bottom:6px">CHARACTERISTICS</div><div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:10px;flex:1;min-height:0"><div style="background:#F4FAFF;border-left:6px solid #1E88E5;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#12507e;text-align:center">Acceptable</div></div><div style="background:#F4FAFF;border-left:6px solid #1E88E5;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#12507e;text-align:center">Limited</div></div><div style="background:#F7FAFD;border-left:6px solid #8a99a8;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#2E4A6B;text-align:center">Durable</div></div><div style="background:#F7FAFD;border-left:6px solid #8a99a8;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#2E4A6B;text-align:center">Portable</div></div><div style="background:#F7FAFD;border-left:6px solid #8a99a8;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#2E4A6B;text-align:center">Divisible</div></div><div style="background:#F7FAFD;border-left:6px solid #8a99a8;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#2E4A6B;text-align:center">Homogeneous</div></div><div style="background:#F7FAFD;border-left:6px solid #8a99a8;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#2E4A6B;text-align:center">Recognisable</div></div><div style="background:#FDF9EC;border-left:6px solid #C9A227;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px 10px"><div style="font-size:24px;font-weight:900;color:#8a6b12;text-align:center">No intrinsic value</div></div></div></div></div><div class="band" style="margin-top:10px">Only cash is legal tender; everything else is a claim on someone</div></div></div><div class="slide "><div class="content"><div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center"><h1 style="font-size:clamp(38px,4.2vw,54px)">Thank you</h1><div style="font-size:26px;color:#5b6b7b;margin-top:12px">Any questions?</div><div style="width:120px;height:5px;background:#1E88E5;border-radius:3px;margin:26px 0"></div><div style="font-size:24px;color:#2E4A6B">Next · <b>Banking</b> — commercial and central</div></div></div></div>
+</div>
+<div class="nav" style="position:fixed;z-index:9999;pointer-events:auto"><button id="prevBtn" onclick="go(CUR-1)">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy" style="margin-right:14px">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 18</span><button id="nextBtn" onclick="go(CUR+1)">▶</button></div></div>
+<script>
+var SL = [], CUR = 0;
+function go(i){
+  if(!SL.length){ SL = Array.prototype.slice.call(document.querySelectorAll('.slide')); }
+  if(i < 0 || i >= SL.length) return;
+  SL[CUR].classList.remove('active');
+  CUR = i;
+  SL[CUR].classList.add('active');
+  var d = document.getElementById('dots').children;
+  for(var k = 0; k < d.length; k++) d[k].className = (k === CUR ? 'on' : '');
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SL.length;
+}
+function initDeck(){
+  SL = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  SL.forEach(function(_, i){
+    var sp = document.createElement('span');
+    sp.className = (i === 0 ? 'on' : '');
+    sp.onclick = function(){ go(i); };
+    dots.appendChild(sp);
+  });
+  var q = location.search.replace('?', '').split('&'), want = 0;
+  for(var i = 0; i < q.length; i++){
+    var kv = q[i].split('=');
+    if(kv[0] === 's' && kv[1]) want = parseInt(kv[1], 10) || 0;
+  }
+  go(want);
+  var pb = document.getElementById('prevBtn'), nb = document.getElementById('nextBtn');
+  if(pb) pb.onclick = function(){ go(CUR - 1); };
+  if(nb) nb.onclick = function(){ go(CUR + 1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight') go(CUR + 1);
+    if(e.key === 'ArrowLeft') go(CUR - 1);
+  });
+  var qb = document.getElementById('qaBtn');
+  if(qb) qb.addEventListener('click', function(){
+    var box = document.getElementById('qa');
+    box.classList.toggle('show');
+    qb.textContent = box.classList.contains('show') ? 'Hide answers' : 'Show answers';
+  });
+}
+
+var QS = [
+  ["A shop prices a sandwich at ¥12.", "U", "Prices quoted in one unit — nothing is being paid yet."],
+  ["You keep ¥500 for next term.", "S", "Held to be spent later — that is storing value."],
+  ["You pay ¥12 for the sandwich.", "M", "The note is accepted by the shop — exchange."],
+  ["A firm agrees to pay in 60 days.", "D", "The debt is fixed in money and settled later."],
+  ["Two cars are priced ¥80,000 and ¥120,000.", "U", "Two prices, one unit, immediately comparable."],
+  ["You borrow ¥3,000 and repay ¥3,300 next year.", "D", "Principal and interest both fixed now."]
+];
+var qI = 0, qDone = false;
+function qRender(){
+  var q = QS[qI];
+  document.getElementById('qmeta').textContent = 'QUESTION ' + (qI + 1) + ' OF ' + QS.length;
+  document.getElementById('qtext').textContent = q[0];
+  document.getElementById('qfeed').textContent = '';
+  var box = document.getElementById('qopts');
+  box.innerHTML = '';
+  [['M','Medium of exchange'],['U','Unit of account'],['S','Store of value'],
+   ['D','Standard for deferred payment']].forEach(function(p){
+    var b = document.createElement('button');
+    b.className = 'big-btn ghost';
+    b.style.fontSize = '21px'; b.style.padding = '10px 14px'; b.style.textAlign = 'left';
+    b.innerHTML = '<b>' + p[0] + '</b> · ' + p[1];
+    b.onclick = function(){
+      if(qDone) return;
+      qDone = true;
+      var ok = (p[0] === q[1]);
+      document.getElementById('qfeed').innerHTML = (ok ? '✓ ' : '✗ ') + q[2];
+      document.getElementById('qfeed').style.color = ok ? '#1d5c37' : '#8c2a22';
+      b.style.borderColor = ok ? '#2E7D32' : '#C62828';
+    };
+    box.appendChild(b);
+  });
+  qDone = false;
+  document.getElementById('qnext').textContent = (qI === QS.length - 1) ? 'Restart' : 'Next ▶';
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  initDeck();
+  var box = document.getElementById('qbox');
+  if(box){
+    qRender();
+    document.getElementById('qnext').onclick = function(){
+      qI = (qI + 1) % QS.length; qRender();
+    };
+    document.getElementById('qreset').onclick = function(){ qI = 0; qRender(); };
+  }
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+</script>
+</body>
+</html>
