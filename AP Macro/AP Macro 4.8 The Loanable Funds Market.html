@@ -291,157 +291,120 @@
 </section>
 
 <section class="slide" id="p3">
-  <div class="tag">Unit 4 · Lesson 12 · Ex ante</div>
-  <h2>The same relation, run forwards</h2>
-  <div class="stage">
-    <div class="eqbox">nominal = real + expected inflation</div>
-    <div class="two" style="flex:0 0 auto;margin-top:.6vh;">
-      <div class="col"><div class="hl" style="padding:.7vh 1vw;line-height:1.35;"><b>Ex post</b> &mdash; after the fact: the inflation that <b>actually</b> happened. Subtract it from the quoted rate and you have the real rate (the previous page).</div></div>
-      <div class="col"><div class="hl amber" style="padding:.7vh 1vw;line-height:1.35;"><b>Ex ante</b> &mdash; before the fact: the inflation both sides <b>expect</b>. Add it to the real return they want and you have the rate written into the contract.</div></div>
+<div class="tag">Unit 4 · Lesson 12 · The two rates</div>
+<h2>Ex ante and ex post — the same relation, two moments</h2>
+<div class="stage">
+  <div class="two" style="flex:0 0 auto;margin-bottom:.2vh;">
+    <div class="card" style="border-left:7px solid #1CADE4;">
+      <h3 style="font-size:clamp(22px,2.4vh,27px);color:#0e7fae;">EX ANTE — before the loan</h3>
+      <div class="eqbox" style="margin:.4vh 0;">i ≈ r + πᵉ</div>
+      <p>Lender adds the <b>expected</b> real return and <b>expected</b> inflation to write the nominal rate into the contract.</p>
+      
     </div>
-    <div class="two" style="flex:1 1 auto;">
-      <div class="col" style="justify-content:center;"><svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;height:auto;align-self:center;">
-          <text x="260" y="60" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2d3d">nominal rate 5%</text>
-          <rect x="60" y="90" width="160" height="50" fill="#1CADE4"/>
-          <text x="140" y="121" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">real 2%</text>
-          <rect x="220" y="90" width="240" height="50" fill="#e6a23c"/>
-          <text x="340" y="121" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">inflation 3%</text>
-        </svg></div>
-      <div class="col" style="justify-content:center;">
-        <div class="hl" style="padding:1.2vh 1.2vw;line-height:1.4;">Nobody knows the future when a loan is signed, so both sides work with <b>expected</b> inflation: the real return they want, <b>plus</b> the inflation they think is coming.</div>
-      </div>
-    </div>
-    <div class="s-foot">
-      <div class="hl">Ex ante is the version written into the contract: <b>expected</b> real + <b>expected</b> inflation.</div>
+    <div class="card" style="border-left:7px solid #d9534f;">
+      <h3 style="font-size:clamp(22px,2.4vh,27px);color:#b3382f;">EX POST — after repayment</h3>
+      <div class="eqbox" style="margin:.4vh 0;">r = i − actual inflation</div>
+      <p>Only <b>actual</b> inflation is known then, so it decides the real rate the lender truly earned.</p>
+      
     </div>
   </div>
+  <div class="two" style="flex:1 1 auto;">
+    <div class="col" style="justify-content:flex-start;">
+      <svg id="zlbSvg" viewBox="0 0 900 380" style="width:100%;max-height:28vh;">
+        <line x1="150" y1="200" x2="840" y2="200" stroke="#1f2d3d" stroke-width="3"/>
+        <text x="140" y="208" text-anchor="end" font-size="25" font-weight="800" fill="#1f2d3d">0%</text>
+        <text x="140" y="136" text-anchor="end" font-size="23" fill="#5b7288">+8</text>
+        <text x="140" y="280" text-anchor="end" font-size="23" fill="#5b7288">&minus;8</text>
+        <text x="180" y="40" font-size="25" font-weight="800" fill="#0e7fae">nominal i &mdash; floor at 0%</text>
+        <rect id="zlbNom" x="180" y="200" width="110" height="0" fill="#1CADE4"/>
+        <text id="zlbNomV" x="0" y="0" font-size="29" font-weight="800" fill="#0e7fae"></text>
+        <text x="520" y="40" font-size="25" font-weight="800" fill="#b3382f">real r &mdash; no floor</text>
+        <rect id="zlbReal" x="520" y="200" width="110" height="0" fill="#d9534f"/>
+        <text id="zlbRealV" x="0" y="0" font-size="29" font-weight="800" fill="#b3382f"></text>
+        <text x="150" y="350" font-size="21" fill="#5b7288">Same scale, same zero line — only one bar can cross it.</text>
+      </svg>
+      <div class="hl amber" id="zlbNote" style="padding:.5vh .8vw;line-height:1.3;">&nbsp;</div>
+    </div>
+    <div class="col" style="justify-content:flex-start;">
+      <div class="sliderbox" style="margin-bottom:.3vh;"><input type="range" id="zlbNom2" min="0" max="8" step="0.5" value="3" oninput="zlbPaint()"><div class="slideval" id="zlbNomV2" style="font-size:clamp(19px,2vh,23px);">Nominal rate: 3.0%</div></div>
+      <div class="sliderbox" style="margin-bottom:.4vh;"><input type="range" id="zlbInf" min="0" max="8" step="0.5" value="2" oninput="zlbPaint()"><div class="slideval" id="zlbInfV" style="font-size:clamp(19px,2vh,23px);">Inflation: 2.0%</div></div>
+      </div>
+  </div>
+</div>
 </section>
 
 <section class="slide" id="p4">
-  <div class="tag">Unit 4 · Lesson 12 · Can rates be negative?</div>
-  <h2>Can the rate go below zero?</h2>
-  <div class="stage">
-    <div class="two" style="flex:1 1 auto;">
-      <div class="col" style="justify-content:center;"><svg id="zlbSvg" viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:42vh;">
-          <line x1="150" y1="200" x2="840" y2="200" stroke="#1f2d3d" stroke-width="3"/>
-          <text x="140" y="208" text-anchor="end" font-size="26" font-weight="800" fill="#1f2d3d">0%</text>
-          <text x="140" y="136" text-anchor="end" font-size="24" fill="#5b7288">+8</text>
-          <text x="140" y="172" text-anchor="end" font-size="24" fill="#5b7288">+4</text>
-          <text x="140" y="244" text-anchor="end" font-size="24" fill="#5b7288">&minus;4</text>
-          <text x="140" y="280" text-anchor="end" font-size="24" fill="#5b7288">&minus;8</text>
-          <text x="180" y="36" font-size="26" font-weight="800" fill="#0e7fae">nominal rate</text>
-          <text x="180" y="84" font-size="24" fill="#5b7288">the slider stops at 0%</text>
-          <rect id="zlbNom" x="180" y="200" width="110" height="0" fill="#1CADE4"/>
-          <text id="zlbNomV" x="0" y="0" font-size="30" font-weight="800" fill="#0e7fae"></text>
-          <text x="520" y="36" font-size="26" font-weight="800" fill="#b3382f">real rate</text>
-          <text x="520" y="84" font-size="24" fill="#5b7288">inflation eats through it</text>
-          <rect id="zlbReal" x="520" y="200" width="110" height="0" fill="#d9534f"/>
-          <text id="zlbRealV" x="0" y="0" font-size="30" font-weight="800" fill="#b3382f"></text>
-          <text x="150" y="356" font-size="24" fill="#5b7288">Both bars start at the 0% line and use the same scale.</text>
-        </svg></div>
-      <div class="col" style="justify-content:flex-start;">
-        <div class="hl amber" id="zlbNote" style="padding:.8vh 1vw;line-height:1.35;">&nbsp;</div>
-        <div class="hl" style="padding:.8vh 1vw;line-height:1.35;">
-          <b>Quick recall.</b> Earlier in this unit we met the <b>liquidity trap</b>. Was it about the <b>nominal</b> rate or the <b>real</b> rate?
-          <div class="btnrow" style="margin-top:.6vh;">
-            <button class="btn ghost" id="zlbBtn" onclick="zlbAnswer()">Show the answer</button>
-          </div>
-          <div id="zlbAns" style="display:none;margin-top:.6vh;">The <b>nominal</b> rate: at zero there is nowhere left to push, so the Fed&rsquo;s lever goes slack. The <b>real</b> rate has no floor &mdash; which is why the real rate, not the quoted one, is what actually bites on spending.</div>
-        </div>
-        <div class="sliderbox" style="margin-bottom:0;">
-          <input type="range" id="zlbNom2" min="0" max="8" step="0.5" value="3" oninput="zlbPaint()">
-          <div class="slideval" id="zlbNomV2" style="font-size:clamp(23px,2.4vh,28px);">Nominal rate: 3.0%</div>
-        </div>
-        <div class="sliderbox" style="margin-bottom:0;">
-          <input type="range" id="zlbInf" min="0" max="8" step="0.5" value="2" oninput="zlbPaint()">
-          <div class="slideval" id="zlbInfV" style="font-size:clamp(23px,2.4vh,28px);">Inflation: 2.0%</div>
-        </div>
-      </div>
+<div class="tag">Unit 4 · Lesson 12 · Real rates in the data</div>
+<h2>Short real rate and long real rate are different objects</h2>
+<div class="stage">
+  <div class="two" style="flex:1 1 auto;">
+    <div class="col" style="justify-content:flex-start;">
+      <svg viewBox="0 0 520 320" style="width:100%;max-width:520px;height:auto;align-self:center;">
+        <text x="60" y="28" font-size="22" fill="#5b7288">10-year real yield, %</text>
+        <line x1="60" y1="230" x2="500" y2="230" stroke="#cfe0ee" stroke-width="2.5"/>
+        <text x="52" y="236" text-anchor="end" font-size="22" fill="#5b7288">0</text>
+        <text x="52" y="101" text-anchor="end" font-size="22" fill="#5b7288">3</text>
+        <text x="52" y="281" text-anchor="end" font-size="22" fill="#5b7288">&minus;1</text>
+        <polyline points="60,216.5 104,207.5 148,189.5 192,216.5 236,266 280,270.5 324,185 368,153.5 412,140 456,126.5 500,99.5" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-linejoin="round"/>
+        <circle cx="500" cy="99.5" r="9" fill="#d9534f"/>
+        <text x="495" y="82" text-anchor="end" font-size="21" font-weight="700" fill="#a94442">about 2.9%</text>
+        <text x="60" y="310" text-anchor="middle" font-size="22" fill="#5b7288">2016</text>
+        <text x="280" y="310" text-anchor="middle" font-size="22" fill="#5b7288">2021</text>
+        <text x="508" y="310" text-anchor="end" font-size="22" fill="#5b7288">2026</text>
+      </svg>
+      <div class="hl" style="padding:.5vh .9vw;">The <b>long</b> real rate is priced by saving and investment. It stayed negative through 2020–21 and is high today.</div>
     </div>
-    <div class="s-foot">
-      <div class="hl">Set inflation to 0 and the two bars are the same height. Push inflation up and only one of them can follow &mdash; that is the whole point of the page.</div>
+    <div class="col" style="justify-content:flex-start;">
+      <table>
+        <tr><th></th><th>Nominal</th><th>Inflation</th><th>Real</th></tr>
+        <tr><td class="l">Policy rate, Sept 2026</td><td>3.75–4.00%</td><td>3.8%</td><td>about <b>0%</b></td></tr>
+        <tr><td class="l">10-year Treasury</td><td>≈5.0%</td><td>≈2.2% expected</td><td>≈<b>2.9%</b></td></tr>
+        <tr><td class="l">Policy rate, 2022</td><td>≈1.7%</td><td>≈8.0%</td><td>about <b>&minus;6%</b></td></tr>
+      </table>
+      <div class="hl amber" style="padding:.6vh .9vw;line-height:1.4;"><b>Short r</b> = policy rate − inflation, steered by the Fed. <b>Long r</b> = the real rate on long bonds, set by saving and investment. They need not agree.</div>
     </div>
   </div>
+</div>
 </section>
 
 <section class="slide" id="p5">
-  <div class="tag">Unit 4 · Lesson 12 · Real data (DFII10, DGS10)</div>
-  <h2>Real rates right now</h2>
-  <div class="stage">
-    <div class="two" style="flex:1 1 auto;">
-      <div class="col" style="justify-content:flex-start;">
-        <svg viewBox="0 0 520 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;height:auto;align-self:center;">
-          <text x="60" y="28" font-size="22" fill="#5b7288">10-year real yield, %</text>
-          <line x1="60" y1="230" x2="500" y2="230" stroke="#cfe0ee" stroke-width="2.5"/>
-          <text x="52" y="236" text-anchor="end" font-size="22" fill="#5b7288">0</text>
-          <text x="52" y="101" text-anchor="end" font-size="22" fill="#5b7288">3</text>
-          <text x="52" y="281" text-anchor="end" font-size="22" fill="#5b7288">-1</text>
-          <polyline points="60,216.5 104,207.5 148,189.5 192,216.5 236,266 280,270.5 324,185 368,153.5 412,140 456,126.5 500,99.5" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-linejoin="round"/>
-          <circle cx="500" cy="99.5" r="9" fill="#d9534f"/>
-          <text x="495" y="82" text-anchor="end" font-size="22" font-weight="700" fill="#a94442">2.9% — highest since 2008</text>
-          <text x="60" y="310" text-anchor="middle" font-size="22" fill="#5b7288">2016</text>
-          <text x="280" y="310" text-anchor="middle" font-size="22" fill="#5b7288">2021</text>
-          <text x="508" y="310" text-anchor="end" font-size="22" fill="#5b7288">2026</text>
-        </svg>
-        <div class="card win"><p>Ten-year average: about <b>0.8%</b>. Rates were <b>negative</b> through 2020&ndash;21; today a higher r means a genuinely higher cost of capital.</p></div>
-      </div>
-      <div class="col" style="justify-content:flex-start;">
-        <table>
-          <tr><th></th><th>Nominal</th><th>Inflation</th><th>Real</th></tr>
-          <tr><td class="l">Policy rate, Sept 2026</td><td>3.75&ndash;4.00%</td><td>3.8%</td><td>about <b>0%</b></td></tr>
-          <tr><td class="l">10-year Treasury</td><td>≈5.0%</td><td>≈2.2% expected</td><td>≈<b>2.9%</b></td></tr>
-          <tr><td class="l">Policy rate, 2022</td><td>≈1.7%</td><td>≈8.0%</td><td>about <b>&minus;6%</b></td></tr>
-        </table>
-        <div class="card win"><h3>Two horizons, two real rates</h3><p>The short real rate is set by the Fed; the long real rate is set by saving and investment. They need not agree.</p></div>
-      </div>
+<div class="tag">Unit 4 · Lesson 12 · Demand · move the slider</div>
+<h2>One curve, six projects: which projects pay at this r?</h2>
+<div class="stage">
+  <div class="two" style="flex:1 1 auto;">
+    <div class="col" style="justify-content:flex-start;">
+      <svg viewBox="0 0 580 360" style="width:100%;max-height:38vh;">
+        <line x1="80" y1="320" x2="500" y2="320" stroke="#1f2d3d" stroke-width="3"/>
+        <line x1="80" y1="320" x2="80" y2="60" stroke="#1f2d3d" stroke-width="3"/>
+        <text x="96" y="44" font-size="23" font-weight="800" fill="#1f2d3d">Real interest rate r (%)</text>
+        <text x="574" y="352" text-anchor="end" font-size="23" font-weight="800" fill="#1f2d3d">Quantity of loanable funds</text>
+        <text x="72" y="326" text-anchor="end" font-size="23" fill="#5b7288">0</text>
+        <text x="72" y="206" text-anchor="end" font-size="23" fill="#5b7288">4</text>
+        <text x="72" y="86" text-anchor="end" font-size="23" fill="#5b7288">8</text>
+        <polyline points="90,60 470,320" fill="none" stroke="#1CADE4" stroke-width="5"/>
+        <text x="462" y="300" font-size="25" font-weight="800" fill="#0e7fae">D</text>
+        <g id="pjMarks"></g>
+      </svg>
+      <div class="hl" style="padding:.5vh .8vw;line-height:1.3;">A project is funded only if its expected return <b>exceeds r</b>. Raise r and fewer clear the bar &mdash; that is the downward slope.</div>
     </div>
-    <div class="s-foot">
-      <div class="hl">The 10-year real yield is about <b>2.9%</b> &mdash; a <b>17-year high</b>, against a ten-year average near zero. Never judge policy by the nominal rate alone: a <b>4%</b> policy rate with <b>3.8%</b> inflation is a <b>0%</b> real rate, and in 2022 it was about <b>&minus;6%</b>.</div>
+    <div class="col" style="justify-content:flex-start;">
+      <table><colgroup><col style="width:46%"><col style="width:24%"><col style="width:30%"></colgroup>
+        <tr><th>Project</th><th>Return</th><th>Pay?</th></tr>
+        <tr><td class="l">Warehouse robots</td><td>7.5%</td><td id="pjV0">&nbsp;</td></tr>
+        <tr><td class="l">A new delivery fleet</td><td>6.0%</td><td id="pjV1">&nbsp;</td></tr>
+        <tr><td class="l">A second production line</td><td>5.0%</td><td id="pjV2">&nbsp;</td></tr>
+        <tr><td class="l">Retail floor refit</td><td>3.5%</td><td id="pjV3">&nbsp;</td></tr>
+        <tr><td class="l">A new head office</td><td>2.5%</td><td id="pjV4">&nbsp;</td></tr>
+        <tr><td class="l">Repaint the lobby</td><td>1.0%</td><td id="pjV5">&nbsp;</td></tr>
+      </table>
+      <div class="sliderbox" style="margin-bottom:.5vh;"><input type="range" id="pjR" min="0" max="8" step="0.5" value="4" oninput="pjPaint()"><div class="slideval" id="pjRv">Real rate r = 4.0%</div></div>
+      <div class="hl amber" id="pjCount" style="padding:.6vh .8vw;line-height:1.3;">&nbsp;</div>
     </div>
   </div>
+</div>
 </section>
 
 <section class="slide" id="p6">
-  <div class="tag">Unit 4 · Lesson 12 · Demand</div>
-  <h2>The demand curve &mdash; and why it slopes down</h2>
-  <div class="stage">
-    <div class="two" style="flex:1 1 auto;">
-      <div class="col" style="justify-content:flex-start;">
-        <svg viewBox="0 0 580 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:40vh;"><line x1="80" y1="320" x2="500" y2="320" stroke="#1f2d3d" stroke-width="3"/>
-            <line x1="80" y1="320" x2="80" y2="60" stroke="#1f2d3d" stroke-width="3"/>
-            <text x="96" y="44" font-size="24" font-weight="800" fill="#1f2d3d">Real interest rate r (%)</text>
-            <text x="574" y="352" text-anchor="end" font-size="24" font-weight="800" fill="#1f2d3d">Quantity of loanable funds ($ trn)</text>
-            <text x="72" y="326" text-anchor="end" font-size="24" fill="#5b7288">0</text>
-            <text x="72" y="206" text-anchor="end" font-size="24" fill="#5b7288">4</text>
-            <text x="72" y="86" text-anchor="end" font-size="24" fill="#5b7288">8</text><polyline points="80.0,155.0 95.4,160.1 110.8,165.2 126.3,170.3 141.7,175.4 157.1,180.5 172.5,185.6 187.9,190.6 203.3,195.7 218.8,200.8 234.2,205.9 249.6,211.0 265.0,216.1 280.4,221.2 295.8,226.3 311.3,231.4 326.7,236.5 342.1,241.6 357.5,246.7 372.9,251.8 388.3,256.9 403.8,261.9 419.2,267.0 434.6,272.1 450.0,277.2" fill="none" stroke="#1CADE4" stroke-width="5"/><text x="462" y="272" font-size="26" font-weight="800" fill="#0e7fae">D</text><circle cx="141.7" cy="175.4" r="9" fill="#0e7fae"/><text x="159.7" y="163.4" font-size="24" fill="#0e7fae">few projects clear the bar</text><circle cx="388.3" cy="256.9" r="9" fill="#2e9e6b"/><text x="370.3" y="290.9" text-anchor="end" font-size="24" fill="#1f7a52">the next tier clears too</text></svg>
-        <div class="hl amber" style="padding:.5vh .8vw;line-height:1.28;">Real-world 2025&ndash;26: a wave of AI and data-centre capital spending &mdash; roughly <b>$200 billion</b> by the largest US tech firms &mdash; is genuine investment demand pushing on this curve.</div>
-      </div>
-      <div class="col" style="justify-content:flex-start;">
-        <div class="hl" style="padding:.4vh .8vw;line-height:1.28;">Borrowers &mdash; firms, government, households. A project pays only if its expected return <b>beats r</b>.</div>
-        <table>
-          <colgroup><col style="width:44%"><col style="width:26%"><col style="width:30%"></colgroup>
-          <tr><th>Project</th><th>Expected return</th><th>Worth investing?</th></tr>
-          <tr><td class="l">Warehouse robots</td><td>7.5%</td><td id="pjV0">&nbsp;</td></tr>
-          <tr><td class="l">A new delivery fleet</td><td>6.0%</td><td id="pjV1">&nbsp;</td></tr>
-          <tr><td class="l">A second production line</td><td>5.0%</td><td id="pjV2">&nbsp;</td></tr>
-          <tr><td class="l">Retail floor refit</td><td>3.5%</td><td id="pjV3">&nbsp;</td></tr>
-          <tr><td class="l">A new head office</td><td>2.5%</td><td id="pjV4">&nbsp;</td></tr>
-          <tr><td class="l">Repaint the lobby</td><td>1.0%</td><td id="pjV5">&nbsp;</td></tr>
-        </table>
-        <div class="sliderbox" style="margin-bottom:0;">
-          <input type="range" id="pjR" min="0" max="8" step="0.5" value="3" oninput="pjPaint()">
-          <div class="slideval" id="pjRv" style="font-size:clamp(23px,2.4vh,28px);">Real rate r = 3.0%</div>
-        </div>
-        <div class="hl amber" id="pjCount" style="padding:.5vh .8vw;line-height:1.28;"></div>
-      </div>
-    </div>
-    <div class="s-foot">
-      <div class="hl green">r is the <b>bar</b> every project must clear: raise it and fewer projects pay, so the quantity demanded falls.</div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" id="p7">
   <div class="tag">Unit 4 · Lesson 12 · What shifts demand</div>
   <h2>What shifts the demand curve</h2>
   <div class="stage">
@@ -456,7 +419,7 @@
   </div>
 </section>
 
-<section class="slide" id="p8">
+<section class="slide" id="p7">
   <div class="tag">Unit 4 · Lesson 12 · Supply</div>
   <h2>The supply curve &mdash; and why it slopes up</h2>
   <div class="stage">
@@ -490,7 +453,7 @@
   </div>
 </section>
 
-<section class="slide" id="p9">
+<section class="slide" id="p8">
   <div class="tag">Unit 4 · Lesson 12 · What shifts supply</div>
   <h2>What shifts the supply curve</h2>
   <div class="stage">
@@ -503,6 +466,27 @@
     <div class="s-foot">
       <div class="hl green">More willingness to save, more income and wealth, or capital flowing in all push supply <b>right</b> &mdash; and r <b>down</b>. A bigger deficit is negative public saving, so it pulls supply <b>left</b>.</div>
     </div>
+  </div>
+</section>
+
+<section class="slide" id="p9">
+  <div class="tag">Unit 4 · Lesson 12 · A common point of confusion</div>
+  <h2>A deficit shifts BOTH curves — but you draw only one</h2>
+  <div class="stage">
+    <div class="two" style="flex:1 1 auto;">
+      <div class="card" style="border-left:7px solid #2e9e6b;">
+        <h3 style="font-size:clamp(22px,2.4vh,27px);">View 1 — supply side</h3>
+        <p>Public saving = T − G. A deficit makes public saving negative, so <b>national saving falls</b> → the <b>supply</b> of loanable funds shifts left.</p>
+        <div class="eqbox" style="margin:.5vh 0;">S = private + public</div>
+      </div>
+      <div class="card" style="border-left:7px solid #d9534f;">
+        <h3 style="font-size:clamp(22px,2.4vh,27px);">View 2 — demand side</h3>
+        <p>The Treasury must borrow the shortfall. That adds another borrower → the <b>demand</b> for loanable funds shifts right.</p>
+        <div class="eqbox" style="margin:.5vh 0;">D = I + government borrowing</div>
+      </div>
+    </div>
+    <div class="hl amber" style="padding:.6vh .9vw;line-height:1.3;"><b>Both views agree: r rises.</b> They are one event seen from two sides, not two separate shocks.</div>
+    <div class="s-foot"><div class="hl"><b>Draw only one shift in any single graph.</b> If you move both curves, the change in the equilibrium quantity becomes ambiguous. Krugman's crowding-out figure uses the <b>demand-shift</b> version — which is why p6 and p8 look different.</div></div>
   </div>
 </section>
 
@@ -679,12 +663,26 @@
 </section>
 
 <section class="slide" id="p15">
+<div class="tag">Unit 4 · Lesson 12 · Monetary policy and r</div><h2>Monetary policy moves r — along the demand curve</h2><div class="two"><div class="col" style="flex:0 0 58%;"><svg viewBox="40 40 450 365" style="width:100%;max-width:520px;height:auto;display:block;margin:0 auto;"><line x1="95.0" y1="320.0" x2="450.0" y2="320.0" stroke="#1f2d3d" stroke-width="2.5"/><line x1="95.0" y1="320.0" x2="95.0" y2="65.0" stroke="#1f2d3d" stroke-width="2.5"/><text x="267.5" y="370.0" font-size="20" fill="#5b7288" text-anchor="middle" font-weight="400">Loanable funds</text><text x="55.0" y="75.0" font-size="20" fill="#5b7288" text-anchor="start" font-weight="400">r (real)</text><polyline points="125.0,93.0 135.6,100.6 146.2,108.2 156.7,115.7 167.3,123.3 177.9,130.9 188.5,138.5 199.0,146.0 209.6,153.6 220.2,161.2 230.8,168.8 241.3,176.3 251.9,183.9 262.5,191.5 273.1,199.1 283.7,206.7 294.2,214.2 304.8,221.8 315.4,229.4 326.0,237.0 336.5,244.5 347.1,252.1 357.7,259.7 368.3,267.3 378.8,274.8 389.4,282.4 400.0,290.0" fill="none" stroke="#1CADE4" stroke-width="4"/><text x="394.0" y="280.0" font-size="20" fill="#1CADE4" text-anchor="end" font-weight="700">D</text><polyline points="125.0,290.0 135.6,282.4 146.2,274.8 156.7,267.3 167.3,259.7 177.9,252.1 188.5,244.5 199.0,237.0 209.6,229.4 220.2,221.8 230.8,214.2 241.3,206.7 251.9,199.1 262.5,191.5 273.1,183.9 283.7,176.3 294.2,168.8 304.8,161.2 315.4,153.6 326.0,146.0 336.5,138.5 347.1,130.9 357.7,123.3 368.3,115.7 378.8,108.2 389.4,100.6 400.0,93.0" fill="none" stroke="#2e9e6b" stroke-width="4"/><text x="394.0" y="83.0" font-size="20" fill="#2e9e6b" text-anchor="end" font-weight="700">S</text><circle cx="262.5" cy="191.5" r="8" fill="#a97422"/><line x1="95.0" y1="191.5" x2="262.5" y2="191.5" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><line x1="262.5" y1="191.5" x2="262.5" y2="320.0" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><text x="87.0" y="196.5" font-size="20" fill="#a97422" text-anchor="end" font-weight="700">r₁</text><text x="262.5" y="342.0" font-size="20" fill="#a97422" text-anchor="middle" font-weight="700">Q₁</text><circle cx="204.5" cy="150.0" r="7" fill="#d9534f"/><circle cx="320.5" cy="233.0" r="7" fill="#2e9e6b"/><line x1="117.0" y1="150.0" x2="204.5" y2="150.0" stroke="#d9534f" stroke-width="2" stroke-dasharray="6 4"/><text x="85.0" y="156.0" font-size="19" fill="#d9534f" text-anchor="end" font-weight="700">high</text><line x1="117.0" y1="233.0" x2="320.5" y2="233.0" stroke="#2e9e6b" stroke-width="2" stroke-dasharray="6 4"/><text x="85.0" y="239.0" font-size="19" fill="#2e9e6b" text-anchor="end" font-weight="700">low</text><text x="300.0" y="62.0" font-size="19" fill="#0e7fae" text-anchor="middle" font-weight="700">one D curve — movement along it</text></svg></div><div class="col" style="flex:1;"><div class="card" style="margin-bottom:.6vh;"><p><b>Fisher:</b> i ≈ r + πᵉ. With expected inflation sticky, a change in i changes r.</p></div><div class="card" style="margin-bottom:.6vh;"><p><b>Buy bonds</b> → i ↓ → r ↓ → <b>move down along D</b> → I ↑.</p></div><div class="card" style="margin-bottom:.6vh;"><p><b>Sell bonds</b> → i ↑ → r ↑ → <b>move up along D</b> → I ↓.</p></div><div class="card" style="margin-bottom:.6vh;"><p><b>Money supply ↑ ≠ loanable-funds supply ↑.</b> The Fed creates reserves, but loanable funds come from <b>national saving</b>. Buying bonds lowers i and r; it does not by itself create saving.</p></div></div></div><div class="s-foot"><div class="hl">A change in the interest rate never shifts the demand curve. Monetary policy changes the price; borrowers then move along the same curve. Only a change in demand at every given r — a tax credit, optimism, a deficit — shifts D.</div></div>
+</section>
+
+<section class="slide" id="p16">
+<div class="tag">Unit 4 · Lesson 12 · From r to output</div>
+<h2>Two graphs, one story: lower r raises investment, and investment shifts AD</h2>
+<div class="stage"><div class="two"><div class="col"><svg viewBox="40 40 450 365" style="width:100%;max-width:520px;height:auto;display:block;margin:0 auto;"><line x1="95.0" y1="320.0" x2="450.0" y2="320.0" stroke="#1f2d3d" stroke-width="2.5"/><line x1="95.0" y1="320.0" x2="95.0" y2="65.0" stroke="#1f2d3d" stroke-width="2.5"/><text x="267.5" y="370.0" font-size="20" fill="#5b7288" text-anchor="middle" font-weight="400">Loanable funds</text><text x="87.0" y="75.0" font-size="20" fill="#5b7288" text-anchor="end" font-weight="400">r</text><polyline points="125.0,93.0 135.6,100.6 146.2,108.2 156.7,115.7 167.3,123.3 177.9,130.9 188.5,138.5 199.0,146.0 209.6,153.6 220.2,161.2 230.8,168.8 241.3,176.3 251.9,183.9 262.5,191.5 273.1,199.1 283.7,206.7 294.2,214.2 304.8,221.8 315.4,229.4 326.0,237.0 336.5,244.5 347.1,252.1 357.7,259.7 368.3,267.3 378.8,274.8 389.4,282.4 400.0,290.0" fill="none" stroke="#1CADE4" stroke-width="4"/><text x="394.0" y="282.0" font-size="19" fill="#1CADE4" text-anchor="end" font-weight="700">D</text><polyline points="125.0,290.0 135.6,282.4 146.2,274.8 156.7,267.3 167.3,259.7 177.9,252.1 188.5,244.5 199.0,237.0 209.6,229.4 220.2,221.8 230.8,214.2 241.3,206.7 251.9,199.1 262.5,191.5 273.1,183.9 283.7,176.3 294.2,168.8 304.8,161.2 315.4,153.6 326.0,146.0 336.5,138.5 347.1,130.9 357.7,123.3 368.3,115.7 378.8,108.2 389.4,100.6 400.0,93.0" fill="none" stroke="#2e9e6b" stroke-width="4"/><text x="394.0" y="85.0" font-size="19" fill="#2e9e6b" text-anchor="end" font-weight="700">S</text><circle cx="262.5" cy="191.5" r="8" fill="#a97422"/><line x1="95.0" y1="191.5" x2="262.5" y2="191.5" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><line x1="262.5" y1="191.5" x2="262.5" y2="320.0" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><text x="87.0" y="196.5" font-size="20" fill="#a97422" text-anchor="end" font-weight="700">r₁</text><text x="262.5" y="342.0" font-size="20" fill="#a97422" text-anchor="middle" font-weight="700">Q₁</text><circle cx="312.5" cy="227.3" r="7" fill="#2e9e6b"/><line x1="95.0" y1="227.3" x2="312.5" y2="227.3" stroke="#2e9e6b" stroke-width="2" stroke-dasharray="6 4"/><text x="87.0" y="232.3" font-size="19" fill="#2e9e6b" text-anchor="end" font-weight="700">r₂</text></svg><div class="hl" style="padding:.4vh .8vw;font-size:20px;">Lower r → more projects clear the bar → <b>I ↑</b>.</div></div><div class="col"><svg viewBox="40 40 450 365" style="width:100%;max-width:520px;height:auto;display:block;margin:0 auto;"><line x1="95.0" y1="320.0" x2="450.0" y2="320.0" stroke="#1f2d3d" stroke-width="2.5"/><line x1="95.0" y1="320.0" x2="95.0" y2="65.0" stroke="#1f2d3d" stroke-width="2.5"/><text x="267.5" y="370.0" font-size="20" fill="#5b7288" text-anchor="middle" font-weight="400">Real GDP</text><text x="87.0" y="75.0" font-size="20" fill="#5b7288" text-anchor="end" font-weight="400">PL</text><polyline points="125.0,290.0 135.6,282.4 146.2,274.8 156.7,267.3 167.3,259.7 177.9,252.1 188.5,244.5 199.0,237.0 209.6,229.4 220.2,221.8 230.8,214.2 241.3,206.7 251.9,199.1 262.5,191.5 273.1,183.9 283.7,176.3 294.2,168.8 304.8,161.2 315.4,153.6 326.0,146.0 336.5,138.5 347.1,130.9 357.7,123.3 368.3,115.7 378.8,108.2 389.4,100.6 400.0,93.0" fill="none" stroke="#6b7f93" stroke-width="4"/><text x="394.0" y="85.0" font-size="19" fill="#6b7f93" text-anchor="end" font-weight="700">SRAS</text><polyline points="125.0,93.0 135.6,100.6 146.2,108.2 156.7,115.7 167.3,123.3 177.9,130.9 188.5,138.5 199.0,146.0 209.6,153.6 220.2,161.2 230.8,168.8 241.3,176.3 251.9,183.9 262.5,191.5 273.1,199.1 283.7,206.7 294.2,214.2 304.8,221.8 315.4,229.4 326.0,237.0 336.5,244.5 347.1,252.1 357.7,259.7 368.3,267.3 378.8,274.8 389.4,282.4 400.0,290.0" fill="none" stroke="#1CADE4" stroke-width="4"/><text x="394.0" y="282.0" font-size="19" fill="#1CADE4" text-anchor="end" font-weight="700">AD₁</text><polyline points="183.0,93.0 193.6,100.6 204.2,108.2 214.7,115.7 225.3,123.3 235.9,130.9 246.5,138.5 257.0,146.0 267.6,153.6 278.2,161.2 288.8,168.8 299.3,176.3 309.9,183.9 320.5,191.5 331.1,199.1 341.7,206.7 352.2,214.2 362.8,221.8 373.4,229.4 384.0,237.0 394.5,244.5 405.1,252.1 415.7,259.7 426.3,267.3 436.8,274.8 447.4,282.4 458.0,290.0" fill="none" stroke="#2e9e6b" stroke-width="4" stroke-dasharray="7 5"/><circle cx="262.5" cy="191.5" r="8" fill="#a97422"/><line x1="95.0" y1="191.5" x2="262.5" y2="191.5" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><line x1="262.5" y1="191.5" x2="262.5" y2="320.0" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><text x="87.0" y="196.5" font-size="20" fill="#a97422" text-anchor="end" font-weight="700">PL₁</text><text x="262.5" y="342.0" font-size="20" fill="#a97422" text-anchor="middle" font-weight="700">Y₁</text><circle cx="291.5" cy="170.7" r="8" fill="#2e9e6b"/><line x1="95.0" y1="170.7" x2="291.5" y2="170.7" stroke="#2e9e6b" stroke-width="2" stroke-dasharray="6 4"/><line x1="291.5" y1="170.7" x2="291.5" y2="320.0" stroke="#2e9e6b" stroke-width="2" stroke-dasharray="6 4"/><text x="87.0" y="166.7" font-size="19" fill="#2e9e6b" text-anchor="end" font-weight="700">PL₂</text><text x="309.5" y="342.0" font-size="19" fill="#2e9e6b" text-anchor="start" font-weight="700">Y₂</text></svg><div class="hl" style="padding:.4vh .8vw;font-size:20px;">I is a component of AD → <b>AD right</b> → GDP ↑, PL ↑.</div></div></div><div class="s-foot"><div class="hl">The loanable funds graph shows a <b>movement along D</b> (r changes). The AD–AS graph shows a <b>shift of AD</b> (spending changes). One event, two different graph operations.</div></div></div>
+</section>
+
+<section class="slide" id="p17">
+<div class="tag">Unit 4 · Lesson 12 · Crowding out</div><h2>Crowding out — when government borrowing squeezes private investment</h2><div class="hl amber" style="padding:.5vh .9vw;line-height:1.3;margin-bottom:.4vh;"><b>Definition.</b> Crowding out is a fall in private investment caused by government borrowing: deficit ↑ → demand for loanable funds shifts right → r ↑ → some private projects no longer pay.</div><div class="two"><div class="col" style="flex:0 0 58%;"><svg viewBox="40 40 450 365" style="width:100%;max-width:520px;height:auto;display:block;margin:0 auto;"><line x1="95.0" y1="320.0" x2="450.0" y2="320.0" stroke="#1f2d3d" stroke-width="2.5"/><line x1="95.0" y1="320.0" x2="95.0" y2="65.0" stroke="#1f2d3d" stroke-width="2.5"/><text x="267.5" y="370.0" font-size="20" fill="#5b7288" text-anchor="middle" font-weight="400">Loanable funds</text><text x="55.0" y="75.0" font-size="20" fill="#5b7288" text-anchor="start" font-weight="400">r (real)</text><polyline points="125.0,93.0 135.6,100.6 146.2,108.2 156.7,115.7 167.3,123.3 177.9,130.9 188.5,138.5 199.0,146.0 209.6,153.6 220.2,161.2 230.8,168.8 241.3,176.3 251.9,183.9 262.5,191.5 273.1,199.1 283.7,206.7 294.2,214.2 304.8,221.8 315.4,229.4 326.0,237.0 336.5,244.5 347.1,252.1 357.7,259.7 368.3,267.3 378.8,274.8 389.4,282.4 400.0,290.0" fill="none" stroke="#1CADE4" stroke-width="4"/><text x="394.0" y="282.0" font-size="19" fill="#1CADE4" text-anchor="end" font-weight="700">D₁</text><polyline points="125.0,290.0 135.6,282.4 146.2,274.8 156.7,267.3 167.3,259.7 177.9,252.1 188.5,244.5 199.0,237.0 209.6,229.4 220.2,221.8 230.8,214.2 241.3,206.7 251.9,199.1 262.5,191.5 273.1,183.9 283.7,176.3 294.2,168.8 304.8,161.2 315.4,153.6 326.0,146.0 336.5,138.5 347.1,130.9 357.7,123.3 368.3,115.7 378.8,108.2 389.4,100.6 400.0,93.0" fill="none" stroke="#2e9e6b" stroke-width="4"/><text x="394.0" y="85.0" font-size="19" fill="#2e9e6b" text-anchor="end" font-weight="700">S</text><circle cx="262.5" cy="191.5" r="8" fill="#a97422"/><line x1="95.0" y1="191.5" x2="262.5" y2="191.5" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><line x1="262.5" y1="191.5" x2="262.5" y2="320.0" stroke="#a97422" stroke-width="2" stroke-dasharray="6 4"/><text x="87.0" y="196.5" font-size="20" fill="#a97422" text-anchor="end" font-weight="700">r₁</text><text x="262.5" y="342.0" font-size="20" fill="#a97422" text-anchor="middle" font-weight="700">Q₁</text><polyline points="195.0,93.0 205.6,100.6 216.2,108.2 226.7,115.7 237.3,123.3 247.9,130.9 258.5,138.5 269.0,146.0 279.6,153.6 290.2,161.2 300.8,168.8 311.3,176.3 321.9,183.9 332.5,191.5 343.1,199.1 353.7,206.7 364.2,214.2 374.8,221.8 385.4,229.4 396.0,237.0 406.5,244.5 417.1,252.1 427.7,259.7 438.3,267.3 448.8,274.8 459.4,282.4 470.0,290.0" fill="none" stroke="#d9534f" stroke-width="4" stroke-dasharray="7 5"/><circle cx="297.5" cy="166.4" r="8" fill="#d9534f"/><line x1="95.0" y1="166.4" x2="297.5" y2="166.4" stroke="#d9534f" stroke-width="2" stroke-dasharray="6 4"/><line x1="297.5" y1="166.4" x2="297.5" y2="320.0" stroke="#d9534f" stroke-width="2" stroke-dasharray="6 4"/><text x="87.0" y="171.4" font-size="20" fill="#d9534f" text-anchor="end" font-weight="700">r₂</text><text x="297.5" y="342.0" font-size="20" fill="#d9534f" text-anchor="middle" font-weight="700">Q₂</text><text x="330.0" y="100.0" font-size="19" fill="#d9534f" text-anchor="middle" font-weight="700">deficit → D right</text></svg></div><div class="col" style="flex:1;"><div class="card" style="margin-bottom:.6vh;"><p><b>Deficit ↑</b> → government borrows → demand for loanable funds shifts right.</p></div><div class="card" style="margin-bottom:.6vh;"><p>New equilibrium: <b>r ↑</b> and <b>quantity of funds ↑</b>.</p></div><div class="card" style="margin-bottom:.6vh;"><p>At the higher r, some private projects no longer pay → <b>private I ↓</b>.</p></div></div></div><div class="s-foot"><div class="hl">The total quantity of funds rises, but the government takes a larger share — so private capital accumulation slows.</div></div>
+</section>
+
+<section class="slide" id="p18">
   <div class="tag">Unit 4 · Lesson 12 · Putting it together</div>
   <h2>Two markets, side by side</h2>
   <div class="stage">
-    <div class="two">
+    <div class="two" style="position:relative;">
       <div class="col" style="justify-content:flex-start;">
-        <svg viewBox="0 0 380 250" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:380px;height:auto;align-self:center;">
+        <svg viewBox="0 0 380 250" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:300px;height:auto;align-self:center;">
           <line x1="40" y1="215" x2="350" y2="215" stroke="#1f2d3d" stroke-width="2"/>
           <line x1="40" y1="215" x2="40" y2="30" stroke="#1f2d3d" stroke-width="2"/>
           <text x="10" y="24" font-size="22" fill="#5b7288">nominal i</text>
@@ -692,11 +690,12 @@
           <text x="252" y="62" font-size="22" font-weight="700" fill="#a94442">MS</text>
           <polyline points="70,60 330,195" fill="none" stroke="#1CADE4" stroke-width="4"/>
           <text x="300" y="185" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">MD</text>
-        </svg>
-        <div class="hl" style="padding:.4vh .8vw;">Money market &mdash; the <b>nominal</b> rate i, short-term, Fed-steered.</div>
+        <text x="195" y="245" text-anchor="middle" font-size="21" fill="#5b7288">Quantity of money</text></svg>
+        <div class="hl" style="padding:.3vh .6vw;font-size:clamp(19px,2vh,23px);">Money market &mdash; the <b>nominal</b> rate i, short-term, Fed-steered.</div>
       </div>
+      <div style="position:absolute;left:50%;top:20%;transform:translateX(-50%);background:var(--card);border:2px solid var(--accent);border-radius:10px;padding:.5vh .8vw;font-size:clamp(17px,1.8vh,21px);text-align:center;z-index:3;"><b>Fisher bridge</b><br>nominal i = real r + expected π</div>
       <div class="col" style="justify-content:flex-start;">
-        <svg viewBox="0 0 380 250" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:380px;height:auto;align-self:center;">
+        <svg viewBox="0 0 380 250" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:300px;height:auto;align-self:center;">
           <line x1="40" y1="215" x2="350" y2="215" stroke="#1f2d3d" stroke-width="2"/>
           <line x1="40" y1="215" x2="40" y2="30" stroke="#1f2d3d" stroke-width="2"/>
           <text x="10" y="24" font-size="22" fill="#5b7288">real r</text>
@@ -704,48 +703,45 @@
           <text x="338" y="58" text-anchor="end" font-size="22" font-weight="700" fill="#1e6e4a">S</text>
           <polyline points="70,60 330,195" fill="none" stroke="#1CADE4" stroke-width="4"/>
           <text x="338" y="202" text-anchor="end" font-size="22" font-weight="700" fill="#0e7fae">D</text>
-        </svg>
-        <div class="hl amber" style="padding:.4vh .8vw;">Loanable funds &mdash; the <b>real</b> rate r, set by saving and investment.</div>
+        <text x="195" y="245" text-anchor="middle" font-size="21" fill="#5b7288">Quantity of loanable funds</text></svg>
+        <div class="hl amber" style="padding:.3vh .6vw;font-size:clamp(19px,2vh,23px);">Loanable funds &mdash; the <b>real</b> rate r, set by saving and investment.</div>
       </div>
     </div>
-    <table style="flex:0 0 auto;">
+    <table style="flex:0 0 auto;font-size:clamp(19px,2vh,23px);"><style>#p18 td,#p18 th{padding:.28vh .5vw;}</style>
       <tr><th></th><th>Money market</th><th>Loanable funds market</th></tr>
       <tr><td class="l">What is traded</td><td class="l">Money &mdash; cash and reserves</td><td class="l">Funds for investment &mdash; saving</td></tr>
       <tr><td class="l">Price on the vertical axis</td><td class="l"><b>Nominal</b> interest rate i</td><td class="l"><b>Real</b> interest rate r</td></tr>
       <tr><td class="l">Demand comes from</td><td class="l">People and banks holding money</td><td class="l">Borrowers: firms, government, households</td></tr>
       <tr><td class="l">Supply comes from</td><td class="l">The central bank (a vertical line)</td><td class="l">Savers, including foreign capital</td></tr>
       <tr><td class="l">Who sets the price</td><td class="l">Mostly the Fed</td><td class="l">Saving and investment &mdash; not the Fed</td></tr>
+      <tr><td class="l">What it acts on</td><td class="l"><b>C and I</b> &mdash; consumption and investment</td><td class="l"><b>I</b> &mdash; investment spending</td></tr>
       
     </table>
-    <div class="s-foot">
-      <div class="hl">The bridge between the two rates is the Fisher relation: <b>nominal = real + expected inflation</b>.</div>
-    </div>
+    
   </div>
 </section>
 
-<section class="slide" id="p16">
-  <div class="tag">Unit 4 · Lesson 12 · Key takeaways</div>
-  <h2>What to walk out with &mdash; fill the blanks</h2>
-  <div class="stage">
-    <div class="drill">
-      <div class="drow"><span class="dn">1</span><p>This market prices the <span class="fill" data-a="real">____</span> rate &mdash; <span class="fill" data-a="savers">____</span> supply the funds and borrowers demand them.</p></div>
-      <div class="drow"><span class="dn">2</span><p>Demand slopes <span class="fill" data-a="down">____</span> &mdash; a ranking of projects; supply slopes <span class="fill" data-a="up">____</span> &mdash; the reward for waiting.</p></div>
-      <div class="drow"><span class="dn">3</span><p>A deficit shifts demand to the <span class="fill" data-a="right">____</span>, so the equilibrium real rate <span class="fill" data-a="rises">____</span>.</p></div>
-      <div class="drow"><span class="dn">4</span><p><b>real</b> = <span class="fill" data-a="nominal">____</span> &minus; actual inflation; the forward-looking version uses <span class="fill" data-a="expected">____</span> inflation instead.</p></div>
-      <div class="drow"><span class="dn">5</span><p>Every posted rate is <span class="fill" data-a="nominal">____</span>; anything you worked out by subtracting inflation is <span class="fill" data-a="real">____</span>.</p></div>
-    </div>
-    <div class="btnrow" style="margin-top:1vh;justify-content:center;">
-      <button class="btn" onclick="fillNext()">Reveal next answer</button>
-      <button class="btn ghost" onclick="fillAll()">Reveal all</button>
-      <button class="btn ghost" onclick="fillReset()">Hide all</button>
-    </div>
-    <div class="s-foot">
-      <div class="hl amber">Unit 4 continues: bond prices, opportunity cost, and then the unit review.</div>
-    </div>
+<section class="slide" id="p19">
+<div class="tag">Unit 4 · Lesson 12 · Key takeaways</div>
+<h2>What to walk out with &mdash; fill the blanks</h2>
+<div class="stage">
+  <div class="drill" style="gap:.22vh;">
+    <div class="drow" style="padding:.2vh .9vw;"><span class="dn">1</span><p><b>Ex ante</b>: i ≈ r + <span class="fill" data-a="expected inflation">____</span>. <b>Ex post</b>: r = i &minus; <span class="fill" data-a="actual inflation">____</span>.</p></div>
+    <div class="drow" style="padding:.2vh .9vw;"><span class="dn">2</span><p>A project is funded only if its expected return <span class="fill" data-a="exceeds">____</span> r. Raise r and fewer clear the bar &mdash; a movement <span class="fill" data-a="along">____</span> D, not a shift.</p></div>
+    <div class="drow" style="padding:.2vh .9vw;"><span class="dn">3</span><p>A deficit cuts public saving (S shifts <span class="fill" data-a="left">____</span>) and adds a borrower (D shifts <span class="fill" data-a="right">____</span>). Both raise r. Draw <span class="fill" data-a="one">____</span> shift per graph.</p></div>
+    <div class="drow" style="padding:.2vh .9vw;"><span class="dn">4</span><p>The Fed changes i; with expected inflation sticky, <span class="fill" data-a="r">____</span> follows. Money supply ↑ <span class="fill" data-a="≠">____</span> loanable-funds supply ↑ &mdash; those funds come from national <span class="fill" data-a="saving">____</span>.</p></div>
+    <div class="drow" style="padding:.2vh .9vw;"><span class="dn">5</span><p><b>Crowding out</b> = a fall in <span class="fill" data-a="private investment">____</span> caused by government borrowing: deficit ↑ → D right → r ↑ → some projects no longer pay.</p></div>
+    <div class="drow" style="padding:.2vh .9vw;"><span class="dn">6</span><p>Money market sets <span class="fill" data-a="i">____</span> and acts on <span class="fill" data-a="C and I">____</span>; loanable funds sets <span class="fill" data-a="r">____</span> and acts on <span class="fill" data-a="I">____</span>. Lower r → I ↑ → AD right → GDP and PL <span class="fill" data-a="rise">____</span>.</p></div>
+  </div>
+  <div class="btnrow" style="margin-top:.25vh;justify-content:center;">
+    <button class="btn" onclick="fillNext()">Reveal next answer</button>
+    <button class="btn ghost" onclick="fillAll()">Reveal all</button>
+    <button class="btn ghost" onclick="fillReset()">Hide all</button>
+  </div>
   </div>
 </section>
 
-<section class="slide cover" id="p17">
+<section class="slide cover" id="p20">
   <div class="tag">Wrap-up</div>
   <h1>Thank you!</h1>
   <p>One market prices the real rate · one relation converts it into the quoted one</p>
@@ -757,7 +753,7 @@
 <nav>
   <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)" disabled>&larr; Prev</button>
   <div class="dots" id="dots"></div>
-  <div class="pageinfo" id="pageinfo">1 / 17</div>
+  <div class="pageinfo" id="pageinfo">1 / 20</div>
   <div class="copy">© 2026 Dr. Jia</div>
   <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
 </nav>
@@ -790,6 +786,8 @@ for(let i=0;i<TOTAL;i++){
   dotsBox.appendChild(d);
 }
 /* 翻页只走左右下角按键：方向键/空格翻页已移除（2026-10-08 硬规矩） */
+const _initPage = parseInt((location.hash || "").replace("#",""), 10);
+if (!isNaN(_initPage) && _initPage > 0 && _initPage < TOTAL) gotoSlide(_initPage);
 
 
 
@@ -827,12 +825,7 @@ function zlbPaint(){
     note.innerHTML = "Real rate = " + nom.toFixed(1) + "% &minus; " + inf.toFixed(1) + "% = <b>" + real.toFixed(1) + "%</b>. The nominal rate cannot fall below zero to help &mdash; that is the trap.";
   }
 }
-function zlbAnswer(){
-  const a = document.getElementById("zlbAns");
-  a.style.display = a.style.display === "none" ? "" : "none";
-  document.getElementById("zlbBtn").textContent = a.style.display === "none" ? "Show the answer" : "Hide the answer";
-  typesetMath(document);
-}
+
 
 /* ═══════════ p6 项目清单：拖 r，看哪些项目还值得投 ═══════════
    每一行是一个真实资本支出决策：预期收益率是数据，最后一列由 r 算出来。
@@ -851,6 +844,15 @@ function pjPaint(){
   document.getElementById("pjCount").innerHTML =
     "<b>" + n + " of " + PJ_RET.length + "</b> projects clear the bar at r = " + r.toFixed(1) +
     "% &mdash; that is the <b>quantity of loanable funds demanded</b>.";
+  const marks = document.getElementById("pjMarks");
+  if (marks){
+    const yR = 320 - r * 32.5;
+    const xD = 90 + (yR - 60) / 260 * 380;             // demand runs (90,60) -> (470,320)
+    marks.innerHTML =
+      '<line x1="80" y1="'+yR.toFixed(1)+'" x2="'+Math.min(500,xD+18).toFixed(1)+'" y2="'+yR.toFixed(1)+'" stroke="#a97422" stroke-width="2.5" stroke-dasharray="6 4"/>'+
+      '<circle cx="'+xD.toFixed(1)+'" cy="'+yR.toFixed(1)+'" r="9" fill="#a97422"/>'+
+      '<text x="72" y="'+(yR+7).toFixed(1)+'" text-anchor="end" font-size="22" font-weight="800" fill="#a97422">'+r.toFixed(1)+'%</text>';
+  }
 }
 
 /* ═══════════ p12 地球：可拖动旋转 + 潮汐圆环 ═══════════
@@ -1035,8 +1037,8 @@ tideSet("hike");
 gBind();
 gBase();
 fillReset();
-const _noMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-try { if (!_noMotion) requestAnimationFrame(gTick); } catch (e) { /* no rAF (headless) */ }
+/* Tide animation driven on an interval — runs whenever the globe slide is active. */
+try { setInterval(function(){ const pg=document.getElementById("p12"); if(pg&&pg.classList.contains("active")){ gPhase=(gPhase+0.0032)%1; gTides(); } }, 40); } catch(e) {}
 
 try{
   const hashInit = parseInt(location.hash.slice(1)||"0",10);
