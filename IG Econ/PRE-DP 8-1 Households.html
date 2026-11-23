@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 3.2 - Households</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:22px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(19px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(10px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(19px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(19px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(19px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(16px,1.35vw,19px);}
+.zone .zt{width:100%;font-size:clamp(19px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:22px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:22px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:22px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:22px;}
+.chip.small{font-size:22px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(19px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:22px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+
+.step{display:none}
+.stepbtn{font-size:22px;padding:5px 14px}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 3: Microeconomic decision-makers</div><h1>Households</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div class="botbar"></div></div><div class="slide"><div class="content">
+<h1>What is a household</h1>
+<div class="sub">Not the same thing as a family — and the difference runs through every statistic you will read.</div>
+<img src="images/hh/household_types.png" alt="" style="width:100%;height:auto;max-height:46%;object-fit:contain;margin-top:4px">
+<div class="row" style="margin-top:12px;align-items:stretch">
+  <div class="card grow2" style="align-self:start"><div class="tag">DEFINITION</div>
+    <p style="font-size:24px;line-height:1.3;margin-top:4px">All persons <b>occupying a dwelling</b>
+    and <b>pooling income and expenses</b>.</p>
+    <p style="font-size:22px;color:#5b6b7b;margin-top:8px">One person alone, relatives, or unrelated
+    roommates — all households.</p></div>
+  <div class="panel grow1" style="display:flex;flex-direction:column;justify-content:center">
+    <div class="tag">NOT THE SAME AS FAMILY</div>
+    <div style="font-size:22px;line-height:1.4;color:#3d4d5c">A family is defined by <b>blood,
+    marriage or adoption</b>; a household by <b>shared residence and a shared budget</b>.</div></div>
+</div></div></div>
+<div class="slide"><div class="content">
+<h1>The unit behind the statistics</h1>
+<div class="sub">When a figure says “per capita”, ask: per capita of what?</div>
+<div class="card mt" style="border-color:#1E88E5;border-width:5px;background:#F4FAFF">
+  <div class="tag" style="color:#1E88E5">THE ONE SENTENCE THAT MATTERS</div>
+  <p style="font-size:clamp(26px,2.9vw,36px);line-height:1.3;color:#12507e;margin-top:6px">
+  “Per capita” means <b>per person in the household</b> — <b>including</b> children and elderly
+  parents with no income.</p></div>
+<div class="row" style="flex:1;margin-top:14px;align-items:stretch">
+  <div class="card grow1" style="display:flex;flex-direction:column;justify-content:center;text-align:center">
+    <div style="font-size:22px;color:#7b8b9b">One earner, four dependants</div>
+    <div style="font-size:56px;font-weight:900;color:#1E88E5;margin:8px 0;letter-spacing:-.02em">&yen;6,000 &divide; 5</div>
+    <div style="font-size:24px;color:#c62828;font-weight:800">&yen;1,200 per person</div></div>
+  <div class="card grow1" style="display:flex;flex-direction:column;justify-content:center;text-align:center">
+    <div style="font-size:22px;color:#7b8b9b">Two earners, no children</div>
+    <div style="font-size:56px;font-weight:900;color:#1E88E5;margin:8px 0;letter-spacing:-.02em">&yen;6,000 &divide; 2</div>
+    <div style="font-size:24px;color:#2E7D32;font-weight:800">&yen;3,000 per person</div></div>
+</div>
+<div class="note mt">Same money, same country, same year — <b>one household looks twice as rich</b>,
+because of how many people share it.</div>
+</div></div>
+<div class="slide"><div class="content"><h1>What was actually said</h1><div class="sub">State Council press conference, 2020 — the sentence that started it.</div><div class="row mt fill" style="align-items:stretch"><img src="images/hh/pm_quote.png" alt="" style="width:52%;height:100%;object-fit:cover;object-position:center 30%;border-radius:12px"><div class="grow1" style="display:flex;flex-direction:column;justify-content:center;gap:12px"><div class="card"><div class="tag">THE ORIGINAL</div><p style="font-size:clamp(22px,2.2vw,28px);line-height:1.4;color:#15334f;margin-top:4px">“About <b>600 million people</b> live in households where per-capita disposable income is around <b>¥1,000 a month</b>.”</p></div><div class="panel"><div class="tag">NOTE THE UNIT</div><div style="font-size:22px;line-height:1.35;color:#3d4d5c">It is a <b>household</b> figure, divided by <b>everyone in the household</b> — not a wage, and not a count of workers.<div style="font-size:22px;color:#8a99a8;margin-top:10px;line-height:1.35">Source: State Council press conference, 28 May 2020<br>十三届全国人大三次会议记者会</div></div></div></div></div></div></div>
+<div class="slide"><div class="content">
+<h1>What it turned into</h1>
+<div class="sub">A widely shared post. It looks like a correction — and adds a new error.</div>
+<img src="images/hh/weibo.png" alt="" style="width:100%;height:auto;max-height:60%;
+  object-fit:contain;object-position:top center;margin-top:6px">
+<div class="row" style="margin-top:10px">
+  <div class="card grow1" style="border-color:#c62828;background:#FFF8F7">
+    <div class="tag" style="color:#c62828">THE CLAIM</div>
+    <p style="font-size:22px;line-height:1.35;color:#8c2a22">Subtract children, the elderly and
+    students → “fewer than <b>50 million</b>” earn under ¥1,000.</p></div>
+  <div class="card grow1" style="border-color:#c62828">
+    <div class="tag" style="color:#c62828">WHAT THE POST DOES</div>
+    <p style="font-size:22px;line-height:1.35;color:#3d4d5c">It reads a <b>per-capita</b> figure as a
+    <b>wage</b>, then removes the people it has already divided by.</p></div>
+</div>
+</div></div>
+<div class="slide"><div class="content">
+<h1>What a typical household actually lives on</h1>
+<div class="sub">Real wages, then the same arithmetic applied to a family.</div>
+<div class="row" style="flex:1;align-items:stretch;margin-top:6px">
+  <div style="width:34%;display:flex;flex-direction:column;gap:6px">
+    <img src="images/hh/yonghui.png" alt="" style="width:100%;flex:1 1 0;min-height:0;
+      object-fit:cover;object-position:top center;border-radius:10px">
+    <div style="font-size:22px;color:#6b7c8f">Supermarket staff: <b>¥2,800 → ¥4,500</b></div></div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:0">
+    <img src="images/hh/salary_chart.png" alt="" style="width:100%;flex:1 1 0;min-height:0;
+      object-fit:contain">
+    <div style="font-size:22px;color:#6b7c8f">Average monthly wage: <b>¥9,689</b> tier-1 ·
+      <b>¥6,671</b> new tier-1 (58同城)</div></div>
+</div>
+<div class="card" style="margin-top:10px;border-color:#1E88E5;background:#F4FAFF">
+  <div class="tag" style="color:#1E88E5">THE SAME HOUSEHOLD, DIVIDED</div>
+  <p style="font-size:22px;line-height:1.5;color:#12507e;margin-top:4px">
+  Two earners at ¥4,500 &rarr; <b>¥9,000</b> a month · two children + one grandparent &rarr;
+  <b>5 people</b> &nbsp;→&nbsp; <b style="font-size:26px">¥1,800 per person</b></p></div>
+</div></div>
+<div class="slide"><div class="content">
+<h1>Disposable income</h1>
+<div class="sub">The only income a household can actually decide about.</div>
+<div class="row mt" style="align-items:stretch">
+<div style="flex:2.9;display:flex;flex-direction:column;gap:12px">
+<div class="card" style="border-color:#1E88E5;border-width:6px;background:#F4FAFF;padding:18px 22px">
+<div class="tag" style="color:#1E88E5">DEFINITION</div>
+<p style="font-size:clamp(26px,2.9vw,36px);line-height:1.3;color:#12507e;margin-top:6px">Income after <b>income tax</b> has been deducted and <b>state benefits</b> received.</p></div>
+<div class="card" style="border-color:#1E88E5;background:#EAF4FF;padding:16px 22px">
+<div class="tag" style="color:#1E88E5">FORMULA</div>
+<p style="font-size:clamp(21px,2.3vw,30px);line-height:1.4;color:#12507e;margin-top:4px;font-weight:700">Y<sub>d</sub> = gross income &minus; income tax + state benefits</p></div>
+<div class="row" style="gap:10px;align-items:stretch">
+<div class="panel grow1"><div class="tag">WHY DISPOSABLE</div><div style="font-size:22px;line-height:1.35;color:#3d4d5c">Tax is not a choice; benefits are not earned.</div></div>
+<div class="panel grow1" style="background:#FFF9F0;border-color:#f2e2c4"><div class="tag" style="color:#8a6b12">EXAM TRAP</div><div style="font-size:22px;line-height:1.35;color:#3d4d5c">&#8220;Income&#8221; means <b>disposable</b> unless tax is mentioned.</div></div></div></div>
+<div style="flex:1;display:flex"><div class="card" style="width:100%;display:flex;flex-direction:column;justify-content:center">
+<div class="tag">THE LEDGER</div>
+<table style="width:100%;font-size:22px;line-height:1.8;color:#3d4d5c;margin-top:4px">
+<tr><td>Gross income</td><td style="text-align:right"><b>8,000</b></td></tr>
+<tr><td>&minus; income tax</td><td style="text-align:right"><b style="color:#c62828">&minus;900</b></td></tr>
+<tr><td>+ child benefit</td><td style="text-align:right"><b style="color:#2E7D32">+300</b></td></tr>
+<tr style="border-top:2px solid #dbe5ee"><td><b>Disposable income</b></td><td style="text-align:right"><b style="color:#1E88E5;font-size:22px">7,400</b></td></tr>
+</table></div></div></div></div></div><div class="slide"><div class="content">
+<h1>From income to the three decisions</h1>
+<div class="sub">How disposable income splits &#8212; and what happens when it runs out.</div>
+<svg viewBox="0 0 980 470" style="width:100%;flex:1;min-height:0;margin-top:4px">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#8a99b8"/></marker>
+</defs>
+
+<rect x="20" y="16" width="250" height="86" rx="12" fill="#F4FAFF" stroke="#15334f" stroke-width="3"/>
+<text x="145" y="52" font-size="24" font-weight="700" fill="#15334f" text-anchor="middle">Disposable income</text>
+<text x="145" y="82" font-size="21" fill="#5b6b7b" text-anchor="middle">Yd</text>
+
+<line x1="270" y1="59" x2="330" y2="59" stroke="#8a99b8" stroke-width="3" marker-end="url(#ar)"/>
+
+<rect x="330" y="16" width="630" height="120" rx="12" fill="#F4FAFF" stroke="#1E88E5" stroke-width="4"/>
+<text x="356" y="52" font-size="21" font-weight="700" fill="#1E88E5">CONSUMPTION</text>
+<text x="356" y="86" font-size="22" fill="#3d4d5c">Expenditure by households on consumer goods and services.</text>
+<text x="356" y="118" font-size="21" font-weight="700" fill="#1E88E5">APC = C &#247; Yd   (average propensity to consume)</text>
+
+<line x1="645" y1="136" x2="645" y2="176" stroke="#8a99b8" stroke-width="3" marker-end="url(#ar)"/>
+
+<rect x="330" y="176" width="630" height="96" rx="12" fill="#F1F9F2" stroke="#2E7D32" stroke-width="4"/>
+<text x="356" y="212" font-size="21" font-weight="700" fill="#2E7D32">SAVING</text>
+<text x="356" y="246" font-size="22" fill="#3d4d5c">Income not spent: S = Yd &#8722; C.</text>
+
+<line x1="645" y1="272" x2="645" y2="306" stroke="#8a99b8" stroke-width="3"/>
+<line x1="300" y1="306" x2="800" y2="306" stroke="#8a99b8" stroke-width="3"/>
+<line x1="300" y1="306" x2="300" y2="336" stroke="#8a99b8" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="800" y1="306" x2="800" y2="336" stroke="#8a99b8" stroke-width="3" marker-end="url(#ar)"/>
+<text x="645" y="296" font-size="22" font-weight="700" fill="#c62828" text-anchor="middle">if C &gt; Yd</text>
+
+<rect x="20" y="336" width="380" height="112" rx="12" fill="#FFF6F5" stroke="#C62828" stroke-width="4"/>
+<text x="46" y="372" font-size="21" font-weight="700" fill="#C62828">DISSAVING</text>
+<text x="46" y="404" font-size="21" fill="#3d4d5c">Met by running down savings</text>
+<text x="46" y="432" font-size="21" fill="#3d4d5c">already held.</text>
+
+<rect x="580" y="336" width="380" height="112" rx="12" fill="#FFFBF2" stroke="#8a6b12" stroke-width="4"/>
+<text x="606" y="372" font-size="21" font-weight="700" fill="#8a6b12">BORROWING</text>
+<text x="606" y="404" font-size="21" fill="#3d4d5c">Met by new debt, repaid</text>
+<text x="606" y="432" font-size="21" fill="#3d4d5c">out of future income.</text>
+</svg>
+<div class="note mt">Same gap, two ways to fill it: <b>dissaving</b> uses money you already have; <b>borrowing</b> uses money you do not have yet.</div></div></div><div class="slide"><div class="content"><h1>The same gap, on paper</h1><div class="sub">Three steps. Click each blue blank to reveal the number.</div><div class="row mt" style="align-items:stretch;flex:1"><div class="card grow1" style="border-color:#1E88E5"><div class="tag" style="color:#1E88E5">STEP 1 &#183; DISPOSABLE INCOME</div><table style="width:100%;font-size:24px;line-height:2.3;color:#3d4d5c;margin-top:4px"><tr><td>Gross income</td><td style="text-align:right"><b>6,000</b></td></tr><tr><td>&minus; income tax paid</td><td style="text-align:right"><b style="color:#c62828">&minus;600</b></td></tr><tr><td>+ state benefits received</td><td style="text-align:right"><b style="color:#2E7D32">+200</b></td></tr><tr style="border-top:2px solid #dbe5ee"><td><b>Disposable income</b></td><td style="text-align:right"><span class="ans" data-a="5,600" style="display:inline-block;min-width:90px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span></td></tr></table></div><div class="card grow1" style="border-color:#2E7D32"><div class="tag" style="color:#2E7D32">STEP 2 &#183; SAVING</div><table style="width:100%;font-size:24px;line-height:2.3;color:#3d4d5c;margin-top:4px"><tr><td>Disposable income (Step 1)</td><td style="text-align:right"><span class="ans" data-a="5,600" style="display:inline-block;min-width:90px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span></td></tr><tr><td>&minus; consumption</td><td style="text-align:right"><b style="color:#c62828">&minus;6,200</b></td></tr><tr style="border-top:2px solid #dbe5ee"><td><b>Saving</b></td><td style="text-align:right"><span class="ans" data-a="−600" style="display:inline-block;min-width:110px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span></td></tr></table><div style="font-size:19px;color:#7b8b9b;margin-top:6px">negative &#8594; spending above income</div></div></div><div class="card" style="margin-top:12px;border-color:#C62828"><div class="tag" style="color:#C62828">STEP 3 &#183; WHERE DOES THE ¥600 COME FROM? It holds ¥200 of savings</div><div class="row" style="margin-top:6px;align-items:center"><div class="grow1" style="font-size:22px;line-height:1.6;color:#3d4d5c">Dissaving (runs down savings) = <span class="ans" data-a="¥200" style="display:inline-block;min-width:110px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span></div><div class="grow1" style="font-size:22px;line-height:1.6;color:#3d4d5c">Borrowing (new debt) = <span class="ans" data-a="¥400" style="display:inline-block;min-width:110px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span></div></div><div style="font-size:20px;color:#7b8b9b;margin-top:6px">Savings run out first; the rest must be borrowed. You can only dissave as much wealth as you hold.</div></div><div class="note mt">With no savings at all, the whole ¥600 is borrowing &#8212; the split depends on wealth, not on the size of the gap.</div><script>(function(){document.addEventListener("click",function(e){var s=e.target.closest("span.ans"); if(!s) return;s.textContent=s.getAttribute("data-a"); s.style.color="#15334f";s.style.borderBottomColor="#cfdbe8";});})();</script></div></div><div class="slide"><div class="content">
+<h1>Flow and stock</h1>
+<div class="sub">A stock is a level; a flow is what changes it. Like a bathtub.</div>
+<div class="row" style="flex:1;align-items:stretch;min-height:0">
+<div style="flex:1.1;display:flex;align-items:center;justify-content:center">
+<svg viewBox="0 0 420 330" style="width:100%;height:100%">
+<rect x="80" y="120" width="250" height="150" rx="10" fill="#EAF4FF" stroke="#1E88E5" stroke-width="4"/>
+<rect x="80" y="180" width="250" height="90" fill="#9FD3F2"/>
+<text x="205" y="238" font-size="19" fill="#12507e" text-anchor="middle" font-weight="700">WATER = STOCK</text>
+<text x="205" y="262" font-size="16" fill="#3d4d5c" text-anchor="middle">level today (litres)</text>
+<path d="M150 118 L150 60 L196 60" stroke="#2E7D32" stroke-width="9" fill="none" stroke-linecap="round"/>
+<rect x="196" y="46" width="26" height="16" rx="4" fill="#2E7D32"/>
+<text x="232" y="60" font-size="18" fill="#2E7D32" font-weight="700">TAP = FLOW IN</text>
+<text x="232" y="80" font-size="15" fill="#5b6b7b">litres / minute</text>
+<path d="M300 270 L300 305" stroke="#C62828" stroke-width="9" stroke-linecap="round"/>
+<text x="316" y="300" font-size="18" fill="#C62828" font-weight="700">DRAIN = FLOW OUT</text>
+<text x="316" y="320" font-size="15" fill="#5b6b7b">leaks, spending</text>
+</svg></div>
+<div class="grow1" style="display:flex;flex-direction:column;gap:10px;justify-content:center">
+<div class="card"><div class="tag">IN THIS LESSON</div>
+<div style="font-size:22px;line-height:1.5;color:#3d4d5c;margin-top:4px"><b>stock:</b> wealth, savings balance<br><b>flow:</b> income, saving, borrowing</div></div>
+<div class="card"><div class="tag">ELSEWHERE</div>
+<div style="font-size:22px;line-height:1.5;color:#3d4d5c;margin-top:4px"><b>stock:</b> population &#183; bath water<br><b>flow:</b> births &amp; deaths &#183; litres per minute</div></div>
+</div>
+</div></div>
+<div class="note mt">Saving is the tap: it adds to the water. Dissaving is the drain: it lowers the level.<br><b>Test:</b> if a number only means something once you name a period &#8212; per year, per day &#8212; it is a <b>flow</b>; if it is true at a moment, it is a <b>stock</b>.</div></div></div><div class="slide"><div class="content">
+<h1>Income: the amount rises, the share falls</h1>
+<div class="sub">Build the diagram step by step &#8212; then move income yourself.</div>
+<div class="row" style="flex:1;align-items:stretch;min-height:0">
+<div style="flex:1.6;min-height:0;display:flex"><svg id="dem2" viewBox="0 0 760 520" style="width:100%;height:100%"></svg></div>
+<div class="grow1" style="display:flex;flex-direction:column;gap:10px">
+<div class="panel">
+<div style="font-size:22px;color:#1E88E5;font-weight:800" id="dStep">Step 1 of 4</div>
+<div id="dNote" style="font-size:22px;line-height:1.4;color:#3d4d5c;margin-top:4px">Horizontal axis: disposable income. Vertical axis: spending.</div>
+<div style="font-size:22px;color:#5b6b7b;margin-top:10px">Income &rarr; <b id="dV" style="color:#1E88E5;font-size:23px">&#165;70</b></div>
+<input type="range" id="dIn" min="0" max="100" step="2" value="70" style="width:100%;cursor:pointer">
+<div class="ends"><span>&#165;0</span><span>&#165;100</span></div>
+<div id="dRead" style="margin-top:6px;font-size:22px;line-height:1.7;color:#3d4d5c">Spent <b id="dC" style="color:#1E88E5">&#165;57</b> &#183; Saved <b id="dS" style="color:#2E7D32">&#165;13</b></div>
+</div>
+<button class="big-btn" id="dNext" style="font-size:22px;padding:8px">Next step &rarr;</button>
+</div></div>
+<script>
+(function () {
+  var stage = 0, X0 = 110, X1 = 690, Y0 = 430, Y1 = 60, VMAX = 100, HMAX = 110;
+  var svg = document.getElementById('dem2'), NS = 'http://www.w3.org/2000/svg';
+  function X(v) { return X0 + v / VMAX * (X1 - X0); }
+  function Y(v) { return Y0 - v / HMAX * (Y0 - Y1); }
+  function add(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; }
+  function T(x, y, s, sz, c, an, w) { var t = add('text', { x: x, y: y, 'font-size': sz, fill: c, 'text-anchor': an || 'start' }); if (w) t.setAttribute('font-weight', w); t.textContent = s; return t; }
+  function C(v) { return 15 + 0.6 * v; }
+  function draw() {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    add('line', { x1: X0, y1: Y0, x2: X1 + 12, y2: Y0, stroke: '#333', 'stroke-width': 2 });
+    add('line', { x1: X0, y1: Y0, x2: X0, y2: Y1 - 12, stroke: '#333', 'stroke-width': 2 });
+    T(X1, Y0 + 54, 'disposable income (\u00a5)', 20, '#5b6b7b', 'end');
+    T(X0 - 16, Y1 - 20, 'spending (\u00a5)', 20, '#5b6b7b', 'end');
+    T(X0 - 16, Y0 + 28, '0', 19, '#5b6b7b', 'end');
+    if (stage >= 1) {
+      for (var v = 20; v <= 100; v += 20) {
+        add('line', { x1: X(v), y1: Y0, x2: X(v), y2: Y0 - 7, stroke: '#c9d6e4', 'stroke-width': 2 });
+        T(X(v), Y0 + 28, '\u00a5' + v, 18, '#8a99a8', 'middle');
+      }
+      for (var u = 20; u <= 100; u += 20) {
+        add('line', { x1: X0, y1: Y(u), x2: X0 + 7, y2: Y(u), stroke: '#c9d6e4', 'stroke-width': 2 });
+        T(X0 - 14, Y(u) + 6, '\u00a5' + u, 18, '#8a99a8', 'end');
+      }
+    }
+    if (stage >= 2) {
+      add('line', { x1: X(0), y1: Y(0), x2: X(100), y2: Y(100), stroke: '#9aa5b1', 'stroke-width': 2.5, 'stroke-dasharray': '9 7' });
+      T(X(28), Y(20), 'spend everything (45\u00b0)', 18, '#6b7c8f');
+    }
+    if (stage >= 3) {
+      var pts = [];
+      for (var i = 0; i <= 100; i++) pts.push([X(i), Y(C(i))]);
+      add('path', { d: pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '), fill: 'none', stroke: '#1CADE4', 'stroke-width': 4 });
+      T(X(74), Y(C(74)) + 26, 'consumption', 19, '#0e7fae');
+    }
+    if (stage >= 4) {
+      var yd = +document.getElementById('dIn').value, c = C(yd), gap = yd - c;
+      add('line', { x1: X(yd), y1: Y(c), x2: X(yd), y2: Y(yd), stroke: gap >= 0 ? '#2E7D32' : '#C62828', 'stroke-width': 8 });
+      add('circle', { cx: X(yd), cy: Y(c), r: 7, fill: '#1CADE4' });
+      add('circle', { cx: X(yd), cy: Y(yd), r: 7, fill: '#15334f' });
+      T(X(yd) + 14, Math.min(Y(c), Y(yd)) + 26, gap >= 0 ? ('saving \u00a5' + gap.toFixed(0)) : ('borrowing \u00a5' + (-gap).toFixed(0)), 19, gap >= 0 ? '#2E7D32' : '#C62828', 'start', 700);
+    }
+  }
+  var MSG = ['Horizontal axis: disposable income. Vertical axis: spending.',
+    'Both axes are marked in \u00a5 \u2014 a point reads as (income, spending).',
+    'The dashed 45\u00b0 line: spending equals income. Nothing saved, nothing borrowed.',
+    'The consumption line is flatter than 45\u00b0 \u2014 spending rises, its share falls.',
+    'Drag it: above the line the household saves; below the line it borrows.'];
+  function sync() {
+    var yd = +document.getElementById('dIn').value, c = C(yd), gap = yd - c;
+    document.getElementById('dV').textContent = '\u00a5' + yd;
+    document.getElementById('dC').textContent = '\u00a5' + c.toFixed(0);
+    document.getElementById('dRead').innerHTML = gap >= 0
+      ? 'Spent <b style="color:#1E88E5">\u00a5' + c.toFixed(0) + '</b> \u00b7 Saved <b style="color:#2E7D32">\u00a5' + gap.toFixed(0) + '</b>'
+      : 'Spent <b style="color:#1E88E5">\u00a5' + c.toFixed(0) + '</b> \u00b7 Borrowing <b style="color:#c62828">\u00a5' + (-gap).toFixed(0) + '</b>';
+    document.getElementById('dStep').textContent = 'Step ' + Math.min(stage + 1, 4) + ' of 4';
+    document.getElementById('dNote').textContent = MSG[Math.min(stage, 4)];
+  }
+  var btn = document.getElementById('dNext');
+  btn.onclick = function () {
+    if (stage < 3) { stage++; draw(); sync(); return; }
+    if (stage === 3) {
+      stage = 4; draw(); sync();
+      var r = document.getElementById('dIn');
+      btn.textContent = 'Drag the slider \u2191'; btn.disabled = true; btn.style.opacity = .5;
+    }
+  };
+  document.getElementById('dIn').addEventListener('input', function () { draw(); sync(); });
+  draw(); sync();
+})();
+</script></div></div>
+<script>
+(function () {
+  var stage = 0, X0 = 110, X1 = 690, Y0 = 430, Y1 = 60, VMAX = 100, HMAX = 110;
+  var svg = document.getElementById('dem2'), NS = 'http://www.w3.org/2000/svg';
+  function X(v) { return X0 + v / VMAX * (X1 - X0); }
+  function Y(v) { return Y0 - v / HMAX * (Y0 - Y1); }
+  function add(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; }
+  function T(x, y, s, sz, c, an, w) { var t = add('text', { x: x, y: y, 'font-size': sz, fill: c, 'text-anchor': an || 'start' }); if (w) t.setAttribute('font-weight', w); t.textContent = s; return t; }
+  function C(v) { return 15 + 0.6 * v; }
+  function draw() {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    add('line', { x1: X0, y1: Y0, x2: X1 + 12, y2: Y0, stroke: '#333', 'stroke-width': 2 });
+    add('line', { x1: X0, y1: Y0, x2: X0, y2: Y1 - 12, stroke: '#333', 'stroke-width': 2 });
+    T(X1, Y0 + 54, 'disposable income (\u00a5)', 20, '#5b6b7b', 'end');
+    T(X0 - 16, Y1 - 20, 'spending (\u00a5)', 20, '#5b6b7b', 'end');
+    T(X0 - 16, Y0 + 28, '0', 19, '#5b6b7b', 'end');
+    if (stage >= 1) {
+      for (var v = 20; v <= 100; v += 20) {
+        add('line', { x1: X(v), y1: Y0, x2: X(v), y2: Y0 - 7, stroke: '#c9d6e4', 'stroke-width': 2 });
+        T(X(v), Y0 + 28, '\u00a5' + v, 18, '#8a99a8', 'middle');
+      }
+      for (var u = 20; u <= 100; u += 20) {
+        add('line', { x1: X0, y1: Y(u), x2: X0 + 7, y2: Y(u), stroke: '#c9d6e4', 'stroke-width': 2 });
+        T(X0 - 14, Y(u) + 6, '\u00a5' + u, 18, '#8a99a8', 'end');
+      }
+    }
+    if (stage >= 2) {
+      add('line', { x1: X(0), y1: Y(0), x2: X(100), y2: Y(100), stroke: '#9aa5b1', 'stroke-width': 2.5, 'stroke-dasharray': '9 7' });
+      T(X(28), Y(20), 'spend everything (45\u00b0)', 18, '#6b7c8f');
+    }
+    if (stage >= 3) {
+      var pts = [];
+      for (var i = 0; i <= 100; i++) pts.push([X(i), Y(C(i))]);
+      add('path', { d: pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '), fill: 'none', stroke: '#1CADE4', 'stroke-width': 4 });
+      T(X(74), Y(C(74)) + 26, 'consumption', 19, '#0e7fae');
+    }
+    if (stage >= 4) {
+      var yd = +document.getElementById('dIn').value, c = C(yd), gap = yd - c;
+      add('line', { x1: X(yd), y1: Y(c), x2: X(yd), y2: Y(yd), stroke: gap >= 0 ? '#2E7D32' : '#C62828', 'stroke-width': 8 });
+      add('circle', { cx: X(yd), cy: Y(c), r: 7, fill: '#1CADE4' });
+      add('circle', { cx: X(yd), cy: Y(yd), r: 7, fill: '#15334f' });
+      T(X(yd) + 14, Math.min(Y(c), Y(yd)) + 26, gap >= 0 ? ('saving \u00a5' + gap.toFixed(0)) : ('borrowing \u00a5' + (-gap).toFixed(0)), 19, gap >= 0 ? '#2E7D32' : '#C62828', 'start', 700);
+    }
+  }
+  var MSG = ['Horizontal axis: disposable income. Vertical axis: spending.',
+    'Both axes are marked in \u00a5 \u2014 a point reads as (income, spending).',
+    'The dashed 45\u00b0 line: spending equals income. Nothing saved, nothing borrowed.',
+    'The consumption line is flatter than 45\u00b0 \u2014 spending rises, its share falls.',
+    'Drag it: above the line the household saves; below the line it borrows.'];
+  function sync() {
+    var yd = +document.getElementById('dIn').value, c = C(yd), gap = yd - c;
+    document.getElementById('dV').textContent = '\u00a5' + yd;
+    document.getElementById('dC').textContent = '\u00a5' + c.toFixed(0);
+    document.getElementById('dRead').innerHTML = gap >= 0
+      ? 'Spent <b style="color:#1E88E5">\u00a5' + c.toFixed(0) + '</b> \u00b7 Saved <b style="color:#2E7D32">\u00a5' + gap.toFixed(0) + '</b>'
+      : 'Spent <b style="color:#1E88E5">\u00a5' + c.toFixed(0) + '</b> \u00b7 Borrowing <b style="color:#c62828">\u00a5' + (-gap).toFixed(0) + '</b>';
+    document.getElementById('dStep').textContent = 'Step ' + Math.min(stage + 1, 4) + ' of 4';
+    document.getElementById('dNote').textContent = MSG[Math.min(stage, 4)];
+  }
+  var btn = document.getElementById('dNext');
+  btn.onclick = function () {
+    if (stage < 3) { stage++; draw(); sync(); return; }
+    if (stage === 3) {
+      stage = 4; draw(); sync();
+      var r = document.getElementById('dIn');
+      btn.textContent = 'Drag the slider \u2191'; btn.disabled = true; btn.style.opacity = .5;
+    }
+  };
+  document.getElementById('dIn').addEventListener('input', function () { draw(); sync(); });
+  draw(); sync();
+})();
+</script><div class="slide"><div class="content">
+<h1>So what moves these decisions?</h1>
+<div class="sub">So far: <b>how</b> a household divides income. Next: <b>what changes the division</b>.</div>
+<div class="row mt" style="align-items:stretch">
+<div class="card grow1" style="border-color:#1E88E5;padding:26px 22px"><div class="tag">INCOME</div><div style="font-size:27px;line-height:1.6;color:#3d4d5c;margin-top:6px">More income &#8594; more spending, smaller share spent.</div></div>
+<div class="card grow1" style="border-color:#C62828;padding:26px 22px"><div class="tag" style="color:#C62828">INTEREST RATE</div><div style="font-size:27px;line-height:1.6;color:#3d4d5c;margin-top:6px">Saving pays more, borrowing costs more &#8594; spend less.</div></div></div>
+<div class="row" style="margin-top:14px;align-items:stretch">
+<div class="card grow1" style="border-color:#2E7D32;padding:26px 22px"><div class="tag" style="color:#2E7D32">CONFIDENCE</div><div style="font-size:27px;line-height:1.6;color:#3d4d5c;margin-top:6px">Fear of the future &#8594; save now, spend later.</div></div>
+<div class="card grow1" style="border-color:#8a6b12;padding:26px 22px"><div class="tag" style="color:#8a6b12">AGE &amp; CULTURE</div><div style="font-size:27px;line-height:1.6;color:#3d4d5c;margin-top:6px">Where a household sits in life &#8212; and in its society.</div></div></div>
+<div class="note mt">Four influences, one question: <b>which way does each push spending, saving and borrowing?</b></div></div></div><div class="slide"><div class="content"><h1>Engel’s law</h1><div class="sub">Food spending rises with total spending &#8212; but its <b>share</b> falls.</div><div class="row" style="flex:1;align-items:stretch;min-height:0"><div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:6px"><svg viewBox="0 0 320 240" style="width:100%;height:50%;min-height:0"><line x1="60" y1="190" x2="306" y2="190" stroke="#333" stroke-width="2"/><line x1="60" y1="190" x2="60" y2="28" stroke="#333" stroke-width="2"/><polyline points="60,190 70,187 79,183 89,180 98,176 108,173 118,169 127,166 137,163 146,159 156,156 166,152 175,149 185,145 194,142 204,139 214,135 223,132 233,128 242,125 252,121 262,118 271,114 281,111 290,108 300,104" fill="none" stroke="#1CADE4" stroke-width="5"/><text x="66" y="28" font-size="15" fill="#5b6b7b">food spending</text><text x="300" y="212" font-size="15" fill="#5b6b7b" text-anchor="end">total spending</text><line x1="60" y1="190" x2="300" y2="34" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="7 6"/><text x="296" y="62" font-size="14" fill="#6b7c8f" text-anchor="end">45&#176;</text></svg><svg viewBox="0 0 320 240" style="width:100%;height:50%;min-height:0"><line x1="60" y1="190" x2="306" y2="190" stroke="#333" stroke-width="2"/><line x1="60" y1="190" x2="60" y2="28" stroke="#333" stroke-width="2"/><polyline points="60,46 70,51 79,55 89,59 98,63 108,67 118,71 127,75 137,79 146,84 156,88 166,92 175,96 185,100 194,104 204,108 214,112 223,116 233,121 242,125 252,129 262,133 271,137 281,141 290,145 300,149" fill="none" stroke="#c62828" stroke-width="5"/><text x="66" y="28" font-size="15" fill="#5b6b7b">Engel (%)</text><text x="300" y="212" font-size="15" fill="#5b6b7b" text-anchor="end">total spending</text></svg></div><div style="flex:2;display:flex;flex-direction:column;gap:10px;justify-content:center"><div class="card" style="border-color:#1E88E5"><div class="tag" style="color:#1E88E5">DEFINITION</div><div style="font-size:22px;line-height:1.4;color:#3d4d5c;margin-top:4px">Engel coefficient = <b>food spending &divide; total household spending</b>, usually written as a percentage.</div></div><div class="card"><div class="tag">READ THE TWO CHARTS</div><div style="font-size:21px;line-height:1.5;color:#3d4d5c;margin-top:4px">Top: food spending <b>rises</b>, but below 45&#176; &#8212; slower than total spending.<br>Bottom: divide one by the other &#8212; the share <b>falls</b>.</div></div><div class="card"><div class="tag">A WORKED EXAMPLE</div><table class="data-table" style="width:100%;font-size:20px;margin-top:4px"><thead><tr><th style="text-align:left">Spending</th><th>Food</th><th>Engel</th></tr></thead><tbody><tr><td>&#165;3,000</td><td>&#165;1,500</td><td style="color:#c62828;font-weight:700">50%</td></tr><tr><td>&#165;6,000</td><td>&#165;1,800</td><td>30%</td></tr><tr><td>&#165;12,000</td><td>&#165;2,400</td><td style="color:#2E7D32;font-weight:700">20%</td></tr></tbody></table><div style="font-size:19px;color:#7b8b9b;margin-top:6px">Food spending still doubles &#8212; the <b>share</b> is what falls.</div></div><div class="note">Food is a <b>necessity</b>: bought first, and it cannot keep pace with income. A high coefficient suggests a lower living standard.</div></div></div></div></div><div class="slide"><div class="content"><div style="display:flex;align-items:baseline;gap:16px"><h1 style="width:auto;line-height:1.12">Engel by the numbers</h1></div><div class="sub" style="line-height:1.25">China&#8217;s long decline &#8212; and where other countries stand today.</div><div style="font-size:22px;color:#1E88E5;font-weight:800;letter-spacing:.5px;margin-top:6px">CHINA &#183; 1978&#8211;2025 &#183; FOOD SHARE OF HOUSEHOLD SPENDING (%)</div><svg viewBox="0 0 1320 372" style="width:100%;height:auto;display:block"><defs><linearGradient id="engelFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1CADE4" stop-opacity=".30"/><stop offset="100%" stop-color="#1CADE4" stop-opacity=".03"/></linearGradient></defs><line x1="92" y1="306.0" x2="1260" y2="306.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="92" y1="266.0" x2="1260" y2="266.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="92" y1="226.0" x2="1260" y2="226.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="92" y1="186.0" x2="1260" y2="186.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="92" y1="146.0" x2="1260" y2="146.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="92" y1="106.0" x2="1260" y2="106.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="92" y1="66.0" x2="1260" y2="66.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="92" y1="26.0" x2="1260" y2="26.0" stroke="#e3eef7" stroke-width="1.5" stroke-dasharray="5 6"/><polygon points="92,306 92.0,50.4 713.3,146.0 1110.9,193.2 1210.3,186.8 1260.0,188.8 1260,306" fill="url(#engelFill)"/><polyline points="92.0,50.4 713.3,146.0 1110.9,193.2 1210.3,186.8 1260.0,188.8" fill="none" stroke="#1CADE4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="92" y1="26" x2="92" y2="306" stroke="#c7d6e5" stroke-width="2.5"/><line x1="92" y1="306" x2="1260" y2="306" stroke="#c7d6e5" stroke-width="2.5"/><text x="80" y="314.0" font-size="24" fill="#8a99a8" text-anchor="end">0</text><text x="80" y="234.0" font-size="24" fill="#8a99a8" text-anchor="end">20</text><text x="80" y="154.0" font-size="24" fill="#8a99a8" text-anchor="end">40</text><text x="80" y="74.0" font-size="24" fill="#8a99a8" text-anchor="end">60</text><line x1="92.0" y1="306" x2="92.0" y2="312" stroke="#c7d6e5" stroke-width="2"/><text x="92.0" y="336" font-size="24" fill="#8a99a8" text-anchor="middle">1978</text><line x1="390.2" y1="306" x2="390.2" y2="312" stroke="#c7d6e5" stroke-width="2"/><text x="390.2" y="336" font-size="24" fill="#8a99a8" text-anchor="middle">1990</text><line x1="638.7" y1="306" x2="638.7" y2="312" stroke="#c7d6e5" stroke-width="2"/><text x="638.7" y="336" font-size="24" fill="#8a99a8" text-anchor="middle">2000</text><line x1="887.2" y1="306" x2="887.2" y2="312" stroke="#c7d6e5" stroke-width="2"/><text x="887.2" y="336" font-size="24" fill="#8a99a8" text-anchor="middle">2010</text><line x1="1135.7" y1="306" x2="1135.7" y2="312" stroke="#c7d6e5" stroke-width="2"/><text x="1135.7" y="336" font-size="24" fill="#8a99a8" text-anchor="middle">2020</text><line x1="1260.0" y1="306" x2="1260.0" y2="312" stroke="#c7d6e5" stroke-width="2"/><text x="1260.0" y="336" font-size="24" fill="#8a99a8" text-anchor="middle">2025</text><circle cx="92.0" cy="50.4" r="8" fill="#fff" stroke="#1CADE4" stroke-width="4"/><circle cx="713.3" cy="146.0" r="8" fill="#fff" stroke="#1CADE4" stroke-width="4"/><circle cx="1110.9" cy="193.2" r="8" fill="#fff" stroke="#1CADE4" stroke-width="4"/><circle cx="1210.3" cy="186.8" r="8" fill="#fff" stroke="#1CADE4" stroke-width="4"/><circle cx="1260.0" cy="188.8" r="8" fill="#fff" stroke="#1CADE4" stroke-width="4"/><text x="104.0" y="38.4" font-size="24" font-weight="800" fill="#15334f" text-anchor="start">63.9%</text><text x="713.3" y="133.0" font-size="24" font-weight="800" fill="#15334f" text-anchor="middle">40.0%</text><text x="1110.9" y="180.2" font-size="24" font-weight="800" fill="#15334f" text-anchor="middle">28.2%</text><text x="1210.3" y="220.8" font-size="24" font-weight="800" fill="#15334f" text-anchor="middle">29.8%</text><text x="1286.0" y="172.8" font-size="24" font-weight="800" fill="#15334f" text-anchor="end">29.3%</text><text x="26" y="166" font-size="24" font-weight="700" fill="#7b8b9b" text-anchor="middle" transform="rotate(-90 26 166)">% of spending</text></svg><div style="display:flex;align-items:baseline;gap:14px;margin-top:8px"><div style="font-size:24px;font-weight:800;color:#1E88E5;letter-spacing:.5px">TODAY, OTHER COUNTRIES</div><div style="font-size:22px;color:#8a99a8">same measure, food share of spending</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px 38px;width:100%;margin-top:5px"><div style="display:flex;align-items:center;gap:12px"><div style="width:212px;font-size:24px;color:#3d4d5c;font-weight:600;white-space:nowrap">United States</div><div style="flex:1;height:20px;background:#EDF3F9;border-radius:10px;overflow:hidden"><div style="width:23.3%;height:100%;background:#A9CFEA;border-radius:10px"></div></div><div style="width:88px;text-align:right;font-size:24px;font-weight:800;color:#15334f">&#8776; 7%</div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:212px;font-size:24px;color:#3d4d5c;font-weight:600;white-space:nowrap">United Kingdom</div><div style="flex:1;height:20px;background:#EDF3F9;border-radius:10px;overflow:hidden"><div style="width:30.0%;height:100%;background:#A9CFEA;border-radius:10px"></div></div><div style="width:88px;text-align:right;font-size:24px;font-weight:800;color:#15334f">&#8776; 9%</div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:212px;font-size:24px;color:#3d4d5c;font-weight:600;white-space:nowrap">Germany</div><div style="flex:1;height:20px;background:#EDF3F9;border-radius:10px;overflow:hidden"><div style="width:36.7%;height:100%;background:#A9CFEA;border-radius:10px"></div></div><div style="width:88px;text-align:right;font-size:24px;font-weight:800;color:#15334f">&#8776; 11%</div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:212px;font-size:24px;color:#3d4d5c;font-weight:600;white-space:nowrap">Japan</div><div style="flex:1;height:20px;background:#EDF3F9;border-radius:10px;overflow:hidden"><div style="width:53.3%;height:100%;background:#A9CFEA;border-radius:10px"></div></div><div style="width:88px;text-align:right;font-size:24px;font-weight:800;color:#15334f">&#8776; 16%</div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:212px;font-size:24px;color:#3d4d5c;font-weight:600;white-space:nowrap">China</div><div style="flex:1;height:20px;background:#EDF3F9;border-radius:10px;overflow:hidden"><div style="width:97.7%;height:100%;background:#1E88E5;border-radius:10px"></div></div><div style="width:88px;text-align:right;font-size:24px;font-weight:800;color:#15334f">29.3%</div></div><div style="display:flex;align-items:center;gap:12px"><div style="width:212px;font-size:24px;color:#3d4d5c;font-weight:600;white-space:nowrap">India</div><div style="flex:1;height:20px;background:#EDF3F9;border-radius:10px;overflow:hidden"><div style="width:100.0%;height:100%;background:#A9CFEA;border-radius:10px"></div></div><div style="width:88px;text-align:right;font-size:24px;font-weight:800;color:#15334f">&#8776; 30%</div></div></div><div style="font-size:22px;color:#8a99a8;margin-top:5px">China: NBS, 2025. Others: recent estimates.</div></div></div><div class="slide"><div class="content">
+<h1>A mortgage calculator</h1>
+<div class="sub">&#165;1,000,000 over 30 years. Each bar is one year: green = principal, red = interest.</div>
+<div class="row" style="flex:1;align-items:stretch;min-height:0">
+<div style="flex:1.6;min-height:0;display:flex"><svg id="mortSvg" viewBox="0 0 780 430" style="width:100%;height:100%"></svg></div>
+<div class="grow1" style="display:flex;flex-direction:column;gap:9px">
+<div class="panel">
+<div style="font-size:22px;color:#5b6b7b">Interest rate &rarr; <b id="rateV" style="color:#1E88E5;font-size:23px">4.0%</b></div>
+<input type="range" id="rate" min="30" max="90" step="1" value="40" style="width:100%">
+<div class="ends"><span>3%</span><span>9%</span></div></div>
+<button class="big-btn" id="modeBtn" style="font-size:22px;padding:7px">Equal instalments &middot; switch to equal principal</button>
+<div class="card" style="text-align:center;padding:10px">
+<div style="font-size:22px;color:#5b6b7b" id="modeName">Monthly payment</div>
+<div id="monthly" style="font-size:30px;font-weight:900;color:#12507e">&#165;4,774</div></div>
+<div class="card" style="padding:10px">
+<div style="font-size:22px;color:#5b6b7b">Total interest, 30 years</div>
+<div id="totalInt" style="font-size:24px;font-weight:800;color:#c62828">&#165;718,000</div></div>
+</div></div>
+<div class="note mt">Higher rate &#8594; taller red blocks for longer: you pay more, for more years.</div>
+<script>
+(function () {
+  var P = 1000000, N = 360, rate = 0.04, equal = true;
+  var svg = document.getElementById('mortSvg'), NS = 'http://www.w3.org/2000/svg';
+  function add(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; }
+  function T(x, y, s, sz, c, an) { var t = add('text', { x: x, y: y, 'font-size': sz, fill: c, 'text-anchor': an || 'start' }); t.textContent = s; return t; }
+  function plan() {
+    var m = P * (rate / 12) / (1 - Math.pow(1 + rate / 12, -N));
+    var years = [], bal = P, total = 0;
+    for (var y = 0; y < 30; y++) {
+      var yi = 0, yp = 0;
+      for (var k = 0; k < 12; k++) {
+        var int = bal * rate / 12, prin = equal ? (m - int) : P / N;
+        if (prin > bal) prin = bal;
+        yi += int; yp += prin; bal -= prin;
+      }
+      years.push([yp, yi]); total += yi;
+    }
+    return { years: years, total: total, pay: equal ? m : (P / N + P * rate / 12) };
+  }
+  function draw() {
+    rate = +document.getElementById('rate').value / 1000;
+    document.getElementById('rateV').textContent = (rate * 100).toFixed(1) + '%';
+    var p = plan(), ys = p.years;
+    document.getElementById('monthly').textContent = '¥' + Math.round(p.pay).toLocaleString();
+    document.getElementById('totalInt').textContent = '¥' + Math.round(p.total).toLocaleString();
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var X0 = 90, Y0 = 340, W = 650, H = 250, bw = W / 30 - 5;
+    var maxV = 12 * (P * (0.09 / 12) / (1 - Math.pow(1 + 0.09 / 12, -N)));
+    add('line', { x1: X0, y1: Y0, x2: X0 + W, y2: Y0, stroke: '#333', 'stroke-width': 2 });
+    add('line', { x1: X0, y1: Y0, x2: X0, y2: Y0 - H, stroke: '#333', 'stroke-width': 2 });
+    T(X0 + W, Y0 + 28, 'year 1 → 30', 18, '#5b6b7b', 'end');
+    T(X0 - 10, Y0 - H - 12, '¥ per year', 17, '#5b6b7b', 'start');
+    for (var y = 0; y < 30; y++) {
+      var pr = ys[y][0], it = ys[y][1];
+      var hp = pr / maxV * H, hi = it / maxV * H, x = X0 + y * (bw + 5) + 2;
+      add('rect', { x: x, y: Y0 - hp, width: bw, height: hp, fill: '#2E7D32', rx: 2 });
+      add('rect', { x: x, y: Y0 - hp - hi, width: bw, height: hi, fill: '#C62828', rx: 2 });
+    }
+    add('rect', { x: X0 + W - 170, y: 30, width: 15, height: 15, fill: '#2E7D32', rx: 3 });
+    T(X0 + W - 150, 43, 'principal', 16, '#3d4d5c');
+    add('rect', { x: X0 + W - 80, y: 30, width: 15, height: 15, fill: '#C62828', rx: 3 });
+    T(X0 + W - 60, 43, 'interest', 16, '#3d4d5c');
+  }
+  document.getElementById('rate').addEventListener('input', draw);
+  document.getElementById('modeBtn').onclick = function () {
+    equal = !equal;
+    this.textContent = equal ? 'Equal instalments · switch to equal principal'
+                             : 'Equal principal · switch to equal instalments';
+    document.getElementById('modeName').textContent = equal ? 'Monthly payment' : 'First payment (falls)';
+    draw();
+  };
+  draw();
+})();
+</script></div></div><div class="slide"><div class="content"><h1>Confidence and culture</h1><div class="sub">One moves within months; the other across generations.</div><div class="row mt" style="align-items:flex-start"><div class="grow1" style="display:flex;flex-direction:column;gap:12px"><div class="card" style="border-color:#2E7D32"><div class="tag" style="color:#2E7D32">CONFIDENCE</div><div style="font-size:24px;line-height:1.55;color:#3d4d5c;margin-top:4px">Expectations of jobs and prices. Spending is cut <b>before</b> incomes actually fall.</div><div style="font-size:21px;color:#7b8b9b;margin-top:8px">moves within months</div></div><div class="card" style="border-color:#8a6b12"><div class="tag" style="color:#8a6b12">CULTURE</div><div style="font-size:24px;line-height:1.55;color:#3d4d5c;margin-top:4px">Attitudes to debt and thrift persist. The same income produces different saving.</div><div style="font-size:21px;color:#7b8b9b;margin-top:8px">moves across generations</div></div></div><div class="grow1" style="display:flex;flex-direction:column"><div class="tag" style="color:#1E88E5">SPENDING vs INCOME, 8 ECONOMIES (2023)</div><svg viewBox="0 0 360 340" style="width:100%;height:400px"><line x1="70" y1="300" x2="336" y2="300" stroke="#333" stroke-width="2"/><line x1="70" y1="300" x2="70" y2="34" stroke="#333" stroke-width="2"/><circle cx="247" cy="232" r="7" fill="#c62828"/><text x="255" y="224" font-size="17" fill="#c62828" font-weight="700">China</text><circle cx="305" cy="69" r="5" fill="#1E88E5"/><text x="249" y="73" font-size="17" fill="#3d4d5c" font-weight="400">Türkiye</text><circle cx="222" cy="172" r="5" fill="#1E88E5"/><text x="230" y="164" font-size="17" fill="#3d4d5c" font-weight="400">Malaysia</text><circle cx="194" cy="159" r="5" fill="#1E88E5"/><text x="202" y="151" font-size="17" fill="#3d4d5c" font-weight="400">Mexico</text><circle cx="171" cy="204" r="5" fill="#1E88E5"/>Brazil</text><circle cx="113" cy="229" r="5" fill="#1E88E5"/>Colombia</text><circle cx="107" cy="255" r="5" fill="#1E88E5"/>Peru</text><circle cx="104" cy="276" r="5" fill="#1E88E5"/>Thailand</text><text x="330" y="332" font-size="17" fill="#5b6b7b" text-anchor="end">income per person &#8594;</text><text x="76" y="46" font-size="17" fill="#5b6b7b">spending &#8594;</text></svg><div class="note" style="margin-top:2px">China sits lowest: 41% of GDP per person spent.</div></div></div></div></div><div class="slide"><div class="content"><h1>Age and the life cycle</h1><div class="sub">Borrow young, save in middle age, spend down later &#8212; a pattern, not a personality.</div><div class="panel" style="margin-top:8px"><div style="font-size:27px;line-height:1.45;color:#3d4d5c"><b>Income peaks in middle age; needs peak at both ends of life.</b> Saving is the bridge &#8212; which makes it a life-cycle, not a personal habit.</div></div><div class="row" style="align-items:stretch;margin-top:10px"><div style="flex:1;display:flex"><svg viewBox="0 0 470 300" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block"><line x1="75" y1="255" x2="440" y2="255" stroke="#333" stroke-width="2"/><line x1="75" y1="255" x2="75" y2="30" stroke="#333" stroke-width="2"/><line x1="75" y1="192" x2="435" y2="192" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="7 6"/><path d="M95.0,235.4 L107.8,211.2 L120.6,189.1 L133.4,168.9 L146.2,150.6 L159.0,134.3 L171.8,120.0 L184.6,107.6 L197.4,97.2 L210.2,88.8 L223.0,82.3 L235.8,77.8 L248.6,75.2 L261.4,74.7 L274.2,76.0 L287.0,79.4 L299.8,84.7 L312.6,91.9 L325.4,101.1 L338.2,112.3 L351.0,125.5 L363.8,140.6 L376.6,157.7 L389.4,176.7 L402.2,197.7 L415.0,220.7" fill="none" stroke="#1E88E5" stroke-width="6" stroke-linecap="round"/><line x1="259" y1="75" x2="259" y2="192" stroke="#1E88E5" stroke-width="2" stroke-dasharray="4 5"/><circle cx="259" cy="75" r="8" fill="#15334f"/><text x="271" y="65" font-size="15" fill="#15334f" font-weight="700">peak: age 46, saving rate 16%</text><text x="100" y="228" font-size="15" fill="#c62828">borrowing</text><text x="250" y="120" font-size="15" fill="#2E7D32">saving</text><text x="360" y="238" font-size="15" fill="#c62828" text-anchor="middle">dissaving</text><text x="95" y="278" font-size="14" fill="#8a99a8" text-anchor="middle">20</text><text x="223" y="278" font-size="14" fill="#8a99a8" text-anchor="middle">40</text><text x="351" y="278" font-size="14" fill="#8a99a8" text-anchor="middle">60</text><text x="415" y="278" font-size="14" fill="#8a99a8" text-anchor="middle">70</text><text x="440" y="294" font-size="15" fill="#5b6b7b" text-anchor="end">age</text><text x="80" y="24" font-size="15" fill="#5b6b7b">saving rate</text></svg></div><div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center"><table class="data-table" style="width:100%;font-size:22px;line-height:2.8"><thead><tr><th style="text-align:left">Stage</th><th>Borrow</th><th>Save</th><th style="text-align:left">Typical purpose</th></tr></thead><tbody><tr><td style="font-weight:700">Under 30</td><td>high</td><td>low</td><td>flat, furniture, car</td></tr><tr><td style="font-weight:700">30&#8211;60</td><td>repaying</td><td>rising</td><td>school fees, pension</td></tr><tr><td style="font-weight:700">60+</td><td>none</td><td>falling</td><td>living off past saving</td></tr></tbody></table><div class="note" style="margin-top:10px">Income peaks in middle age; needs peak early and late &#8212; saving bridges the two.</div></div></div></div></div><div class="slide"><div class="content"><h1>Review: finish the sentences</h1><div class="sub">In the order we learned them. Click a blank to reveal.</div><div class="panel mt" style="flex:1;display:flex;flex-direction:column;justify-content:center"><div style="font-size:24px;line-height:2.5;color:#3d4d5c">1. A household is all persons occupying a dwelling and <span class="ans" data-a="pooling" style="display:inline-block;min-width:130px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span> income and expenses.<br>2. &ldquo;Per capita&rdquo; divides by <span class="ans" data-a="everyone" style="display:inline-block;min-width:130px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span> in the household, children and elderly included.<br>3. Disposable income = gross income &minus; income tax + <span class="ans" data-a="state benefits" style="display:inline-block;min-width:200px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>.<br>4. Saving = <span class="ans" data-a="Yd &minus; C" style="display:inline-block;min-width:120px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>; when C &gt; Yd the household is <span class="ans" data-a="dissaving" style="display:inline-block;min-width:130px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>.<br>5. APC = <span class="ans" data-a="C &divide; Yd" style="display:inline-block;min-width:120px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>, and as income rises APC <span class="ans" data-a="falls" style="display:inline-block;min-width:90px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>.<br>6. A flow is measured <span class="ans" data-a="over a period" style="display:inline-block;min-width:160px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>; a stock <span class="ans" data-a="at a point in time" style="display:inline-block;min-width:200px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>.<br>7. A higher interest rate makes saving <span class="ans" data-a="more rewarding" style="display:inline-block;min-width:180px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span> and borrowing <span class="ans" data-a="more expensive" style="display:inline-block;min-width:190px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>.<br>8. Dissaving uses money you <span class="ans" data-a="already have" style="display:inline-block;min-width:160px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>; borrowing uses money you <span class="ans" data-a="do not have yet" style="display:inline-block;min-width:190px;border-bottom:2px solid #1E88E5;text-align:center;color:#1E88E5;font-weight:700;cursor:pointer">?</span>.</div></div><div class="note mt">Nine marks on the board if you can fill all eight without help.</div><script>(function(){document.addEventListener("click",function(e){var s=e.target.closest("span.ans"); if(!s) return;s.textContent=s.getAttribute("data-a"); s.style.color="#15334f";s.style.borderBottomColor="#cfdbe8";});})();</script></div></div><div class="slide"><div class="content"><h1>Review: which way does it push?</h1><div class="sub">Click a cell to reveal. Green = up, red = down.</div><table class="data-table" style="width:100%;margin-top:10px;font-size:26px;border-collapse:collapse"><thead><tr><th style="text-align:left;font-size:22px">Change</th><th style="font-size:22px">Spend</th><th style="font-size:22px">Save</th><th style="font-size:22px">Borrow</th></tr></thead><tbody><tr><td style="font-weight:700;color:#15334f;font-size:26px;padding:18px 0">Income &uarr;</td><td class="rev" data-v="up" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="up" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td></tr><tr><td style="font-weight:700;color:#15334f;font-size:26px;padding:18px 0">Interest rate &uarr;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="up" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td></tr><tr><td style="font-weight:700;color:#15334f;font-size:26px;padding:18px 0">Confidence &darr;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="up" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td></tr><tr><td style="font-weight:700;color:#15334f;font-size:26px;padding:18px 0">Age (retired)</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td></tr><tr><td style="font-weight:700;color:#15334f;font-size:26px;padding:18px 0">Wealth &uarr;</td><td class="rev" data-v="up" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td><td class="rev" data-v="down" style="text-align:center;font-size:56px;font-weight:900;padding:18px 0;color:#dfe8f1;line-height:1.1;cursor:pointer">&#9679;</td></tr></tbody></table><div class="note mt">The exam asks the <b>direction</b>, not the size. Double-click the table to reveal all.</div><script>(function(){function show(el){var v=el.getAttribute("data-v");el.textContent=(v==="up")?"\u2191":"\u2193";el.style.color=(v==="up")?"#2E7D32":"#C62828";}document.addEventListener("click",function(e){var t=e.target.closest("td.rev"); if(t) show(t);});document.addEventListener("dblclick",function(e){if(!e.target.closest("table"))return;document.querySelectorAll("td.rev").forEach(show);});})();</script></div></div><div class="slide closing"><div class="content" style="align-items:center;justify-content:center;text-align:center"><div class="course-tag" style="text-align:center;color:#94a3b3">IGCSE Economics · Section 3.2</div><h1 style="text-align:center;font-size:clamp(38px,4.6vw,58px);margin-top:6px">Households</h1><div style="font-size:clamp(18px,1.8vw,22px);color:#5b6b7b;margin-top:14px;max-width:760px">Every household makes the same decision with the same money: spend it now, or keep it for later.</div><div style="display:flex;flex-direction:column;gap:8px;margin:18px 0 6px;text-align:left;max-width:760px"><div style="font-size:22px;color:#3d4d5c">1 · A household = people under one roof sharing a budget; <b>per capita</b> divides by all of them.</div><div style="font-size:22px;color:#3d4d5c">2 · Disposable income splits three ways: <b>spend, save, borrow</b> — the share spent falls as income rises.</div><div style="font-size:22px;color:#3d4d5c">3 · Five influences push those three decisions in predictable directions.</div></div><div class="author" style="margin-top:34px">DR. JIA · © 2026</div></div></div>
+</div>
+</div>
+<div class="nav"><button id="prevBtn">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 11</span><button id="nextBtn">▶</button></div></div>
+</div>
+<script>
+/* ══════ 分页导航 ══════ */
+var CUR = 0, SLIDES = [];
+function showSlide(i){
+  if(i < 0 || i >= SLIDES.length) return;
+  SLIDES[CUR].classList.remove('active');
+  CUR = i;
+  SLIDES[CUR].classList.add('active');
+  var dots = document.querySelectorAll('#dots span');
+  for(var k = 0; k < dots.length; k++) dots[k].className = (k === CUR) ? 'on' : '';
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SLIDES.length;
+  document.getElementById('prevBtn').disabled = (CUR === 0);
+  document.getElementById('nextBtn').disabled = (CUR === SLIDES.length - 1);
+  if(typeof onSlide === 'function') { try { onSlide(CUR); } catch(e){ console.error(e); } }
+}
+function nextSlide(){ showSlide(CUR + 1); }
+function prevSlide(){ showSlide(CUR - 1); }
+
+function bootDeck(){
+  SLIDES = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  SLIDES.forEach(function(s, i){
+    var d = document.createElement('span');
+    d.onclick = function(){ showSlide(i); };
+    dots.appendChild(d);
+  });
+  document.getElementById('prevBtn').onclick = prevSlide;
+  document.getElementById('nextBtn').onclick = nextSlide;
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' '){
+      e.preventDefault(); nextSlide();
+    }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); prevSlide(); }
+  });
+  document.querySelectorAll('.flip').forEach(function(f){
+    f.onclick = function(){ f.classList.toggle('on'); };
+  });
+  var m = location.search.match(/[?&]s=(\d+)/);
+  showSlide(m ? Math.min(+m[1], SLIDES.length - 1) : 0);
+}
+
+/* ══════ 拖拽分类 ══════ */
+function mountDC(rootId, chips, zones){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var h = '<div class="dc-pool" id="' + rootId + 'pool"></div>' +
+          '<div class="row" style="margin-top:12px">';
+  zones.forEach(function(z){
+    h += '<div class="zone" data-zone="' + z.id + '"><div class="zt">' + z.label + '</div></div>';
+  });
+  h += '</div><div class="row" style="margin-top:12px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  chips.forEach(function(c, i){
+    var el = document.createElement('div');
+    el.className = 'chip';
+    el.draggable = true;
+    el.textContent = c.t;
+    el.dataset.ans = c.a;
+    el.dataset.i = i;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    /* 点击选中 → 点击区域放下（触屏/白板更稳） */
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.zone').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+  pool.addEventListener('click', function(){ /* 点空白不做事 */ });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var zone = c.closest('.zone');
+      c.classList.remove('ok', 'no');
+      if(!zone){ return; }
+      if(zone.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '">' + right + ' / ' + total +
+      '</span> <span class="gray">correct</span>';
+  };
+}
+
+/* ══════ 测验（逐题） ══════ */
+function mountQuiz(rootId, QS){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var i = 0, score = 0;
+  function render(){
+    var q = QS[i];
+    var h = '<div class="qstem">' + q.s + '</div><div class="qopts">';
+    q.o.forEach(function(t, k){
+      h += '<button class="qopt" data-k="' + k + '">' + String.fromCharCode(65 + k) + '. &nbsp;' + t + '</button>';
+    });
+    h += '</div><div class="qfb" id="' + rootId + 'fb"></div>' +
+         '<div class="qmeta">Question ' + (i + 1) + ' / ' + QS.length + ' &nbsp;·&nbsp; score ' + score + '</div>';
+    root.innerHTML = h;
+    root.querySelectorAll('.qopt').forEach(function(b){
+      b.onclick = function(){
+        var k = +b.dataset.k;
+        root.querySelectorAll('.qopt').forEach(function(x){ x.disabled = true; });
+        if(k === q.a){ b.classList.add('correct'); score++; }
+        else {
+          b.classList.add('wrong');
+          root.querySelectorAll('.qopt')[q.a].classList.add('correct');
+        }
+        document.getElementById(rootId + 'fb').innerHTML = q.e;
+        var nb = document.createElement('button');
+        nb.className = 'big-btn'; nb.style.marginTop = '12px';
+        nb.textContent = (i + 1 < QS.length) ? 'Next \u279c' : 'See result \u2714';
+        nb.onclick = function(){
+          if(i + 1 < QS.length){ i++; render(); } else { finish(); }
+        };
+        root.appendChild(nb);
+      };
+    });
+  }
+  function finish(){
+    root.innerHTML = '<div class="result"><h2>Result</h2><div class="big">' +
+      score + ' / ' + QS.length + '</div>' +
+      '<button class="big-btn ghost" id="' + rootId + 'again">Try again</button></div>';
+    document.getElementById(rootId + 'again').onclick = function(){ i = 0; score = 0; render(); };
+  }
+  render();
+}
+
+/* ══════ SVG 小工具 ══════ */
+function mk(tag, attrs, parent){
+  var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function clearSvg(id){
+  var s = document.getElementById(id);
+  if(!s) return null;
+  while(s.firstChild) s.removeChild(s.firstChild);
+  return s;
+}
+/* 坐标轴：x 向右，y 向上（用像素高度换算） */
+function drawAxes(svg, box, xLabel, yLabel){
+  var x0 = box.x, y0 = box.y + box.h;
+  mk('line', {x1: x0, y1: y0, x2: x0 + box.w, y2: y0, stroke: '#333', 'stroke-width': 2}, svg);
+  mk('line', {x1: x0, y1: y0, x2: x0, y2: box.y, stroke: '#333', 'stroke-width': 2}, svg);
+  var t1 = mk('text', {x: x0 - 6, y: box.y - 8, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t1.textContent = yLabel;
+  var t2 = mk('text', {x: x0 + box.w, y: y0 + 26, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t2.textContent = xLabel;
+}
+
+
+/* ══════ 市场图（供求 + 平移 + 管制线） ══════ */
+/* 二分法求交点：D 与 S 都可能是平移过的，线性函数也能解，但统一用数值法更省事 */
+function solveP(cfg, k, m){
+  var lo = 0, hi = cfg.pmax;
+  for(var it = 0; it < 60; it++){
+    var mid = (lo + hi) / 2;
+    var gap = (cfg.d(mid) + k) - (cfg.s(mid) + m);
+    if(gap > 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function drawMarket(svgId, cfg, line, label, kind, k, m){
+  k = k || 0; m = m || 0;
+  var svg = clearSvg(svgId); if(!svg) return;
+  var W = 720, H = 520, pl = 76, pr = 30, pt = 24, pb = 56;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  function X(q){ return x0 + q / cfg.qmax * w; }
+  function Y(p){ return y0 - p / cfg.pmax * h; }
+
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:x0-8, y:pt-6, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  ty.textContent = cfg.pl;
+  var tx = mk('text', {x:x0+w/2, y:y0+32, 'text-anchor':'middle', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  tx.textContent = cfg.ql;
+  var t0 = mk('text', {x:x0-10, y:y0+18, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  function curve(fn, shift, color, tag, dash, tagdy, tagAtStart){
+    var pts = [];
+    for(var i = 0; i <= 240; i++){
+      var p = cfg.pmax * i / 240, q = fn(p) + shift;
+      if(q >= -0.001 && q <= cfg.qmax) pts.push([X(q), Y(p)]);
+    }
+    if(pts.length < 2) return;
+    var d = pts.map(function(pt, i){ return (i ? 'L' : 'M') + pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' ');
+    mk('path', {d:d, fill:'none', stroke:color, 'stroke-width':dash ? 2 : 3,
+      'stroke-linecap':'round', 'stroke-dasharray': dash || 'none'}, svg);
+    if(tag){
+      var last = tagAtStart ? pts[0] : pts[pts.length-1];
+      var lb = mk('text', {x:last[0]+8, y:last[1]+(tagdy||0), 'font-size': 26, 'font-weight':700,
+        fill:color, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+      lb.textContent = tag;
+    }
+  }
+
+  var shifted = (k !== 0 || m !== 0);
+  if(shifted){
+    if(k !== 0) curve(cfg.d, 0, '#c8d2dd', 'D', '6 5', -12, true);
+    if(m !== 0) curve(cfg.s, 0, '#c8d2dd', 'S', '6 5', -8, false);
+  }
+  curve(cfg.d, k, '#2E4A6B', k !== 0 ? 'D1' : 'D', null, -12, true);
+  curve(cfg.s, m, '#1E88E5', m !== 0 ? 'S1' : 'S', null, m !== 0 ? -8 : 22, false);
+
+  /* 原均衡 */
+  if(shifted){
+    mk('circle', {cx:X(cfg.eqQ), cy:Y(cfg.eqP), r:4.5, fill:'#c8d2dd'}, svg);
+    mk('line', {x1:X(cfg.eqQ), y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:y0,
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+    mk('line', {x1:x0, y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:Y(cfg.eqP),
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  }
+
+  var eqP = solveP(cfg, k, m), eqQ = cfg.d(eqP) + k;
+  var ecol = shifted ? '#1A73E8' : '#2E4A6B';
+  mk('circle', {cx:X(eqQ), cy:Y(eqP), r:5.5, fill:ecol}, svg);
+  mk('line', {x1:X(eqQ), y1:Y(eqP), x2:X(eqQ), y2:y0,
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  mk('line', {x1:x0, y1:Y(eqP), x2:X(eqQ), y2:Y(eqP),
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+
+  var eqT = mk('text', {x:x0-10, y:Y(eqP)+6, 'text-anchor':'end', 'font-size': 24,
+    fill: shifted ? '#1A73E8' : '#5b6b7b', 'font-weight': shifted ? 700 : 400,
+    stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  eqT.textContent = cfg.unit + (Math.round(eqP*10)/10);
+  if(shifted){
+    var eqT0 = mk('text', {x:x0-10, y:Y(cfg.eqP)+6, 'text-anchor':'end', 'font-size': 24,
+      fill:'#aab4c0', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+    eqT0.textContent = cfg.unit + cfg.eqP;
+  }
+
+  if(line === null || line === undefined) return {eqP:eqP, eqQ:eqQ};
+
+  var qd = cfg.d(line), qs = cfg.s(line);
+  var col = (kind === 'ceiling') ? '#C62828' : '#00838F';
+  mk('line', {x1:x0, y1:Y(line), x2:X(Math.min(cfg.qmax, Math.max(qd, qs))), y2:Y(line),
+    stroke:col, 'stroke-width':3.5}, svg);
+  var lt = mk('text', {x:x0+8, y:Y(line)-10, 'font-size': 26, 'font-weight':700, fill:col,
+    stroke:'#fff', 'stroke-width':5, 'paint-order':'stroke'}, svg);
+  lt.textContent = label;
+
+  var binding = (kind === 'ceiling') ? (line < eqP) : (line > eqP);
+  if(!binding) return {binding:false, qd:qd, qs:qs, gap:0};
+
+  mk('line', {x1:X(qd), y1:Y(line), x2:X(qd), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qs), y1:Y(line), x2:X(qs), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qd), y1:y0+16, x2:X(qs), y2:y0+16, stroke:col, 'stroke-width':3}, svg);
+  var gt = mk('text', {x:(X(qd)+X(qs))/2, y:y0+40, 'text-anchor':'middle', 'font-size': 26,
+    'font-weight':700, fill:col}, svg);
+  gt.textContent = Math.abs(qs - qd).toFixed(1).replace('.0','') + ' ' + cfg.qu;
+  return {binding:true, qd:qd, qs:qs, gap:Math.abs(qs - qd), eqP:eqP, eqQ:eqQ};
+}
+
+/* ══════ 四象限分类（带图片） ══════ */
+function mountQuad(rootId, items){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var QUADS = [
+    {id:'private', t:'PRIVATE GOOD',      d:'rival + excludable'},
+    {id:'common',  t:'COMMON RESOURCE',   d:'rival + non-excludable'},
+    {id:'club',    t:'CLUB GOOD',         d:'non-rival + excludable'},
+    {id:'public',  t:'PUBLIC GOOD',       d:'non-rival + non-excludable'}
+  ];
+  var h = '<div class="game"><div class="pool" id="' + rootId + 'pool">' +
+          '<div class="ph">DRAG INTO A QUADRANT</div></div><div class="quad-wrap">';
+  QUADS.forEach(function(q){
+    h += '<div class="quad" data-zone="' + q.id + '"><div class="qt">' + q.t +
+         '</div><div class="qd">' + q.d + '</div><div class="body"></div></div>';
+  });
+  h += '</div></div><div class="row" style="margin-top:10px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  items.forEach(function(it, i){
+    var el = document.createElement('div');
+    el.className = 'chip ' + (it.img ? 'imgchip' : 'small');
+    el.draggable = true;
+    el.dataset.ans = it.a;
+    el.dataset.i = i;
+    el.innerHTML = it.img ? '<img src="' + it.img + '" alt=""><span>' + it.t + '</span>' : it.t;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i); e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.quad').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.querySelector('.body').appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.querySelector('.body').appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var z = c.closest('.quad');
+      c.classList.remove('ok','no');
+      if(!z) return;
+      if(z.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '" style="font-size:30px">' +
+      right + ' / ' + total + '</span> <span class="gray">correct</span>';
+  };
+}
+var QUESTS = [
+ {s:'As disposable income rises, what usually happens to the proportion of income spent?',
+  o:['it rises','it falls','it stays the same','it falls to zero'],
+  a:1, e:'The amount spent rises, but a smaller share of income goes on spending \u2014 the rest is saved. Basic needs have a ceiling.'},
+ {s:'A household spends \u00a5480 of a \u00a5500 income. What is its saving?',
+  o:['\u00a520','\u00a5480','\u00a5980','\u00a3500'],
+  a:0, e:'Saving = income \u2212 spending = 500 \u2212 480 = \u00a520. Saving is the gap, not a separate income.'},
+ {s:'What is meant by dissaving?',
+  o:['saving in a bank','spending more than income, by drawing on savings or borrowing',
+     'a fall in the interest rate','saving less than last year'],
+  a:1, e:'At very low incomes the household must spend more than it earns. The gap is covered by past savings or by borrowing.'},
+ {s:'Which is most likely to cause a rise in household spending?',
+  o:['a fall in consumer confidence','a rise in the rate of interest',
+     'a rise in disposable income','a rise in income tax'],
+  a:2, e:'Higher disposable income means more can be spent. The other three all reduce spending.'},
+ {s:'A central bank raises interest rates. What is the most likely effect on saving and on spending?',
+  o:['saving rises, spending rises','saving rises, spending falls',
+     'saving falls, spending falls','saving falls, spending rises'],
+  a:1, e:'Saving earns more, so households save more; borrowing costs more, so they borrow and spend less. Savers\u2019 extra spending is outweighed because savers are richer and spend a smaller share.'},
+ {s:'Two households have the same income but one spends far more. Which explanation fits best?',
+  o:['the one that spends more has a lower interest rate',
+     'the households differ in age, confidence or culture',
+     'spending is fixed by income alone','the one that spends more has no savings'],
+  a:1, e:'Income is the main influence, but age, confidence and culture explain why equally rich households behave differently.'}
+];
+/* 与 AP Macro 3.2 第二页同一套消费函数，保证跨课程口径一致 */
+function CON(y){ return 15 + 0.85*y - 0.0035*y*y; }
+function SAV(y){ return y - CON(y); }
+
+var X0 = 92, X1 = 664, Y0 = 470, Y1 = 34;   /* 绘图区 */
+
+function pxYd(v){ return X0 + v/100*(X1-X0); }
+function pxVal(v){ return Y0 - v/100*(Y0-Y1); }
+
+function drawCS(){
+  var y = +document.getElementById('yd').value;
+  var svg = clearSvg('csSvg'); if(!svg) return;
+  svg.setAttribute('viewBox', '0 0 720 520');
+
+  /* 轴 */
+  mk('line', {x1:X0, y1:Y0, x2:X1+8, y2:Y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:X0, y1:Y0, x2:X0, y2:Y1, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:X0-8, y:Y1-6, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  ty.textContent = 'Spending (\u00a5 a day)';
+  var tx = mk('text', {x:X1, y:Y0+30, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  tx.textContent = 'Disposable income (\u00a5 a day)';
+  var t0 = mk('text', {x:X0-10, y:Y0+18, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  /* 45 度线：C = Yd */
+  var g45 = mk('line', {x1:pxYd(0), y1:pxVal(0), x2:pxYd(100), y2:pxVal(100),
+    stroke:'#9aa5b1', 'stroke-width':2.5, 'stroke-dasharray':'9 7'}, svg);
+  var l45 = mk('text', {x:pxYd(100)-4, y:pxVal(100)-12, 'text-anchor':'end', 'font-size': 24,
+    'font-weight':700, fill:'#6b7c8f', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  l45.textContent = 'C = Yd';
+
+  /* 消费曲线 */
+  var pts = [];
+  for(var i = 0; i <= 100; i++) pts.push([pxYd(i), pxVal(CON(i))]);
+  mk('path', {d: pts.map(function(p,i){ return (i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' '),
+    fill:'none', stroke:'#1CADE4', 'stroke-width':4, 'stroke-linejoin':'round'}, svg);
+  var lc = mk('text', {x:pxYd(100)+10, y:pxVal(CON(100))+6, 'font-size': 24, 'font-weight':700,
+    fill:'#0e7fae', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  lc.textContent = 'spending';
+
+  /* 当前收入处的竖线 + 缺口 */
+  var cx = pxYd(y), cVal = CON(y), sVal = SAV(y);
+  mk('line', {x1:cx, y1:Y0, x2:cx, y2:pxVal(y), stroke:'#c9d3dd', 'stroke-width':1.5,
+    'stroke-dasharray':'3 3'}, svg);
+  mk('circle', {cx:cx, cy:pxVal(y), r:4, fill:'#9aa5b1'}, svg);
+
+  var col = (sVal >= 0) ? '#2E7D32' : '#C62828';
+  mk('line', {x1:cx, y1:pxVal(cVal), x2:cx, y2:pxVal(y), stroke:col, 'stroke-width':7,
+    'stroke-linecap':'round'}, svg);
+  mk('circle', {cx:cx, cy:pxVal(cVal), r:6, fill:'#1CADE4', stroke:'#fff', 'stroke-width':2}, svg);
+
+  var lab = mk('text', {x:cx+12, y:(pxVal(cVal)+pxVal(y))/2 + (sVal >= 0 ? 0 : 20), 'font-size': 24, 'font-weight':700,
+    fill:col, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  lab.textContent = (sVal >= 0 ? 'saving' : 'dissaving') + ' \u00a5' + Math.abs(sVal).toFixed(0);
+
+  /* 读数 */
+  var pct = y > 0 ? (cVal / y * 100) : 0;
+  document.getElementById('ydv').textContent = '\u00a5' + y;
+  document.getElementById('rdYd').textContent = '\u00a5' + y;
+  document.getElementById('rdC').textContent = '\u00a5' + cVal.toFixed(0);
+  document.getElementById('rdS').textContent = (sVal >= 0 ? '\u00a5' : '\u2212\u00a5') + Math.abs(sVal).toFixed(0);
+  document.getElementById('rdPct').textContent = pct.toFixed(0) + '%';
+  var note = document.getElementById('csNote');
+  if(sVal < 0){
+    note.innerHTML = '<b class="dr">Spending more than income.</b> The household covers the gap by ' +
+      'drawing on past savings or borrowing.';
+  } else if(pct > 92){
+    note.innerHTML = 'Almost everything is spent. Saving is possible, but small.';
+  } else {
+    note.innerHTML = 'Spending is <b>' + pct.toFixed(0) + '%</b> of income \u2014 and that share keeps ' +
+      '<b>falling</b> as income rises, even though the amount spent keeps rising.';
+  }
+}
+
+/* 利率：只讲方向，不编数值 */
+function drawRate(){
+  var r = +document.getElementById('rate').value;
+  document.getElementById('ratev').textContent = r + '%';
+  function row(id, arrow, txt){
+    var el = document.getElementById(id);
+    var c = arrow === '\u2191' ? 'dr' : (arrow === '\u2193' ? 'blue' : 'gray');
+    el.innerHTML = '<b class="' + c + '" style="font-size:30px">' + arrow + '</b> &nbsp;' + txt;
+  }
+  if(r <= 3){
+    row('rowS', '\u2193', 'saving earns little \u2014 why lock money away');
+    row('rowB', '\u2191', 'borrowing is cheap');
+    row('rowC', '\u2191', 'so households spend more');
+  } else if(r >= 7){
+    row('rowS', '\u2191', 'saving earns a real reward');
+    row('rowB', '\u2193', 'borrowing is expensive \u2014 new loans fall');
+    row('rowC', '\u2193', 'and spending falls, including for existing borrowers');
+  } else {
+    row('rowS', '\u2014', 'saving is neither strongly rewarded nor punished');
+    row('rowB', '\u2014', 'borrowing is neither cheap nor dear');
+    row('rowC', '\u2014', 'spending changes little');
+  }
+}
+
+function onSlide(i){
+  if(i === 3) drawCS();
+  if(i === 6) drawRate();
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  bootDeck();
+  ['yd','rate'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', function(){
+      if(id === 'yd') drawCS(); else drawRate();
+    });
+  });
+  mountDC('dc1', [
+    {t:'Her pay rises 20% and she saves a larger share', a:'income'},
+    {t:'Mortgage payments jump after rates rise', a:'rate'},
+    {t:'Worried about next year, the family stops eating out', a:'conf'},
+    {t:'A couple in their thirties with two children spend almost everything', a:'age'},
+    {t:'A family keeps its festival spending after moving abroad', a:'cult'}
+  ], [{id:'income', label:'Income'}, {id:'rate', label:'Interest rate'},
+      {id:'conf', label:'Confidence'}, {id:'age', label:'Age'}, {id:'cult', label:'Culture'}]);
+  mountQuiz('qz1', QUESTS);
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+
+</script>
+<script>(function(){function r(){try{if(typeof drawCS==="function")drawCS()}catch(e){}}var v=document.querySelector(".view");if(v&&window.MutationObserver){new MutationObserver(r).observe(v,{subtree:true,attributes:true,attributeFilter:["class"]})}window.addEventListener("load",function(){setTimeout(r,250)});window.addEventListener("resize",r);})();</script>
+<script>document.addEventListener("click",function(e){if(!e.target.classList.contains("stepbtn"))return;var c=e.target.closest(".content");var s=c.querySelector(".step");if(s){s.style.display="block";e.target.style.display="none";}});</script>
+</body>
+</html>

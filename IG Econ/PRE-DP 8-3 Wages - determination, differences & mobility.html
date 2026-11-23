@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 3.2 - Households</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:22px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(19px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(10px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(19px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(19px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(19px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(16px,1.35vw,19px);}
+.zone .zt{width:100%;font-size:clamp(19px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:22px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:22px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:22px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:22px;}
+.chip.small{font-size:22px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(19px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:22px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+
+.step{display:none}
+.stepbtn{font-size:22px;padding:5px 14px}
+</style>
+
+<style>
+:root{--gap:14px;--ink:#33424f;--line:#dce8f3}
+.content{display:flex;flex-direction:column;gap:var(--gap)}
+.row{display:grid;gap:var(--gap)}
+.c2{grid-template-columns:1fr 1fr}
+.c3{grid-template-columns:repeat(3,1fr)}
+.fill{flex:1;min-height:0}
+.card{background:#fff;border:2px solid var(--line);border-radius:16px;padding:18px 22px;
+font-size:26px;line-height:1.55;color:var(--ink);
+display:flex;flex-direction:column;justify-content:space-evenly;gap:10px}
+.card h3{margin:0;font-size:23px;letter-spacing:.04em;text-transform:uppercase;color:#1E88E5}
+.card.blue{border-color:#1E88E5;background:#F4FAFF}
+.card.green{border-color:#2E7D32;background:#F3FAF5}
+.card.amber{border-color:#8a6b12;background:#FFFAF0}
+.card.red{border-color:#C62828;background:#FFF7F6}
+.note{margin-top:auto;background:#EAF4FF;border-left:7px solid #1E88E5;border-radius:0 10px 10px 0;
+padding:12px 16px;font-size:23px;color:#12507e}
+.tbl{width:100%;border-collapse:collapse;font-size:24px;line-height:1.5}
+.tbl th{font-size:20px;text-align:left;color:#7b8b9b;font-weight:700;
+border-bottom:2px solid var(--line);padding:12px 10px}
+.tbl td{padding:16px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.def{background:#EAF4FF;border-left:8px solid #1E88E5;border-radius:0 12px 12px 0;padding:14px 20px;
+font-size:29px;line-height:1.45;color:#12507e}
+.bl{display:inline-block;min-width:110px;border-bottom:2px solid #1E88E5;text-align:center;
+color:#1E88E5;font-weight:700;cursor:pointer}
+.ans{display:inline-block;min-width:140px;padding:5px 12px;border-radius:8px;background:#EAF4FF;
+color:#1E88E5;font-weight:800;text-align:center;cursor:pointer;font-size:21px}
+.photo{width:100%;height:230px;object-fit:cover;border-radius:12px;display:block}
+.big-btn{font-size:21px;padding:12px 22px;border-radius:10px;border:2px solid #1E88E5;
+background:#1E88E5;color:#fff;font-weight:800;cursor:pointer}
+.slider{width:100%;height:10px;accent-color:#1E88E5;cursor:pointer}
+.readout{font-size:25px;font-weight:900;color:#15334f}
+
+.hl{background:#FFF7E2;border:2px solid #EAD39B;border-left:8px solid #C99A16;border-radius:12px;
+padding:12px 16px;font-size:24px;font-weight:700;color:#5b4708}
+.mega{font-size:34px;font-weight:900;color:#1E88E5;line-height:1.2}
+.kick{display:inline-flex;width:30px;height:30px;border-radius:50%;background:#1E88E5;color:#fff;
+font-size:17px;font-weight:900;align-items:center;justify-content:center;margin-right:9px;flex:none}
+.card b{color:#0d4670}
+.bullets{margin:0;padding-left:26px;font-size:23px}
+.bullets li{margin:8px 0}
+
+.tbl th.g{color:#2E7D32;background:#E8F6EC}
+.tbl th.c{color:#C62828;background:#FDECEA}
+.tbl td.gain{background:#F4FAF5;color:#216B39}
+.tbl td.cost{background:#FFF5F4;color:#9B2C2C}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 3: Microeconomic decision-makers</div><h1>Wages</h1><div class="sep"></div><div class="sub" style="margin-top:10px">Determination, differences and mobility</div><div class="author">DR. JIA · © 2026</div><div class="botbar"></div></div><div class="slide"><div class="content">
+<h1>A wage is a price</h1>
+<div class="def">The <b>wage</b> is the price of labour; the <b>wage rate</b> is that payment per unit of time &#8212; per hour, day or week.</div>
+<div class="row" style="grid-template-columns:1.25fr 1fr;flex:1;min-height:0">
+  <div style="min-height:0;display:flex;height:100%"><svg viewBox="40 20 510 400" style="width:100%;height:100%"><line x1="78" y1="356" x2="496" y2="356" stroke="#333" stroke-width="2"/><line x1="78" y1="356" x2="78" y2="48" stroke="#333" stroke-width="2"/><text x="486" y="404" font-size="18" fill="#5b6b7b" text-anchor="end">quantity of labour</text><text x="72" y="42" font-size="18" fill="#5b6b7b">wage rate</text><line x1="78.0" y1="116.0" x2="465.6" y2="287.0" stroke="#1E88E5" stroke-width="4"/><line x1="78.0" y1="296.0" x2="465.6" y2="125.0" stroke="#2E7D32" stroke-width="4"/><line x1="282.0" y1="206.0" x2="282.0" y2="356" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="6 6"/><line x1="78" y1="206.0" x2="282.0" y2="206.0" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="6 6"/><circle cx="282.0" cy="206.0" r="7" fill="#15334f"/><text x="70" y="212.0" font-size="18" fill="#5b6b7b" text-anchor="end">We</text><text x="474" y="295" font-size="20" font-weight="700" fill="#1E88E5">D</text><text x="474" y="117" font-size="20" font-weight="700" fill="#2E7D32">S</text></svg></div>
+  <div class="card" style="gap:14px"><h3>Same rules as any market</h3>
+    <div><span class="kick">1</span> Workers <b>supply</b> labour; firms <b>demand</b> it.</div>
+    <div><span class="kick">2</span> The crossing point gives the <b>equilibrium wage We</b>.</div>
+    <div><span class="kick">3</span> No shortage, no surplus: the market clears.</div>
+    <div style="font-size:22px;color:#7b8b9b">Everything in this lesson is this one diagram, moved.</div></div>
+</div>
+<div class="note">A wage is a <b>price</b>, not a reward for effort.</div></div></div><div class="slide"><div class="content">
+<h1>Demand for labour &#8212; and what shifts it</h1>
+<div class="def">Demand for labour is <b>derived</b>: firms hire only because consumers buy the product.</div>
+<div class="row" style="grid-template-columns:1.05fr 1fr;flex:1;min-height:0">
+  <div style="min-height:0;display:flex;height:100%"><svg viewBox="40 20 510 400" style="width:100%;height:100%"><line x1="78" y1="356" x2="496" y2="356" stroke="#333" stroke-width="2"/><line x1="78" y1="356" x2="78" y2="48" stroke="#333" stroke-width="2"/><text x="486" y="404" font-size="18" fill="#5b6b7b" text-anchor="end">quantity of labour</text><text x="72" y="42" font-size="18" fill="#5b6b7b">wage rate</text><line x1="78.0" y1="116.0" x2="465.6" y2="287.0" stroke="#1E88E5" stroke-width="4"/><line x1="78.0" y1="296.0" x2="465.6" y2="125.0" stroke="#2E7D32" stroke-width="4"/><line x1="78.0" y1="80.0" x2="465.6" y2="251.0" stroke="#1E88E5" stroke-width="4" stroke-dasharray="10 8"/><line x1="78" y1="206.0" x2="282.0" y2="206.0" stroke="#b9c6d2" stroke-width="2" stroke-dasharray="3 6"/><line x1="282.0" y1="206.0" x2="282.0" y2="356" stroke="#b9c6d2" stroke-width="2" stroke-dasharray="3 6"/><circle cx="282.0" cy="206.0" r="6" fill="none" stroke="#8a99a8" stroke-width="3"/><text x="268" y="234" font-size="16" fill="#8a99a8" text-anchor="end">E0</text><line x1="78" y1="188.0" x2="322.8" y2="188.0" stroke="#15334f" stroke-width="2" stroke-dasharray="6 5"/><line x1="322.8" y1="188.0" x2="322.8" y2="356" stroke="#15334f" stroke-width="2" stroke-dasharray="6 5"/><circle cx="322.8" cy="188.0" r="7" fill="#15334f"/><text x="339" y="176" font-size="16" fill="#15334f">E1</text><text x="474" y="295" font-size="20" font-weight="700" fill="#1E88E5">D</text><text x="474" y="117" font-size="20" font-weight="700" fill="#2E7D32">S</text><text x="474" y="259" font-size="20" font-weight="700" fill="#1E88E5">D1</text></svg></div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="card blue" style="flex:1"><h3>D &#8594; D1: demand rises</h3><div>wage <b>&#8593;</b> &#183; employment <b>&#8593;</b></div></div>
+    <div class="card" style="flex:1.4"><h3>Three shifters</h3>
+      <div><span class="kick">1</span> demand for the <b>product</b></div>
+      <div><span class="kick">2</span> <b>productivity</b> of workers</div>
+      <div><span class="kick">3</span> price of <b>machines</b></div></div>
+  </div>
+</div>
+<div class="note">A higher wage on the same curve is a <b>movement</b>; these three <b>shift</b> the curve.</div></div></div><div class="slide"><div class="content">
+<h1>Jevons paradox: productivity does not kill jobs</h1>
+<div class="def">When technology makes a resource more efficient, <b>total use of it can rise, not fall</b>.</div>
+<div class="row c2" style="flex:1;min-height:0">
+  <div class="card" style="padding:12px;justify-content:flex-start;gap:10px">
+    <img class="photo" src="img/jevons_coal.png" alt="" style="height:225px;object-fit:contain;background:#fff">
+    <div style="font-size:22px"><b>Coal.</b> Watt's steam engine used coal more efficiently. Coal grew cheaper, engines spread to every factory, mine and ship &#8212; and <b>total coal burned soared</b>.</div>
+  </div>
+  <div class="card" style="padding:12px;justify-content:flex-start;gap:10px">
+    <img class="photo" src="img/jevons_gatling.png" alt="" style="height:225px;object-fit:contain;background:#fff">
+    <div style="font-size:22px"><b>The machine gun.</b> One gunner could do the work of a rank of riflemen. Armies did not shrink: wars grew, and factories needed <b>more</b> hands for guns and shells.</div>
+  </div>
+</div>
+<div class="row c2" style="gap:14px">
+  <div class="card red" style="padding:14px 18px"><div style="font-size:22px"><span style="font-size:26px;color:#C62828">&#10007;</span> <b>Common answer</b><br>Productivity &#8593; &#8594; each worker makes more &#8594; fewer workers needed &#8594; D shifts left.</div></div>
+  <div class="card green" style="padding:14px 18px"><div style="font-size:22px"><span style="font-size:26px;color:#2E7D32">&#10003;</span> <b>What actually happens</b><br>Unit cost &#8595; &#8594; price &#8595; &#8594; demand for the product &#8593;&#8593; &#8594; <b>derived demand for labour shifts right</b>.</div></div>
+</div>
+<div class="note">That is why <b>productivity</b> was listed on the previous page as a cause of demand <b>rising</b>.</div></div></div><div class="slide"><div class="content">
+<h1>Supply of labour &#8212; and what shifts it</h1>
+<div class="def">Supply of labour = workers <b>willing and able</b> to work at each wage rate.</div>
+<div class="row" style="grid-template-columns:1.05fr 1fr;flex:1;min-height:0">
+  <div style="min-height:0;display:flex;height:100%"><svg viewBox="40 20 510 400" style="width:100%;height:100%"><line x1="78" y1="356" x2="496" y2="356" stroke="#333" stroke-width="2"/><line x1="78" y1="356" x2="78" y2="48" stroke="#333" stroke-width="2"/><text x="486" y="404" font-size="18" fill="#5b6b7b" text-anchor="end">quantity of labour</text><text x="72" y="42" font-size="18" fill="#5b6b7b">wage rate</text><line x1="78.0" y1="116.0" x2="465.6" y2="287.0" stroke="#1E88E5" stroke-width="4"/><line x1="78.0" y1="296.0" x2="465.6" y2="125.0" stroke="#2E7D32" stroke-width="4"/><line x1="78.0" y1="332.0" x2="465.6" y2="161.0" stroke="#2E7D32" stroke-width="4" stroke-dasharray="10 8"/><line x1="78" y1="206.0" x2="282.0" y2="206.0" stroke="#b9c6d2" stroke-width="2" stroke-dasharray="3 6"/><line x1="282.0" y1="206.0" x2="282.0" y2="356" stroke="#b9c6d2" stroke-width="2" stroke-dasharray="3 6"/><circle cx="282.0" cy="206.0" r="6" fill="none" stroke="#8a99a8" stroke-width="3"/><text x="268" y="234" font-size="16" fill="#8a99a8" text-anchor="end">E0</text><line x1="78" y1="224.0" x2="322.8" y2="224.0" stroke="#15334f" stroke-width="2" stroke-dasharray="6 5"/><line x1="322.8" y1="224.0" x2="322.8" y2="356" stroke="#15334f" stroke-width="2" stroke-dasharray="6 5"/><circle cx="322.8" cy="224.0" r="7" fill="#15334f"/><text x="339" y="212" font-size="16" fill="#15334f">E1</text><text x="474" y="295" font-size="20" font-weight="700" fill="#1E88E5">D</text><text x="474" y="117" font-size="20" font-weight="700" fill="#2E7D32">S</text><text x="474" y="153" font-size="20" font-weight="700" fill="#2E7D32">S1</text></svg></div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="card green" style="flex:1"><h3>S &#8594; S1: supply rises</h3><div>wage <b>&#8595;</b> &#183; employment <b>&#8593;</b></div></div>
+    <div class="card" style="flex:1.4"><h3>Four shifters</h3>
+      <div><span class="kick">1</span> population / <b>migration</b></div>
+      <div><span class="kick">2</span> <b>qualifications</b> required</div>
+      <div><span class="kick">3</span> non-wage appeal</div>
+      <div><span class="kick">4</span> wages in <b>other</b> jobs</div></div>
+  </div>
+</div>
+<div class="note">A certificate does not raise pay directly &#8212; it <b>shrinks the supply</b> of people who can do the job.</div></div></div><div class="slide"><div class="content">
+<h1>One diagram, any elasticity of supply</h1>
+<div class="sub">Every supply curve turns on the <b>same</b> starting point E0. Drag to rotate it.</div>
+<div class="row" style="grid-template-columns:1.3fr 1fr;flex:1;min-height:0">
+  <div id="pesbox" style="min-height:0;display:flex;height:100%"></div>
+  <div class="card" style="gap:12px">
+    <h3>Supply elasticity</h3>
+    <div style="font-size:22px;font-weight:700">Drag to rotate S around E0</div>
+    <input id="pes" class="slider" type="range" min="0.25" max="1.5" step="0.05" value="0.6">
+    <div style="display:flex;justify-content:space-between;font-size:21px"><span>Elastic (flat)</span><span>Inelastic (steep)</span></div>
+    <div class="readout" id="pesout"></div>
+    <div style="font-size:21px;color:#7b8b9b">Steep S &#8594; a boom shows up as <b>pay</b>.<br>Flat S &#8594; it shows up as <b>jobs</b>.</div>
+    <button class="big-btn" id="pesboth">Compare both</button>
+  </div>
+</div>
+<div class="note">Dashed lines give W0 / Q0 (before) and W1 / Q1 (after) &#8212; read both straight off the axes.</div>
+<script>(function(){
+var box=document.getElementById("pesbox"), sl=document.getElementById("pes"),
+    out=document.getElementById("pesout"), both=false;
+var X0=78,X1=486,Y0=356,Y1=56;
+function X(q){return X0+q/100*(X1-X0);} function Y(w){return Y0-w/100*(Y0-Y1);}
+function seg(a,b,col,dash){
+  var q0=0,q1=95;
+  return '<line x1="'+X(q0).toFixed(1)+'" y1="'+Y(a+b*q0).toFixed(1)+'" x2="'+X(q1).toFixed(1)+'" y2="'+Y(a+b*q1).toFixed(1)+'" stroke="'+col+'" stroke-width="4" '+(dash?'stroke-dasharray="10 8"':'')+'/>';
+}
+function cross(a1,b1,a2,b2){var q=(a2-a1)/(b1-b2);return [q,a1+b1*q];}
+function lab(x,y,txt,col,anchor,size){
+  return '<text x="'+x.toFixed(0)+'" y="'+y.toFixed(0)+'" font-size="'+(size||17)+'" font-weight="700" fill="'+col+'" '+
+    (anchor?'text-anchor="'+anchor+'" ':'')+'style="paint-order:stroke;stroke:#fff;stroke-width:4px">'+txt+'</text>';
+}
+var D=[80,-0.6], D1=[98,-0.6], E0=[50,50];
+function curve(sb,col,dash,marks){
+  var S=[50-50*sb, sb];
+  var E1=cross(D1[0],D1[1],S[0],S[1]);
+  var s=seg(S[0],S[1],col,dash);
+  if(marks){
+    s+='<line x1="'+X0+'" y1="'+Y(E1[1]).toFixed(1)+'" x2="'+X(E1[0]).toFixed(1)+'" y2="'+Y(E1[1]).toFixed(1)+'" stroke="'+col+'" stroke-width="2" stroke-dasharray="6 5"/>';
+    s+='<line x1="'+X(E1[0]).toFixed(1)+'" y1="'+Y(E1[1]).toFixed(1)+'" x2="'+X(E1[0]).toFixed(1)+'" y2="'+Y0+'" stroke="'+col+'" stroke-width="2" stroke-dasharray="6 5"/>';
+    s+='<circle cx="'+X(E1[0]).toFixed(1)+'" cy="'+Y(E1[1]).toFixed(1)+'" r="7" fill="'+col+'"/>';
+  }
+  return {svg:s, E1:E1};
+}
+function draw(){
+  var sb=parseFloat(sl.value);
+  var g='<svg viewBox="40 20 510 400" style="width:100%;height:100%">';
+  g+='<line x1="'+X0+'" y1="'+Y0+'" x2="'+(X1+10)+'" y2="'+Y0+'" stroke="#333" stroke-width="2"/>';
+  g+='<line x1="'+X0+'" y1="'+Y0+'" x2="'+X0+'" y2="'+(Y1-8)+'" stroke="#333" stroke-width="2"/>';
+  g+=lab(X1,Y0-14,'quantity of labour','#5b6b7b','end',18);
+  g+=lab(X0-6,Y1-14,'wage rate','#5b6b7b','',18);
+  g+=seg(D[0],D[1],'#1E88E5',false);
+  g+=seg(D1[0],D1[1],'#1E88E5',true);
+  var m=curve(sb,'#15334f',false,true);
+  if(both){
+    g+=curve(1.15,'#8a6b12',true,true).svg;
+    g+=curve(0.3,'#2E7D32',true,true).svg;
+    g+=lab(X(60),34,'steep','#8a6b12','',17);
+    g+=lab(X(78),34,'flat','#2E7D32','',17);
+  }
+  g+=m.svg;
+  // E0 十字与标签
+  g+='<line x1="'+X0+'" y1="'+Y(50).toFixed(1)+'" x2="'+X(50).toFixed(1)+'" y2="'+Y(50).toFixed(1)+'" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="4 5"/>';
+  g+='<line x1="'+X(50).toFixed(1)+'" y1="'+Y(50).toFixed(1)+'" x2="'+X(50).toFixed(1)+'" y2="'+Y0+'" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="4 5"/>';
+  g+='<circle cx="'+X(50).toFixed(1)+'" cy="'+Y(50).toFixed(1)+'" r="6" fill="none" stroke="#8a99a8" stroke-width="3"/>';
+  g+=lab(X0-8,Y(50)+4,'W0','#8a99a8','end',16);
+  g+=lab(X(50),Y0+26,'Q0','#8a99a8','middle',16);
+  g+=lab(X0-8,Y(m.E1[1])+4,'W1','#15334f','end',16);
+  g+=lab(X(m.E1[0]),Y0+26,'Q1','#15334f','middle',16);
+  // 曲线右端标签
+  g+=lab(X(95)+8,Y(D[0]+D[1]*95)+8,'D','#1E88E5','',19);
+  g+=lab(X(95)+8,Y(D1[0]+D1[1]*95)+8,'D1','#1E88E5','',19);
+  g+=lab(X(95)+8,Y(50+sb*(95-50))-8,'S','#15334f','',19);
+  g+='</svg>';
+  box.innerHTML=g;
+  if(both){
+    var st=curve(1.15,'#8a6b12',true,false).E1, fl=curve(0.3,'#2E7D32',true,false).E1;
+    out.innerHTML='steep: W '+st[1].toFixed(0)+' &#183; Q '+st[0].toFixed(0)+
+                  '<br>flat: W '+fl[1].toFixed(0)+' &#183; Q '+fl[0].toFixed(0);
+  } else {
+    out.innerHTML='W0 50 &#8594; W1 <b>'+m.E1[1].toFixed(0)+'</b><br>Q0 50 &#8594; Q1 <b>'+m.E1[0].toFixed(0)+'</b>';
+  }
+}
+sl.oninput=function(){both=false;draw();};
+document.getElementById("pesboth").onclick=function(){both=!both;draw();};
+draw();})();</script></div></div><div class="slide"><div class="content">
+<h1>Which curve moved?</h1>
+<div class="sub">Name the curve, then the effect on wage and jobs.</div>
+<table class="tbl fill" style="height:100%"><tbody><tr><td style="font-weight:800;color:#1E88E5;width:44px">1</td><td>A new factory opens and hires 400 workers.</td><td style="text-align:right"><span class="ans" data-a="Demand up" data-b="wage up, jobs up">which curve?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:44px">2</td><td>A licence is now required to be an electrician.</td><td style="text-align:right"><span class="ans" data-a="Supply down" data-b="wage up, jobs down">which curve?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:44px">3</td><td>Machines can now do the job at half the cost.</td><td style="text-align:right"><span class="ans" data-a="Demand down" data-b="wage down, jobs down">which curve?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:44px">4</td><td>Skilled welders migrate into the city.</td><td style="text-align:right"><span class="ans" data-a="Supply up" data-b="wage down, jobs up">which curve?</span></td></tr></tbody></table>
+<div class="note">Never shift both. <b>One event, one curve.</b></div>
+<script>(function(){document.addEventListener("click",function(e){
+var s=e.target.closest("span.ans"); if(!s) return;
+s.innerHTML='<span style="display:block;font-size:16px;color:#7b8b9b">'+s.getAttribute("data-a")+'</span>'+s.getAttribute("data-b");
+s.style.background="#E7F2FC"; s.style.color="#15334f"; s.style.minWidth="210px";});})();</script></div></div><div class="slide"><div class="content">
+<h1>Trade unions</h1>
+<div class="def">A <b>trade union</b> protects and improves members&#8217; pay and conditions through <b>collective bargaining</b>.</div>
+<div class="row" style="grid-template-columns:1.2fr 1fr;flex:1;min-height:0">
+  <div style="min-height:0;display:flex;height:100%"><svg viewBox="40 20 510 400" style="width:100%;height:100%"><line x1="78" y1="356" x2="496" y2="356" stroke="#333" stroke-width="2"/><line x1="78" y1="356" x2="78" y2="48" stroke="#333" stroke-width="2"/><text x="486" y="404" font-size="18" fill="#5b6b7b" text-anchor="end">quantity of labour</text><text x="72" y="42" font-size="18" fill="#5b6b7b">wage rate</text><line x1="78.0" y1="116.0" x2="465.6" y2="287.0" stroke="#1E88E5" stroke-width="4"/><line x1="78.0" y1="296.0" x2="465.6" y2="125.0" stroke="#2E7D32" stroke-width="4"/><line x1="282.0" y1="206.0" x2="282.0" y2="356" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="6 6"/><line x1="78" y1="206.0" x2="282.0" y2="206.0" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="6 6"/><circle cx="282.0" cy="206.0" r="7" fill="#15334f"/><text x="70" y="212.0" font-size="18" fill="#5b6b7b" text-anchor="end">We</text><line x1="78" y1="170.0" x2="453.4" y2="170.0" stroke="#C62828" stroke-width="4"/><text x="70" y="176.0" font-size="18" fill="#C62828" text-anchor="end">Wf</text><line x1="200.4" y1="170.0" x2="200.4" y2="356" stroke="#C62828" stroke-width="2" stroke-dasharray="5 5"/><line x1="363.6" y1="170.0" x2="363.6" y2="356" stroke="#C62828" stroke-width="2" stroke-dasharray="5 5"/><text x="200.4" y="384" font-size="17" fill="#C62828" text-anchor="middle">Qd</text><text x="363.6" y="384" font-size="17" fill="#C62828" text-anchor="middle">Qs</text><path d="M200.4,330 L363.6,330" stroke="#C62828" stroke-width="3"/><text x="282.0" y="320" font-size="17" fill="#C62828" text-anchor="middle">surplus</text><text x="474" y="295" font-size="20" font-weight="700" fill="#1E88E5">D</text><text x="474" y="117" font-size="20" font-weight="700" fill="#2E7D32">S</text></svg></div>
+  <div class="card" style="gap:14px"><h3>Read it</h3>
+    <div>Union wage <b>Wf</b> sits above We.</div>
+    <div class="hl">At Wf, <b>Qd &lt; Qs</b> &#8594; a surplus of labour.</div>
+    <div>Insiders keep the job;<br>outsiders queue.</div>
+    <div style="font-size:22px;color:#7b8b9b">Strongest where membership is high and workers are hard to replace.</div></div>
+</div>
+<div class="note">Higher pay for members can mean <b>fewer jobs in total</b>.</div></div></div><div class="slide"><div class="content">
+<h1>The minimum wage: short run vs long run</h1>
+<div class="def">A <b>minimum wage</b> is a legal minimum hourly rate that employers must pay.</div>
+<div class="row" style="grid-template-columns:1.2fr 1fr;flex:1;min-height:0">
+  <div style="min-height:0;display:flex;height:100%"><svg viewBox="40 20 510 400" style="width:100%;height:100%"><line x1="78" y1="356" x2="496" y2="356" stroke="#333" stroke-width="2"/><line x1="78" y1="356" x2="78" y2="48" stroke="#333" stroke-width="2"/><text x="486" y="404" font-size="18" fill="#5b6b7b" text-anchor="end">quantity of labour</text><text x="72" y="42" font-size="18" fill="#5b6b7b">wage rate</text><line x1="78.0" y1="116.0" x2="465.6" y2="287.0" stroke="#1E88E5" stroke-width="4"/><line x1="78.0" y1="296.0" x2="465.6" y2="125.0" stroke="#2E7D32" stroke-width="4"/><line x1="78.0" y1="44.0" x2="465.6" y2="215.0" stroke="#1E88E5" stroke-width="4" stroke-dasharray="10 8"/><line x1="282.0" y1="206.0" x2="282.0" y2="356" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="6 6"/><line x1="78" y1="206.0" x2="282.0" y2="206.0" stroke="#9aa5b1" stroke-width="2" stroke-dasharray="6 6"/><circle cx="282.0" cy="206.0" r="7" fill="#15334f"/><text x="70" y="212.0" font-size="18" fill="#5b6b7b" text-anchor="end">We</text><line x1="78" y1="170.0" x2="453.4" y2="170.0" stroke="#C62828" stroke-width="4"/><text x="70" y="176.0" font-size="18" fill="#C62828" text-anchor="end">Wf</text><line x1="200.4" y1="170.0" x2="200.4" y2="356" stroke="#C62828" stroke-width="2" stroke-dasharray="5 5"/><line x1="363.6" y1="170.0" x2="363.6" y2="356" stroke="#C62828" stroke-width="2" stroke-dasharray="5 5"/><text x="200.4" y="384" font-size="17" fill="#C62828" text-anchor="middle">Qd</text><text x="363.6" y="384" font-size="17" fill="#C62828" text-anchor="middle">Qs</text><path d="M200.4,330 L363.6,330" stroke="#C62828" stroke-width="3"/><text x="282.0" y="320" font-size="17" fill="#C62828" text-anchor="middle">surplus</text><text x="474" y="295" font-size="20" font-weight="700" fill="#1E88E5">D</text><text x="474" y="117" font-size="20" font-weight="700" fill="#2E7D32">S</text><text x="474" y="223" font-size="20" font-weight="700" fill="#1E88E5">D′</text></svg></div>
+  <div class="card" style="gap:12px"><h3>The long-run adjustment</h3>
+    <div><span class="kick">1</span> <b>Short run:</b> Wf above We &#8594; Qd &lt; Qs, a surplus appears.</div>
+    <div><span class="kick">2</span> <b>Long run:</b> higher pay lifts motivation and productivity, so demand shifts <b>D &#8594; D&#8242;</b>.</div>
+    <div><span class="kick">3</span> At Wf the two curves can meet again &#8212; <b>the surplus disappears</b>.</div>
+    <div style="font-size:22px;color:#7b8b9b">Card &amp; Krueger, New Jersey 1992 vs Pennsylvania: fast-food jobs did <b>not</b> fall. Card shared the 2021 Nobel.</div></div>
+</div>
+<div class="note">Exam answer is <b>conditional</b>: a large rise, with elastic labour demand, still costs jobs.</div></div></div><div class="slide"><div class="content">
+<h1>Why wages differ: three layers</h1>
+<div class="def">A wage is set in a market &#8212; but the labour market is <b>not</b> an ordinary one.</div>
+<div class="row c3" style="flex:1;min-height:0">
+  <div class="card blue" style="gap:12px"><div style="font-size:48px;font-weight:900;color:#cfe2f5;line-height:1">01</div>
+    <div style="font-size:27px"><b>Demand &amp; supply</b></div>
+    <div style="font-size:22px">The starting point: the wage is a price. Scarce skills, long training and productivity shift D and S.</div>
+    <div style="font-size:20px;color:#7b8b9b">Always explain this layer first.</div></div>
+  <div class="card amber" style="gap:12px"><div style="font-size:48px;font-weight:900;color:#eadfc4;line-height:1">02</div>
+    <div style="font-size:27px"><b>Bargaining power</b></div>
+    <div style="font-size:22px">A single worker faces a firm with the stronger hand. A <b>trade union</b> pools workers and lifts their power, so pay can rise above We.</div>
+    <div style="font-size:20px;color:#7b8b9b">This is what makes labour special.</div></div>
+  <div class="card green" style="gap:12px"><div style="font-size:48px;font-weight:900;color:#cfe8d8;line-height:1">03</div>
+    <div style="font-size:27px"><b>Government</b></div>
+    <div style="font-size:22px">Minimum wage, public-sector pay scales, equal-pay law &#8212; rules that set or limit pay directly.</div>
+    <div style="font-size:20px;color:#7b8b9b">Add this layer last.</div></div>
+</div>
+<div class="note">The layers <b>stack</b>: start with D/S, then ask who can bargain, then ask what the law requires.</div></div></div><div class="slide"><div class="content">
+<h1>Gap 1 &#183; Skill</h1>
+<div class="def">Long training keeps the supply of skilled labour small &#8212; so the wage is high.</div>
+<div class="row c2" style="flex:1;min-height:0">
+  <div class="card" style="justify-content:flex-start;gap:10px;padding:18px 22px">
+    <h3>Why the gap appears</h3>
+    <div style="flex:1;display:flex;align-items:center;gap:12px;background:#F6FAFE;border-radius:10px;padding:10px 14px"><span class="kick">1</span><div>Twelve years of training &#8594; <b>few qualified workers</b> &#8594; S shifts left.</div></div>
+    <div style="flex:1;display:flex;align-items:center;gap:12px;background:#F6FAFE;border-radius:10px;padding:10px 14px"><span class="kick">2</span><div>Their output is worth more &#8594; <b>D shifts right</b>.</div></div>
+    <div style="flex:1;display:flex;align-items:center;gap:12px;background:#F6FAFE;border-radius:10px;padding:10px 14px"><span class="kick">3</span><div>Both push the wage up: <b>scarcity, not effort</b>.</div></div>
+  </div>
+  <div class="card blue" style="justify-content:space-between;gap:14px;padding:18px 22px">
+    <h3>Read it on the model</h3>
+    <div class="hl">Surgeon vs cleaner: a <b>small supply</b> meets a <b>high demand</b>.</div>
+    <div style="font-size:22px;color:#7b8b9b">The same two curves explain every skill gap &#8212; no new diagram is needed.</div>
+    <div style="border-top:2px solid #dbe7f2;padding-top:12px;font-size:23px;line-height:1.4"><b>Exam chain:</b> difference in training &#8594; effect on S or D &#8594; direction of the wage.</div>
+  </div>
+</div>
+</div></div><div class="slide"><div class="content">
+<h1>Gap 2 &#183; Gender, discrimination &#8212; and how big is it?</h1>
+<div class="def">Discrimination = paying equally productive workers differently because of <b>who they are</b>, not what they produce.</div>
+<div class="row" style="grid-template-columns:1fr 1fr;flex:1;min-height:0">
+  <div class="card" style="gap:10px"><h3>Three things often mixed up</h3>
+    <div><span class="kick">1</span> <b>Real differences</b> &#8212; hours, experience, career breaks.</div>
+    <div><span class="kick">2</span> <b>Discrimination</b> &#8212; same productivity, lower pay.</div>
+    <div><span class="kick">3</span> <b>Policy</b> &#8212; equal-pay law; transparent scales.</div>
+    <div class="hl" style="font-size:22px">Explain it <b>in words</b> &#8212; the syllabus requires <b>no diagram</b>.<br><span style="font-size:19px;font-weight:400">It belongs to the bargaining layer, not a shift in D or S.</span></div></div>
+  <div class="card blue" style="gap:10px"><h3>Measuring the gap</h3>
+    <div class="hl" style="font-size:22px"><b>Numerator</b> = higher pay &minus; lower pay<br><b>Denominator</b> = the higher pay (the base)</div>
+    <div class="mega">40 &amp; 34 &#8594; 15%</div>
+    <div style="font-size:21px">Using 34 as the base gives 17.6% &#8212; <b>always state the base</b>.</div>
+    <div style="font-size:22px">12,000 vs 9,000 &#8594; <span class="ans" data-a="25%" style="min-width:100px">?</span></div>
+    <div style="font-size:22px">40,000 vs 3,500 &#8594; <span class="ans" data-a="91.25%" style="min-width:100px">?</span></div></div>
+</div>
+<div class="note">An average gap alone <b>never proves</b> discrimination.</div>
+<script>(function(){document.addEventListener("click",function(e){
+var s=e.target.closest("span.ans"); if(!s) return;
+s.textContent=s.getAttribute("data-a"); s.style.background="#E7F2FC"; s.style.color="#15334f";});})();</script></div></div><div class="slide"><div class="content">
+<h1>Dull and dangerous jobs pay a premium</h1>
+<div class="def">A <b>compensating wage differential</b> is extra pay that offsets a job&#8217;s unpleasant features.</div>
+<div class="row" style="grid-template-columns:1fr 1fr;flex:1;min-height:0">
+  <div class="card" style="justify-content:flex-start;gap:10px;padding:18px 22px">
+    <h3>How the premium arises</h3>
+    <div style="flex:1;display:flex;align-items:center;gap:12px;background:#F6FAFE;border-radius:10px;padding:10px 14px"><span class="kick">1</span><div><b>Narrow job</b> &#8212; one repeated task, little variety.</div></div>
+    <div style="flex:1;display:flex;align-items:center;gap:12px;background:#F6FAFE;border-radius:10px;padding:10px 14px"><span class="kick">2</span><div><b>Fewer takers</b> &#8212; risk, dirt or monotony drives applicants away; supply shifts left.</div></div>
+    <div style="flex:1;display:flex;align-items:center;gap:12px;background:#F6FAFE;border-radius:10px;padding:10px 14px"><span class="kick">3</span><div><b>Higher pay</b> &#8212; the employer must pay a premium to fill the post.</div></div>
+  </div>
+  <div class="card blue" style="justify-content:space-between;gap:14px;padding:18px 22px">
+    <h3>Read it on the model</h3>
+    <div class="hl">Risk, dirt or monotony &#8594; <b>fewer takers</b> &#8594; <b>supply shifts left</b> &#8594; the wage rises.</div>
+    <div class="mega">D unchanged &#183; S shifts left</div>
+    <div style="font-size:22px;color:#7b8b9b">Demand for the job has not moved. The premium is the price of finding anyone willing to do it.</div>
+    <div style="border-top:2px solid #dbe7f2;padding-top:12px;font-size:23px;line-height:1.4"><b>Exam chain:</b> unpleasant feature &#8594; effect on S &#8594; direction of the wage.</div>
+  </div>
+</div>
+<div class="note">Recall 3.3a: the <b>miner</b> and the <b>mercenary</b> are paid for what the civil servant and teacher are not.</div>
+</div></div><div class="slide"><div class="content">
+<h1>Labour mobility: two kinds, two sets of causes</h1>
+<div class="def"><b>Occupational</b> mobility changes job; <b>geographical</b> mobility changes place.</div>
+<div class="row" style="grid-template-columns:1fr 1.25fr;flex:1;min-height:0">
+  <div class="card" style="padding:10px;justify-content:center">
+    <img class="photo" src="images/traffic_jam.png" alt="" style="height:100%;max-height:340px"></div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="card green" style="flex:1"><h3 style="color:#2E7D32">Raises mobility</h3>
+      <div>retraining &#183; recognised qualifications &#183; cheaper transport &#183; affordable housing &#183; job information</div></div>
+    <div class="card red" style="flex:1"><h3 style="color:#C62828">Blocks mobility</h3>
+      <div>long training &#183; family ties &#183; language &#183; house prices &#183; immigration rules</div></div>
+  </div>
+</div>
+<div class="note">Better mobility lets supply reach the jobs &#8212; so regional wage gaps <b>narrow</b>.</div></div></div><div class="slide"><div class="content">
+<h1>What mobility changes</h1>
+<div class="sub">Three groups, one mechanism: supply becomes more responsive.</div>
+<table class="tbl fill">
+<thead><tr><th style="width:18%">Who</th><th class="g">Gains from higher mobility</th><th class="c">Cost of low mobility</th></tr></thead>
+<tbody>
+<tr><td><b>Workers</b></td><td class="gain">can move to better-paid jobs; more choice</td><td class="cost">trapped in a declining industry</td></tr>
+<tr><td><b>Firms</b></td><td class="gain">fill vacancies faster; wider skill pool</td><td class="cost">skill shortages; must raise wages</td></tr>
+<tr><td><b>Economy</b></td><td class="gain">labour goes where it is most productive; regional gaps narrow</td><td class="cost"><b>structural unemployment</b> beside unfilled vacancies</td></tr>
+</tbody></table>
+<div class="def" style="font-size:23px"><b>Structural unemployment</b> = unemployment caused by a <b>mismatch</b> between workers&#8217; skills or location and the jobs available &#8212; it persists even when vacancies exist.</div>
+<div class="note">High mobility does not remove wage differences &#8212; it stops the same gap from <b>persisting</b>.</div></div></div><div class="slide"><div class="content">
+<h1>Five things to keep</h1>
+<div class="sub">Say it before you see it &#8212; the button fills one blank at a time.</div>
+<div class="card fill" style="font-size:26px;line-height:2.0">
+<p><span class="kick">1</span> The wage is the <span class="bl" data-a="price of labour"></span>; demand for labour is derived from product demand.</p>
+<p><span class="kick">2</span> Demand up &#8594; wage up, jobs up; supply up &#8594; wage <span class="bl" data-a="down"></span>, jobs up.</p>
+<p><span class="kick">3</span> The less elastic the supply, the more a demand shift shows up as <span class="bl" data-a="higher pay"></span>.</p>
+<p><span class="kick">4</span> The three layers are <span class="bl" data-a="D/S, bargaining, government"></span>; a union or floor only bites above We.</p>
+<p><span class="kick">5</span> Low mobility leaves gaps persistent and causes <span class="bl" data-a="structural unemployment"></span>.</p>
+</div>
+<div style="display:flex;gap:14px;margin-top:6px">
+  <button class="big-btn" id="nb" style="min-width:180px">Next &#9654;</button>
+  <button class="big-btn" id="rb" style="min-width:130px">Reset</button>
+</div>
+<div class="note">Next: Section 3.4 Firms.</div>
+<script>(function(){
+var all=document.querySelectorAll("span.bl"),k=0;
+document.getElementById("nb").onclick=function(){
+  if(k<all.length){var s=all[k];s.textContent=s.getAttribute("data-a");
+    s.style.color="#15334f";s.style.borderBottomColor="#cfdbe8";k++;}};
+document.getElementById("rb").onclick=function(){all.forEach(function(s){s.textContent="";});k=0;};
+})();</script></div></div><div class="slide"><div class="content">
+<h1>Section 3.3 at a glance</h1>
+<div class="sub">Two lessons, one question: what happens to the reward for work?</div>
+<div class="row c3" style="flex:1;min-height:0;max-height:58vh;gap:18px">
+<div class="card" style="justify-content:flex-start;gap:0;padding:13px 18px;border-top:6px solid #1E88E5"><div style="display:flex;align-items:baseline;justify-content:space-between;width:100%"><div style="font-size:22px;font-weight:800;letter-spacing:.06em;color:#1E88E5">3.3a</div><div style="font-size:46px;font-weight:900;color:#1E88E5;opacity:.22;line-height:1">01</div></div><h3 style="margin:2px 0 8px;text-transform:none;color:#1E88E5;letter-spacing:0">Choice</h3><div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;width:100%"><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#1E88E5;margin-top:8px"></span><span>Choose an occupation</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#1E88E5;margin-top:8px"></span><span>Wage vs non-wage factors</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#1E88E5;margin-top:8px"></span><span>Three constraints</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#1E88E5;margin-top:8px"></span><span>Division of labour</span></div></div></div><div class="card" style="justify-content:flex-start;gap:0;padding:13px 18px;border-top:6px solid #C99A16"><div style="display:flex;align-items:baseline;justify-content:space-between;width:100%"><div style="font-size:22px;font-weight:800;letter-spacing:.06em;color:#C99A16">3.3b</div><div style="font-size:46px;font-weight:900;color:#C99A16;opacity:.22;line-height:1">02</div></div><h3 style="margin:2px 0 8px;text-transform:none;color:#8a6b12;letter-spacing:0">Price</h3><div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;width:100%"><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#C99A16;margin-top:8px"></span><span>Wage = price of labour</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#C99A16;margin-top:8px"></span><span>Demand, supply, PES</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#C99A16;margin-top:8px"></span><span>Jevons paradox</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#C99A16;margin-top:8px"></span><span>Unions &amp; minimum wage</span></div></div></div><div class="card" style="justify-content:flex-start;gap:0;padding:13px 18px;border-top:6px solid #2E7D32"><div style="display:flex;align-items:baseline;justify-content:space-between;width:100%"><div style="font-size:22px;font-weight:800;letter-spacing:.06em;color:#2E7D32">3.3b</div><div style="font-size:46px;font-weight:900;color:#2E7D32;opacity:.22;line-height:1">03</div></div><h3 style="margin:2px 0 8px;text-transform:none;color:#2E7D32;letter-spacing:0">Movement</h3><div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;width:100%"><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#2E7D32;margin-top:8px"></span><span>Three layers of causes</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#2E7D32;margin-top:8px"></span><span>Skill &amp; gender gaps (sector &#8594; 3.4)</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#2E7D32;margin-top:8px"></span><span>Measuring a gap; compensating pay</span></div><div style="display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid #eef4fa"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#2E7D32;margin-top:8px"></span><span>Occupational &amp; geographical mobility</span></div></div></div></div>
+<div style="width:100%;margin-top:12px;background:#14304d;color:#fff;border-radius:12px;padding:10px 22px;font-size:22px;line-height:1.35;text-align:center;font-weight:600">One model runs through all of it: <b style="color:#9fd0ff">supply, demand, and anything that stops the wage from clearing the market</b>.</div>
+</div></div><div class="nav"><button id="prevBtn">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 17</span><button id="nextBtn">▶</button></div></div>
+</div>
+<script>
+/* ══════ 分页导航 ══════ */
+var CUR = 0, SLIDES = [];
+function showSlide(i){
+  if(i < 0 || i >= SLIDES.length) return;
+  SLIDES[CUR].classList.remove('active');
+  CUR = i;
+  SLIDES[CUR].classList.add('active');
+  var dots = document.querySelectorAll('#dots span');
+  for(var k = 0; k < dots.length; k++) dots[k].className = (k === CUR) ? 'on' : '';
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SLIDES.length;
+  document.getElementById('prevBtn').disabled = (CUR === 0);
+  document.getElementById('nextBtn').disabled = (CUR === SLIDES.length - 1);
+  if(typeof onSlide === 'function') { try { onSlide(CUR); } catch(e){ console.error(e); } }
+}
+function nextSlide(){ showSlide(CUR + 1); }
+function prevSlide(){ showSlide(CUR - 1); }
+
+function bootDeck(){
+  SLIDES = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  SLIDES.forEach(function(s, i){
+    var d = document.createElement('span');
+    d.onclick = function(){ showSlide(i); };
+    dots.appendChild(d);
+  });
+  document.getElementById('prevBtn').onclick = prevSlide;
+  document.getElementById('nextBtn').onclick = nextSlide;
+  document.querySelectorAll('.flip').forEach(function(f){
+    f.onclick = function(){ f.classList.toggle('on'); };
+  });
+  var m = location.search.match(/[?&]s=(\d+)/);
+  showSlide(m ? Math.min(+m[1], SLIDES.length - 1) : 0);
+}
+
+/* ══════ 拖拽分类 ══════ */
+function mountDC(rootId, chips, zones){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var h = '<div class="dc-pool" id="' + rootId + 'pool"></div>' +
+          '<div class="row" style="margin-top:12px">';
+  zones.forEach(function(z){
+    h += '<div class="zone" data-zone="' + z.id + '"><div class="zt">' + z.label + '</div></div>';
+  });
+  h += '</div><div class="row" style="margin-top:12px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  chips.forEach(function(c, i){
+    var el = document.createElement('div');
+    el.className = 'chip';
+    el.draggable = true;
+    el.textContent = c.t;
+    el.dataset.ans = c.a;
+    el.dataset.i = i;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    /* 点击选中 → 点击区域放下（触屏/白板更稳） */
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.zone').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+  pool.addEventListener('click', function(){ /* 点空白不做事 */ });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var zone = c.closest('.zone');
+      c.classList.remove('ok', 'no');
+      if(!zone){ return; }
+      if(zone.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '">' + right + ' / ' + total +
+      '</span> <span class="gray">correct</span>';
+  };
+}
+
+/* ══════ 测验（逐题） ══════ */
+function mountQuiz(rootId, QS){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var i = 0, score = 0;
+  function render(){
+    var q = QS[i];
+    var h = '<div class="qstem">' + q.s + '</div><div class="qopts">';
+    q.o.forEach(function(t, k){
+      h += '<button class="qopt" data-k="' + k + '">' + String.fromCharCode(65 + k) + '. &nbsp;' + t + '</button>';
+    });
+    h += '</div><div class="qfb" id="' + rootId + 'fb"></div>' +
+         '<div class="qmeta">Question ' + (i + 1) + ' / ' + QS.length + ' &nbsp;·&nbsp; score ' + score + '</div>';
+    root.innerHTML = h;
+    root.querySelectorAll('.qopt').forEach(function(b){
+      b.onclick = function(){
+        var k = +b.dataset.k;
+        root.querySelectorAll('.qopt').forEach(function(x){ x.disabled = true; });
+        if(k === q.a){ b.classList.add('correct'); score++; }
+        else {
+          b.classList.add('wrong');
+          root.querySelectorAll('.qopt')[q.a].classList.add('correct');
+        }
+        document.getElementById(rootId + 'fb').innerHTML = q.e;
+        var nb = document.createElement('button');
+        nb.className = 'big-btn'; nb.style.marginTop = '12px';
+        nb.textContent = (i + 1 < QS.length) ? 'Next \u279c' : 'See result \u2714';
+        nb.onclick = function(){
+          if(i + 1 < QS.length){ i++; render(); } else { finish(); }
+        };
+        root.appendChild(nb);
+      };
+    });
+  }
+  function finish(){
+    root.innerHTML = '<div class="result"><h2>Result</h2><div class="big">' +
+      score + ' / ' + QS.length + '</div>' +
+      '<button class="big-btn ghost" id="' + rootId + 'again">Try again</button></div>';
+    document.getElementById(rootId + 'again').onclick = function(){ i = 0; score = 0; render(); };
+  }
+  render();
+}
+
+/* ══════ SVG 小工具 ══════ */
+function mk(tag, attrs, parent){
+  var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function clearSvg(id){
+  var s = document.getElementById(id);
+  if(!s) return null;
+  while(s.firstChild) s.removeChild(s.firstChild);
+  return s;
+}
+/* 坐标轴：x 向右，y 向上（用像素高度换算） */
+function drawAxes(svg, box, xLabel, yLabel){
+  var x0 = box.x, y0 = box.y + box.h;
+  mk('line', {x1: x0, y1: y0, x2: x0 + box.w, y2: y0, stroke: '#333', 'stroke-width': 2}, svg);
+  mk('line', {x1: x0, y1: y0, x2: x0, y2: box.y, stroke: '#333', 'stroke-width': 2}, svg);
+  var t1 = mk('text', {x: x0 - 6, y: box.y - 8, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t1.textContent = yLabel;
+  var t2 = mk('text', {x: x0 + box.w, y: y0 + 26, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t2.textContent = xLabel;
+}
+
+
+/* ══════ 市场图（供求 + 平移 + 管制线） ══════ */
+/* 二分法求交点：D 与 S 都可能是平移过的，线性函数也能解，但统一用数值法更省事 */
+function solveP(cfg, k, m){
+  var lo = 0, hi = cfg.pmax;
+  for(var it = 0; it < 60; it++){
+    var mid = (lo + hi) / 2;
+    var gap = (cfg.d(mid) + k) - (cfg.s(mid) + m);
+    if(gap > 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function drawMarket(svgId, cfg, line, label, kind, k, m){
+  k = k || 0; m = m || 0;
+  var svg = clearSvg(svgId); if(!svg) return;
+  var W = 720, H = 520, pl = 76, pr = 30, pt = 24, pb = 56;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  function X(q){ return x0 + q / cfg.qmax * w; }
+  function Y(p){ return y0 - p / cfg.pmax * h; }
+
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:x0-8, y:pt-6, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  ty.textContent = cfg.pl;
+  var tx = mk('text', {x:x0+w/2, y:y0+32, 'text-anchor':'middle', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  tx.textContent = cfg.ql;
+  var t0 = mk('text', {x:x0-10, y:y0+18, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  function curve(fn, shift, color, tag, dash, tagdy, tagAtStart){
+    var pts = [];
+    for(var i = 0; i <= 240; i++){
+      var p = cfg.pmax * i / 240, q = fn(p) + shift;
+      if(q >= -0.001 && q <= cfg.qmax) pts.push([X(q), Y(p)]);
+    }
+    if(pts.length < 2) return;
+    var d = pts.map(function(pt, i){ return (i ? 'L' : 'M') + pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' ');
+    mk('path', {d:d, fill:'none', stroke:color, 'stroke-width':dash ? 2 : 3,
+      'stroke-linecap':'round', 'stroke-dasharray': dash || 'none'}, svg);
+    if(tag){
+      var last = tagAtStart ? pts[0] : pts[pts.length-1];
+      var lb = mk('text', {x:last[0]+8, y:last[1]+(tagdy||0), 'font-size': 26, 'font-weight':700,
+        fill:color, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+      lb.textContent = tag;
+    }
+  }
+
+  var shifted = (k !== 0 || m !== 0);
+  if(shifted){
+    if(k !== 0) curve(cfg.d, 0, '#c8d2dd', 'D', '6 5', -12, true);
+    if(m !== 0) curve(cfg.s, 0, '#c8d2dd', 'S', '6 5', -8, false);
+  }
+  curve(cfg.d, k, '#2E4A6B', k !== 0 ? 'D1' : 'D', null, -12, true);
+  curve(cfg.s, m, '#1E88E5', m !== 0 ? 'S1' : 'S', null, m !== 0 ? -8 : 22, false);
+
+  /* 原均衡 */
+  if(shifted){
+    mk('circle', {cx:X(cfg.eqQ), cy:Y(cfg.eqP), r:4.5, fill:'#c8d2dd'}, svg);
+    mk('line', {x1:X(cfg.eqQ), y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:y0,
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+    mk('line', {x1:x0, y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:Y(cfg.eqP),
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  }
+
+  var eqP = solveP(cfg, k, m), eqQ = cfg.d(eqP) + k;
+  var ecol = shifted ? '#1A73E8' : '#2E4A6B';
+  mk('circle', {cx:X(eqQ), cy:Y(eqP), r:5.5, fill:ecol}, svg);
+  mk('line', {x1:X(eqQ), y1:Y(eqP), x2:X(eqQ), y2:y0,
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  mk('line', {x1:x0, y1:Y(eqP), x2:X(eqQ), y2:Y(eqP),
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+
+  var eqT = mk('text', {x:x0-10, y:Y(eqP)+6, 'text-anchor':'end', 'font-size': 24,
+    fill: shifted ? '#1A73E8' : '#5b6b7b', 'font-weight': shifted ? 700 : 400,
+    stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  eqT.textContent = cfg.unit + (Math.round(eqP*10)/10);
+  if(shifted){
+    var eqT0 = mk('text', {x:x0-10, y:Y(cfg.eqP)+6, 'text-anchor':'end', 'font-size': 24,
+      fill:'#aab4c0', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+    eqT0.textContent = cfg.unit + cfg.eqP;
+  }
+
+  if(line === null || line === undefined) return {eqP:eqP, eqQ:eqQ};
+
+  var qd = cfg.d(line), qs = cfg.s(line);
+  var col = (kind === 'ceiling') ? '#C62828' : '#00838F';
+  mk('line', {x1:x0, y1:Y(line), x2:X(Math.min(cfg.qmax, Math.max(qd, qs))), y2:Y(line),
+    stroke:col, 'stroke-width':3.5}, svg);
+  var lt = mk('text', {x:x0+8, y:Y(line)-10, 'font-size': 26, 'font-weight':700, fill:col,
+    stroke:'#fff', 'stroke-width':5, 'paint-order':'stroke'}, svg);
+  lt.textContent = label;
+
+  var binding = (kind === 'ceiling') ? (line < eqP) : (line > eqP);
+  if(!binding) return {binding:false, qd:qd, qs:qs, gap:0};
+
+  mk('line', {x1:X(qd), y1:Y(line), x2:X(qd), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qs), y1:Y(line), x2:X(qs), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qd), y1:y0+16, x2:X(qs), y2:y0+16, stroke:col, 'stroke-width':3}, svg);
+  var gt = mk('text', {x:(X(qd)+X(qs))/2, y:y0+40, 'text-anchor':'middle', 'font-size': 26,
+    'font-weight':700, fill:col}, svg);
+  gt.textContent = Math.abs(qs - qd).toFixed(1).replace('.0','') + ' ' + cfg.qu;
+  return {binding:true, qd:qd, qs:qs, gap:Math.abs(qs - qd), eqP:eqP, eqQ:eqQ};
+}
+
+/* ══════ 四象限分类（带图片） ══════ */
+function mountQuad(rootId, items){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var QUADS = [
+    {id:'private', t:'PRIVATE GOOD',      d:'rival + excludable'},
+    {id:'common',  t:'COMMON RESOURCE',   d:'rival + non-excludable'},
+    {id:'club',    t:'CLUB GOOD',         d:'non-rival + excludable'},
+    {id:'public',  t:'PUBLIC GOOD',       d:'non-rival + non-excludable'}
+  ];
+  var h = '<div class="game"><div class="pool" id="' + rootId + 'pool">' +
+          '<div class="ph">DRAG INTO A QUADRANT</div></div><div class="quad-wrap">';
+  QUADS.forEach(function(q){
+    h += '<div class="quad" data-zone="' + q.id + '"><div class="qt">' + q.t +
+         '</div><div class="qd">' + q.d + '</div><div class="body"></div></div>';
+  });
+  h += '</div></div><div class="row" style="margin-top:10px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  items.forEach(function(it, i){
+    var el = document.createElement('div');
+    el.className = 'chip ' + (it.img ? 'imgchip' : 'small');
+    el.draggable = true;
+    el.dataset.ans = it.a;
+    el.dataset.i = i;
+    el.innerHTML = it.img ? '<img src="' + it.img + '" alt=""><span>' + it.t + '</span>' : it.t;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i); e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.quad').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.querySelector('.body').appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.querySelector('.body').appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var z = c.closest('.quad');
+      c.classList.remove('ok','no');
+      if(!z) return;
+      if(z.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '" style="font-size:30px">' +
+      right + ' / ' + total + '</span> <span class="gray">correct</span>';
+  };
+}
+var QUESTS = [
+ {s:'As disposable income rises, what usually happens to the proportion of income spent?',
+  o:['it rises','it falls','it stays the same','it falls to zero'],
+  a:1, e:'The amount spent rises, but a smaller share of income goes on spending \u2014 the rest is saved. Basic needs have a ceiling.'},
+ {s:'A household spends \u00a5480 of a \u00a5500 income. What is its saving?',
+  o:['\u00a520','\u00a5480','\u00a5980','\u00a3500'],
+  a:0, e:'Saving = income \u2212 spending = 500 \u2212 480 = \u00a520. Saving is the gap, not a separate income.'},
+ {s:'What is meant by dissaving?',
+  o:['saving in a bank','spending more than income, by drawing on savings or borrowing',
+     'a fall in the interest rate','saving less than last year'],
+  a:1, e:'At very low incomes the household must spend more than it earns. The gap is covered by past savings or by borrowing.'},
+ {s:'Which is most likely to cause a rise in household spending?',
+  o:['a fall in consumer confidence','a rise in the rate of interest',
+     'a rise in disposable income','a rise in income tax'],
+  a:2, e:'Higher disposable income means more can be spent. The other three all reduce spending.'},
+ {s:'A central bank raises interest rates. What is the most likely effect on saving and on spending?',
+  o:['saving rises, spending rises','saving rises, spending falls',
+     'saving falls, spending falls','saving falls, spending rises'],
+  a:1, e:'Saving earns more, so households save more; borrowing costs more, so they borrow and spend less. Savers\u2019 extra spending is outweighed because savers are richer and spend a smaller share.'},
+ {s:'Two households have the same income but one spends far more. Which explanation fits best?',
+  o:['the one that spends more has a lower interest rate',
+     'the households differ in age, confidence or culture',
+     'spending is fixed by income alone','the one that spends more has no savings'],
+  a:1, e:'Income is the main influence, but age, confidence and culture explain why equally rich households behave differently.'}
+];
+/* 与 AP Macro 3.2 第二页同一套消费函数，保证跨课程口径一致 */
+function CON(y){ return 15 + 0.85*y - 0.0035*y*y; }
+function SAV(y){ return y - CON(y); }
+
+var X0 = 92, X1 = 664, Y0 = 470, Y1 = 34;   /* 绘图区 */
+
+function pxYd(v){ return X0 + v/100*(X1-X0); }
+function pxVal(v){ return Y0 - v/100*(Y0-Y1); }
+
+function drawCS(){
+  var y = +document.getElementById('yd').value;
+  var svg = clearSvg('csSvg'); if(!svg) return;
+  svg.setAttribute('viewBox', '0 0 720 520');
+
+  /* 轴 */
+  mk('line', {x1:X0, y1:Y0, x2:X1+8, y2:Y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:X0, y1:Y0, x2:X0, y2:Y1, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:X0-8, y:Y1-6, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  ty.textContent = 'Spending (\u00a5 a day)';
+  var tx = mk('text', {x:X1, y:Y0+30, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  tx.textContent = 'Disposable income (\u00a5 a day)';
+  var t0 = mk('text', {x:X0-10, y:Y0+18, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  /* 45 度线：C = Yd */
+  var g45 = mk('line', {x1:pxYd(0), y1:pxVal(0), x2:pxYd(100), y2:pxVal(100),
+    stroke:'#9aa5b1', 'stroke-width':2.5, 'stroke-dasharray':'9 7'}, svg);
+  var l45 = mk('text', {x:pxYd(100)-4, y:pxVal(100)-12, 'text-anchor':'end', 'font-size': 24,
+    'font-weight':700, fill:'#6b7c8f', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  l45.textContent = 'C = Yd';
+
+  /* 消费曲线 */
+  var pts = [];
+  for(var i = 0; i <= 100; i++) pts.push([pxYd(i), pxVal(CON(i))]);
+  mk('path', {d: pts.map(function(p,i){ return (i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' '),
+    fill:'none', stroke:'#1CADE4', 'stroke-width':4, 'stroke-linejoin':'round'}, svg);
+  var lc = mk('text', {x:pxYd(100)+10, y:pxVal(CON(100))+6, 'font-size': 24, 'font-weight':700,
+    fill:'#0e7fae', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  lc.textContent = 'spending';
+
+  /* 当前收入处的竖线 + 缺口 */
+  var cx = pxYd(y), cVal = CON(y), sVal = SAV(y);
+  mk('line', {x1:cx, y1:Y0, x2:cx, y2:pxVal(y), stroke:'#c9d3dd', 'stroke-width':1.5,
+    'stroke-dasharray':'3 3'}, svg);
+  mk('circle', {cx:cx, cy:pxVal(y), r:4, fill:'#9aa5b1'}, svg);
+
+  var col = (sVal >= 0) ? '#2E7D32' : '#C62828';
+  mk('line', {x1:cx, y1:pxVal(cVal), x2:cx, y2:pxVal(y), stroke:col, 'stroke-width':7,
+    'stroke-linecap':'round'}, svg);
+  mk('circle', {cx:cx, cy:pxVal(cVal), r:6, fill:'#1CADE4', stroke:'#fff', 'stroke-width':2}, svg);
+
+  var lab = mk('text', {x:cx+12, y:(pxVal(cVal)+pxVal(y))/2 + (sVal >= 0 ? 0 : 20), 'font-size': 24, 'font-weight':700,
+    fill:col, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  lab.textContent = (sVal >= 0 ? 'saving' : 'dissaving') + ' \u00a5' + Math.abs(sVal).toFixed(0);
+
+  /* 读数 */
+  var pct = y > 0 ? (cVal / y * 100) : 0;
+  document.getElementById('ydv').textContent = '\u00a5' + y;
+  document.getElementById('rdYd').textContent = '\u00a5' + y;
+  document.getElementById('rdC').textContent = '\u00a5' + cVal.toFixed(0);
+  document.getElementById('rdS').textContent = (sVal >= 0 ? '\u00a5' : '\u2212\u00a5') + Math.abs(sVal).toFixed(0);
+  document.getElementById('rdPct').textContent = pct.toFixed(0) + '%';
+  var note = document.getElementById('csNote');
+  if(sVal < 0){
+    note.innerHTML = '<b class="dr">Spending more than income.</b> The household covers the gap by ' +
+      'drawing on past savings or borrowing.';
+  } else if(pct > 92){
+    note.innerHTML = 'Almost everything is spent. Saving is possible, but small.';
+  } else {
+    note.innerHTML = 'Spending is <b>' + pct.toFixed(0) + '%</b> of income \u2014 and that share keeps ' +
+      '<b>falling</b> as income rises, even though the amount spent keeps rising.';
+  }
+}
+
+/* 利率：只讲方向，不编数值 */
+function drawRate(){
+  var r = +document.getElementById('rate').value;
+  document.getElementById('ratev').textContent = r + '%';
+  function row(id, arrow, txt){
+    var el = document.getElementById(id);
+    var c = arrow === '\u2191' ? 'dr' : (arrow === '\u2193' ? 'blue' : 'gray');
+    el.innerHTML = '<b class="' + c + '" style="font-size:30px">' + arrow + '</b> &nbsp;' + txt;
+  }
+  if(r <= 3){
+    row('rowS', '\u2193', 'saving earns little \u2014 why lock money away');
+    row('rowB', '\u2191', 'borrowing is cheap');
+    row('rowC', '\u2191', 'so households spend more');
+  } else if(r >= 7){
+    row('rowS', '\u2191', 'saving earns a real reward');
+    row('rowB', '\u2193', 'borrowing is expensive \u2014 new loans fall');
+    row('rowC', '\u2193', 'and spending falls, including for existing borrowers');
+  } else {
+    row('rowS', '\u2014', 'saving is neither strongly rewarded nor punished');
+    row('rowB', '\u2014', 'borrowing is neither cheap nor dear');
+    row('rowC', '\u2014', 'spending changes little');
+  }
+}
+
+function onSlide(i){
+  if(i === 3) drawCS();
+  if(i === 6) drawRate();
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  bootDeck();
+  ['yd','rate'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', function(){
+      if(id === 'yd') drawCS(); else drawRate();
+    });
+  });
+  mountDC('dc1', [
+    {t:'Her pay rises 20% and she saves a larger share', a:'income'},
+    {t:'Mortgage payments jump after rates rise', a:'rate'},
+    {t:'Worried about next year, the family stops eating out', a:'conf'},
+    {t:'A couple in their thirties with two children spend almost everything', a:'age'},
+    {t:'A family keeps its festival spending after moving abroad', a:'cult'}
+  ], [{id:'income', label:'Income'}, {id:'rate', label:'Interest rate'},
+      {id:'conf', label:'Confidence'}, {id:'age', label:'Age'}, {id:'cult', label:'Culture'}]);
+  mountQuiz('qz1', QUESTS);
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+
+</script>
+<script>(function(){function r(){try{if(typeof drawCS==="function")drawCS()}catch(e){}}var v=document.querySelector(".view");if(v&&window.MutationObserver){new MutationObserver(r).observe(v,{subtree:true,attributes:true,attributeFilter:["class"]})}window.addEventListener("load",function(){setTimeout(r,250)});window.addEventListener("resize",r);})();</script>
+<script>document.addEventListener("click",function(e){if(!e.target.classList.contains("stepbtn"))return;var c=e.target.closest(".content");var s=c.querySelector(".step");if(s){s.style.display="block";e.target.style.display="none";}});</script>
+</body>
+</html>

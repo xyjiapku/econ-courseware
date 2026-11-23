@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRE-DP 3.2 - Households</title>
+<style>
+:root{--blue:#1E88E5;--darkblue:#2E4A6B;--ink:#333;--green:#2E7D32;--red:#C62828;
+      --amber:#F0B429;--teal:#00838F;--gold:#a57d12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;background:#F2F6FB;
+     color:var(--ink);overflow:hidden;}
+.view{width:100vw;height:100vh;position:relative;overflow:hidden;background:#fff;}
+
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;padding:clamp(18px,2.6vh,40px) clamp(56px,6.5vw,104px) 76px;
+  opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;
+  font-size:clamp(22px,1.9vw,25px);line-height:1.45;}
+.slide.active{opacity:1;pointer-events:auto;}
+.content{width:100%;max-width:clamp(620px,88vw,1180px);display:flex;flex-direction:column;flex:1;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;height:58px;
+     background:linear-gradient(90deg,var(--blue),#64B5F6);display:flex;align-items:center;
+     justify-content:space-between;padding:0 22px;z-index:100;}
+.nav .page{color:#fff;font-size:22px;font-weight:600;}
+.nav .copy{color:rgba(255,255,255,.72);font-size:22px;letter-spacing:.5px;}
+.nav button{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;
+  font-size:clamp(22px,2.2vw,28px);font-weight:700;padding:2px 16px;border-radius:8px;
+  cursor:pointer;transition:.12s;min-width:56px;}
+.nav button:hover{background:rgba(255,255,255,.4);}
+.nav button:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:42%;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);
+  transition:.2s;cursor:pointer;}
+.dots span.on{background:#fff;transform:scale(1.35);}
+
+.cover{justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.cover .course-tag{font-size:clamp(21px,2.4vw,30px);color:#888;margin-bottom:14px;}
+.cover h1{font-size:clamp(42px,6vw,72px);color:#222;font-weight:400;margin-bottom:12px;}
+.cover .sep{width:clamp(60px,8vw,100px);height:2px;background:#ccc;margin:0 auto 22px;}
+.cover .author{font-size:clamp(20px,2.1vw,26px);color:var(--darkblue);letter-spacing:2px;font-weight:700;}
+.cover .botbar{position:absolute;bottom:58px;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--blue),#1A73E8);}
+
+h1{font-size:clamp(27px,3.3vw,42px);color:var(--darkblue);margin-bottom:2px;font-weight:700;width:100%;}
+h2{font-size:clamp(24px,2.6vw,32px);color:var(--darkblue);font-weight:700;}
+.sub{font-size:clamp(21px,2.1vw,27px);color:#5b6b7b;margin-bottom:6px;width:100%;line-height:1.4;}
+.tag{font-size:clamp(19px,1.6vw,22px);color:var(--blue);font-weight:700;letter-spacing:.5px;width:100%;}
+hr{height:2px;background:#e0e8f0;border:none;margin:6px 0 10px;width:100%;}
+.txt{font-size:clamp(21px,2.1vw,28px);line-height:1.5;width:100%;}
+.txt p{margin-bottom:clamp(6px,.7vh,12px);}
+.b{font-weight:700;}
+.blue{color:var(--blue);}.db{color:var(--darkblue);}.dr{color:var(--red);}
+.green{color:var(--green);}.teal{color:var(--teal);}.gray{color:#5b6b7b;}
+.gold{color:var(--gold);}
+
+.row{display:flex;gap:clamp(10px,1.4vw,20px);width:100%;align-items:stretch;}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.grow2{flex:2;}.grow1{flex:1;}
+
+.note{border-radius:0 10px 10px 0;padding:8px 14px;
+  font-size:clamp(20px,1.9vw,25px);line-height:1.45;background:#EAF4FF;border-left:6px solid var(--blue);}
+.note.g{background:#E8F5E9;border-left-color:var(--green);}
+.note.r{background:#FDECEA;border-left-color:var(--red);}
+.note.a{background:#FFF7E0;border-left-color:var(--amber);}
+.note p{margin:0;}
+
+.card{background:#fff;border:3px solid var(--blue);border-radius:14px;padding:10px 15px;}
+.card.g{border-color:var(--green);}.card.r{border-color:var(--red);}
+.card.t{border-color:var(--teal);}.card.a{border-color:var(--amber);}
+.card h3{font-size:clamp(21px,2.2vw,28px);margin-bottom:4px;}
+.card p{font-size:clamp(20px,1.9vw,25px);line-height:1.38;color:#445;margin-top:3px;}
+
+.panel{background:#F8FBFF;border:2px solid #e6eef7;border-radius:10px;padding:8px 12px;}
+.ends{display:flex;justify-content:space-between;font-size:22px;color:#5b6b7b;margin-top:-2px;}
+input[type=range]{width:100%;accent-color:var(--blue);height:26px;cursor:pointer;}
+.slider-lbl{font-size:clamp(19px,1.7vw,22px);font-weight:700;color:var(--darkblue);margin-bottom:2px;}
+.readout{font-size:clamp(20px,1.9vw,25px);font-weight:700;color:#1a3a5c;min-height:30px;}
+
+.big-btn{padding:8px 20px;border:none;background:var(--blue);color:#fff;border-radius:12px;
+  font-size:clamp(20px,2vw,26px);font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,58,92,.3);transition:.15s;}
+.big-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.big-btn.ghost{background:#fff;color:#1a3a5c;border:2.5px solid rgba(42,90,140,.35);box-shadow:none;}
+.big-btn.ghost:hover{background:#eaf2fb;}
+.big-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* ── 翻卡 ── */
+.flip{perspective:1200px;height:clamp(140px,22vh,240px);cursor:pointer;
+  flex:1;min-width:0;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+.flip.on .flip-in{transform:rotateY(180deg);}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;text-align:center;}
+.flip .front{background:#fff;border:3px solid var(--blue);color:var(--darkblue);font-weight:700;
+  font-size:clamp(20px,2vw,26px);}
+.flip .back{background:var(--darkblue);color:#fff;transform:rotateY(180deg);
+  font-size:clamp(19px,1.75vw,23px);line-height:1.35;}
+.flip .back em{color:#9fd0ff;font-style:normal;font-weight:700;}
+
+/* ── 拖拽分类 ── */
+.dc-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;width:100%;
+  background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;padding:10px;}
+.chip{background:#fff;border:2.5px solid var(--blue);border-radius:10px;
+  padding:6px 14px;font-size:clamp(19px,1.75vw,23px);font-weight:700;color:var(--darkblue);
+  cursor:grab;user-select:none;transition:.15s;}
+.chip:hover{background:#EAF4FF;}
+.chip.ok{border-color:var(--green);background:#E8F5E9;color:var(--green);}
+.chip.no{border-color:var(--red);background:#FDECEA;color:var(--red);}
+.chip.picked{outline:4px solid var(--amber);outline-offset:2px;}
+.zone{flex:1;min-width:0;min-height:clamp(150px,22vh,240px);border:3px dashed #cfdff0;border-radius:14px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;
+  background:#FBFDFF;transition:.15s;}
+.zone.hot{border-color:var(--blue);background:#EAF4FF;}
+.zone .chip{max-width:100%;white-space:normal;font-size:clamp(16px,1.35vw,19px);}
+.zone .zt{width:100%;font-size:clamp(19px,1.7vw,22px);font-weight:800;color:#5b6b7b;
+  text-align:center;margin-bottom:2px;}
+
+
+/* ── 四象限分类（可带图片） ── */
+.game{display:flex;gap:14px;width:100%;flex:1;min-height:0;}
+.growcol{flex:1;min-height:0;display:flex;flex-direction:column;}
+.game .pool{width:33%;min-width:0;background:#F8FBFF;border:2px dashed #cfdff0;border-radius:12px;
+  padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto;}
+.game .pool .ph{font-size:22px;font-weight:800;color:#94a3b3;text-align:center;margin-bottom:2px;}
+.quad-wrap{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:9px;}
+.quad{border:3px dashed #cfdff0;border-radius:12px;padding:6px 8px;background:#FBFDFF;
+  display:flex;flex-direction:column;gap:5px;overflow:auto;transition:.15s;}
+.quad.hot{border-color:var(--blue);background:#EAF4FF;}
+.quad .qt{font-size:22px;font-weight:800;color:#5b6b7b;text-align:center;letter-spacing:.4px;}
+.quad .qd{font-size:22px;color:#94a3b3;text-align:center;margin-top:-3px;}
+.quad .body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;}
+.chip.imgchip{display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;}
+.chip.imgchip img{width:54px;height:40px;object-fit:cover;border-radius:5px;display:block;}
+.chip.imgchip span{font-size:22px;}
+.chip.small{font-size:22px;padding:5px 10px;}
+/* ── 测验 ── */
+.qstem{font-size:clamp(22px,2.2vw,29px);font-weight:700;color:var(--darkblue);
+  line-height:1.35;margin-bottom:12px;width:100%;}
+.qopts{display:flex;flex-direction:column;gap:9px;width:100%;}
+.qopt{text-align:left;padding:9px 16px;border-radius:12px;border:3px solid #d5e3f2;
+  background:#fff;font-size:clamp(20px,2vw,26px);color:var(--darkblue);font-weight:600;
+  cursor:pointer;transition:.12s;font-family:inherit;}
+.qopt:hover:not(:disabled){border-color:var(--blue);background:#EAF4FF;}
+.qopt:disabled{cursor:default;}
+.qopt.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.qopt.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{font-size:clamp(19px,1.8vw,24px);line-height:1.4;margin-top:10px;color:#445;width:100%;}
+.qmeta{font-size:22px;color:#94a3b3;margin-top:8px;letter-spacing:.5px;}
+.result{text-align:center;padding:16px;}
+.result .big{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);margin:8px 0;}
+
+.grow{flex:1;}
+.center{text-align:center;width:100%;}
+.mt{margin-top:12px;}
+
+/* ── 数据表 ── */
+.data-table{border-collapse:collapse;width:100%;font-size:clamp(20px,1.9vw,25px);}
+.data-table th,.data-table td{border:2px solid #d5e3f2;padding:6px 12px;text-align:center;}
+.data-table th{background:#E3F0FC;color:#1a3a5c;font-weight:800;}
+.data-table td:first-child{font-weight:700;color:var(--darkblue);}
+.data-table tr.hit td{background:#E8F5E9;color:#1b5e20;font-weight:800;}
+.svgbox{background:#fff;border:2px solid #e6eef7;border-radius:12px;padding:6px;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+.row.fill{flex:1;min-height:0;align-items:stretch;}
+.row.fill .svgbox svg{max-height:58vh;}
+.row.fill .grow1{display:flex;flex-direction:column;}
+.row.fill .grow1 .panel{flex:0 0 auto;}
+.row.fill .grow1 .note{flex:0 0 auto;}
+svg{display:block;width:100%;height:auto;overflow:visible;}
+
+/* ── 统一收尾：填空小结 ── */
+.bl{display:inline-block;min-width:150px;border-bottom:3px solid var(--blue);
+  color:transparent;font-weight:800;text-align:center;padding:0 6px;transition:.2s;}
+.bl.on{color:var(--blue);border-bottom-color:var(--blue);}
+
+.step{display:none}
+.stepbtn{font-size:22px;padding:5px 14px}
+.tbl th.gain,.tbl td.gain{color:#2E7D32}
+.tbl th.pay,.tbl td.pay{color:#C62828}
+</style>
+
+<style>
+:root{--gap:16px;--ink:#33424f;--line:#e2ecf6}
+.content{display:flex;flex-direction:column;gap:var(--gap)}
+.row{display:grid;gap:var(--gap)}
+.c2{grid-template-columns:1fr 1fr}
+.c3{grid-template-columns:repeat(3,1fr)}
+.c4{grid-template-columns:repeat(4,1fr)}
+.fill{flex:1;min-height:0}
+.card{background:#fff;border:2px solid var(--line);border-radius:16px;padding:24px;
+font-size:25px;line-height:1.55;color:var(--ink);display:flex;flex-direction:column;justify-content:center}
+.card h3{margin:0 0 10px;font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:#1E88E5}
+.card.blue{border-color:#1E88E5;background:#F6FBFF}
+.card.green{border-color:#2E7D32;background:#F5FBF6}
+.card.amber{border-color:#8a6b12;background:#FFFCF5}
+.card.red{border-color:#C62828;background:#FFFAF9}
+.note{margin-top:auto;background:#EAF4FF;border-left:7px solid #1E88E5;border-radius:0 10px 10px 0;
+padding:14px 18px;font-size:22px;color:#12507e}
+.tbl{width:100%;border-collapse:collapse;font-size:23px;line-height:1.55}
+.tbl th{font-size:20px;text-align:left;color:#7b8b9b;font-weight:700;
+border-bottom:2px solid var(--line);padding:11px 10px}
+.tbl td{padding:14px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.num{display:inline-flex;width:42px;height:42px;border-radius:50%;background:#EAF4FF;color:#1E88E5;
+font-weight:900;align-items:center;justify-content:center;margin-right:12px;flex:none;font-size:21px}
+.def{background:#EAF4FF;border-left:8px solid #1E88E5;border-radius:0 12px 12px 0;padding:16px 20px;
+font-size:27px;line-height:1.45;color:#12507e}
+.hero{flex:1;min-height:0;display:grid;grid-template-columns:58px 1fr 58px;gap:14px;align-items:center}
+.hbtn{width:52px;height:52px;border-radius:50%;border:2px solid #cfdbe8;background:#fff;
+color:#15334f;font-size:26px;cursor:pointer;transition:.15s}
+.hbtn:hover{border-color:#1E88E5;color:#1E88E5;transform:scale(1.06)}
+.hcard{position:relative;height:100%;border-radius:24px;overflow:hidden;display:grid;
+grid-template-columns:46% 54%;box-shadow:0 20px 44px rgba(20,48,77,.16)}
+.himgwrap{position:relative;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(160deg,var(--deep) 0%,var(--accent) 100%)}
+.himgwrap img{width:84%;height:84%;object-fit:contain;filter:drop-shadow(0 14px 20px rgba(0,0,0,.28))}
+.ribbon{position:absolute;top:18px;right:22px;background:#F4F8FC;border:1px solid #dbe7f3;
+border-radius:999px;padding:6px 14px;font-size:15px;font-weight:800;letter-spacing:.1em;color:var(--deep)}
+.hinfo{position:relative;padding:26px 32px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.hname{font-size:36px;font-weight:900;color:#15334f;line-height:1.1}
+.hpay{font-size:48px;font-weight:900;line-height:1;color:var(--deep)}
+.hpay small{font-size:21px;font-weight:700;color:#8a99a8}
+.hchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.hchip{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:11px;
+background:#F4F8FC;border:1px solid #e2ecf6;font-size:20px;color:#3d4d5c}
+.hdots{display:flex;gap:10px;justify-content:center}
+.hdots i{width:46px;height:7px;border-radius:4px;background:#cfdbe8;cursor:pointer;transition:.2s}
+.hdots i.on{background:linear-gradient(90deg,#1E88E5,#4FC3F7)}
+.bl{display:inline-block;min-width:110px;border-bottom:2px solid #1E88E5;text-align:center;
+color:#1E88E5;font-weight:700;cursor:pointer}
+.ans{display:inline-block;min-width:160px;padding:5px 12px;border-radius:8px;background:#EAF4FF;
+color:#1E88E5;font-weight:800;text-align:center;cursor:pointer;font-size:20px}
+.quote{font-size:25px;line-height:1.5;font-style:italic;color:#2b3a48}
+.portrait{width:136px;height:136px;border-radius:50%;object-fit:cover;border:5px solid #fff;
+box-shadow:0 10px 22px rgba(20,48,77,.22);display:block}
+.shot{width:100%;object-fit:contain;border-radius:12px;background:#fff}
+</style>
+</head>
+<body>
+<div class="view">
+<div class="slide cover active"><div class="course-tag">IGCSE Economics · Section 3: Microeconomic decision-makers</div><h1>Choosing an occupation</h1><div class="sep"></div><div class="author">DR. JIA · © 2026</div><div class="botbar"></div></div><div class="slide"><div class="content">
+<h1>Four jobs. You must pick one.</h1>
+<div class="sub">Click the arrows &#8212; read all four before you decide.</div>
+<div class="hero">
+<button class="hbtn" id="hp">&#8249;</button>
+<div class="hcard" id="hc">
+  <div class="himgwrap"><img id="himg" src="img/civil.png" alt=""></div>
+  <div class="hinfo">
+    <div class="ribbon" id="hrib">OPTION A</div>
+    <div class="hname" id="hname">Civil servant</div>
+    <div class="hpay" id="hpay">&yen;9,000<small> / month</small></div>
+    <div class="hchips" id="hfeat"></div>
+  </div>
+</div>
+<button class="hbtn" id="hn">&#8250;</button>
+</div>
+<div class="hdots" id="hd"><i class="on"></i><i></i><i></i><i></i></div>
+<div class="note">Write your choice on a slip of paper. Do not explain it yet.</div>
+<script>(function(){
+var D=[
+{n:"Civil servant",p:"&yen;9,000",img:"img/civil.png",deep:"#1E5C9B",rib:"OPTION A",
+ f:["&#128188; light physical work","&#9200; long hours, overtime","&#128737; secure job, pension","&#128200; slow promotion","&#128221; entry by exam"]},
+{n:"Coal miner",p:"&yen;12,000",img:"img/miner.png",deep:"#8a6b12",rib:"OPTION B",
+ f:["&#128176; high pay","&#128170; heavy physical work","&#9888; some danger","&#9201; only 4 hours a day","&#127968; home every evening"]},
+{n:"Mercenary",p:"&yen;35,000",img:"img/mercenary.png",deep:"#8C2F2F",rib:"OPTION C",
+ f:["&#9992; far from home","&#128176; very high pay","&#9760; risk to life","&#128683; no pension or insurance","&#8987; short career, few transferable skills"]},
+{n:"Primary teacher",p:"&yen;7,500",img:"img/teacher.png",deep:"#256B3A",rib:"OPTION D",
+ f:["&#128188; light physical work","&#9200; long hours","&#127958; long summer and winter holidays","&#127891; certificate required","&#128150; work that people call meaningful"]}];
+var i=0;
+function draw(){
+  var d=D[i], c=document.getElementById("hc");
+  c.style.setProperty("--deep",d.deep); c.style.setProperty("--accent",d.deep);
+  document.getElementById("hname").textContent=d.n;
+  document.getElementById("hpay").innerHTML=d.p+"<small> / month</small>";
+  document.getElementById("himg").src=d.img;
+  document.getElementById("hrib").textContent=d.rib;
+  document.getElementById("hfeat").innerHTML=d.f.map(function(x){return '<span class="hchip">'+x+'</span>';}).join("");
+  var dots=document.getElementById("hd").children;
+  for(var k=0;k<dots.length;k++) dots[k].className=(k===i)?"on":"";
+}
+document.getElementById("hn").onclick=function(){i=(i+1)%D.length;draw();};
+document.getElementById("hp").onclick=function(){i=(i+D.length-1)%D.length;draw();};
+Array.prototype.forEach.call(document.getElementById("hd").children,function(b,k){
+  b.onclick=function(){i=k;draw();};});
+document.addEventListener("keydown",function(e){
+  if(e.key==="ArrowRight"){i=(i+1)%D.length;draw();}
+  if(e.key==="ArrowLeft"){i=(i+D.length-1)%D.length;draw();}});
+draw();})();</script></div></div><div class="slide"><div class="content">
+<h1>Now argue for your choice</h1>
+<div class="sub">Four groups, one representative each, five minutes to prepare.</div>
+<div class="row c4 cards fill">
+  <div class="card blue"><h3>Group 1</h3><div style="font-size:28px;font-weight:900;color:#15334f">Civil servant</div></div>
+  <div class="card amber"><h3 style="color:#8a6b12">Group 2</h3><div style="font-size:28px;font-weight:900;color:#15334f">Coal miner</div></div>
+  <div class="card red"><h3 style="color:#C62828">Group 3</h3><div style="font-size:28px;font-weight:900;color:#15334f">Mercenary</div></div>
+  <div class="card green"><h3 style="color:#2E7D32">Group 4</h3><div style="font-size:28px;font-weight:900;color:#15334f">Primary teacher</div></div>
+</div>
+<div class="card" style="padding:20px 24px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;font-size:22px;line-height:1.5">
+    <div><b style="color:#1E88E5">1.</b> Why this one? Name <b>two</b> reasons.</div>
+    <div><b style="color:#1E88E5">2.</b> What do you <b>give up</b> by choosing it?</div>
+    <div><b style="color:#1E88E5">3.</b> Who would <b>not</b> take it &#8212; and why?</div>
+  </div></div>
+<div class="note">Representative speaks for 60 seconds. The class listens for <b>money</b> reasons and <b>non-money</b> reasons.</div></div></div><div class="slide"><div class="content">
+<h1>The influences on choice</h1>
+<div class="def" style="font-size:25px"><b>Basic wage / wage rate</b> = the pay per hour, day or week. In the wages lesson this becomes the <b>price of labour</b>.</div>
+<div class="row c2 cards" style="flex:1;min-height:0">
+  <div class="card blue" style="gap:10px;justify-content:flex-start">
+    <h3 style="font-size:23px">Wage factors</h3>
+    <div>1. <b>wage rate</b> &#8212; basic pay per hour or per week</div>
+    <div>2. overtime pay &#8212; a higher rate after normal hours</div>
+    <div>3. bonuses &#8212; extra pay for performance</div>
+    <div>4. commission &#8212; a share of what you sell</div>
+  </div>
+  <div class="card green" style="gap:9px;justify-content:flex-start">
+    <h3 style="color:#2E7D32;font-size:23px">Non-wage factors</h3>
+    <div>1. job security</div>
+    <div>2. working hours and holidays</div>
+    <div>3. working conditions and safety</div>
+    <div>4. promotion prospects and training</div>
+    <div>5. pension and fringe benefits</div>
+    <div>6. location and travel to work</div>
+    <div>7. interest in the work itself</div>
+  </div>
+</div>
+<div class="note">Money is one column. <b>Everything that is not money</b> is the other &#8212; and it decides most choices.</div></div></div><div class="slide"><div class="content"><h1 style="line-height:1.1">Three constraints on the choice</h1><div class="sub" style="line-height:1.2">Some jobs close before the wage is even discussed.</div><div style="display:flex;flex-direction:column;gap:10px;width:100%;flex:1;min-height:0"><div class="card amber" style="flex-direction:row;align-items:center;gap:20px;padding:12px 18px;flex:1;min-height:0"><div style="display:flex;align-items:baseline;gap:12px;flex:0 0 296px"><span style="font-size:32px;font-weight:900;color:#d9ae3f;line-height:1">1</span><h3 style="margin:0;color:#8a6b12">Qualifications</h3></div><div style="flex:1;min-width:0;font-size:22px;line-height:1.4;color:#3d4d5c">No certificate, no post. Teaching, medicine and law each keep a gate that takes years to pass.</div><div style="flex:0 0 330px;background:#FFF7E0;border-radius:8px;padding:8px 12px;font-size:22px;line-height:1.35;color:#8a6b12"><b>Effect:</b> fewer qualified workers &#8594; smaller supply of labour &#8594; higher wage.</div></div><div class="card blue" style="flex-direction:row;align-items:center;gap:20px;padding:12px 18px;flex:1;min-height:0"><div style="display:flex;align-items:baseline;gap:12px;flex:0 0 296px"><span style="font-size:32px;font-weight:900;color:#9ec9ee;line-height:1">2</span><h3 style="margin:0;color:#12507e">Commuting</h3></div><div style="flex:1;min-width:0;font-size:22px;line-height:1.4;color:#3d4d5c">Two hours a day is <b>40 unpaid hours a month</b> &#8212; a whole working week. Fares, fatigue and missed family time all belong to the job&#8217;s cost.</div><div style="flex:0 0 330px;background:#F4FAFF;border-radius:8px;padding:8px 12px;font-size:22px;line-height:1.35;color:#12507e"><b>Effect:</b> a better-paid job farther away may pay less for each hour of your life.</div></div><div class="card green" style="flex-direction:row;align-items:center;gap:20px;padding:12px 18px;flex:1;min-height:0"><div style="display:flex;align-items:baseline;gap:12px;flex:0 0 296px"><span style="font-size:32px;font-weight:900;color:#8ecf93;line-height:1">3</span><h3 style="margin:0;color:#2E7D32">Health</h3></div><div style="flex:1;min-width:0;font-size:22px;line-height:1.4;color:#3d4d5c">Restaurants, mining, aviation and driving all check your body before they check your CV.</div><div style="flex:0 0 330px;background:#E8F5E9;border-radius:8px;padding:8px 12px;font-size:22px;line-height:1.35;color:#1b5e20"><b>Effect:</b> illness or age can close a trade for good &#8212; so risky jobs pay a premium.</div></div></div><div class="note">All three keep people out of the job: a <b>smaller supply of labour</b> means a higher wage.</div></div></div><div class="slide"><div class="content"><h1>The wage rate is not the salary</h1><div class="sub">Two offers (example figures). The bigger monthly number is not the better price for an hour.</div><div class="row" style="flex:1;min-height:0;gap:18px;grid-template-columns:1fr 1fr"><div class="card" style="display:flex;flex-direction:column;gap:10px;padding:14px 16px"><div class="tag">JOB A &#183; 996</div><div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:50px;font-weight:900;color:#15334f;line-height:1.1">&yen;12,000</span><span style="font-size:22px;color:#7b8b9b">/ month</span></div><div style="font-size:22px;color:#5b6b7b">9:00&#8211;21:00, six days a week</div><div style="display:flex;flex-direction:column;gap:6px;font-size:22px;line-height:1.35;color:#3d4d5c;margin-top:2px"><div style="display:flex;justify-content:space-between;gap:12px"><span>Hours per week</span><b>12 &#215; 6 = 72 h</b></div><div style="display:flex;justify-content:space-between;gap:12px"><span>Hours per year</span><b>72 &#215; 52 = 3,744 h</b></div><div style="display:flex;justify-content:space-between;gap:12px"><span>Pay per year</span><b>&yen;12,000 &#215; 12 = &yen;144,000</b></div></div><div style="margin-top:auto;background:#FDECEA;border-left:6px solid #8c2a22;border-radius:10px;padding:9px 13px"><div style="font-size:22px;color:#8c2a22;font-weight:700">&yen;144,000 &#247; 3,744 h</div><div style="font-size:38px;font-weight:900;color:#8c2a22;line-height:1.15">&yen;38.5 / hour</div></div></div><div class="card" style="display:flex;flex-direction:column;gap:10px;padding:14px 16px"><div class="tag">JOB B &#183; 955</div><div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:50px;font-weight:900;color:#15334f;line-height:1.1">&yen;8,000</span><span style="font-size:22px;color:#7b8b9b">/ month</span></div><div style="font-size:22px;color:#5b6b7b">9:00&#8211;17:00, five days a week</div><div style="display:flex;flex-direction:column;gap:6px;font-size:22px;line-height:1.35;color:#3d4d5c;margin-top:2px"><div style="display:flex;justify-content:space-between;gap:12px"><span>Hours per week</span><b>8 &#215; 5 = 40 h</b></div><div style="display:flex;justify-content:space-between;gap:12px"><span>Hours per year</span><b>40 &#215; 52 = 2,080 h</b></div><div style="display:flex;justify-content:space-between;gap:12px"><span>Pay per year</span><b>&yen;8,000 &#215; 12 = &yen;96,000</b></div></div><div style="margin-top:auto;background:#E8F5E9;border-left:6px solid #1b5e20;border-radius:10px;padding:9px 13px"><div style="font-size:22px;color:#1b5e20;font-weight:700">&yen;96,000 &#247; 2,080 h</div><div style="font-size:38px;font-weight:900;color:#1b5e20;line-height:1.15">&yen;46.2 / hour</div></div></div></div><div class="note">Job A pays <b>50% more</b> each month &#8212; yet Job B pays <b>20% more</b> for every hour worked.</div></div></div><div class="slide"><div class="content">
+<h1>Which factor decided it?</h1>
+<div class="sub">Six people, six choices. Click to check: first the <b>type</b>, then the factor.</div>
+<table class="tbl fill" style="height:100%"><tbody><tr><td style="font-weight:800;color:#1E88E5;width:48px">1</td><td>Xiao Li left the factory for delivery work: the pay is higher.</td><td style="text-align:right"><span class="ans" data-a="wage factor" data-b="wage rate">which factor?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:48px">2</td><td>Wang jie turned down a night shift: she cares for her son.</td><td style="text-align:right"><span class="ans" data-a="constraint" data-b="personal circumstances">which factor?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:48px">3</td><td>Chen wanted to be a doctor but failed the entrance exam.</td><td style="text-align:right"><span class="ans" data-a="constraint" data-b="qualifications">which factor?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:48px">4</td><td>Lao Zhang moved south for construction work at double the wage.</td><td style="text-align:right"><span class="ans" data-a="constraint" data-b="location">which factor?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:48px">5</td><td>Liu chose a state firm: less money, but the job is secure.</td><td style="text-align:right"><span class="ans" data-a="non-wage factor" data-b="job security">which factor?</span></td></tr><tr><td style="font-weight:800;color:#1E88E5;width:48px">6</td><td>May refused the mine, even though it paid the most.</td><td style="text-align:right"><span class="ans" data-a="non-wage factor" data-b="danger">which factor?</span></td></tr></tbody></table>
+<div class="note">Name the <b>type</b> first (wage / non-wage / constraint), then the factor &#8212; that is how the mark scheme reads it.</div>
+<script>(function(){document.addEventListener("click",function(e){
+var s=e.target.closest("span.ans"); if(!s) return;
+var a=s.getAttribute("data-a"), b=s.getAttribute("data-b");
+s.innerHTML='<span style="display:block;font-size:16px;color:#7b8b9b;letter-spacing:.04em">'+a+'</span>'+b;
+s.style.background="#E7F2FC"; s.style.color="#15334f"; s.style.minWidth="210px";});})();</script></div></div><div class="slide"><div class="content">
+<h1>Why jobs are narrow: division of labour</h1>
+<div class="sub">Split the work into tasks; each worker specialises in one.</div>
+<div class="def">Division of labour: production is divided into separate tasks, and each worker
+<b>specialises</b> in one of them.</div>
+<div class="row c2 cards" style="flex:1;min-height:0">
+  <div class="card" style="gap:12px;justify-content:flex-start">
+    <h3 style="color:#2E7D32;font-size:23px">Why output rises</h3>
+    <div style="display:flex;align-items:center"><span class="num">1</span>repetition makes the worker faster</div>
+    <div style="display:flex;align-items:center"><span class="num">2</span>no time lost switching task or tool</div>
+    <div style="display:flex;align-items:center"><span class="num">3</span>training one task is quicker and cheaper</div>
+    <div style="display:flex;align-items:center"><span class="num">4</span>machines can be built for a single step</div>
+  </div>
+  <div class="card" style="padding:10px;justify-content:center">
+    <img class="shot" src="images/mine_engraving.png" alt="" style="max-height:100%">
+    <div style="font-size:20px;color:#7b8b9b;margin-top:8px;line-height:1.4">One task, repeated: faster &#8212; and narrower.</div>
+  </div>
+</div>
+<div class="note">The gain is speed; the cost is monotony. Dull or dangerous jobs must pay a premium &#8212; taken up in the wages lesson.</div></div></div><div class="slide"><div class="content">
+<h1>Two views of the same fact</h1>
+<div class="sub">Division of labour creates wealth &#8212; and takes something away.</div>
+<div class="row c2" style="flex:1;min-height:0">
+  <div class="card blue" style="gap:12px">
+    <div style="display:flex;align-items:center;gap:16px">
+      <img class="portrait" src="images/money/smith.png" alt="">
+      <div><div style="font-size:29px;font-weight:900;color:#15334f">Adam Smith</div>
+      <div style="font-size:20px;color:#7b8b9b">The Wealth of Nations, 1776</div></div></div>
+    <div class="quote">&#8220;The greatest improvement in the productive powers of labour &#8230; seem to have been the effects of the division of labour.&#8221;</div>
+    <div style="font-size:22px;line-height:1.5">Specialisation is not a detail: it is <b>the source of the wealth of nations</b>.</div>
+  </div>
+  <div class="card red" style="gap:12px">
+    <div style="display:flex;align-items:center;gap:16px">
+      <img class="portrait" src="images/marx.png" alt="">
+      <div><div style="font-size:29px;font-weight:900;color:#15334f">Karl Marx</div>
+      <div style="font-size:20px;color:#7b8b9b">The German Ideology, 1846</div></div></div>
+    <div class="quote">&#8220;&#8230; to hunt in the morning, fish in the afternoon, rear cattle in the evening, criticise after dinner &#8230; without ever becoming hunter, fisherman, shepherd or critic.&#8221;</div>
+    <div style="font-size:22px;line-height:1.5">The same narrowness that raises output <b>confines the worker</b>.</div>
+  </div>
+</div>
+<div class="note">Smith measures the gain in output; Marx measures the loss in freedom.</div></div></div><div class="slide"><div class="content">
+<h1>Who gains, who loses</h1>
+<div class="sub">Division of labour raises output &#8212; and charges someone for it.</div>
+<table class="tbl fill" style="height:100%">
+<thead><tr><th style="width:16%">Who</th><th class="gain">Gains</th><th class="pay">Pays</th></tr></thead>
+<tbody>
+<tr><td><b>Worker</b></td><td class="gain">becomes skilled quickly; higher output can mean higher pay</td>
+    <td class="pay"><b>boredom and monotony</b>; narrow, hard-to-move skill</td></tr>
+<tr><td><b>Firm</b></td><td class="gain">lower cost per unit; faster training; less waste</td>
+    <td class="pay">output stops if one link fails; quality can slip</td></tr>
+<tr><td><b>Economy</b></td><td class="gain">more output from the same resources</td>
+    <td class="pay">vulnerable if that one industry declines</td></tr>
+</tbody></table>
+<div class="note">Repetition is the source of the gain <b>and</b> the source of the cost.</div></div></div><div class="slide"><div class="content">
+<h1>Five things to keep</h1>
+<div class="sub">Say it before you see it &#8212; the button fills one blank at a time.</div>
+<div class="card" style="font-size:24px;line-height:2.05">
+<p><b>1.</b> An occupation is chosen on the whole package: <span class="bl" data-a="wage factors"></span> plus non-wage factors.</p>
+<p><b>2.</b> The wage rate is pay per <span class="bl" data-a="unit of time"></span>; overtime, bonuses and commission are also wage factors.</p>
+<p><b>3.</b> Three constraints narrow the choice set: qualifications, <span class="bl" data-a="location"></span> and health or personal circumstances.</p>
+<p><b>4.</b> Division of labour splits production into tasks, so each worker <span class="bl" data-a="specialises"></span> and output per worker rises.</p>
+<p><b>5.</b> The cost is <span class="bl" data-a="boredom"></span> and narrow skills &#8212; so dull or dangerous jobs must pay a premium.</p>
+</div>
+<div style="display:flex;gap:14px;margin-top:6px">
+  <button class="big-btn" id="nb" style="min-width:180px">Next &#9654;</button>
+  <button class="big-btn" id="rb" style="min-width:130px">Reset</button>
+</div>
+<div class="note">Next lesson: wages &#8212; determination, differences and mobility.</div>
+<script>(function(){
+var all=document.querySelectorAll("span.bl"), k=0;
+document.getElementById("nb").onclick=function(){
+  if(k<all.length){var s=all[k]; s.textContent=s.getAttribute("data-a");
+    s.style.color="#15334f"; s.style.borderBottomColor="#cfdbe8"; k++;}
+};
+document.getElementById("rb").onclick=function(){all.forEach(function(s){s.textContent="";}); k=0;};
+})();</script></div></div></div>
+<div class="nav"><button id="prevBtn">◀</button><div class="dots" id="dots"></div><div style="display:flex;align-items:center;gap:12px"><span class="copy">© 2026 Dr. Jia</span><span class="page" id="pageNum">1 / 11</span><button id="nextBtn">▶</button></div></div>
+</div>
+<script>
+/* ══════ 分页导航 ══════ */
+var CUR = 0, SLIDES = [];
+function showSlide(i){
+  if(i < 0 || i >= SLIDES.length) return;
+  SLIDES[CUR].classList.remove('active');
+  CUR = i;
+  SLIDES[CUR].classList.add('active');
+  var dots = document.querySelectorAll('#dots span');
+  for(var k = 0; k < dots.length; k++) dots[k].className = (k === CUR) ? 'on' : '';
+  document.getElementById('pageNum').textContent = (CUR + 1) + ' / ' + SLIDES.length;
+  document.getElementById('prevBtn').disabled = (CUR === 0);
+  document.getElementById('nextBtn').disabled = (CUR === SLIDES.length - 1);
+  if(typeof onSlide === 'function') { try { onSlide(CUR); } catch(e){ console.error(e); } }
+}
+function nextSlide(){ showSlide(CUR + 1); }
+function prevSlide(){ showSlide(CUR - 1); }
+
+function bootDeck(){
+  SLIDES = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  SLIDES.forEach(function(s, i){
+    var d = document.createElement('span');
+    d.onclick = function(){ showSlide(i); };
+    dots.appendChild(d);
+  });
+  document.getElementById('prevBtn').onclick = prevSlide;
+  document.getElementById('nextBtn').onclick = nextSlide;
+  document.querySelectorAll('.flip').forEach(function(f){
+    f.onclick = function(){ f.classList.toggle('on'); };
+  });
+  var m = location.search.match(/[?&]s=(\d+)/);
+  showSlide(m ? Math.min(+m[1], SLIDES.length - 1) : 0);
+}
+
+/* ══════ 拖拽分类 ══════ */
+function mountDC(rootId, chips, zones){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var h = '<div class="dc-pool" id="' + rootId + 'pool"></div>' +
+          '<div class="row" style="margin-top:12px">';
+  zones.forEach(function(z){
+    h += '<div class="zone" data-zone="' + z.id + '"><div class="zt">' + z.label + '</div></div>';
+  });
+  h += '</div><div class="row" style="margin-top:12px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  chips.forEach(function(c, i){
+    var el = document.createElement('div');
+    el.className = 'chip';
+    el.draggable = true;
+    el.textContent = c.t;
+    el.dataset.ans = c.a;
+    el.dataset.i = i;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    /* 点击选中 → 点击区域放下（触屏/白板更稳） */
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.zone').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+  pool.addEventListener('click', function(){ /* 点空白不做事 */ });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var zone = c.closest('.zone');
+      c.classList.remove('ok', 'no');
+      if(!zone){ return; }
+      if(zone.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '">' + right + ' / ' + total +
+      '</span> <span class="gray">correct</span>';
+  };
+}
+
+/* ══════ 测验（逐题） ══════ */
+function mountQuiz(rootId, QS){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var i = 0, score = 0;
+  function render(){
+    var q = QS[i];
+    var h = '<div class="qstem">' + q.s + '</div><div class="qopts">';
+    q.o.forEach(function(t, k){
+      h += '<button class="qopt" data-k="' + k + '">' + String.fromCharCode(65 + k) + '. &nbsp;' + t + '</button>';
+    });
+    h += '</div><div class="qfb" id="' + rootId + 'fb"></div>' +
+         '<div class="qmeta">Question ' + (i + 1) + ' / ' + QS.length + ' &nbsp;·&nbsp; score ' + score + '</div>';
+    root.innerHTML = h;
+    root.querySelectorAll('.qopt').forEach(function(b){
+      b.onclick = function(){
+        var k = +b.dataset.k;
+        root.querySelectorAll('.qopt').forEach(function(x){ x.disabled = true; });
+        if(k === q.a){ b.classList.add('correct'); score++; }
+        else {
+          b.classList.add('wrong');
+          root.querySelectorAll('.qopt')[q.a].classList.add('correct');
+        }
+        document.getElementById(rootId + 'fb').innerHTML = q.e;
+        var nb = document.createElement('button');
+        nb.className = 'big-btn'; nb.style.marginTop = '12px';
+        nb.textContent = (i + 1 < QS.length) ? 'Next \u279c' : 'See result \u2714';
+        nb.onclick = function(){
+          if(i + 1 < QS.length){ i++; render(); } else { finish(); }
+        };
+        root.appendChild(nb);
+      };
+    });
+  }
+  function finish(){
+    root.innerHTML = '<div class="result"><h2>Result</h2><div class="big">' +
+      score + ' / ' + QS.length + '</div>' +
+      '<button class="big-btn ghost" id="' + rootId + 'again">Try again</button></div>';
+    document.getElementById(rootId + 'again').onclick = function(){ i = 0; score = 0; render(); };
+  }
+  render();
+}
+
+/* ══════ SVG 小工具 ══════ */
+function mk(tag, attrs, parent){
+  var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function clearSvg(id){
+  var s = document.getElementById(id);
+  if(!s) return null;
+  while(s.firstChild) s.removeChild(s.firstChild);
+  return s;
+}
+/* 坐标轴：x 向右，y 向上（用像素高度换算） */
+function drawAxes(svg, box, xLabel, yLabel){
+  var x0 = box.x, y0 = box.y + box.h;
+  mk('line', {x1: x0, y1: y0, x2: x0 + box.w, y2: y0, stroke: '#333', 'stroke-width': 2}, svg);
+  mk('line', {x1: x0, y1: y0, x2: x0, y2: box.y, stroke: '#333', 'stroke-width': 2}, svg);
+  var t1 = mk('text', {x: x0 - 6, y: box.y - 8, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t1.textContent = yLabel;
+  var t2 = mk('text', {x: x0 + box.w, y: y0 + 26, 'text-anchor': 'end',
+    'font-size': 24, fill: '#5b6b7b'}, svg);
+  t2.textContent = xLabel;
+}
+
+
+/* ══════ 市场图（供求 + 平移 + 管制线） ══════ */
+/* 二分法求交点：D 与 S 都可能是平移过的，线性函数也能解，但统一用数值法更省事 */
+function solveP(cfg, k, m){
+  var lo = 0, hi = cfg.pmax;
+  for(var it = 0; it < 60; it++){
+    var mid = (lo + hi) / 2;
+    var gap = (cfg.d(mid) + k) - (cfg.s(mid) + m);
+    if(gap > 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function drawMarket(svgId, cfg, line, label, kind, k, m){
+  k = k || 0; m = m || 0;
+  var svg = clearSvg(svgId); if(!svg) return;
+  var W = 720, H = 520, pl = 76, pr = 30, pt = 24, pb = 56;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x0 = pl, y0 = H - pb, w = W - pl - pr, h = H - pt - pb;
+  function X(q){ return x0 + q / cfg.qmax * w; }
+  function Y(p){ return y0 - p / cfg.pmax * h; }
+
+  mk('line', {x1:x0, y1:y0, x2:x0+w, y2:y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:x0, y1:y0, x2:x0, y2:pt, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:x0-8, y:pt-6, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  ty.textContent = cfg.pl;
+  var tx = mk('text', {x:x0+w/2, y:y0+32, 'text-anchor':'middle', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  tx.textContent = cfg.ql;
+  var t0 = mk('text', {x:x0-10, y:y0+18, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  function curve(fn, shift, color, tag, dash, tagdy, tagAtStart){
+    var pts = [];
+    for(var i = 0; i <= 240; i++){
+      var p = cfg.pmax * i / 240, q = fn(p) + shift;
+      if(q >= -0.001 && q <= cfg.qmax) pts.push([X(q), Y(p)]);
+    }
+    if(pts.length < 2) return;
+    var d = pts.map(function(pt, i){ return (i ? 'L' : 'M') + pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' ');
+    mk('path', {d:d, fill:'none', stroke:color, 'stroke-width':dash ? 2 : 3,
+      'stroke-linecap':'round', 'stroke-dasharray': dash || 'none'}, svg);
+    if(tag){
+      var last = tagAtStart ? pts[0] : pts[pts.length-1];
+      var lb = mk('text', {x:last[0]+8, y:last[1]+(tagdy||0), 'font-size': 26, 'font-weight':700,
+        fill:color, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+      lb.textContent = tag;
+    }
+  }
+
+  var shifted = (k !== 0 || m !== 0);
+  if(shifted){
+    if(k !== 0) curve(cfg.d, 0, '#c8d2dd', 'D', '6 5', -12, true);
+    if(m !== 0) curve(cfg.s, 0, '#c8d2dd', 'S', '6 5', -8, false);
+  }
+  curve(cfg.d, k, '#2E4A6B', k !== 0 ? 'D1' : 'D', null, -12, true);
+  curve(cfg.s, m, '#1E88E5', m !== 0 ? 'S1' : 'S', null, m !== 0 ? -8 : 22, false);
+
+  /* 原均衡 */
+  if(shifted){
+    mk('circle', {cx:X(cfg.eqQ), cy:Y(cfg.eqP), r:4.5, fill:'#c8d2dd'}, svg);
+    mk('line', {x1:X(cfg.eqQ), y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:y0,
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+    mk('line', {x1:x0, y1:Y(cfg.eqP), x2:X(cfg.eqQ), y2:Y(cfg.eqP),
+      stroke:'#e3ebf4', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  }
+
+  var eqP = solveP(cfg, k, m), eqQ = cfg.d(eqP) + k;
+  var ecol = shifted ? '#1A73E8' : '#2E4A6B';
+  mk('circle', {cx:X(eqQ), cy:Y(eqP), r:5.5, fill:ecol}, svg);
+  mk('line', {x1:X(eqQ), y1:Y(eqP), x2:X(eqQ), y2:y0,
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+  mk('line', {x1:x0, y1:Y(eqP), x2:X(eqQ), y2:Y(eqP),
+    stroke:'#cfdff0', 'stroke-width':1.5, 'stroke-dasharray':'5 5'}, svg);
+
+  var eqT = mk('text', {x:x0-10, y:Y(eqP)+6, 'text-anchor':'end', 'font-size': 24,
+    fill: shifted ? '#1A73E8' : '#5b6b7b', 'font-weight': shifted ? 700 : 400,
+    stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  eqT.textContent = cfg.unit + (Math.round(eqP*10)/10);
+  if(shifted){
+    var eqT0 = mk('text', {x:x0-10, y:Y(cfg.eqP)+6, 'text-anchor':'end', 'font-size': 24,
+      fill:'#aab4c0', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+    eqT0.textContent = cfg.unit + cfg.eqP;
+  }
+
+  if(line === null || line === undefined) return {eqP:eqP, eqQ:eqQ};
+
+  var qd = cfg.d(line), qs = cfg.s(line);
+  var col = (kind === 'ceiling') ? '#C62828' : '#00838F';
+  mk('line', {x1:x0, y1:Y(line), x2:X(Math.min(cfg.qmax, Math.max(qd, qs))), y2:Y(line),
+    stroke:col, 'stroke-width':3.5}, svg);
+  var lt = mk('text', {x:x0+8, y:Y(line)-10, 'font-size': 26, 'font-weight':700, fill:col,
+    stroke:'#fff', 'stroke-width':5, 'paint-order':'stroke'}, svg);
+  lt.textContent = label;
+
+  var binding = (kind === 'ceiling') ? (line < eqP) : (line > eqP);
+  if(!binding) return {binding:false, qd:qd, qs:qs, gap:0};
+
+  mk('line', {x1:X(qd), y1:Y(line), x2:X(qd), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qs), y1:Y(line), x2:X(qs), y2:y0, stroke:col, 'stroke-width':1.5,
+    'stroke-dasharray':'4 4'}, svg);
+  mk('line', {x1:X(qd), y1:y0+16, x2:X(qs), y2:y0+16, stroke:col, 'stroke-width':3}, svg);
+  var gt = mk('text', {x:(X(qd)+X(qs))/2, y:y0+40, 'text-anchor':'middle', 'font-size': 26,
+    'font-weight':700, fill:col}, svg);
+  gt.textContent = Math.abs(qs - qd).toFixed(1).replace('.0','') + ' ' + cfg.qu;
+  return {binding:true, qd:qd, qs:qs, gap:Math.abs(qs - qd), eqP:eqP, eqQ:eqQ};
+}
+
+/* ══════ 四象限分类（带图片） ══════ */
+function mountQuad(rootId, items){
+  var root = document.getElementById(rootId);
+  if(!root) return;
+  var QUADS = [
+    {id:'private', t:'PRIVATE GOOD',      d:'rival + excludable'},
+    {id:'common',  t:'COMMON RESOURCE',   d:'rival + non-excludable'},
+    {id:'club',    t:'CLUB GOOD',         d:'non-rival + excludable'},
+    {id:'public',  t:'PUBLIC GOOD',       d:'non-rival + non-excludable'}
+  ];
+  var h = '<div class="game"><div class="pool" id="' + rootId + 'pool">' +
+          '<div class="ph">DRAG INTO A QUADRANT</div></div><div class="quad-wrap">';
+  QUADS.forEach(function(q){
+    h += '<div class="quad" data-zone="' + q.id + '"><div class="qt">' + q.t +
+         '</div><div class="qd">' + q.d + '</div><div class="body"></div></div>';
+  });
+  h += '</div></div><div class="row" style="margin-top:10px;align-items:center;gap:14px">' +
+       '<button class="big-btn" id="' + rootId + 'chk">Check</button>' +
+       '<div class="readout" id="' + rootId + 'res"></div></div>';
+  root.innerHTML = h;
+
+  var pool = document.getElementById(rootId + 'pool');
+  items.forEach(function(it, i){
+    var el = document.createElement('div');
+    el.className = 'chip ' + (it.img ? 'imgchip' : 'small');
+    el.draggable = true;
+    el.dataset.ans = it.a;
+    el.dataset.i = i;
+    el.innerHTML = it.img ? '<img src="' + it.img + '" alt=""><span>' + it.t + '</span>' : it.t;
+    el.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', i); e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('click', function(){
+      if(el.classList.contains('ok')) return;
+      var cur = root.querySelector('.chip.picked');
+      if(cur === el){ el.classList.remove('picked'); return; }
+      if(cur) cur.classList.remove('picked');
+      el.classList.add('picked');
+    });
+    pool.appendChild(el);
+  });
+
+  root.querySelectorAll('.quad').forEach(function(z){
+    z.addEventListener('dragover', function(e){ e.preventDefault(); z.classList.add('hot'); });
+    z.addEventListener('dragleave', function(){ z.classList.remove('hot'); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); z.classList.remove('hot');
+      var i = +e.dataTransfer.getData('text/plain');
+      var chip = root.querySelector('.chip[data-i="' + i + '"]');
+      if(chip){ z.querySelector('.body').appendChild(chip); chip.classList.remove('ok','no'); }
+    });
+    z.addEventListener('click', function(){
+      var pick = root.querySelector('.chip.picked');
+      if(pick){ z.querySelector('.body').appendChild(pick); pick.classList.remove('picked','ok','no'); }
+    });
+  });
+
+  document.getElementById(rootId + 'chk').onclick = function(){
+    var right = 0, total = root.querySelectorAll('.chip').length;
+    root.querySelectorAll('.chip').forEach(function(c){
+      var z = c.closest('.quad');
+      c.classList.remove('ok','no');
+      if(!z) return;
+      if(z.dataset.zone === c.dataset.ans){ c.classList.add('ok'); right++; }
+      else { c.classList.add('no'); }
+    });
+    document.getElementById(rootId + 'res').innerHTML =
+      '<span class="' + (right === total ? 'green' : 'dr') + '" style="font-size:30px">' +
+      right + ' / ' + total + '</span> <span class="gray">correct</span>';
+  };
+}
+var QUESTS = [
+ {s:'As disposable income rises, what usually happens to the proportion of income spent?',
+  o:['it rises','it falls','it stays the same','it falls to zero'],
+  a:1, e:'The amount spent rises, but a smaller share of income goes on spending \u2014 the rest is saved. Basic needs have a ceiling.'},
+ {s:'A household spends \u00a5480 of a \u00a5500 income. What is its saving?',
+  o:['\u00a520','\u00a5480','\u00a5980','\u00a3500'],
+  a:0, e:'Saving = income \u2212 spending = 500 \u2212 480 = \u00a520. Saving is the gap, not a separate income.'},
+ {s:'What is meant by dissaving?',
+  o:['saving in a bank','spending more than income, by drawing on savings or borrowing',
+     'a fall in the interest rate','saving less than last year'],
+  a:1, e:'At very low incomes the household must spend more than it earns. The gap is covered by past savings or by borrowing.'},
+ {s:'Which is most likely to cause a rise in household spending?',
+  o:['a fall in consumer confidence','a rise in the rate of interest',
+     'a rise in disposable income','a rise in income tax'],
+  a:2, e:'Higher disposable income means more can be spent. The other three all reduce spending.'},
+ {s:'A central bank raises interest rates. What is the most likely effect on saving and on spending?',
+  o:['saving rises, spending rises','saving rises, spending falls',
+     'saving falls, spending falls','saving falls, spending rises'],
+  a:1, e:'Saving earns more, so households save more; borrowing costs more, so they borrow and spend less. Savers\u2019 extra spending is outweighed because savers are richer and spend a smaller share.'},
+ {s:'Two households have the same income but one spends far more. Which explanation fits best?',
+  o:['the one that spends more has a lower interest rate',
+     'the households differ in age, confidence or culture',
+     'spending is fixed by income alone','the one that spends more has no savings'],
+  a:1, e:'Income is the main influence, but age, confidence and culture explain why equally rich households behave differently.'}
+];
+/* 与 AP Macro 3.2 第二页同一套消费函数，保证跨课程口径一致 */
+function CON(y){ return 15 + 0.85*y - 0.0035*y*y; }
+function SAV(y){ return y - CON(y); }
+
+var X0 = 92, X1 = 664, Y0 = 470, Y1 = 34;   /* 绘图区 */
+
+function pxYd(v){ return X0 + v/100*(X1-X0); }
+function pxVal(v){ return Y0 - v/100*(Y0-Y1); }
+
+function drawCS(){
+  var y = +document.getElementById('yd').value;
+  var svg = clearSvg('csSvg'); if(!svg) return;
+  svg.setAttribute('viewBox', '0 0 720 520');
+
+  /* 轴 */
+  mk('line', {x1:X0, y1:Y0, x2:X1+8, y2:Y0, stroke:'#333', 'stroke-width':2}, svg);
+  mk('line', {x1:X0, y1:Y0, x2:X0, y2:Y1, stroke:'#333', 'stroke-width':2}, svg);
+  var ty = mk('text', {x:X0-8, y:Y1-6, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  ty.textContent = 'Spending (\u00a5 a day)';
+  var tx = mk('text', {x:X1, y:Y0+30, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  tx.textContent = 'Disposable income (\u00a5 a day)';
+  var t0 = mk('text', {x:X0-10, y:Y0+18, 'text-anchor':'end', 'font-size': 24, fill:'#5b6b7b'}, svg);
+  t0.textContent = '0';
+
+  /* 45 度线：C = Yd */
+  var g45 = mk('line', {x1:pxYd(0), y1:pxVal(0), x2:pxYd(100), y2:pxVal(100),
+    stroke:'#9aa5b1', 'stroke-width':2.5, 'stroke-dasharray':'9 7'}, svg);
+  var l45 = mk('text', {x:pxYd(100)-4, y:pxVal(100)-12, 'text-anchor':'end', 'font-size': 24,
+    'font-weight':700, fill:'#6b7c8f', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  l45.textContent = 'C = Yd';
+
+  /* 消费曲线 */
+  var pts = [];
+  for(var i = 0; i <= 100; i++) pts.push([pxYd(i), pxVal(CON(i))]);
+  mk('path', {d: pts.map(function(p,i){ return (i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' '),
+    fill:'none', stroke:'#1CADE4', 'stroke-width':4, 'stroke-linejoin':'round'}, svg);
+  var lc = mk('text', {x:pxYd(100)+10, y:pxVal(CON(100))+6, 'font-size': 24, 'font-weight':700,
+    fill:'#0e7fae', stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  lc.textContent = 'spending';
+
+  /* 当前收入处的竖线 + 缺口 */
+  var cx = pxYd(y), cVal = CON(y), sVal = SAV(y);
+  mk('line', {x1:cx, y1:Y0, x2:cx, y2:pxVal(y), stroke:'#c9d3dd', 'stroke-width':1.5,
+    'stroke-dasharray':'3 3'}, svg);
+  mk('circle', {cx:cx, cy:pxVal(y), r:4, fill:'#9aa5b1'}, svg);
+
+  var col = (sVal >= 0) ? '#2E7D32' : '#C62828';
+  mk('line', {x1:cx, y1:pxVal(cVal), x2:cx, y2:pxVal(y), stroke:col, 'stroke-width':7,
+    'stroke-linecap':'round'}, svg);
+  mk('circle', {cx:cx, cy:pxVal(cVal), r:6, fill:'#1CADE4', stroke:'#fff', 'stroke-width':2}, svg);
+
+  var lab = mk('text', {x:cx+12, y:(pxVal(cVal)+pxVal(y))/2 + (sVal >= 0 ? 0 : 20), 'font-size': 24, 'font-weight':700,
+    fill:col, stroke:'#fff', 'stroke-width':4, 'paint-order':'stroke'}, svg);
+  lab.textContent = (sVal >= 0 ? 'saving' : 'dissaving') + ' \u00a5' + Math.abs(sVal).toFixed(0);
+
+  /* 读数 */
+  var pct = y > 0 ? (cVal / y * 100) : 0;
+  document.getElementById('ydv').textContent = '\u00a5' + y;
+  document.getElementById('rdYd').textContent = '\u00a5' + y;
+  document.getElementById('rdC').textContent = '\u00a5' + cVal.toFixed(0);
+  document.getElementById('rdS').textContent = (sVal >= 0 ? '\u00a5' : '\u2212\u00a5') + Math.abs(sVal).toFixed(0);
+  document.getElementById('rdPct').textContent = pct.toFixed(0) + '%';
+  var note = document.getElementById('csNote');
+  if(sVal < 0){
+    note.innerHTML = '<b class="dr">Spending more than income.</b> The household covers the gap by ' +
+      'drawing on past savings or borrowing.';
+  } else if(pct > 92){
+    note.innerHTML = 'Almost everything is spent. Saving is possible, but small.';
+  } else {
+    note.innerHTML = 'Spending is <b>' + pct.toFixed(0) + '%</b> of income \u2014 and that share keeps ' +
+      '<b>falling</b> as income rises, even though the amount spent keeps rising.';
+  }
+}
+
+/* 利率：只讲方向，不编数值 */
+function drawRate(){
+  var r = +document.getElementById('rate').value;
+  document.getElementById('ratev').textContent = r + '%';
+  function row(id, arrow, txt){
+    var el = document.getElementById(id);
+    var c = arrow === '\u2191' ? 'dr' : (arrow === '\u2193' ? 'blue' : 'gray');
+    el.innerHTML = '<b class="' + c + '" style="font-size:30px">' + arrow + '</b> &nbsp;' + txt;
+  }
+  if(r <= 3){
+    row('rowS', '\u2193', 'saving earns little \u2014 why lock money away');
+    row('rowB', '\u2191', 'borrowing is cheap');
+    row('rowC', '\u2191', 'so households spend more');
+  } else if(r >= 7){
+    row('rowS', '\u2191', 'saving earns a real reward');
+    row('rowB', '\u2193', 'borrowing is expensive \u2014 new loans fall');
+    row('rowC', '\u2193', 'and spending falls, including for existing borrowers');
+  } else {
+    row('rowS', '\u2014', 'saving is neither strongly rewarded nor punished');
+    row('rowB', '\u2014', 'borrowing is neither cheap nor dear');
+    row('rowC', '\u2014', 'spending changes little');
+  }
+}
+
+function onSlide(i){
+  if(i === 3) drawCS();
+  if(i === 6) drawRate();
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  bootDeck();
+  ['yd','rate'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', function(){
+      if(id === 'yd') drawCS(); else drawRate();
+    });
+  });
+  mountDC('dc1', [
+    {t:'Her pay rises 20% and she saves a larger share', a:'income'},
+    {t:'Mortgage payments jump after rates rise', a:'rate'},
+    {t:'Worried about next year, the family stops eating out', a:'conf'},
+    {t:'A couple in their thirties with two children spend almost everything', a:'age'},
+    {t:'A family keeps its festival spending after moving abroad', a:'cult'}
+  ], [{id:'income', label:'Income'}, {id:'rate', label:'Interest rate'},
+      {id:'conf', label:'Confidence'}, {id:'age', label:'Age'}, {id:'cult', label:'Culture'}]);
+  mountQuiz('qz1', QUESTS);
+});
+
+/* ── 统一收尾：填空揭示 ── */
+var _BL_I = 0;
+function revealNext(){
+  var bs = document.querySelectorAll('.bl');
+  if(!bs.length) return;
+  if(_BL_I < bs.length){
+    bs[_BL_I].textContent = bs[_BL_I].dataset.a;
+    bs[_BL_I].classList.add('on');
+    _BL_I++;
+  }
+  var b = document.getElementById('blBtn');
+  if(b && _BL_I >= bs.length){ b.disabled = true; b.textContent = 'All done \u2714'; }
+}
+function resetBlanks(){
+  _BL_I = 0;
+  document.querySelectorAll('.bl').forEach(function(x){ x.textContent = ''; x.classList.remove('on'); });
+  var b = document.getElementById('blBtn');
+  if(b){ b.disabled = false; b.textContent = 'Next \u25b6'; }
+}
+
+</script>
+<script>(function(){function r(){try{if(typeof drawCS==="function")drawCS()}catch(e){}}var v=document.querySelector(".view");if(v&&window.MutationObserver){new MutationObserver(r).observe(v,{subtree:true,attributes:true,attributeFilter:["class"]})}window.addEventListener("load",function(){setTimeout(r,250)});window.addEventListener("resize",r);})();</script>
+<script>document.addEventListener("click",function(e){if(!e.target.classList.contains("stepbtn"))return;var c=e.target.closest(".content");var s=c.querySelector(".step");if(s){s.style.display="block";e.target.style.display="none";}});</script>
+</body>
+</html>
