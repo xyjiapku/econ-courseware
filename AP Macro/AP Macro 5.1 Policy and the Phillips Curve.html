@@ -217,6 +217,19 @@
 /* == /math typesetting == */
 
 
+  /* ── p18 逻辑链条：一步一块，箭头连接 ── */
+  #chainFlow .lk{display:flex;gap:.9vw;align-items:center;background:#f1f7fb;border:2px solid #d6e6f2;
+    border-left:7px solid var(--accent);border-radius:0 10px 10px 0;padding:.9vh 1vw;flex:0 0 auto;}
+  #chainFlow .lk.hot{background:var(--red-light);border-color:var(--red);border-left-color:var(--red);}
+  #chainFlow .lk .n{flex:0 0 auto;width:2.6vw;min-width:44px;height:2.6vw;min-height:44px;border-radius:50%;
+    background:var(--accent-dark);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.5vh,28px);}
+  #chainFlow .lk.hot .n{background:var(--red);}
+  #chainFlow .lk .t{font-size:clamp(23px,2.4vh,27px);line-height:1.35;}
+  #chainFlow .lk .t b{color:var(--accent-dark);}
+  #chainFlow .lk.hot .t b{color:var(--red);}
+  #chainFlow .ar{width:0;height:0;margin:.25vh auto;border-left:9px solid transparent;
+    border-right:9px solid transparent;border-top:11px solid #9dc7dd;flex:0 0 auto;}
 </style>
 </head>
 <body>
@@ -298,7 +311,7 @@
         <div class="aim" style="margin-bottom:0;"><div class="no">2</div><div><div class="at">Monetary expansion pulls r down</div><div class="ad">Buying securities creates reserves, so <b>supply</b> shifts right: the real rate <b>falls to 2.36%</b>.</div></div></div>
       </div>
     </div>
-    <div class="s-foot"><div class="hl amber"><b>3 &middot; Same axes, same rate, opposite pressure.</b> One tool pushes the real interest rate up, the other pulls it down &mdash; so together the answer is <b>indeterminate</b>. (In 4.4 the Fed's move showed up in the <i>money</i> market and in the <i>nominal</i> rate; here both policies are drawn in the loanable funds market so that the rate being compared is the same one.)</div></div>
+    <div class="s-foot"><div class="hl amber"><b>3 &middot; Same axes, same rate, opposite pressure.</b> One tool pushes the real interest rate up, the other pulls it down &mdash; so together the answer is <b>indeterminate</b>. (The Fed's move first shows up in the <i>money</i> market and in the <i>nominal</i> rate; here both policies are drawn in the loanable funds market so the rate being compared is the same one.)</div></div>
   </div>
 </section>
 <section class="slide" id="s6">
@@ -444,41 +457,11 @@
     <div class="s-foot"><div class="hl amber">&ldquo;Society faces a <b>short-run</b> trade-off&hellip;&rdquo; &mdash; the missing word is <b>in the short run</b>: wages catch up, SRAS shifts left, unemployment returns to u*. Every resting point has u = 5%, which is exactly why the <b>LRPC is vertical</b>.</div></div>
   </div>
 </section>
+
+
+
+
 <section class="slide" id="s14">
-  <div class="tag">Unit 5 &middot; Lesson 2 &middot; The SRPC and expectations &middot; new</div>
-  <h2>What exactly moves the SRPC? Expected inflation</h2>
-  <div class="stage">
-    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
-      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah12d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="330" x2="548" y2="330" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="330" x2="76" y2="46" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="312.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="170.4" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="264.8" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="359.2" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="453.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="267.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="68.0" y="196.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="125.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="68.0" y="54.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="85.4" y1="46.0" x2="135.0" y2="77.1" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="135.0" y1="77.1" x2="194.0" y2="114.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="194.0" y1="114.0" x2="253.0" y2="151.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="253.0" y1="151.0" x2="312.0" y2="188.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="312.0" y1="188.0" x2="371.0" y2="225.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="371.0" y1="225.0" x2="430.0" y2="262.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="430.0" y1="262.0" x2="489.0" y2="298.9" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="489.0" y1="298.9" x2="538.6" y2="330.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="274.2" y1="46.0" x2="312.0" y2="69.7" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="69.7" x2="371.0" y2="106.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="371.0" y1="106.6" x2="430.0" y2="143.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="430.0" y1="143.6" x2="489.0" y2="180.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="489.0" y1="180.6" x2="548.0" y2="217.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="330.0" x2="312.0" y2="46.0" stroke="#34495e" stroke-width="4"/><circle cx="312.0" cy="188.0" r="9" fill="#8a9aab"/><circle cx="312.0" cy="69.7" r="9" fill="#a97422"/><line x1="472.5" y1="280.3" x2="472.5" y2="178.5" stroke="#d9534f" stroke-width="4" marker-end="url(#ah12d9534f)"/><text x="132.6" y="69.7" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">πᵉ ↑ 5pp →</text><text x="132.6" y="105.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">the whole curve</text><text x="132.6" y="140.7" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">shifts up 5pp</text><text x="515.0" y="273.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="700">SRPC (πᵉ = 6%)</text><text x="515.0" y="150.1" text-anchor="end" font-size="22" fill="#6d28d9" font-weight="700">SRPC (πᵉ = 11%)</text><text x="320.5" y="36.5" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="321.4" y="225.9" text-anchor="start" font-size="22" fill="#a97422" font-weight="700">u* = 5%</text></svg>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.8vh;">
-        <div class="card"><h3>Expected inflation is the intercept</h3><p>The SRPC is <b>&pi; = &pi;<sup>e</sup> &minus; 1.25(u &minus; 5)</b>. Change &pi;<sup>e</sup> and the <b>whole curve</b> moves up or down by that much &mdash; it does not tilt or slide sideways.</p></div>
-        <div class="card win"><h3>Along vs. shift</h3><p>Actual inflation changes with &pi;<sup>e</sup> fixed &rarr; <b>move along</b>. &pi;<sup>e</sup> itself changes &rarr; the <b>SRPC shifts</b>.</p></div>
-        <div class="card warn"><h3>Which is why the LRPC is vertical</h3><p>Every SRPC crosses the LRPC at u = 5%, so the LRPC is the set of <b>all</b> the long-run resting points.</p></div>
-      </div>
-    </div>
-    <div class="s-foot"><div class="hl">The 1970s were not a move along the old curve &mdash; <b>&pi;<sup>e</sup> rose, so the whole curve went up</b>. That is the difference between a bad year and a broken model.</div></div>
-  </div>
-</section>
-<section class="slide" id="s15">
-  <div class="tag">Unit 5 &middot; Lesson 2 &middot; foundations</div>
-  <h2>Why is expected inflation the intercept?</h2>
-  <div class="stage">
-    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
-      <div style="flex:1.02;min-width:0;display:flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><line x1="76" y1="232" x2="548" y2="232" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="232" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation surprise: π − πᵉ</text><text x="312.0" y="286.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="170.4" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="264.8" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="359.2" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="453.6" y="254.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="240.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">-4</text><text x="68.0" y="193.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">-2</text><text x="68.0" y="146.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="99.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="68.0" y="52.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4</text><line x1="76.0" y1="138.0" x2="548.0" y2="138.0" stroke="#cfe0ee" stroke-width="2.5"/><line x1="76.0" y1="138.0" x2="548.0" y2="138.0" stroke="#cfe0ee" stroke-width="2.5"/><line x1="312.0" y1="232.0" x2="312.0" y2="44.0" stroke="#8a9aab" stroke-width="2" stroke-dasharray="7 5"/><line x1="161.0" y1="44.0" x2="194.0" y2="64.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="194.0" y1="64.6" x2="253.0" y2="101.3" stroke="#8B5CF6" stroke-width="4.5"/><line x1="253.0" y1="101.3" x2="312.0" y2="138.0" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="138.0" x2="371.0" y2="174.7" stroke="#8B5CF6" stroke-width="4.5"/><line x1="371.0" y1="174.7" x2="430.0" y2="211.4" stroke="#8B5CF6" stroke-width="4.5"/><line x1="430.0" y1="211.4" x2="463.0" y2="232.0" stroke="#8B5CF6" stroke-width="4.5"/><circle cx="217.6" cy="79.2" r="9" fill="#d9534f"/><circle cx="312.0" cy="138.0" r="9" fill="#a97422"/><circle cx="406.4" cy="196.8" r="9" fill="#d9534f"/><text x="123.2" y="62.8" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">u below u*</text><text x="123.2" y="213.2" text-anchor="start" font-size="22" fill="#1c5d8c" font-weight="700">u above u*</text><text x="519.7" y="125.1" text-anchor="end" font-size="22" fill="#5b7288" font-weight="700">π − πᵉ = 0</text><text x="319.1" y="72.2" text-anchor="start" font-size="22" fill="#5b7288" font-weight="700">u*</text></svg>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.6vh;">
-        <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">Wages are fixed in advance</div><div class="kd">A contract sets <b><span class="ma">W = w&#772; &times; P</span><sup>e</sup></b> &mdash; so expected inflation is already inside the wage.</div></div></div>
-        <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">Firms price over that wage</div><div class="kd">If P ends up <b>above</b> P<sup>e</sup>, the real wage fell without anyone agreeing &mdash; so firms hire more.</div></div></div>
-        <div class="key" style="margin-bottom:0;"><div class="no">3</div><div><div class="kw">Only the surprise moves u</div><div class="kd"><span class="ma">u &minus; u* = &minus;(&pi; &minus; &pi;<sup>e</sup>)/1.25</span> &nbsp;&rArr;&nbsp; at u = u* the only possible &pi; is &pi;<sup>e</sup>.</div></div></div>
-      </div>
-    </div>
-    <div class="s-foot"><div class="hl amber">&pi;<sup>e</sup> sits in the intercept because it is already inside the wage that was signed. The <b>slope</b> comes from how strongly hiring responds to a real-wage surprise &mdash; so change the rigidity and the line tilts; change &pi;<sup>e</sup> and the whole line moves.</div></div>
-  </div>
-</section>
-<section class="slide" id="s16">
   <div class="tag">Unit 5 &middot; Lesson 2</div>
   <h2>Long-run equilibrium, the two gaps, and demand shocks</h2>
   <div class="stage">
@@ -495,7 +478,7 @@
     <div class="s-foot"><div class="hl amber">Only a change in the <b>natural rate of unemployment</b> shifts the LRPC itself &mdash; longer job search, a higher minimum wage, stronger unions, or skills that no longer match the jobs.</div></div>
   </div>
 </section>
-<section class="slide" id="s17">
+<section class="slide" id="s15">
   <div class="tag">Unit 5 &middot; Lesson 2 &middot; Real data III</div>
   <h2>Supply shocks: the whole curve shifts &mdash; and here is the oil</h2>
   <div class="stage">
@@ -518,7 +501,7 @@
     <div class="s-foot"><div class="hl">A favourable shock does the reverse: SRAS right, prices down, SRPC shifts <b>down</b>. Oil fell to $15 by 1986 &mdash; but was oil the whole story?</div></div>
   </div>
 </section>
-<section class="slide" id="s18">
+<section class="slide" id="s16">
   <div class="tag">Unit 5 &middot; Lesson 2 &middot; The shock simulator</div>
   <h2>One shock, two graphs, three moments</h2>
   <div class="stage">
@@ -538,6 +521,46 @@
     </div>
   </div>
 </section>
+<section class="slide" id="s17">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; Why the SRPC moves</div>
+  <h2>Expected inflation lives in the intercept &mdash; and lifts the whole curve</h2>
+  <div class="stage">
+    <div class="eqbox" style="flex:0 0 auto;font-size:clamp(30px,4.2vh,50px);padding:1.4vh 1.4vw;">
+        <span class="ma">&pi; = &pi;<sup>e</sup> &minus; k(u &minus; u*)</span>
+      </div>
+      <div class="hl" style="flex:0 0 auto;line-height:1.35;">General form: <b>k</b> is the slope (how strongly hiring responds to a real-wage surprise), <b>u*</b> is the natural rate. In the graph below <b>k = 1.25</b> and <b>u* = 5%</b>. Change &pi;<sup>e</sup> and the <b>whole curve</b> moves up or down by that much &mdash; it never tilts.</div>
+    <div style="display:flex;gap:1.5vw;flex:1 0 auto;">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><defs><marker id="ah12d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="330" x2="548" y2="330" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="330" x2="76" y2="46" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="32.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="312.0" y="384.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="170.4" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="264.8" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="359.2" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="453.6" y="352.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="267.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="68.0" y="196.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="68.0" y="125.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">9</text><text x="68.0" y="54.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="85.4" y1="46.0" x2="135.0" y2="77.1" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="135.0" y1="77.1" x2="194.0" y2="114.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="194.0" y1="114.0" x2="253.0" y2="151.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="253.0" y1="151.0" x2="312.0" y2="188.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="312.0" y1="188.0" x2="371.0" y2="225.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="371.0" y1="225.0" x2="430.0" y2="262.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="430.0" y1="262.0" x2="489.0" y2="298.9" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="489.0" y1="298.9" x2="538.6" y2="330.0" stroke="#b2bec3" stroke-width="3.5" stroke-dasharray="12 8"/><line x1="274.2" y1="46.0" x2="312.0" y2="69.7" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="69.7" x2="371.0" y2="106.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="371.0" y1="106.6" x2="430.0" y2="143.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="430.0" y1="143.6" x2="489.0" y2="180.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="489.0" y1="180.6" x2="548.0" y2="217.6" stroke="#8B5CF6" stroke-width="4.5"/><line x1="312.0" y1="330.0" x2="312.0" y2="46.0" stroke="#34495e" stroke-width="4"/><circle cx="312.0" cy="188.0" r="9" fill="#8a9aab"/><circle cx="312.0" cy="69.7" r="9" fill="#a97422"/><line x1="472.5" y1="280.3" x2="472.5" y2="178.5" stroke="#d9534f" stroke-width="4" marker-end="url(#ah12d9534f)"/><text x="132.6" y="69.7" text-anchor="start" font-size="22" fill="#a94442" font-weight="700">πᵉ ↑ 5pp →</text><text x="132.6" y="105.2" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">the whole curve</text><text x="132.6" y="140.7" text-anchor="start" font-size="22" fill="#a94442" font-weight="400">shifts up 5pp</text><text x="515.0" y="273.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="700">SRPC (πᵉ = 6%)</text><text x="515.0" y="150.1" text-anchor="end" font-size="22" fill="#6d28d9" font-weight="700">SRPC (πᵉ = 11%)</text><text x="320.5" y="36.5" text-anchor="start" font-size="22" fill="#34495e" font-weight="700">LRPC</text><text x="321.4" y="225.9" text-anchor="start" font-size="22" fill="#a97422" font-weight="700">u* = 5%</text></svg></div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:.7vh;">
+        <div class="key" style="margin-bottom:0;"><div class="no">1</div><div><div class="kw">Wages are fixed in advance</div><div class="kd">A contract sets <b><span class="ma">W = w&#772; &times; P</span><sup>e</sup></b> &mdash; expected inflation is already inside the wage.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">2</div><div><div class="kw">Firms price over that wage</div><div class="kd">If P ends up <b>above</b> P<sup>e</sup>, the real wage fell without anyone agreeing &mdash; so firms hire more.</div></div></div>
+        <div class="key" style="margin-bottom:0;"><div class="no">3</div><div><div class="kw">Only the surprise moves u</div><div class="kd"><span class="ma">u &minus; u* = &minus;(&pi; &minus; &pi;<sup>e</sup>)/k</span> &nbsp;&rArr;&nbsp; at u = u* the only possible &pi; is &pi;<sup>e</sup>.</div></div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber">Along vs. shift: actual &pi; changes with &pi;<sup>e</sup> fixed &rarr; <b>move along</b>; &pi;<sup>e</sup> itself changes &rarr; <b>SRPC shifts</b>. Every SRPC crosses at u* = 5%, which is why the <b>LRPC is vertical</b>.</div></div>
+  </div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="tag">Unit 5 &middot; Lesson 2 &middot; The whole chain</div>
+  <h2>Money growth &rarr; expected inflation &rarr; a higher SRPC</h2>
+  <div class="stage">
+    <div class="eqbox" style="flex:0 0 auto;font-size:clamp(28px,3.6vh,44px);padding:1vh 1.2vw;">
+      <span class="ma">%&#916;M + %&#916;V = %&#916;P + %&#916;Y</span>
+    </div>
+    <div id="chainFlow" style="flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;gap:0;min-height:0;">
+      <div class="lk"><div class="n">1</div><div class="t"><b>Money keeps outgrowing output.</b> With <b>%&#916;V &asymp; 0</b> and real growth set by resources, money growth above <b>%&#916;Y</b> leaves permanently higher inflation.</div></div>
+      <div class="ar"></div>
+      <div class="lk"><div class="n">2</div><div class="t"><b>That inflation gets expected.</b> Workers sign the next wage with <b>&pi;<sup>e</sup></b> already inside it &mdash; the surprise is gone, but the inflation is built in.</div></div>
+      <div class="ar"></div>
+      <div class="lk"><div class="n">3</div><div class="t"><b>The intercept rises, so the SRPC shifts up.</b> In <b>&pi; = &pi;<sup>e</sup> &minus; k(u &minus; u*)</b>, only &pi;<sup>e</sup> changed: <b>k</b> and <b>u*</b> did not.</div></div>
+      <div class="ar"></div>
+      <div class="lk hot"><div class="n">4</div><div class="t"><b>The economy rests at the same u*, with higher &pi;.</b> Every SRPC crosses the vertical LRPC at u* &mdash; so there is <b>no long-run trade-off</b>.</div></div>
+    </div>
+    <div class="s-foot"><div class="hl amber"><span class="lead">One sentence:</span> sustained money growth becomes expected inflation, which lifts the SRPC &mdash; and that is why <b>inflation is a monetary phenomenon</b>, with no permanent gain in employment.</div></div>
+  </div>
+</section>
+
 <section class="slide" id="s19">
   <div class="tag">Unit 5 &middot; Part 1 close &middot; Check yourself</div>
   <h2>Say it in your own words</h2>

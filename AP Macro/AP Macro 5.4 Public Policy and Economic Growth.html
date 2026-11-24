@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Macro 5.7 &middot; Public Policy and Economic Growth</title>
+<style>
+  :root{
+    --accent:#1CADE4; --accent-dark:#0e7fae; --accent-light:#e3f4fb;
+    --ink:#1f2d3d; --sub:#5b7288; --bg:#f4f8fc; --card:#ffffff;
+    --line:#cfe0ee; --red:#d9534f; --red-light:#fdeaea; --green:#2e9e6b; --green-light:#e8f6ef;
+    --amber:#e6a23c; --amber-light:#fdf3e3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--accent);width:0;z-index:99;transition:width .35s;}
+  main{flex:1 0 auto;position:relative;}
+  .slide{
+    position:absolute;inset:0;padding:3.2vh 3.2vw 2.4vh;
+    display:none;flex-direction:column;
+    opacity:0;transform:translateX(28px);transition:opacity .4s,transform .4s; overflow-y:auto; }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .tag{font-size:clamp(22px,2.1vh,26px);font-weight:700;color:var(--accent-dark);letter-spacing:.5px;margin-bottom:.6vh;}
+  h1{font-size:clamp(32px,3.6vh,46px);color:var(--ink);line-height:1.25;margin-bottom:1vh;}
+  h2{font-size:clamp(27px,3vh,35px);color:var(--ink);line-height:1.28;margin-bottom:.8vh;}
+  p{font-size:clamp(23px,2.4vh,27px);line-height:1.5;margin-bottom:.8vh;}
+  ul,ol{margin-left:1.6em;margin-bottom:.8vh;}
+  li{font-size:clamp(23px,2.4vh,27px);line-height:1.45;margin-bottom:.5vh;}
+  b{color:var(--ink);}
+  .accent{color:var(--accent-dark);}
+  .cards{display:flex;gap:1.2vw;flex-wrap:wrap;}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;flex:1 1 0;min-width:18%;display:flex;flex-direction:column;justify-content:center;}
+  .card h3{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);margin-bottom:.6vh;}
+  .card p{font-size:clamp(22px,2.3vh,26px);}
+  .card .big{font-size:clamp(26px,2.8vh,32px);font-weight:800;color:var(--ink);}
+  .card.win{background:var(--green-light);border-color:var(--green);}
+  .card.warn{background:var(--amber-light);border-color:var(--amber);}
+  .card.lose{background:var(--red-light);border-color:var(--red);}
+  table{border-collapse:collapse;width:100%;background:var(--card);}
+  th,td{border:2px solid var(--line);padding:.9vh .8vw;text-align:center;font-size:clamp(22px,2.3vh,26px);}
+  th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  td.l{text-align:left;}
+  td.yes{color:var(--green);font-weight:700;}
+  td.no{color:var(--red);font-weight:700;}
+  .btn{
+    display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    font-size:clamp(22px,2.4vh,26px);font-weight:700;padding:1.1vh 1.6vw;cursor:pointer;
+    transition:background .2s,transform .1s;user-select:none;font-family:inherit;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--accent-dark);border:2px solid var(--accent);}
+  .btn.green{background:var(--green);}
+  .btn.red{background:var(--red);}
+  .btn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .btnrow{display:flex;gap:1vw;align-items:center;margin-top:1.1vh;flex-wrap:wrap;}
+  .s-foot{margin-top:auto;padding-top:1.2vh;}
+  .hl{
+    background:var(--accent-light);border-left:6px solid var(--accent);
+    padding:1.1vh 1.2vw;border-radius:0 10px 10px 0;
+    font-size:clamp(23px,2.4vh,27px);font-weight:700;color:var(--ink);line-height:1.4;
+  }
+  .hl.green{background:var(--green-light);border-color:var(--green);}
+  .hl.amber{background:var(--amber-light);border-color:var(--amber);}
+  .hl.red{background:var(--red-light);border-color:var(--red);}
+  .cover{justify-content:center;align-items:center;gap:2.4vh;text-align:center;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;}
+  .cover h1{font-size:clamp(48px,6vh,78px);line-height:1.18;color:#fff;}
+  .cover .tag{color:#fff;background:rgba(255,255,255,.18);}
+  .cover p{font-size:clamp(25px,2.9vh,34px);color:#fff;}
+  .cover .meta{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font-size:clamp(22px,2.3vh,27px);color:rgba(255,255,255,.85);}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:1.7vh 1.4vw;margin:.8vh 0;flex:1;min-height:44vh;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;}
+  .qtext{font-size:clamp(24px,2.6vh,29px);font-weight:700;color:var(--accent-dark);margin-bottom:.9vh;line-height:1.4;}
+  .note{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.45;}
+  .two{display:flex;gap:1.4vw;flex-wrap:wrap;}
+  .col{flex:1 1 0;min-width:38%;display:flex;flex-direction:column;gap:.8vh;justify-content:center;}
+  .constbar{background:var(--accent-dark);color:#fff;border-radius:12px;padding:1.1vh 1.2vw;
+    font-size:clamp(26px,2.9vh,34px);font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:.8vh;}
+  .aim{display:flex;gap:1.2vw;align-items:center;background:var(--card);border:2px solid var(--line);
+    border-radius:12px;padding:1.1vh 1.2vw;margin-bottom:.8vh;border-left:8px solid var(--accent);}
+  .aim .no{flex:0 0 auto;width:3vw;min-width:50px;height:3vw;min-height:50px;border-radius:50%;
+    background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .aim .at{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .aim .ad{font-size:clamp(22px,2.3vh,26px);color:var(--sub);}
+  .key{display:flex;gap:1vw;align-items:flex-start;background:var(--accent-light);border-radius:12px;padding:1.1vh 1.1vw;margin-bottom:.7vh;}
+  .key .no{flex:0 0 auto;width:3.2vw;min-width:52px;height:3.2vw;min-height:52px;border-radius:50%;background:var(--accent-dark);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,2.6vh,30px);font-weight:800;}
+  .key .kw{font-size:clamp(24px,2.6vh,29px);font-weight:800;color:var(--accent-dark);}
+  .key .kd{font-size:clamp(22px,2.3vh,26px);line-height:1.45;}
+  .bar-row{display:flex;align-items:center;gap:1vw;margin-bottom:.9vh;}
+  .bar-label{flex:0 0 15vw;font-size:clamp(22px,2.3vh,26px);font-weight:700;line-height:1.3;}
+  .bar-track{flex:1;background:#eaf3f9;border-radius:9px;height:5vh;min-height:34px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:9px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;
+    font-size:clamp(22px,2.3vh,26px);white-space:nowrap;}
+  .bar-num{flex:0 0 12vw;text-align:right;font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--accent-dark);}
+  .subline{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.9vh;}
+  .cn{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.5;padding-left:.4vw;margin-bottom:.7vh;}
+  .imgbox{flex:1 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;gap:1.4vw;}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+  .imgrow{display:flex;gap:1.4vw;align-items:flex-end;justify-content:center;flex-wrap:wrap;}
+  .fig{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+  .fig img{max-width:100%;max-height:26vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .fig span{font-size:clamp(22px,2.2vh,25px);font-weight:700;color:var(--accent-dark);}
+  .ds-btns{display:flex;gap:.8vw;flex-wrap:wrap;}
+  .ds-btn{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;
+    font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .ds-btn.on{background:var(--accent);color:#fff;}
+  .flowwrap{display:flex;gap:1.4vw;flex:1 0 auto;align-items:stretch;}
+  .flowimg{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7vh;}
+  .flowimg svg{width:100%;height:auto;max-height:48vh;}
+  .flowside{flex:0 0 27%;display:flex;flex-direction:column;justify-content:center;}
+  .split{display:flex;gap:1.8vw;flex:1 0 auto;align-items:stretch;}
+  .split .txt{flex:0 0 46%;display:flex;flex-direction:column;justify-content:center;gap:1.1vh;}
+  .split .pic{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;}
+  .split .pic img{max-width:100%;max-height:54vh;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff;}
+  .split .pic svg{width:100%;height:auto;max-height:52vh;}
+  .piccap{font-size:clamp(22px,2.2vh,25px);color:var(--sub);text-align:center;margin-top:.5vh;}
+  .game-card{
+    background:#fff;border:3px solid var(--accent);border-radius:14px;padding:2vh 1.6vw;
+    font-size:clamp(26px,2.9vh,33px);font-weight:700;text-align:center;line-height:1.4;
+  }
+  .game-meta{display:flex;justify-content:space-between;align-items:center;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:700;margin-bottom:.8vh;gap:1vw;}
+  .game-fb{margin-top:1vh;font-weight:700;font-size:clamp(22px,2.4vh,27px);padding:1vh 1.2vw;border-radius:10px;min-height:4.6vh;line-height:1.4;}
+  .game-fb.good{background:var(--green-light);color:var(--green);}
+  .game-fb.bad{background:var(--red-light);color:var(--red);}
+  .anslist{columns:2;column-gap:2.4vw;}
+  .anslist li{break-inside:avoid;margin-bottom:.5vh;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1vh 2vw;background:#fff;border-top:2px solid var(--line);}
+  .navbtn{background:var(--accent);color:#fff;border:none;border-radius:9px;
+    font-size:clamp(22px,2.3vh,26px);font-weight:700;padding:.9vh 1.6vw;cursor:pointer;font-family:inherit;}
+  .navbtn:disabled{background:#b9c9d6;cursor:not-allowed;}
+  .dots{display:flex;gap:.45vw;align-items:center;}
+  .dot{width:12px;height:12px;border-radius:50%;background:#c4d6e4;cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.active{background:var(--accent);transform:scale(1.25);}
+  .pageinfo{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;}
+  .copy{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:600;margin-left:1.2vw;white-space:nowrap;}
+  /* ── 滑块 ── */
+  input[type=range]{width:100%;height:38px;accent-color:var(--accent);cursor:pointer;}
+  .sliderbox{background:var(--accent-light);border-radius:12px;padding:1.3vh 1.2vw;margin-bottom:.9vh;}
+  .slideval{font-size:clamp(28px,3.2vh,38px);font-weight:800;color:var(--accent-dark);text-align:center;line-height:1.25;}
+  .slidenote{font-size:clamp(22px,2.3vh,26px);line-height:1.45;text-align:center;color:var(--ink);}
+  .svgwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;}
+  .svgwrap svg{width:100%;height:auto;max-height:52vh;}
+  @media (max-height:840px){
+    th,td{padding:.6vh .7vw;}
+    .aim{padding:.8vh 1vw;margin-bottom:.6vh;}
+  }
+  @media (max-width:900px){
+    .cards{flex-direction:column;}
+    .card{min-width:auto;}
+    .two{flex-direction:column;}
+    .flowwrap{flex-direction:column;}
+    .flowside{flex:1 1 auto;}
+    .bar-label{flex:0 0 30vw;}
+    .bar-num{flex:0 0 22vw;}
+    .anslist{columns:1;}
+  }
+  .hidden{display:none !important;}
+  .steprow{display:flex;gap:.9vw;align-items:center;background:var(--accent-light);border-radius:10px;padding:.85vh 1vw;margin-bottom:.7vh;}
+  .steprow .sn{flex:0 0 auto;width:2.7vw;min-width:44px;height:2.7vw;min-height:44px;border-radius:50%;background:var(--accent-dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,2.3vh,26px);font-weight:800;}
+  .steprow .st{font-size:clamp(22px,2.3vh,26px);line-height:1.4;font-weight:600;}
+  .opt{background:#fff;border:2px solid var(--accent);color:var(--accent-dark);border-radius:9px;font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.9vh 1.2vw;cursor:pointer;font-family:inherit;}
+  .opt.on{background:var(--accent);color:#fff;}
+.bk{display:inline-block;min-width:5.2em;border-bottom:2.5px solid var(--accent);
+      text-align:center;color:#b9c9d6;font-weight:700;padding:0 .2em;}
+  .bk.on{color:var(--green);border-bottom-color:var(--green);}
+</style>
+<style>
+.hl ul,.card ul,.key ul{margin:.35vh 0 0;padding-left:1.3vw;}
+.hl li,.card li,.key li{margin:.3vh 0;line-height:1.36;}
+.hl ul.tight li{margin:.16vh 0;}
+.hl ul li::marker,.card ul li::marker,.key ul li::marker{color:var(--accent-dark);font-weight:800;}
+.hl .lead{display:block;}
+.hl .lead + ul{margin-top:.4vh;}
+/* 三来源示意图的方块 */
+.srcbox{display:flex;gap:1.1vw;align-items:stretch;justify-content:center;}
+.srcbox .sb{flex:1 1 0;background:#f1f7fb;border:2px solid #d6e6f2;border-radius:12px;
+  padding:1.1vh 1vw;text-align:center;}
+.srcbox .sb h4{font-size:clamp(23px,2.5vh,28px);color:var(--accent-dark);margin-bottom:.5vh;}
+.srcbox .sb p{font-size:clamp(22px,2.3vh,26px);line-height:1.36;}
+.srcbox .sb.k{border-color:var(--amber);background:var(--amber-light);}
+.srcbox .sb.a{border-color:var(--green);background:var(--green-light);}
+/* 公式条 */
+#s18 .steprow{margin-bottom:.3vh;padding:.5vh 1vw;}
+#s8 .srcbox .sb{padding:.6vh .9vw;}
+#s8 .eq{padding:.6vh 1vw;font-size:clamp(23px,2.4vh,27px);}
+#s18 .stage>.btnrow{margin-top:.5vh;}
+.eq{background:var(--accent-light);border-left:6px solid var(--accent);border-radius:0 10px 10px 0;
+  padding:1.1vh 1.2vw;font-size:clamp(24px,2.6vh,30px);font-weight:800;color:var(--accent-dark);
+  text-align:center;line-height:1.4;}
+</style>
+
+<style>
+/* ---------- additive components for the rebuild ---------- */
+.kpis{display:flex;gap:1.1vw;align-items:stretch;}
+.kpi{flex:1 1 0;background:#fff;border:2px solid var(--line);border-radius:14px;padding:1.4vh 1.1vw;}
+.kpi .kv{font-size:clamp(30px,3.4vh,42px);font-weight:800;color:var(--accent-dark);line-height:1.1;
+  font-variant-numeric:tabular-nums;}
+.kpi .kl{font-size:clamp(22px,2.2vh,25px);color:var(--sub);line-height:1.35;margin-top:.4vh;}
+.kpi.g .kv{color:var(--green);} .kpi.a .kv{color:var(--amber);} .kpi.r .kv{color:var(--red);}
+.mini{font-size:clamp(22px,2.15vh,24px);color:var(--sub);line-height:1.4;}
+.mini b{color:var(--ink);}
+.legend{display:flex;gap:1.4vw;align-items:center;flex-wrap:wrap;font-size:clamp(22px,2.2vh,25px);color:var(--sub);font-weight:600;}
+.legend i{display:inline-block;width:20px;height:20px;border-radius:4px;margin-right:.4vw;vertical-align:-3px;}
+.dm{background:#fff;border:2px solid var(--line);border-radius:14px;padding:1.5vh 1.3vw;display:flex;
+  flex-direction:column;gap:1vh;min-height:0;}
+.dm .dt{font-size:clamp(22px,2.2vh,25px);font-weight:800;color:var(--accent-dark);letter-spacing:.4px;}
+.sld{display:flex;flex-direction:column;gap:.2vh;}
+.sld .sl{display:flex;justify-content:space-between;align-items:baseline;font-size:clamp(22px,2.25vh,25px);
+  font-weight:700;color:var(--ink2);}
+.sld .sl b{font-size:clamp(24px,2.5vh,29px);color:var(--accent-dark);font-variant-numeric:tabular-nums;}
+.verdict{background:var(--accent-light);border-left:6px solid var(--accent);border-radius:0 10px 10px 0;
+  padding:1.1vh 1.2vw;font-size:clamp(23px,2.45vh,28px);font-weight:700;line-height:1.4;}
+.verdict.g{background:var(--green-light);border-color:var(--green);}
+.verdict.a{background:var(--amber-light);border-color:var(--amber);}
+.verdict.r{background:var(--red-light);border-color:var(--red);}
+table.dt-t{border-collapse:collapse;width:100%;}
+table.dt-t th,table.dt-t td{border:0;border-bottom:2px solid var(--line);padding:1.45vh .6vw;
+  font-size:clamp(22px,2.3vh,26px);text-align:right;font-variant-numeric:tabular-nums;}
+table.dt-t th{background:transparent;color:var(--sub);font-weight:700;font-size:clamp(22px,2.15vh,24px);
+  border-bottom:2.5px solid var(--accent);}
+table.dt-t td:first-child,table.dt-t th:first-child{text-align:left;}
+table.dt-t tr:last-child td{border-bottom:0;}
+.tabs2{display:flex;gap:.5vw;}
+.tabs2 button{background:#fff;border:2px solid var(--line);color:var(--sub);border-radius:9px;
+  font-family:inherit;font-size:clamp(22px,2.2vh,25px);font-weight:700;padding:.7vh 1.1vw;cursor:pointer;}
+.tabs2 button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.split2{display:flex;gap:1.6vw;flex:1 0 auto;}
+.split2>div{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:.9vh;justify-content:center;}
+/* full-bleed embedded app (p10) */
+.slide.full{padding:0!important;}
+.appframe{flex:1 1 auto;width:100%;min-height:0;border:0;display:block;background:#f4f8fc;}
+/* factor decomposition row (p6) */
+.frow{display:flex;align-items:stretch;gap:.9vw;justify-content:center;}
+.fbox{flex:1 1 0;background:#fff;border:2px solid var(--line);border-radius:14px;padding:1vh 1vw;
+  text-align:center;display:flex;flex-direction:column;justify-content:center;gap:.25vh;}
+.fbox.hi{border-color:var(--accent);background:var(--accent-light);}
+.fbox.warn{border-color:var(--amber);background:var(--amber-light);}
+.ft{font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--ink);line-height:1.28;}
+.fn{font-size:clamp(25px,2.8vh,33px);font-weight:800;color:var(--accent-dark);font-variant-numeric:tabular-nums;}
+.fbox.warn .fn{color:#9a6a12;}
+.fnote{font-size:clamp(22px,2.1vh,24px);color:var(--sub);font-weight:700;}
+.fsign{display:flex;align-items:center;font-size:clamp(30px,3.2vh,40px);font-weight:800;color:var(--mute,#6b87a2);}
+/* formula plate */
+.plate{background:#f7fbfe;border:2px solid #d9e8f3;border-radius:12px;padding:1.1vh 1.2vw;text-align:center;}
+.plate .f{font-size:clamp(26px,2.9vh,34px);font-weight:800;color:var(--accent-dark);letter-spacing:.3px;}
+.plate .cap{font-size:clamp(22px,2.1vh,24px);color:var(--sub);margin-top:.4vh;}
+/* numbered reasons */
+.reason{display:flex;gap:.9vw;align-items:flex-start;padding:.75vh 0;border-bottom:1.5px solid var(--line2);}
+.reason:last-child{border-bottom:0;}
+.reason .rn{flex:0 0 auto;width:2.4vw;min-width:40px;height:2.4vw;min-height:40px;border-radius:50%;
+  background:var(--accent-light);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:clamp(22px,2.3vh,26px);}
+.reason .rt{font-size:clamp(22px,2.3vh,26px);line-height:1.42;}
+.reason .rt b{color:var(--accent-dark);}
+#s14 .reason{padding:1.55vh 0;}
+#s14 .reason .rt{font-size:clamp(23px,2.45vh,28px);}
+@media (max-height: 830px){
+  .steprow{padding:.52vh 1vw;margin-bottom:.42vh;}
+  .plate{padding:.75vh 1vw;}
+  #s14 .reason{padding:.85vh 0;}
+  .hl{padding:.85vh 1.1vw;}
+  .hl ul li{margin:.1vh 0;}
+  .hl .lead + ul{margin-top:.2vh;}
+}
+/* big number inside svg captions */
+.statrow{display:flex;gap:1.2vw;align-items:baseline;}
+.statrow .s1{font-size:clamp(34px,4vh,52px);font-weight:800;color:var(--accent-dark);line-height:1;
+  font-variant-numeric:tabular-nums;}
+.statrow .s2{font-size:clamp(22px,2.3vh,26px);color:var(--sub);font-weight:700;}
+</style>
+
+<style>
+/* comparison tables */
+table.cmp{border-collapse:collapse;width:100%;background:#fff;}
+table.cmp th,table.cmp td{border:2px solid var(--line);padding:1vh .7vw;text-align:center;
+  font-size:clamp(22px,2.15vh,25px);line-height:1.32;}
+table.cmp th{background:var(--accent-light);font-weight:800;}
+table.cmp td.l{text-align:left;}
+table.cmp .thsub{font-size:clamp(22px,1.95vh,22px);color:var(--sub);font-weight:600;}
+table.cmp td.yes{color:var(--green);font-weight:700;}
+table.cmp td.no{color:var(--red);font-weight:700;}
+table.cmp td.big{background:var(--green-light);color:var(--green);font-weight:800;}
+table.cmp.tight-t th,table.cmp.tight-t td{padding:.75vh .55vw;}
+/* lag strip */
+.lagsvg{display:flex;flex-direction:column;gap:.75vh;}
+.lagrow{display:flex;align-items:center;gap:.7vw;}
+.lk{flex:0 0 8.6em;font-size:clamp(22px,2.1vh,24px);font-weight:700;color:var(--ink2);}
+.lbar{height:22px;border-radius:6px;background:var(--c);width:var(--w);flex:0 0 auto;}
+.lv{font-size:clamp(22px,2vh,23px);color:var(--sub);font-weight:700;}
+@media (min-height: 860px){ #s11 .cmp th, #s11 .cmp td{padding:1.9vh .7vw;}
+  #s13 .cmp th, #s13 .cmp td{padding:1.5vh .7vw;}
+  #s3 .cmp th, #s3 .cmp td{padding:2.1vh .7vw;}
+  #s3 .cmp{flex:1 1 auto;} }
+/* story beats */
+.beats{gap:1vw;}
+.beat{flex:1 1 0;align-self:center;background:#fff;border:2px solid var(--line);border-radius:14px;
+  overflow:hidden;display:flex;flex-direction:column;}
+/* 源图是 440×440 方图：用方形框 + cover，整图可见、不裁 */
+  .beat img{width:190px;height:190px;object-fit:cover;display:block;margin:1.2vh auto .5vh;border-radius:10px;}
+@media (max-height: 830px){
+  .beat img{width:175px;height:175px;}
+  .beat .bd{font-size:clamp(22px,2vh,22px);}
+  .beat .by{font-size:clamp(22px,2.3vh,27px);}
+}
+.beat .bx{padding:1vh 1vw 1.1vh;display:flex;flex-direction:column;gap:.35vh;}
+.beat .by{font-size:clamp(24px,2.7vh,31px);font-weight:800;color:var(--accent-dark);font-variant-numeric:tabular-nums;}
+.beat .bt{font-size:clamp(22px,2.3vh,26px);font-weight:800;color:var(--ink);}
+.beat .bd{font-size:clamp(22px,2.1vh,24px);line-height:1.4;color:var(--ink2);}
+/* toggle buttons */
+.btn.act.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* ── 迁自 5.4：赤字/债务/挤出的逻辑链条 ── */
+  .chain{display:flex;flex-direction:column;justify-content:center;flex:1 1 auto;min-height:0;}
+  .chain > .lk{display:flex;gap:.8vw;align-items:center;background:#f1f7fb;border:2px solid #d6e6f2;
+    border-left:7px solid var(--accent);border-radius:0 10px 10px 0;padding:.5vh .9vw;
+    flex:0 0 auto;font-weight:400;color:var(--ink);font-size:clamp(22px,2.15vh,25px);}
+  .chain > .lk.hot{background:var(--red-light);border-color:var(--red);border-left-color:var(--red);}
+  .chain > .lk > .n{flex:0 0 auto;width:2.2vw;min-width:36px;height:2.2vw;min-height:36px;border-radius:50%;
+    background:var(--accent-dark);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(22px,2.1vh,25px);}
+  .chain > .lk.hot > .n{background:var(--red);}
+  .chain > .lk > .t{font-size:clamp(22px,2.15vh,25px);line-height:1.28;}
+  .chain > .lk > .t b{color:var(--accent-dark);}
+  .chain > .lk.hot > .t b{color:var(--red);}
+  .chain > .ar{width:0;height:0;margin:.1vh auto;border-left:9px solid transparent;
+    border-right:9px solid transparent;border-top:10px solid #9dc7dd;}
+
+  .slide::-webkit-scrollbar,.stage::-webkit-scrollbar{width:10px;height:10px;}
+  .slide::-webkit-scrollbar-thumb,.stage::-webkit-scrollbar-thumb{background:#c4d6e4;border-radius:6px;}
+  /* ── 三政策代价对照页 ── */
+  #tradeoff .cmp th, #tradeoff .cmp td{padding:.9vh .7vw;text-align:left;vertical-align:middle;line-height:1.3;}
+  #tradeoff .cmp th{text-align:center;font-size:clamp(23px,2.4vh,27px);}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+<section class="slide cover active" id="s1">
+  <div class="tag">AP Macroeconomics &middot; Unit 5 &middot; Lesson 7</div>
+  <h1>Public Policy and Economic Growth</h1>
+  <p>What a government can change &mdash; and what it cannot</p>
+  <p style="font-size:clamp(23px,2.6vh,30px);">If growth comes from K, human capital, technology and population, which of them can policy touch?</p>
+  <div class="meta">Dr. Jia &middot; &copy; 2026 &middot; one lesson</div>
+</section>
+<section class="slide" id="s2">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Why nations fail</div>
+  <h2>The same people, the same place &mdash; different rules</h2>
+
+  <div class="stage" style="gap:.8vh;">
+    <div class="split2" style="gap:1.4vw;">
+      <div style="flex:0 0 64%;justify-content:center;gap:.2vh;"><svg viewBox="0 0 920 410" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:920px;height:auto;align-self:center;">
+  <defs><clipPath id="gdrClip"><path d="M133.7,43.5 L131.8,55.9 L133.7,68.2 L128.9,77.5 L133.7,86.8 L126.9,96.0 L129.8,105.3 L119.2,114.6 L116.3,123.8 L114.3,133.1 L119.2,142.4 L126.9,151.6 L136.6,153.2 L146.3,154.7 L155.0,156.3 L164.7,153.2 L175.4,148.5 L188.0,143.9 L198.6,137.7 L208.3,133.1 L211.2,120.7 L209.3,105.3 L206.4,88.3 L204.4,72.9 L200.6,54.3 L196.7,40.4 Z"/></clipPath></defs>
+
+  <text x="105.0" y="26.0" font-size="24" fill="#1f2d3d" text-anchor="middle" font-weight="800">Korea, 1945</text>
+  <text x="395.0" y="26.0" font-size="24" fill="#1f2d3d" text-anchor="middle" font-weight="800">Germany, 1945</text>
+  <text x="730.0" y="26.0" font-size="24" fill="#1f2d3d" text-anchor="middle" font-weight="800">The US&ndash;Mexico border</text>
+
+  <!-- Korea -->
+  <g transform="translate(30,44)">
+    <path d="M96.9,118.8 L96.2,119.2 L95.1,121.1 L94.1,123.7 L93.1,125.0 L91.9,125.8 L90.7,126.2 L88.1,126.4 L85.9,126.3 L85.2,126.0 L82.1,126.2 L81.2,126.3 L76.8,126.2 L74.4,126.4 L73.0,126.8 L71.5,127.8 L70.1,129.4 L69.0,131.0 L66.7,134.0 L65.0,135.5 L65.0,137.6 L65.0,138.3 L64.4,138.7 L64.4,138.7 L64.2,138.5 L63.3,138.4 L59.5,136.4 L56.5,137.6 L55.7,139.1 L54.8,139.6 L53.6,136.6 L51.6,136.6 L48.3,133.9 L46.9,134.4 L46.6,135.5 L44.9,138.0 L42.4,139.9 L41.6,140.2 L40.7,140.1 L40.8,139.5 L39.8,137.3 L35.9,136.3 L34.5,135.4 L33.8,135.2 L37.6,132.6 L38.6,132.2 L37.9,131.6 L37.1,131.3 L33.9,131.7 L32.3,130.9 L29.9,131.2 L28.3,130.5 L31.7,128.0 L31.8,126.6 L31.8,125.5 L33.5,122.2 L35.3,120.4 L39.8,117.8 L41.8,117.4 L43.2,117.6 L44.3,117.3 L43.1,116.3 L41.9,115.9 L39.6,116.0 L37.1,114.5 L36.9,112.9 L41.6,103.0 L41.7,102.1 L41.0,99.7 L40.8,97.4 L37.3,96.0 L35.9,95.9 L31.6,93.3 L29.8,91.9 L29.2,92.3 L29.0,94.4 L28.4,94.9 L27.3,95.3 L26.7,92.9 L25.7,91.2 L22.9,89.3 L21.9,88.4 L22.4,86.3 L22.1,86.1 L22.1,86.1 L22.6,83.7 L24.3,81.9 L28.6,78.6 L29.8,77.1 L32.0,75.3 L32.9,75.3 L34.0,75.2 L34.3,74.4 L34.5,73.8 L35.4,73.2 L37.5,72.2 L39.9,70.9 L41.8,70.6 L44.1,68.6 L45.1,67.7 L46.1,67.7 L46.3,67.3 L46.9,66.3 L47.6,65.7 L48.6,65.5 L50.3,65.0 L52.4,64.8 L53.9,63.1 L54.4,61.9 L55.3,60.6 L57.4,59.2 L58.7,57.1 L60.3,54.9 L61.1,54.1 L61.8,54.0 L62.2,53.2 L62.7,50.7 L63.4,48.4 L63.8,47.3 L65.6,46.1 L66.1,45.5 L66.5,45.3 L67.3,45.5 L68.4,44.8 L69.5,44.0 L70.4,44.3 L71.4,44.9 L72.4,46.2 L72.9,47.2 L73.7,48.1 L73.8,49.3 L74.6,49.9 L76.3,50.2 L79.1,51.0 L80.9,51.1 L81.9,51.7 L84.1,52.0 L88.4,51.6 L90.1,51.8 L90.9,52.6 L92.0,53.3 L92.7,53.3 L93.6,52.2 L94.7,50.5 L95.4,49.2 L95.3,48.1 L94.7,46.9 L93.3,45.9 L92.3,44.3 L91.5,42.6 L90.9,42.0 L90.5,41.2 L90.5,40.0 L90.7,39.1 L92.9,38.5 L95.6,38.2 L97.8,38.6 L101.6,38.3 L103.9,37.8 L105.5,37.9 L107.1,37.9 L107.8,37.2 L110.0,35.4 L111.0,34.8 L112.2,33.6 L112.4,32.4 L112.6,31.4 L113.3,30.3 L114.4,29.0 L115.3,28.4 L116.4,28.5 L117.6,29.1 L118.3,29.7 L119.1,29.5 L119.8,28.5 L120.2,28.3 L121.5,28.2 L121.9,27.5 L122.5,24.5 L122.9,22.1 L123.1,20.4 L124.2,17.6 L124.6,15.9 L125.3,15.2 L126.1,15.2 L126.7,15.7 L127.5,16.0 L128.7,15.7 L129.5,16.1 L130.0,17.0 L130.9,17.4 L130.9,35.8 L130.5,36.5 L128.4,37.7 L127.3,39.0 L125.8,41.2 L124.9,43.4 L122.7,45.6 L121.3,48.4 L121.2,50.8 L122.7,53.2 L122.8,55.3 L121.8,59.6 L122.4,64.1 L121.7,65.9 L114.9,69.0 L113.1,70.5 L110.6,74.5 L107.5,76.0 L105.6,77.7 L103.0,78.7 L101.3,81.5 L99.4,83.1 L97.2,84.1 L95.6,85.3 L91.9,85.4 L89.3,86.3 L87.4,88.6 L81.9,91.4 L81.1,93.4 L81.5,96.5 L81.5,98.9 L81.0,100.9 L79.8,100.4 L79.1,101.0 L78.4,102.8 L78.7,104.9 L80.5,105.6 L82.1,106.5 L84.3,106.9 L85.9,107.9 L89.4,112.3 L92.2,114.2 L92.9,114.9 L94.6,115.9 L96.0,117.4 L96.9,118.8 Z M32.2,97.2 L31.2,97.9 L31.2,96.6 L32.0,95.6 L32.8,95.5 L32.2,97.2 Z" fill="#cfe3f2" stroke="#7fa8c6" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M64.4,138.7 L65.0,138.3 L65.0,137.6 L65.0,135.5 L66.7,134.0 L69.0,131.0 L70.1,129.4 L71.5,127.8 L73.0,126.8 L74.4,126.4 L76.8,126.2 L81.2,126.3 L82.1,126.2 L85.2,126.0 L85.9,126.3 L88.1,126.4 L90.7,126.2 L91.9,125.8 L93.1,125.0 L94.1,123.7 L95.1,121.1 L96.2,119.2 L96.9,118.8 L96.9,118.8 L101.5,129.4 L105.8,136.2 L109.5,141.2 L114.8,150.7 L116.3,155.8 L116.5,159.0 L117.4,163.4 L116.6,165.8 L116.8,169.8 L116.5,171.8 L115.9,173.3 L115.8,176.2 L116.0,177.7 L116.1,179.7 L116.5,180.5 L117.1,180.8 L118.0,180.0 L119.2,179.7 L119.0,182.2 L117.6,188.3 L116.3,192.8 L114.7,196.7 L112.5,200.3 L110.0,201.7 L108.2,202.2 L104.7,202.4 L101.9,201.8 L99.4,202.2 L98.4,203.0 L97.7,204.2 L98.2,206.2 L98.2,207.7 L97.1,207.6 L95.0,206.7 L92.7,206.6 L91.7,206.2 L90.6,204.1 L89.5,204.2 L87.5,205.4 L84.6,205.7 L83.6,206.4 L83.2,207.2 L83.6,208.3 L85.1,209.8 L84.6,211.2 L83.1,212.0 L81.8,210.2 L81.0,208.4 L80.1,208.3 L78.8,208.8 L78.5,210.7 L79.2,212.0 L80.2,213.5 L78.7,215.2 L78.4,216.5 L77.3,217.3 L74.5,215.4 L74.9,214.0 L76.1,212.6 L76.3,211.2 L75.9,210.4 L71.8,214.0 L69.3,217.9 L68.1,217.6 L67.5,216.6 L66.7,216.2 L64.0,218.8 L63.5,220.8 L62.6,220.9 L62.1,220.0 L62.1,218.1 L61.6,216.6 L58.9,214.3 L57.6,212.3 L58.3,211.2 L60.5,211.9 L62.4,211.8 L62.0,210.8 L61.4,210.4 L62.7,209.9 L63.7,208.8 L62.8,208.5 L61.6,209.1 L60.5,208.8 L60.1,206.2 L58.7,203.5 L58.1,201.0 L59.3,199.5 L60.0,197.2 L61.2,193.8 L61.8,192.7 L63.5,192.0 L64.1,191.1 L63.2,190.6 L61.7,190.3 L61.8,189.3 L62.8,188.8 L63.8,187.7 L66.0,186.4 L66.7,184.0 L66.0,183.4 L64.7,182.8 L65.0,181.5 L65.6,180.6 L65.4,180.0 L63.8,178.5 L62.7,177.0 L63.0,175.3 L62.8,172.9 L62.9,170.8 L62.8,169.6 L62.1,167.1 L61.8,164.5 L60.7,164.9 L59.9,165.5 L56.9,164.6 L56.0,164.6 L55.7,162.6 L56.7,160.3 L59.2,158.2 L60.6,158.0 L61.7,157.1 L63.4,156.8 L65.4,158.2 L67.3,158.5 L68.3,160.9 L68.9,161.4 L69.0,160.5 L70.5,159.5 L70.8,158.7 L70.5,158.2 L68.9,157.8 L67.3,154.8 L67.1,153.5 L66.5,152.7 L67.4,150.2 L65.6,147.5 L64.8,146.6 L64.9,144.2 L64.0,142.6 L63.4,141.7 L63.2,140.3 L63.4,139.6 L64.2,139.4 L64.4,138.7 Z M103.7,209.4 L101.9,210.9 L99.6,208.9 L99.0,207.8 L100.8,206.2 L102.3,204.4 L103.3,204.3 L103.7,209.4 Z M91.1,209.2 L90.9,211.5 L89.6,211.6 L88.9,210.2 L88.0,210.9 L87.6,210.9 L86.9,209.1 L86.8,207.6 L88.3,206.5 L89.3,207.2 L90.6,207.5 L91.1,209.2 Z M57.0,219.5 L55.8,219.9 L55.1,219.1 L54.6,218.8 L54.9,217.8 L56.9,215.7 L57.3,215.0 L59.1,215.4 L59.7,216.5 L58.9,218.2 L57.0,219.5 Z M62.4,139.8 L62.2,142.9 L61.2,142.8 L60.5,142.5 L60.2,141.9 L59.5,138.9 L60.3,137.7 L61.8,138.7 L62.4,139.8 Z M66.7,220.2 L67.0,221.3 L65.5,221.1 L64.7,220.0 L64.8,219.1 L65.7,218.9 L66.7,220.2 Z M86.2,213.7 L86.0,214.5 L85.0,213.4 L86.0,212.1 L86.2,213.7 Z M60.4,169.2 L60.1,170.8 L58.9,169.8 L58.6,166.4 L59.9,167.4 L60.4,169.2 Z M55.9,211.0 L55.6,211.6 L54.8,211.4 L54.0,209.8 L53.6,208.5 L52.8,207.7 L54.1,206.6 L55.8,208.6 L55.9,211.0 Z M58.7,246.7 L57.9,247.2 L57.1,246.9 L56.9,246.6 L56.0,245.3 L55.7,244.6 L56.4,243.3 L58.9,241.1 L65.6,239.0 L66.8,238.9 L69.4,239.8 L70.0,241.5 L69.5,242.9 L68.9,243.9 L65.8,245.6 L63.5,246.4 L58.7,246.7 Z" fill="#f6e2bd" stroke="#c79a5a" stroke-width="1.2" stroke-linejoin="round"/>
+  </g>
+  <text x="92.0" y="118.0" font-size="24" fill="#2f6b92" text-anchor="middle" font-weight="800">North</text>
+  <text x="112.0" y="250.0" font-size="24" fill="#9a6a12" text-anchor="middle" font-weight="800">South</text>
+
+  <!-- Germany -->
+  <g transform="translate(270,44)">
+    <path d="M106.1,242.0 L102.7,239.7 L99.5,237.4 L98.4,237.4 L93.6,237.9 L93.5,237.7 L92.7,236.4 L91.9,236.0 L91.5,236.3 L91.2,236.6 L90.7,236.5 L88.5,234.5 L87.7,234.2 L86.4,234.5 L85.0,235.6 L84.4,236.9 L84.5,237.7 L85.3,238.0 L87.3,237.8 L87.5,238.0 L87.6,238.5 L87.4,238.9 L85.8,239.3 L85.4,239.7 L84.9,239.9 L84.6,240.0 L82.9,239.4 L80.4,239.4 L78.4,240.4 L75.1,240.8 L70.7,240.6 L69.1,239.9 L69.1,239.9 L68.1,239.4 L67.4,237.4 L67.7,234.3 L68.7,230.2 L69.0,227.2 L68.5,225.3 L69.1,222.4 L70.9,218.6 L72.0,214.6 L72.6,210.4 L73.4,207.6 L75.1,205.7 L79.0,200.3 L79.3,199.9 L79.2,197.2 L78.1,196.9 L76.6,196.1 L72.7,195.1 L69.1,194.5 L67.4,193.7 L65.9,191.7 L65.0,191.7 L63.3,192.4 L61.0,192.9 L59.5,192.5 L58.5,192.6 L57.9,192.9 L57.6,192.6 L57.2,190.8 L56.4,190.4 L55.1,190.0 L54.3,190.2 L53.7,191.0 L52.9,191.7 L52.0,191.4 L49.6,187.4 L49.0,186.5 L48.8,185.7 L48.2,184.2 L46.7,182.8 L45.2,182.3 L44.5,182.4 L44.5,182.4 L44.6,180.6 L45.1,177.9 L45.7,176.5 L46.5,175.4 L47.2,174.5 L47.4,173.1 L47.3,171.8 L46.4,171.5 L44.1,170.5 L42.8,169.5 L41.8,168.1 L40.5,166.3 L40.0,164.5 L39.9,162.6 L40.1,161.8 L40.1,161.8 L40.2,161.2 L41.2,158.4 L44.8,155.7 L44.5,153.2 L44.4,151.5 L43.5,150.5 L41.8,150.1 L41.3,149.4 L41.1,148.7 L42.4,147.1 L40.8,145.8 L40.1,144.5 L37.9,142.9 L37.7,142.3 L37.7,142.3 L38.8,137.6 L37.9,136.2 L37.0,135.5 L35.8,135.1 L35.2,134.4 L35.1,133.7 L35.3,133.2 L36.6,133.4 L37.0,132.9 L40.3,130.1 L40.5,129.6 L40.0,129.2 L39.4,129.1 L39.3,128.5 L39.3,127.7 L41.0,123.7 L41.6,122.0 L41.6,120.7 L41.6,119.5 L40.5,117.7 L39.5,116.2 L39.5,114.9 L38.9,114.3 L36.8,111.1 L36.8,109.8 L37.9,108.9 L39.5,108.3 L40.1,107.7 L41.0,107.4 L43.6,108.3 L44.7,109.2 L45.1,109.0 L46.0,108.1 L47.8,108.3 L52.2,106.5 L52.8,105.7 L53.3,104.7 L53.4,104.4 L51.7,102.6 L51.6,102.0 L51.8,101.3 L52.3,100.7 L53.3,100.3 L54.4,99.5 L56.8,97.4 L57.5,95.5 L57.8,93.5 L57.9,92.0 L57.2,90.8 L56.6,90.0 L55.7,90.2 L53.9,90.1 L52.3,89.4 L51.4,88.3 L51.2,87.4 L51.6,86.8 L51.8,86.0 L51.5,85.3 L51.6,84.7 L52.3,84.1 L57.5,84.2 L57.8,83.6 L58.2,80.7 L59.4,76.4 L60.7,73.9 L60.9,72.9 L60.8,67.1 L61.0,64.1 L61.0,64.1 L60.1,62.8 L58.2,61.3 L58.7,58.1 L59.3,55.7 L61.2,52.6 L62.7,51.8 L69.4,51.3 L76.7,51.5 L79.8,56.1 L78.7,58.4 L80.4,59.5 L81.3,59.1 L82.0,57.1 L82.4,54.8 L83.0,54.1 L85.3,55.8 L86.1,57.0 L86.1,60.7 L87.0,55.7 L86.3,52.1 L86.8,48.8 L87.7,46.9 L88.6,45.8 L94.0,47.0 L100.0,46.4 L102.2,47.7 L107.3,54.3 L108.9,55.4 L111.1,55.7 L108.2,54.3 L102.0,46.3 L100.2,45.3 L97.3,45.1 L95.5,44.3 L94.4,43.0 L94.1,42.0 L94.2,33.9 L93.0,32.7 L91.7,32.3 L90.8,32.8 L89.1,32.9 L88.7,31.1 L89.1,29.7 L92.7,28.8 L95.0,27.5 L95.1,25.3 L93.6,23.6 L91.9,20.5 L89.8,17.5 L89.6,14.1 L89.6,14.1 L93.2,14.1 L94.1,14.3 L99.5,15.9 L100.9,17.0 L102.5,17.1 L105.6,16.0 L107.9,15.6 L108.7,16.2 L110.0,16.5 L110.3,16.5 L110.3,16.5 L110.4,17.0 L113.2,17.9 L114.4,19.2 L115.7,21.1 L115.9,24.0 L114.2,26.1 L112.8,27.4 L118.1,26.9 L118.6,28.1 L119.4,29.4 L122.3,28.4 L129.5,32.2 L133.8,30.4 L135.0,30.3 L135.9,33.3 L134.8,36.4 L131.0,39.6 L131.9,41.7 L133.1,42.1 L136.7,41.7 L142.4,43.7 L143.6,43.1 L148.3,38.5 L150.1,37.5 L156.2,36.8 L157.4,35.0 L159.8,33.2 L161.4,31.3 L165.2,27.5 L169.1,28.2 L171.4,28.9 L174.0,29.3 L176.3,33.3 L182.1,37.6 L187.5,37.2 L189.4,41.4 L190.2,46.5 L191.9,48.1 L193.3,49.1 L197.7,50.3 L197.8,50.3 L197.8,50.3 L197.9,51.0 L198.2,53.6 L198.6,55.7 L200.9,64.1 L200.8,66.2 L200.7,66.7 L200.0,69.6 L198.5,72.0 L196.6,73.4 L195.5,74.9 L195.3,76.6 L197.7,79.6 L202.8,83.8 L204.8,87.4 L203.9,90.4 L203.5,92.6 L203.9,94.1 L204.7,95.2 L206.0,96.0 L206.5,97.3 L206.2,99.1 L206.5,100.3 L207.4,101.2 L207.3,101.6 L206.9,102.8 L206.2,105.1 L205.9,106.7 L204.4,108.9 L204.9,110.9 L206.0,113.0 L206.9,114.2 L207.2,115.2 L206.6,117.8 L206.9,118.5 L210.4,120.3 L210.9,121.2 L211.3,123.0 L212.5,126.8 L211.5,131.7 L210.6,134.4 L208.6,138.6 L208.5,139.0 L208.5,139.0 L208.3,139.5 L207.6,140.2 L206.8,140.3 L205.5,139.8 L204.7,139.1 L204.9,137.3 L204.4,137.1 L203.7,136.1 L203.4,134.8 L202.6,134.3 L199.9,133.8 L199.0,133.5 L198.3,133.7 L197.7,134.6 L198.1,135.4 L198.6,136.1 L200.1,137.3 L200.0,137.8 L196.7,138.9 L194.7,140.1 L192.8,140.8 L190.8,142.0 L187.0,143.4 L184.2,143.8 L183.6,144.1 L182.6,146.5 L181.9,146.9 L181.2,146.7 L180.7,146.3 L180.0,146.6 L179.4,147.4 L178.6,147.7 L178.1,147.7 L177.0,149.8 L173.7,150.4 L173.4,151.4 L172.8,152.7 L172.3,152.9 L170.9,152.5 L168.9,152.2 L167.7,152.9 L166.4,153.3 L164.7,153.4 L162.9,154.7 L161.0,157.1 L160.0,159.2 L159.4,159.9 L158.5,158.0 L157.4,156.6 L156.7,155.9 L156.0,155.9 L155.8,156.2 L155.8,157.2 L156.5,158.9 L157.4,160.1 L157.6,160.9 L158.1,162.5 L159.4,164.2 L161.5,165.5 L162.9,166.9 L164.0,168.8 L164.0,169.3 L163.7,170.0 L163.2,170.7 L162.8,171.7 L161.6,173.6 L162.0,174.4 L162.9,175.4 L163.8,176.6 L164.8,178.6 L166.3,182.2 L167.3,183.6 L168.6,185.1 L169.8,186.2 L171.8,186.2 L173.9,188.4 L176.2,191.5 L177.9,192.9 L179.0,193.4 L180.0,194.5 L180.9,196.2 L181.2,197.1 L182.0,197.8 L184.1,197.7 L186.7,200.2 L188.3,202.1 L189.2,203.6 L189.2,203.6 L189.0,204.2 L188.9,206.1 L188.9,208.1 L188.7,209.1 L187.5,210.5 L186.9,210.8 L186.5,211.1 L182.9,209.3 L182.6,209.6 L182.3,209.8 L181.3,215.1 L180.7,216.1 L179.7,217.1 L177.6,218.0 L176.2,218.4 L175.0,218.8 L171.4,221.0 L169.8,222.3 L168.8,224.0 L168.8,225.0 L170.5,227.7 L172.6,230.7 L172.6,233.2 L171.7,235.1 L171.4,235.9 L172.1,236.2 L173.2,236.3 L174.1,236.6 L174.5,237.9 L174.4,240.3 L174.0,242.5 L173.7,243.4 L172.8,243.5 L171.1,242.5 L169.8,241.4 L169.2,240.8 L169.2,240.0 L169.5,239.4 L169.0,238.4 L167.3,237.5 L165.6,237.9 L164.3,238.5 L163.4,238.5 L162.5,237.6 L161.1,236.9 L159.2,236.5 L158.1,236.0 L157.8,236.3 L158.0,238.2 L157.6,239.1 L148.6,240.2 L145.8,241.2 L143.8,242.5 L142.3,243.1 L141.9,244.0 L140.5,245.1 L138.8,245.4 L138.4,245.1 L137.3,245.5 L135.5,246.0 L134.3,245.9 L133.8,245.0 L132.7,243.7 L132.2,242.7 L132.2,242.1 L129.7,242.0 L128.1,241.3 L124.6,241.5 L123.8,241.1 L123.7,241.5 L123.1,245.3 L122.5,246.9 L121.4,248.5 L120.0,249.4 L118.9,249.6 L118.9,248.4 L119.2,246.9 L118.4,246.6 L117.2,246.5 L116.6,246.0 L116.8,245.0 L116.5,244.3 L116.0,243.6 L114.7,242.6 L112.2,241.1 L110.5,240.4 L109.8,241.1 L108.5,241.9 L106.6,241.7 L106.1,242.0 Z M187.2,30.2 L187.7,32.2 L187.1,33.3 L185.0,31.5 L182.7,31.5 L181.5,34.3 L180.5,34.4 L177.1,31.9 L176.6,30.7 L176.5,29.7 L177.0,26.2 L176.9,25.2 L177.9,24.0 L178.1,22.3 L180.0,20.5 L181.6,20.4 L182.2,21.9 L183.0,23.0 L185.7,24.2 L186.2,24.7 L186.4,25.4 L185.1,26.9 L184.7,27.6 L185.1,28.9 L187.2,30.2 Z M196.9,43.5 L196.6,44.5 L197.0,46.0 L197.0,46.0 L196.1,45.9 L193.8,46.2 L191.4,45.7 L190.9,43.9 L191.3,42.1 L190.3,40.9 L189.4,40.1 L189.3,39.1 L189.4,38.0 L193.6,40.9 L196.9,43.5 Z M140.2,29.1 L137.2,29.1 L136.1,27.9 L134.9,27.6 L135.5,26.0 L136.4,25.5 L139.2,26.5 L140.1,28.4 L140.2,29.1 Z M82.5,17.7 L82.1,18.3 L82.3,13.9 L84.4,9.3 L85.3,9.4 L84.4,10.6 L84.1,11.5 L83.8,13.3 L83.9,14.2 L88.8,14.4 L88.2,15.2 L83.3,15.8 L82.5,17.7 Z M88.0,20.0 L87.2,20.7 L85.4,20.6 L84.3,19.9 L84.7,19.2 L85.7,18.6 L86.4,18.5 L87.7,18.8 L88.0,20.0 Z" fill="#e9eef4" stroke="#8fa9bd" stroke-width="1.2" stroke-linejoin="round"/>
+    <g clip-path="url(#gdrClip)"><path d="M106.1,242.0 L102.7,239.7 L99.5,237.4 L98.4,237.4 L93.6,237.9 L93.5,237.7 L92.7,236.4 L91.9,236.0 L91.5,236.3 L91.2,236.6 L90.7,236.5 L88.5,234.5 L87.7,234.2 L86.4,234.5 L85.0,235.6 L84.4,236.9 L84.5,237.7 L85.3,238.0 L87.3,237.8 L87.5,238.0 L87.6,238.5 L87.4,238.9 L85.8,239.3 L85.4,239.7 L84.9,239.9 L84.6,240.0 L82.9,239.4 L80.4,239.4 L78.4,240.4 L75.1,240.8 L70.7,240.6 L69.1,239.9 L69.1,239.9 L68.1,239.4 L67.4,237.4 L67.7,234.3 L68.7,230.2 L69.0,227.2 L68.5,225.3 L69.1,222.4 L70.9,218.6 L72.0,214.6 L72.6,210.4 L73.4,207.6 L75.1,205.7 L79.0,200.3 L79.3,199.9 L79.2,197.2 L78.1,196.9 L76.6,196.1 L72.7,195.1 L69.1,194.5 L67.4,193.7 L65.9,191.7 L65.0,191.7 L63.3,192.4 L61.0,192.9 L59.5,192.5 L58.5,192.6 L57.9,192.9 L57.6,192.6 L57.2,190.8 L56.4,190.4 L55.1,190.0 L54.3,190.2 L53.7,191.0 L52.9,191.7 L52.0,191.4 L49.6,187.4 L49.0,186.5 L48.8,185.7 L48.2,184.2 L46.7,182.8 L45.2,182.3 L44.5,182.4 L44.5,182.4 L44.6,180.6 L45.1,177.9 L45.7,176.5 L46.5,175.4 L47.2,174.5 L47.4,173.1 L47.3,171.8 L46.4,171.5 L44.1,170.5 L42.8,169.5 L41.8,168.1 L40.5,166.3 L40.0,164.5 L39.9,162.6 L40.1,161.8 L40.1,161.8 L40.2,161.2 L41.2,158.4 L44.8,155.7 L44.5,153.2 L44.4,151.5 L43.5,150.5 L41.8,150.1 L41.3,149.4 L41.1,148.7 L42.4,147.1 L40.8,145.8 L40.1,144.5 L37.9,142.9 L37.7,142.3 L37.7,142.3 L38.8,137.6 L37.9,136.2 L37.0,135.5 L35.8,135.1 L35.2,134.4 L35.1,133.7 L35.3,133.2 L36.6,133.4 L37.0,132.9 L40.3,130.1 L40.5,129.6 L40.0,129.2 L39.4,129.1 L39.3,128.5 L39.3,127.7 L41.0,123.7 L41.6,122.0 L41.6,120.7 L41.6,119.5 L40.5,117.7 L39.5,116.2 L39.5,114.9 L38.9,114.3 L36.8,111.1 L36.8,109.8 L37.9,108.9 L39.5,108.3 L40.1,107.7 L41.0,107.4 L43.6,108.3 L44.7,109.2 L45.1,109.0 L46.0,108.1 L47.8,108.3 L52.2,106.5 L52.8,105.7 L53.3,104.7 L53.4,104.4 L51.7,102.6 L51.6,102.0 L51.8,101.3 L52.3,100.7 L53.3,100.3 L54.4,99.5 L56.8,97.4 L57.5,95.5 L57.8,93.5 L57.9,92.0 L57.2,90.8 L56.6,90.0 L55.7,90.2 L53.9,90.1 L52.3,89.4 L51.4,88.3 L51.2,87.4 L51.6,86.8 L51.8,86.0 L51.5,85.3 L51.6,84.7 L52.3,84.1 L57.5,84.2 L57.8,83.6 L58.2,80.7 L59.4,76.4 L60.7,73.9 L60.9,72.9 L60.8,67.1 L61.0,64.1 L61.0,64.1 L60.1,62.8 L58.2,61.3 L58.7,58.1 L59.3,55.7 L61.2,52.6 L62.7,51.8 L69.4,51.3 L76.7,51.5 L79.8,56.1 L78.7,58.4 L80.4,59.5 L81.3,59.1 L82.0,57.1 L82.4,54.8 L83.0,54.1 L85.3,55.8 L86.1,57.0 L86.1,60.7 L87.0,55.7 L86.3,52.1 L86.8,48.8 L87.7,46.9 L88.6,45.8 L94.0,47.0 L100.0,46.4 L102.2,47.7 L107.3,54.3 L108.9,55.4 L111.1,55.7 L108.2,54.3 L102.0,46.3 L100.2,45.3 L97.3,45.1 L95.5,44.3 L94.4,43.0 L94.1,42.0 L94.2,33.9 L93.0,32.7 L91.7,32.3 L90.8,32.8 L89.1,32.9 L88.7,31.1 L89.1,29.7 L92.7,28.8 L95.0,27.5 L95.1,25.3 L93.6,23.6 L91.9,20.5 L89.8,17.5 L89.6,14.1 L89.6,14.1 L93.2,14.1 L94.1,14.3 L99.5,15.9 L100.9,17.0 L102.5,17.1 L105.6,16.0 L107.9,15.6 L108.7,16.2 L110.0,16.5 L110.3,16.5 L110.3,16.5 L110.4,17.0 L113.2,17.9 L114.4,19.2 L115.7,21.1 L115.9,24.0 L114.2,26.1 L112.8,27.4 L118.1,26.9 L118.6,28.1 L119.4,29.4 L122.3,28.4 L129.5,32.2 L133.8,30.4 L135.0,30.3 L135.9,33.3 L134.8,36.4 L131.0,39.6 L131.9,41.7 L133.1,42.1 L136.7,41.7 L142.4,43.7 L143.6,43.1 L148.3,38.5 L150.1,37.5 L156.2,36.8 L157.4,35.0 L159.8,33.2 L161.4,31.3 L165.2,27.5 L169.1,28.2 L171.4,28.9 L174.0,29.3 L176.3,33.3 L182.1,37.6 L187.5,37.2 L189.4,41.4 L190.2,46.5 L191.9,48.1 L193.3,49.1 L197.7,50.3 L197.8,50.3 L197.8,50.3 L197.9,51.0 L198.2,53.6 L198.6,55.7 L200.9,64.1 L200.8,66.2 L200.7,66.7 L200.0,69.6 L198.5,72.0 L196.6,73.4 L195.5,74.9 L195.3,76.6 L197.7,79.6 L202.8,83.8 L204.8,87.4 L203.9,90.4 L203.5,92.6 L203.9,94.1 L204.7,95.2 L206.0,96.0 L206.5,97.3 L206.2,99.1 L206.5,100.3 L207.4,101.2 L207.3,101.6 L206.9,102.8 L206.2,105.1 L205.9,106.7 L204.4,108.9 L204.9,110.9 L206.0,113.0 L206.9,114.2 L207.2,115.2 L206.6,117.8 L206.9,118.5 L210.4,120.3 L210.9,121.2 L211.3,123.0 L212.5,126.8 L211.5,131.7 L210.6,134.4 L208.6,138.6 L208.5,139.0 L208.5,139.0 L208.3,139.5 L207.6,140.2 L206.8,140.3 L205.5,139.8 L204.7,139.1 L204.9,137.3 L204.4,137.1 L203.7,136.1 L203.4,134.8 L202.6,134.3 L199.9,133.8 L199.0,133.5 L198.3,133.7 L197.7,134.6 L198.1,135.4 L198.6,136.1 L200.1,137.3 L200.0,137.8 L196.7,138.9 L194.7,140.1 L192.8,140.8 L190.8,142.0 L187.0,143.4 L184.2,143.8 L183.6,144.1 L182.6,146.5 L181.9,146.9 L181.2,146.7 L180.7,146.3 L180.0,146.6 L179.4,147.4 L178.6,147.7 L178.1,147.7 L177.0,149.8 L173.7,150.4 L173.4,151.4 L172.8,152.7 L172.3,152.9 L170.9,152.5 L168.9,152.2 L167.7,152.9 L166.4,153.3 L164.7,153.4 L162.9,154.7 L161.0,157.1 L160.0,159.2 L159.4,159.9 L158.5,158.0 L157.4,156.6 L156.7,155.9 L156.0,155.9 L155.8,156.2 L155.8,157.2 L156.5,158.9 L157.4,160.1 L157.6,160.9 L158.1,162.5 L159.4,164.2 L161.5,165.5 L162.9,166.9 L164.0,168.8 L164.0,169.3 L163.7,170.0 L163.2,170.7 L162.8,171.7 L161.6,173.6 L162.0,174.4 L162.9,175.4 L163.8,176.6 L164.8,178.6 L166.3,182.2 L167.3,183.6 L168.6,185.1 L169.8,186.2 L171.8,186.2 L173.9,188.4 L176.2,191.5 L177.9,192.9 L179.0,193.4 L180.0,194.5 L180.9,196.2 L181.2,197.1 L182.0,197.8 L184.1,197.7 L186.7,200.2 L188.3,202.1 L189.2,203.6 L189.2,203.6 L189.0,204.2 L188.9,206.1 L188.9,208.1 L188.7,209.1 L187.5,210.5 L186.9,210.8 L186.5,211.1 L182.9,209.3 L182.6,209.6 L182.3,209.8 L181.3,215.1 L180.7,216.1 L179.7,217.1 L177.6,218.0 L176.2,218.4 L175.0,218.8 L171.4,221.0 L169.8,222.3 L168.8,224.0 L168.8,225.0 L170.5,227.7 L172.6,230.7 L172.6,233.2 L171.7,235.1 L171.4,235.9 L172.1,236.2 L173.2,236.3 L174.1,236.6 L174.5,237.9 L174.4,240.3 L174.0,242.5 L173.7,243.4 L172.8,243.5 L171.1,242.5 L169.8,241.4 L169.2,240.8 L169.2,240.0 L169.5,239.4 L169.0,238.4 L167.3,237.5 L165.6,237.9 L164.3,238.5 L163.4,238.5 L162.5,237.6 L161.1,236.9 L159.2,236.5 L158.1,236.0 L157.8,236.3 L158.0,238.2 L157.6,239.1 L148.6,240.2 L145.8,241.2 L143.8,242.5 L142.3,243.1 L141.9,244.0 L140.5,245.1 L138.8,245.4 L138.4,245.1 L137.3,245.5 L135.5,246.0 L134.3,245.9 L133.8,245.0 L132.7,243.7 L132.2,242.7 L132.2,242.1 L129.7,242.0 L128.1,241.3 L124.6,241.5 L123.8,241.1 L123.7,241.5 L123.1,245.3 L122.5,246.9 L121.4,248.5 L120.0,249.4 L118.9,249.6 L118.9,248.4 L119.2,246.9 L118.4,246.6 L117.2,246.5 L116.6,246.0 L116.8,245.0 L116.5,244.3 L116.0,243.6 L114.7,242.6 L112.2,241.1 L110.5,240.4 L109.8,241.1 L108.5,241.9 L106.6,241.7 L106.1,242.0 Z M187.2,30.2 L187.7,32.2 L187.1,33.3 L185.0,31.5 L182.7,31.5 L181.5,34.3 L180.5,34.4 L177.1,31.9 L176.6,30.7 L176.5,29.7 L177.0,26.2 L176.9,25.2 L177.9,24.0 L178.1,22.3 L180.0,20.5 L181.6,20.4 L182.2,21.9 L183.0,23.0 L185.7,24.2 L186.2,24.7 L186.4,25.4 L185.1,26.9 L184.7,27.6 L185.1,28.9 L187.2,30.2 Z M196.9,43.5 L196.6,44.5 L197.0,46.0 L197.0,46.0 L196.1,45.9 L193.8,46.2 L191.4,45.7 L190.9,43.9 L191.3,42.1 L190.3,40.9 L189.4,40.1 L189.3,39.1 L189.4,38.0 L193.6,40.9 L196.9,43.5 Z M140.2,29.1 L137.2,29.1 L136.1,27.9 L134.9,27.6 L135.5,26.0 L136.4,25.5 L139.2,26.5 L140.1,28.4 L140.2,29.1 Z M82.5,17.7 L82.1,18.3 L82.3,13.9 L84.4,9.3 L85.3,9.4 L84.4,10.6 L84.1,11.5 L83.8,13.3 L83.9,14.2 L88.8,14.4 L88.2,15.2 L83.3,15.8 L82.5,17.7 Z M88.0,20.0 L87.2,20.7 L85.4,20.6 L84.3,19.9 L84.7,19.2 L85.7,18.6 L86.4,18.5 L87.7,18.8 L88.0,20.0 Z" fill="#f6e2bd"/></g>
+    <path d="M106.1,242.0 L102.7,239.7 L99.5,237.4 L98.4,237.4 L93.6,237.9 L93.5,237.7 L92.7,236.4 L91.9,236.0 L91.5,236.3 L91.2,236.6 L90.7,236.5 L88.5,234.5 L87.7,234.2 L86.4,234.5 L85.0,235.6 L84.4,236.9 L84.5,237.7 L85.3,238.0 L87.3,237.8 L87.5,238.0 L87.6,238.5 L87.4,238.9 L85.8,239.3 L85.4,239.7 L84.9,239.9 L84.6,240.0 L82.9,239.4 L80.4,239.4 L78.4,240.4 L75.1,240.8 L70.7,240.6 L69.1,239.9 L69.1,239.9 L68.1,239.4 L67.4,237.4 L67.7,234.3 L68.7,230.2 L69.0,227.2 L68.5,225.3 L69.1,222.4 L70.9,218.6 L72.0,214.6 L72.6,210.4 L73.4,207.6 L75.1,205.7 L79.0,200.3 L79.3,199.9 L79.2,197.2 L78.1,196.9 L76.6,196.1 L72.7,195.1 L69.1,194.5 L67.4,193.7 L65.9,191.7 L65.0,191.7 L63.3,192.4 L61.0,192.9 L59.5,192.5 L58.5,192.6 L57.9,192.9 L57.6,192.6 L57.2,190.8 L56.4,190.4 L55.1,190.0 L54.3,190.2 L53.7,191.0 L52.9,191.7 L52.0,191.4 L49.6,187.4 L49.0,186.5 L48.8,185.7 L48.2,184.2 L46.7,182.8 L45.2,182.3 L44.5,182.4 L44.5,182.4 L44.6,180.6 L45.1,177.9 L45.7,176.5 L46.5,175.4 L47.2,174.5 L47.4,173.1 L47.3,171.8 L46.4,171.5 L44.1,170.5 L42.8,169.5 L41.8,168.1 L40.5,166.3 L40.0,164.5 L39.9,162.6 L40.1,161.8 L40.1,161.8 L40.2,161.2 L41.2,158.4 L44.8,155.7 L44.5,153.2 L44.4,151.5 L43.5,150.5 L41.8,150.1 L41.3,149.4 L41.1,148.7 L42.4,147.1 L40.8,145.8 L40.1,144.5 L37.9,142.9 L37.7,142.3 L37.7,142.3 L38.8,137.6 L37.9,136.2 L37.0,135.5 L35.8,135.1 L35.2,134.4 L35.1,133.7 L35.3,133.2 L36.6,133.4 L37.0,132.9 L40.3,130.1 L40.5,129.6 L40.0,129.2 L39.4,129.1 L39.3,128.5 L39.3,127.7 L41.0,123.7 L41.6,122.0 L41.6,120.7 L41.6,119.5 L40.5,117.7 L39.5,116.2 L39.5,114.9 L38.9,114.3 L36.8,111.1 L36.8,109.8 L37.9,108.9 L39.5,108.3 L40.1,107.7 L41.0,107.4 L43.6,108.3 L44.7,109.2 L45.1,109.0 L46.0,108.1 L47.8,108.3 L52.2,106.5 L52.8,105.7 L53.3,104.7 L53.4,104.4 L51.7,102.6 L51.6,102.0 L51.8,101.3 L52.3,100.7 L53.3,100.3 L54.4,99.5 L56.8,97.4 L57.5,95.5 L57.8,93.5 L57.9,92.0 L57.2,90.8 L56.6,90.0 L55.7,90.2 L53.9,90.1 L52.3,89.4 L51.4,88.3 L51.2,87.4 L51.6,86.8 L51.8,86.0 L51.5,85.3 L51.6,84.7 L52.3,84.1 L57.5,84.2 L57.8,83.6 L58.2,80.7 L59.4,76.4 L60.7,73.9 L60.9,72.9 L60.8,67.1 L61.0,64.1 L61.0,64.1 L60.1,62.8 L58.2,61.3 L58.7,58.1 L59.3,55.7 L61.2,52.6 L62.7,51.8 L69.4,51.3 L76.7,51.5 L79.8,56.1 L78.7,58.4 L80.4,59.5 L81.3,59.1 L82.0,57.1 L82.4,54.8 L83.0,54.1 L85.3,55.8 L86.1,57.0 L86.1,60.7 L87.0,55.7 L86.3,52.1 L86.8,48.8 L87.7,46.9 L88.6,45.8 L94.0,47.0 L100.0,46.4 L102.2,47.7 L107.3,54.3 L108.9,55.4 L111.1,55.7 L108.2,54.3 L102.0,46.3 L100.2,45.3 L97.3,45.1 L95.5,44.3 L94.4,43.0 L94.1,42.0 L94.2,33.9 L93.0,32.7 L91.7,32.3 L90.8,32.8 L89.1,32.9 L88.7,31.1 L89.1,29.7 L92.7,28.8 L95.0,27.5 L95.1,25.3 L93.6,23.6 L91.9,20.5 L89.8,17.5 L89.6,14.1 L89.6,14.1 L93.2,14.1 L94.1,14.3 L99.5,15.9 L100.9,17.0 L102.5,17.1 L105.6,16.0 L107.9,15.6 L108.7,16.2 L110.0,16.5 L110.3,16.5 L110.3,16.5 L110.4,17.0 L113.2,17.9 L114.4,19.2 L115.7,21.1 L115.9,24.0 L114.2,26.1 L112.8,27.4 L118.1,26.9 L118.6,28.1 L119.4,29.4 L122.3,28.4 L129.5,32.2 L133.8,30.4 L135.0,30.3 L135.9,33.3 L134.8,36.4 L131.0,39.6 L131.9,41.7 L133.1,42.1 L136.7,41.7 L142.4,43.7 L143.6,43.1 L148.3,38.5 L150.1,37.5 L156.2,36.8 L157.4,35.0 L159.8,33.2 L161.4,31.3 L165.2,27.5 L169.1,28.2 L171.4,28.9 L174.0,29.3 L176.3,33.3 L182.1,37.6 L187.5,37.2 L189.4,41.4 L190.2,46.5 L191.9,48.1 L193.3,49.1 L197.7,50.3 L197.8,50.3 L197.8,50.3 L197.9,51.0 L198.2,53.6 L198.6,55.7 L200.9,64.1 L200.8,66.2 L200.7,66.7 L200.0,69.6 L198.5,72.0 L196.6,73.4 L195.5,74.9 L195.3,76.6 L197.7,79.6 L202.8,83.8 L204.8,87.4 L203.9,90.4 L203.5,92.6 L203.9,94.1 L204.7,95.2 L206.0,96.0 L206.5,97.3 L206.2,99.1 L206.5,100.3 L207.4,101.2 L207.3,101.6 L206.9,102.8 L206.2,105.1 L205.9,106.7 L204.4,108.9 L204.9,110.9 L206.0,113.0 L206.9,114.2 L207.2,115.2 L206.6,117.8 L206.9,118.5 L210.4,120.3 L210.9,121.2 L211.3,123.0 L212.5,126.8 L211.5,131.7 L210.6,134.4 L208.6,138.6 L208.5,139.0 L208.5,139.0 L208.3,139.5 L207.6,140.2 L206.8,140.3 L205.5,139.8 L204.7,139.1 L204.9,137.3 L204.4,137.1 L203.7,136.1 L203.4,134.8 L202.6,134.3 L199.9,133.8 L199.0,133.5 L198.3,133.7 L197.7,134.6 L198.1,135.4 L198.6,136.1 L200.1,137.3 L200.0,137.8 L196.7,138.9 L194.7,140.1 L192.8,140.8 L190.8,142.0 L187.0,143.4 L184.2,143.8 L183.6,144.1 L182.6,146.5 L181.9,146.9 L181.2,146.7 L180.7,146.3 L180.0,146.6 L179.4,147.4 L178.6,147.7 L178.1,147.7 L177.0,149.8 L173.7,150.4 L173.4,151.4 L172.8,152.7 L172.3,152.9 L170.9,152.5 L168.9,152.2 L167.7,152.9 L166.4,153.3 L164.7,153.4 L162.9,154.7 L161.0,157.1 L160.0,159.2 L159.4,159.9 L158.5,158.0 L157.4,156.6 L156.7,155.9 L156.0,155.9 L155.8,156.2 L155.8,157.2 L156.5,158.9 L157.4,160.1 L157.6,160.9 L158.1,162.5 L159.4,164.2 L161.5,165.5 L162.9,166.9 L164.0,168.8 L164.0,169.3 L163.7,170.0 L163.2,170.7 L162.8,171.7 L161.6,173.6 L162.0,174.4 L162.9,175.4 L163.8,176.6 L164.8,178.6 L166.3,182.2 L167.3,183.6 L168.6,185.1 L169.8,186.2 L171.8,186.2 L173.9,188.4 L176.2,191.5 L177.9,192.9 L179.0,193.4 L180.0,194.5 L180.9,196.2 L181.2,197.1 L182.0,197.8 L184.1,197.7 L186.7,200.2 L188.3,202.1 L189.2,203.6 L189.2,203.6 L189.0,204.2 L188.9,206.1 L188.9,208.1 L188.7,209.1 L187.5,210.5 L186.9,210.8 L186.5,211.1 L182.9,209.3 L182.6,209.6 L182.3,209.8 L181.3,215.1 L180.7,216.1 L179.7,217.1 L177.6,218.0 L176.2,218.4 L175.0,218.8 L171.4,221.0 L169.8,222.3 L168.8,224.0 L168.8,225.0 L170.5,227.7 L172.6,230.7 L172.6,233.2 L171.7,235.1 L171.4,235.9 L172.1,236.2 L173.2,236.3 L174.1,236.6 L174.5,237.9 L174.4,240.3 L174.0,242.5 L173.7,243.4 L172.8,243.5 L171.1,242.5 L169.8,241.4 L169.2,240.8 L169.2,240.0 L169.5,239.4 L169.0,238.4 L167.3,237.5 L165.6,237.9 L164.3,238.5 L163.4,238.5 L162.5,237.6 L161.1,236.9 L159.2,236.5 L158.1,236.0 L157.8,236.3 L158.0,238.2 L157.6,239.1 L148.6,240.2 L145.8,241.2 L143.8,242.5 L142.3,243.1 L141.9,244.0 L140.5,245.1 L138.8,245.4 L138.4,245.1 L137.3,245.5 L135.5,246.0 L134.3,245.9 L133.8,245.0 L132.7,243.7 L132.2,242.7 L132.2,242.1 L129.7,242.0 L128.1,241.3 L124.6,241.5 L123.8,241.1 L123.7,241.5 L123.1,245.3 L122.5,246.9 L121.4,248.5 L120.0,249.4 L118.9,249.6 L118.9,248.4 L119.2,246.9 L118.4,246.6 L117.2,246.5 L116.6,246.0 L116.8,245.0 L116.5,244.3 L116.0,243.6 L114.7,242.6 L112.2,241.1 L110.5,240.4 L109.8,241.1 L108.5,241.9 L106.6,241.7 L106.1,242.0 Z M187.2,30.2 L187.7,32.2 L187.1,33.3 L185.0,31.5 L182.7,31.5 L181.5,34.3 L180.5,34.4 L177.1,31.9 L176.6,30.7 L176.5,29.7 L177.0,26.2 L176.9,25.2 L177.9,24.0 L178.1,22.3 L180.0,20.5 L181.6,20.4 L182.2,21.9 L183.0,23.0 L185.7,24.2 L186.2,24.7 L186.4,25.4 L185.1,26.9 L184.7,27.6 L185.1,28.9 L187.2,30.2 Z M196.9,43.5 L196.6,44.5 L197.0,46.0 L197.0,46.0 L196.1,45.9 L193.8,46.2 L191.4,45.7 L190.9,43.9 L191.3,42.1 L190.3,40.9 L189.4,40.1 L189.3,39.1 L189.4,38.0 L193.6,40.9 L196.9,43.5 Z M140.2,29.1 L137.2,29.1 L136.1,27.9 L134.9,27.6 L135.5,26.0 L136.4,25.5 L139.2,26.5 L140.1,28.4 L140.2,29.1 Z M82.5,17.7 L82.1,18.3 L82.3,13.9 L84.4,9.3 L85.3,9.4 L84.4,10.6 L84.1,11.5 L83.8,13.3 L83.9,14.2 L88.8,14.4 L88.2,15.2 L83.3,15.8 L82.5,17.7 Z M88.0,20.0 L87.2,20.7 L85.4,20.6 L84.3,19.9 L84.7,19.2 L85.7,18.6 L86.4,18.5 L87.7,18.8 L88.0,20.0 Z" fill="none" stroke="#8fa9bd" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M133.7,43.5 L131.8,55.9 L133.7,68.2 L128.9,77.5 L133.7,86.8 L126.9,96.0 L129.8,105.3 L119.2,114.6 L116.3,123.8 L114.3,133.1 L119.2,142.4 L126.9,151.6 L136.6,153.2 L146.3,154.7 L155.0,156.3" fill="none" stroke="#d9534f" stroke-width="2" stroke-dasharray="6 4"/>
+  </g>
+  <text x="330.0" y="168.0" font-size="24" fill="#4a6b85" text-anchor="middle" font-weight="800">West</text>
+  <text x="452.0" y="130.0" font-size="24" fill="#9a6a12" text-anchor="middle" font-weight="800">East</text>
+
+  <!-- US-Mexico -->
+  <g transform="translate(580,58)">
+    <path d="M260.4,8.0 L260.4,145.7 L258.7,145.9 L257.0,147.7 L255.6,151.1 L255.0,153.2 L255.2,154.2 L254.8,154.9 L253.9,155.3 L252.9,156.3 L252.0,157.8 L250.8,158.5 L249.6,158.5 L247.2,157.3 L243.8,155.0 L241.1,153.6 L239.2,153.1 L237.4,152.0 L235.9,150.4 L234.5,149.4 L233.3,148.9 L231.8,147.1 L230.1,144.2 L229.3,141.9 L229.3,139.5 L227.1,134.3 L225.9,132.0 L225.1,130.9 L223.4,129.7 L220.9,128.2 L217.4,125.3 L213.2,121.0 L210.2,118.4 L208.4,117.5 L206.9,115.9 L205.6,113.7 L204.3,112.3 L204.2,112.2 L204.0,112.2 L200.9,112.1 L197.8,112.1 L194.7,112.1 L191.5,112.1 L188.4,112.1 L185.3,112.1 L182.2,112.0 L179.0,112.0 L179.0,113.9 L179.0,115.8 L179.0,117.7 L179.0,119.5 L174.0,119.5 L168.9,119.5 L163.9,119.6 L158.9,119.6 L153.8,119.6 L148.8,119.6 L143.8,119.6 L138.7,119.6 L132.0,117.1 L125.2,114.7 L118.5,112.2 L111.7,109.7 L104.9,107.2 L98.2,104.8 L91.5,102.3 L84.7,99.8 L85.4,98.9 L86.3,96.3 L84.6,96.5 L80.6,96.9 L76.5,97.2 L72.4,97.6 L68.3,98.0 L64.3,98.3 L60.2,98.7 L56.1,99.0 L52.0,99.4 L52.0,99.4 L52.0,99.3 L51.9,97.5 L51.3,96.8 L50.4,97.2 L50.0,94.8 L50.3,93.7 L50.1,92.6 L49.3,89.9 L47.2,86.7 L42.7,82.6 L40.3,81.2 L39.6,80.6 L39.6,8.0 Z" fill="#cfe3f2" stroke="#8fa9bd" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M52.0,99.4 L56.1,99.0 L60.2,98.7 L64.3,98.3 L68.3,98.0 L72.4,97.6 L76.5,97.2 L80.6,96.9 L84.6,96.5 L86.3,96.3 L85.4,98.9 L84.7,99.8 L91.5,102.3 L98.2,104.8 L104.9,107.2 L111.7,109.7 L118.5,112.2 L125.2,114.7 L132.0,117.1 L138.7,119.6 L143.8,119.6 L148.8,119.6 L153.8,119.6 L158.9,119.6 L163.9,119.6 L168.9,119.5 L174.0,119.5 L179.0,119.5 L179.0,117.7 L179.0,115.8 L179.0,113.9 L179.0,112.0 L182.2,112.0 L185.3,112.1 L188.4,112.1 L191.5,112.1 L194.7,112.1 L197.8,112.1 L200.9,112.1 L204.0,112.2 L204.2,112.2 L204.3,112.3 L205.6,113.7 L206.9,115.9 L208.4,117.5 L210.2,118.4 L213.2,121.0 L217.4,125.3 L220.9,128.2 L223.4,129.7 L225.1,130.9 L225.9,132.0 L227.1,134.3 L229.3,139.5 L229.3,141.9 L230.1,144.2 L231.8,147.1 L233.3,148.9 L234.5,149.4 L235.9,150.4 L237.4,152.0 L239.2,153.1 L241.1,153.6 L243.8,155.0 L247.2,157.3 L249.6,158.5 L250.8,158.5 L252.0,157.8 L252.9,156.3 L253.9,155.3 L254.8,154.9 L255.2,154.2 L255.0,153.2 L255.6,151.1 L257.0,147.7 L258.7,145.9 L260.4,145.7 L260.4,222.0 L176.6,222.0 L175.4,220.9 L172.1,218.9 L171.3,218.2 L170.8,216.4 L170.0,216.3 L169.3,216.8 L167.4,217.3 L166.9,216.7 L166.8,216.1 L168.2,215.5 L169.4,213.7 L169.4,213.1 L168.7,213.8 L167.7,214.6 L166.6,215.1 L165.0,215.4 L164.2,215.2 L163.4,214.8 L162.3,213.2 L161.7,208.1 L162.8,206.3 L164.0,204.5 L165.0,203.5 L165.5,204.3 L166.2,204.4 L165.7,203.5 L164.7,202.7 L164.4,201.8 L164.3,201.1 L163.9,199.7 L160.9,196.7 L158.2,197.0 L157.0,196.9 L156.0,195.8 L155.1,193.9 L154.7,192.3 L154.6,191.4 L154.4,190.6 L149.6,189.2 L148.2,188.0 L146.8,186.5 L146.2,185.3 L145.6,184.4 L145.1,182.8 L144.8,181.0 L145.3,178.6 L146.0,177.5 L142.7,176.6 L141.5,176.6 L140.4,177.0 L139.5,176.4 L137.6,175.7 L135.3,173.3 L132.6,168.8 L129.7,167.3 L128.7,165.7 L127.5,164.4 L126.4,162.6 L126.2,161.9 L125.9,161.4 L124.4,160.2 L122.8,158.1 L122.3,156.5 L121.9,154.0 L120.8,153.1 L119.7,152.7 L119.5,151.5 L119.6,150.8 L119.2,149.5 L116.9,146.4 L115.8,143.9 L115.2,143.1 L114.6,142.0 L114.3,139.7 L113.4,136.7 L111.5,133.2 L110.0,130.9 L109.3,128.5 L109.6,126.1 L109.4,124.6 L109.2,124.2 L109.3,123.7 L109.8,124.0 L110.2,123.6 L110.2,122.0 L109.7,121.6 L108.2,121.1 L107.6,120.8 L104.0,120.1 L102.0,119.2 L101.8,117.2 L100.8,116.3 L100.0,115.7 L97.4,114.5 L96.9,115.1 L96.5,116.3 L95.5,116.5 L94.5,116.5 L92.9,115.8 L88.8,112.8 L87.9,112.3 L86.6,112.0 L86.0,111.6 L83.3,110.0 L83.9,110.8 L84.6,111.7 L85.4,114.2 L84.5,116.0 L84.0,122.4 L84.6,123.7 L85.8,125.7 L86.6,129.0 L86.9,131.4 L87.6,133.3 L87.4,137.8 L87.6,139.1 L88.7,141.4 L90.9,143.5 L91.3,144.6 L94.0,146.2 L95.7,148.3 L99.1,151.1 L100.1,152.3 L103.1,156.7 L103.2,158.1 L103.7,159.7 L105.4,159.4 L106.2,160.6 L106.1,161.2 L106.3,161.6 L107.2,161.5 L107.9,161.8 L109.5,166.6 L110.4,167.3 L111.5,167.6 L112.7,168.1 L112.7,169.3 L112.7,170.3 L113.8,171.7 L113.6,173.6 L114.4,175.3 L114.3,176.9 L114.6,178.1 L117.2,180.9 L120.4,183.2 L121.0,186.1 L122.4,188.8 L123.7,189.5 L125.0,190.6 L124.8,191.7 L124.9,192.4 L126.7,194.6 L127.0,197.3 L128.6,199.1 L129.0,199.2 L129.4,198.9 L128.2,197.1 L127.7,196.0 L127.6,194.2 L128.0,193.9 L131.2,196.8 L131.6,198.9 L132.6,200.2 L132.7,201.8 L133.3,202.8 L133.6,204.2 L134.6,206.5 L134.6,209.8 L135.1,212.2 L137.2,215.8 L138.8,216.5 L139.1,218.3 L140.5,222.0 L123.7,222.0 L124.0,219.9 L124.3,217.2 L124.1,215.8 L123.8,215.6 L123.5,214.8 L123.4,212.5 L122.6,210.1 L119.7,205.0 L117.6,204.1 L115.7,203.3 L110.5,198.9 L109.2,196.7 L108.8,195.4 L108.6,192.8 L107.9,194.3 L106.9,195.4 L104.8,195.3 L102.3,196.6 L100.8,195.4 L100.1,194.1 L98.8,192.5 L97.5,192.2 L96.6,192.1 L95.1,190.1 L93.7,189.5 L91.9,189.3 L90.2,188.3 L89.8,187.2 L89.5,185.6 L88.9,184.7 L86.4,182.9 L84.4,180.9 L82.4,179.6 L81.9,178.5 L81.8,177.8 L84.9,178.0 L88.5,178.8 L90.2,178.6 L91.3,177.8 L92.3,177.3 L92.5,177.9 L92.3,179.0 L93.3,179.9 L94.6,180.7 L95.6,180.6 L94.7,179.8 L94.1,178.0 L94.3,177.4 L94.3,176.5 L93.0,176.7 L92.8,176.3 L94.0,175.0 L95.3,171.5 L95.9,168.1 L94.5,165.1 L92.2,163.0 L87.2,156.9 L84.1,153.8 L83.3,152.6 L82.4,152.0 L80.0,151.3 L77.9,149.6 L74.3,147.1 L72.8,145.8 L71.7,142.8 L70.9,142.4 L71.1,140.3 L70.8,136.7 L70.1,135.7 L68.2,134.8 L67.7,132.3 L67.6,130.0 L67.2,128.3 L63.9,125.5 L63.7,124.2 L63.7,122.9 L63.4,121.6 L61.6,119.0 L59.4,116.7 L58.7,115.6 L58.6,113.4 L57.8,112.7 L58.1,112.6 L58.8,112.7 L59.2,112.4 L59.3,110.8 L56.0,108.4 L55.1,105.0 L53.4,103.2 L53.0,102.6 L52.0,99.4 Z M108.6,157.6 L108.5,157.9 L107.1,156.9 L103.8,153.3 L102.6,151.6 L102.4,150.7 L102.5,148.9 L103.6,149.1 L104.9,150.3 L105.5,151.5 L105.5,152.8 L108.0,153.4 L108.3,156.3 L108.6,157.6 Z M79.9,174.0 L79.7,174.6 L77.3,173.4 L78.7,171.5 L78.4,169.5 L79.1,169.0 L79.6,169.7 L80.2,172.3 L79.9,174.0 Z M122.2,158.4 L121.1,162.3 L120.0,162.3 L117.8,161.0 L117.5,160.2 L118.4,155.7 L119.0,155.1 L121.0,154.5 L121.4,155.0 L121.6,156.4 L122.2,158.4 Z M86.7,113.2 L86.2,113.3 L85.4,112.5 L85.4,111.8 L85.6,111.8 L86.5,112.4 L86.8,112.9 L86.7,113.2 Z M137.9,208.3 L138.1,208.9 L138.0,209.0 L137.4,208.6 L136.4,211.1 L136.1,211.4 L136.7,207.9 L137.3,207.5 L138.0,207.4 L137.9,208.3 Z M122.6,222.0 L122.8,220.6 L123.2,221.6 L123.1,222.0 Z" fill="#f6e2bd" stroke="#c79a5a" stroke-width="1.2" stroke-linejoin="round"/>
+    <circle cx="140.2" cy="119.5" r="6" fill="#d9534f" stroke="#fff" stroke-width="2"/>
+    <text x="150.2" y="111.5" font-size="24" font-weight="800" fill="#d9534f">Nogales</text>
+  </g>
+  <text x="668.0" y="108.0" font-size="24" fill="#4a6b85" text-anchor="middle" font-weight="700">United States</text>
+  <text x="690.0" y="232.0" font-size="24" fill="#9a6a12" text-anchor="middle" font-weight="700">Mexico</text>
+
+  <text x="128.0" y="340.0" font-size="22" fill="#1CADE4" text-anchor="middle" font-weight="800">&asymp;20&times; income per head</text>
+  <text x="128.0" y="376.0" font-size="22" fill="#5b7288" text-anchor="middle" font-weight="400">same people, same land</text>
+  <text x="395.0" y="340.0" font-size="22" fill="#1CADE4" text-anchor="middle" font-weight="800">&asymp;2&times; income per head</text>
+  <text x="395.0" y="376.0" font-size="22" fill="#5b7288" text-anchor="middle" font-weight="400">one nation, one language</text>
+  <text x="730.0" y="340.0" font-size="22" fill="#1CADE4" text-anchor="middle" font-weight="800">&asymp;3&times; income per head</text>
+  <text x="730.0" y="376.0" font-size="22" fill="#5b7288" text-anchor="middle" font-weight="400">one city, one desert, one fence</text>
+</svg></div>
+      <div style="justify-content:center;gap:.7vh;">
+        <div class="card"><h3>A controlled comparison</h3><p>Hold geography, culture and history constant and change <b>one</b> thing: the rules. Where the rules differ, incomes differ &mdash; by 2, 3, 20 times.</p></div>
+        <div class="card"><h3>What &ldquo;institutions&rdquo; means</h3><p>Property rights, honest courts, a stable political system, and enough competition that firms cannot hide behind protection.</p></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">Acemoglu &amp; Robinson, <b>Why Nations Fail</b> (2012): the mainstream explanation for long-run income differences is <b>institutions</b>, not geography or culture.</span>
+      <ul class="tight"><li>The German inner border is drawn approximately; the Korean and Nogales lines are the real ones.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s3">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; From the model to the levers</div>
+  <h2>Read the production function as a policy list</h2>
+
+  <div class="stage" style="gap:1vh;">
+    <div class="plate" style="flex:0 0 auto;padding:.8vh 1.2vw;">
+      <div class="f" style="font-size:clamp(28px,3.2vh,38px);">y = A &middot; k<sup>0.3</sup> &middot; E<sup>0.7</sup></div>
+      <div class="cap">output per worker, &mdash; with human capital E inside the labour term</div>
+    </div>
+    <table class="cmp lev">
+      <colgroup><col style="width:26%"><col style="width:40%"><col style="width:14%"><col style="width:20%"></colgroup>
+      <tr><th style="text-align:left;">In the formula</th><th>What raises it</th><th>How fast it moves</th><th>Ceiling?</th></tr>
+      <tr><td class="l"><b>k</b> &nbsp;physical capital per worker</td><td class="l">investment, infrastructure, a financial system that turns saving into capital</td><td>3&ndash;10 years</td><td class="no">yes &mdash; diminishing returns</td></tr>
+      <tr><td class="l"><b>E</b> &nbsp;human capital per worker</td><td class="l">schooling, health, training, teacher quality</td><td>a decade</td><td class="no">yes &mdash; diminishing too</td></tr>
+      <tr><td class="l"><b>A</b> &nbsp;technology</td><td class="l">research, adoption of existing technology, openness</td><td>decades</td><td class="yes">no ceiling</td></tr>
+      <tr><td class="l"><b>n</b> &nbsp;population growth</td><td class="l">participation, migration, health, childcare</td><td>3&ndash;10 years</td><td class="no">bounded by 100%</td></tr>
+    </table>
+    <div class="s-foot"><div class="hl"><span class="lead">And the arithmetic we already derived: <b>per-capita growth &asymp; growth of output &minus; growth of population</b>.</span>
+      <ul class="tight"><li>Which is why <b>slowing population growth</b> is itself a per-capita growth policy &mdash; the fourth lever, and the one students forget.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s4">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Lever 1 of 4</div>
+  <h2>Lever 1 &mdash; physical capital per worker</h2>
+
+  <div class="stage" style="gap:.9vh;">
+    <div class="split2" style="gap:1.4vw;">
+      <div style="flex:0 0 46%;justify-content:center;gap:.6vh;">
+        <div class="kpis"><div class="kpi"><div class="kv">k&uarr;</div><div class="kl">capital per worker<br>raises y by k<sup>0.3</sup></div></div></div>
+        <div class="card warn"><h3>The catch</h3><p>Diminishing returns. Doubling k raises y by only <b>23%</b>; the fourth doubling buys almost nothing.</p></div>
+      </div>
+      <div style="flex:1 1 0;justify-content:center;gap:.55vh;">
+        <div class="reason"><div class="rn">1</div><div class="rt"><b>Public infrastructure.</b> Roads, ports, power, broadband &mdash; the capital firms will not build alone.</div></div>
+        <div class="reason"><div class="rn">2</div><div class="rt"><b>Mobilise domestic saving.</b> Loanable funds: saving is what finances investment.</div></div>
+        <div class="reason"><div class="rn">3</div><div class="rt"><b>A financial system people trust.</b> If depositors hoard gold, saving never becomes capital.</div></div>
+        <div class="reason"><div class="rn">4</div><div class="rt"><b>Foreign capital and FDI.</b> Borrowing abroad buys machines today and interest tomorrow.</div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">Capital deepening is the <b>fastest</b> lever and the one that <b>runs out</b> first.</span>
+      <ul class="tight"><li>Hence the growth-accounting result: capital alone explains about half of a 2% growth rate, not all of it.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s5">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Lever 2 of 4</div>
+  <h2>Lever 2 &mdash; human capital per worker</h2>
+
+  <div class="stage" style="gap:.9vh;">
+    <div class="split2" style="gap:1.4vw;">
+      <div style="flex:0 0 46%;justify-content:center;gap:.6vh;">
+        <div class="kpis"><div class="kpi g"><div class="kv">E&uarr;</div><div class="kl">skill per worker<br>raises y by E<sup>0.7</sup></div></div></div>
+        <div class="card"><h3>Why it is the big one</h3><p>The exponent is <b>0.7</b> &mdash; twice as large as capital&rsquo;s. A 10% rise in E lifts output per worker by about <b>7%</b>.</p></div>
+        <div class="card warn"><h3>The catch</h3><p>Diminishing returns, and <b>quality</b> matters more than years. More years of bad schooling is not more human capital.</p></div>
+      </div>
+      <div style="flex:1 1 0;justify-content:center;gap:.55vh;">
+        <div class="reason"><div class="rn">1</div><div class="rt"><b>Universal basic schooling.</b> In rich countries the government pays for the bulk of primary and secondary education &mdash; which is why schooling is a policy variable.</div></div>
+        <div class="reason"><div class="rn">2</div><div class="rt"><b>Teachers, not just buildings.</b> Enrolment without learning does not raise E.</div></div>
+        <div class="reason"><div class="rn">3</div><div class="rt"><b>Health.</b> Clean water and disease control raise the productivity of every hour worked.</div></div>
+        <div class="reason"><div class="rn">4</div><div class="rt"><b>Training and mobility.</b> Skills that firms cannot capture alone are under-supplied by the market.</div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">Human capital is the slowest <b>reliable</b> lever: a cohort takes twenty years to pass through school.</span>
+      <ul class="tight"><li>But it compounds: better-educated parents raise better-educated children, so the effect outlives the policy.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s6">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Lever 3 of 4</div>
+  <h2>Lever 3 &mdash; technology</h2>
+
+  <div class="stage" style="gap:.9vh;">
+    <div class="split2" style="gap:1.4vw;">
+      <div style="flex:0 0 46%;justify-content:center;gap:.6vh;">
+        <div class="kpis"><div class="kpi a"><div class="kv">A&uarr;</div><div class="kl">total factor productivity<br>lifts the whole function</div></div></div>
+        <div class="card"><h3>No ceiling</h3><p>It is the only term that raises output for <b>every</b> k and <b>every</b> E &mdash; the only source of permanent growth.</p></div>
+        <div class="card warn"><h3>The catch</h3><p>A government cannot decree a discovery. It can fund the inputs, and it can speed up <b>adoption</b> of technology that already exists.</p></div>
+      </div>
+      <div style="flex:1 1 0;justify-content:center;gap:.55vh;">
+        <div class="reason"><div class="rn">1</div><div class="rt"><b>Fund basic science.</b> Firms cannot capture the returns to research with no commercial case &mdash; so it is publicly funded or not done.</div></div>
+        <div class="reason"><div class="rn">2</div><div class="rt"><b>R&amp;D tax credits and grants.</b> They shift some of the risk of applied research onto the state.</div></div>
+        <div class="reason"><div class="rn">3</div><div class="rt"><b>Adoption.</b> Most of the US productivity surge after 1995 was firms learning to <b>use</b> IT, not inventing it.</div></div>
+        <div class="reason"><div class="rn">4</div><div class="rt"><b>Openness.</b> Trade and foreign investment are the fastest way to import A.</div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">Technology is the only lever with no ceiling &mdash; and the one with the longest and least predictable lag.</span></div></div>
+  </div>
+</section>
+<section class="slide" id="s7">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Lever 4 of 4</div>
+  <h2>Lever 4 &mdash; the number of people</h2>
+
+  <div class="stage" style="gap:.9vh;">
+    <div class="split2" style="gap:1.4vw;">
+      <div style="flex:0 0 46%;justify-content:center;gap:.6vh;">
+        <div class="kpis"><div class="kpi"><div class="kv">n&darr;</div><div class="kl">slower population growth<br>raises GDP <b>per person</b></div></div></div>
+        <div class="card"><h3>Two different things</h3><p>Raising <b>L</b> (more workers) raises total GDP. Raising <b>L faster than G</b> lowers GDP per person.</p></div>
+        <div class="verdict a">If the target is income per head, controlling population is a growth policy.</div>
+      </div>
+      <div style="flex:1 1 0;justify-content:center;gap:.55vh;">
+        <div class="reason"><div class="rn">1</div><div class="rt"><b>Participation.</b> Female and older workers: childcare, transport, retirement rules. (US 67.2% &rarr; 62.4%, and growth fell with it.)</div></div>
+        <div class="reason"><div class="rn">2</div><div class="rt"><b>Demographics.</b> A falling birth rate shrinks tomorrow&rsquo;s labour force but raises capital per worker today.</div></div>
+        <div class="reason"><div class="rn">3</div><div class="rt"><b>Migration.</b> The fastest lever of all &mdash; and the most politically costly.</div></div>
+        <div class="reason"><div class="rn">4</div><div class="rt"><b>Health and longevity.</b> Longer working lives raise L; a larger dependent population lowers output per head.</div></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">This is the lever students forget, because it is not in the &ldquo;productivity&rdquo; story &mdash; it is in the <b>denominator</b>.</span>
+      <ul class="tight"><li>It is also the one with a hard ceiling: the participation rate cannot pass 100%.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s8">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Supply-side fiscal policy</div>
+  <h2>Supply-side fiscal policy moves the supply curves</h2>
+
+  <div class="stage" style="gap:.9vh;">
+    <div class="split2" style="gap:1.3vw;">
+      <div style="flex:0 0 50%;justify-content:center;gap:.4vh;">
+        <div class="plate" style="padding:.6vh .9vw;"><div class="f" style="font-size:clamp(22px,2.3vh,27px);">fiscal policy aimed at <b>SRAS and LRAS</b></div></div>
+        <div class="reason"><div class="rn">1</div><div class="rt"><b>Private-market incentives.</b> Income-tax cuts, investment tax credits, deregulation &mdash; they change what households and firms choose to do.</div></div>
+        <div class="reason"><div class="rn">2</div><div class="rt"><b>Public investment.</b> Education, transport, communication networks &mdash; they raise productivity directly.</div></div>
+      </div>
+      <div style="flex:1 1 0;gap:.2vh;"><svg viewBox="0 0 580 350" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:580px;height:auto;align-self:center;">
+  <defs><marker id="arS" markerWidth="10" markerHeight="10" refX="8" refY="3.4" orient="auto">
+    <path d="M0,0 L8,3.4 L0,6.8 z" fill="#2e9e6b"/></marker></defs>
+  <line x1="64" y1="300" x2="540" y2="300" stroke="#1f2d3d" stroke-width="2.2"/>
+  <line x1="64" y1="300" x2="64" y2="54" stroke="#1f2d3d" stroke-width="2.2"/>
+  <text x="64.0" y="44.0" font-size="24" fill="#5b7288" text-anchor="start" font-weight="400">Price level</text>
+  <text x="302.0" y="332.0" font-size="24" fill="#5b7288" text-anchor="middle" font-weight="400">Real GDP</text>
+  <line x1="278" y1="100" x2="278" y2="300" stroke="#b9c9d6" stroke-width="3" stroke-dasharray="7 5"/>
+  <line x1="368" y1="100" x2="368" y2="300" stroke="#2e9e6b" stroke-width="4.5"/>
+  <polyline points="120,280 420,90" fill="none" stroke="#dcc49a" stroke-width="3" stroke-dasharray="7 5"/>
+  <polyline points="273,280 520,124" fill="none" stroke="#e6a23c" stroke-width="4.5"/>
+  <polyline points="80,90 500,280" fill="none" stroke="#1CADE4" stroke-width="4.5"/>
+  <text x="92.0" y="106.0" font-size="24" fill="#1CADE4" text-anchor="start" font-weight="800">AD</text>
+  <text x="470.0" y="168.0" font-size="24" fill="#9a6a12" text-anchor="start" font-weight="800">SRAS&prime;</text>
+  <text x="378.0" y="96.0" font-size="24" fill="#2e9e6b" text-anchor="start" font-weight="800">LRAS&prime;</text>
+  <path d="M286 84 L358 84" fill="none" stroke="#2e9e6b" stroke-width="2.6" marker-end="url(#arS)"/>
+  <circle cx="278" cy="180" r="7" fill="#fff" stroke="#5b7288" stroke-width="3"/>
+  <circle cx="368" cy="220" r="8" fill="#2e9e6b" stroke="#fff" stroke-width="3"/>
+</svg>
+        <div class="legend" style="justify-content:center;">
+          <span><i style="background:#b9c9d6"></i>before</span>
+          <span><i style="background:#e6a23c"></i>SRAS after</span>
+          <span><i style="background:#2e9e6b"></i>LRAS after</span>
+        </div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">Supply-side policy works <b>mainly through SRAS and LRAS</b>: the same spending buys <b>more output at a lower price level</b>, and potential output rises.</span>
+      <ul class="tight"><li>AD is <b>not assumed frozen</b>: tax and incentive changes also alter what households and firms choose to spend. The growth claim is about <b>capacity</b>, not a pure demand shift.</li>
+      <li>Compare the tax-cut story earlier in this lesson: demand policy raises output in the short run but leaves the price level higher and capacity unchanged.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s9">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; The Laffer curve</div>
+  <h2>Raise the tax &mdash; revenue first rises, then falls</h2>
+
+  <div class="stage" style="gap:.8vh;">
+    <div class="split2" style="gap:1.2vw;">
+      <div style="flex:0 0 50%;gap:.1vh;justify-content:flex-start;">
+        <div class="mini"><b>The market:</b> a higher rate takes more per unit &mdash; but it also sells fewer units.</div>
+        <svg id="lfMarket" viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg"
+             style="width:100%;height:auto;">
+          <line x1="60" y1="250" x2="500" y2="250" stroke="#1f2d3d" stroke-width="2.2"/>
+          <line x1="60" y1="250" x2="60" y2="40" stroke="#1f2d3d" stroke-width="2.2"/>
+          <text x="60.0" y="30.0" font-size="20" fill="#5b7288" text-anchor="start" font-weight="400">Price</text>
+          <text x="280.0" y="280.0" font-size="20" fill="#5b7288" text-anchor="middle" font-weight="400">Quantity</text>
+          <rect id="lfRect" x="60" y="0" width="0" height="0" fill="#1CADE4" opacity=".16"/>
+          <polyline points="60,40 500,250" fill="none" stroke="#1CADE4" stroke-width="4"/>
+          <polyline points="60,250 500,40" fill="none" stroke="#e6a23c" stroke-width="4"/>
+          <text x="72.0" y="68.0" font-size="20" fill="#1CADE4" text-anchor="start" font-weight="800">D</text>
+          <text x="72.0" y="238.0" font-size="20" fill="#9a6a12" text-anchor="start" font-weight="800">S</text>
+          <line id="lfWedge" x1="0" y1="0" x2="0" y2="0" stroke="#d9534f" stroke-width="3.5"/>
+          <circle id="lfQb" cx="0" cy="0" r="6" fill="#d9534f"/>
+          <circle id="lfQs" cx="0" cy="0" r="6" fill="#d9534f"/>
+          <text id="lfQlab" x="0" y="0" font-size="20" font-weight="800" fill="#d9534f"></text>
+        </svg>
+      </div>
+      <div style="flex:1 1 0;gap:.4vh;justify-content:flex-start;">
+        <div class="sld"><div class="sl"><span>Tax per unit</span><b><span id="lfT">25</span></b></div>
+          <input type="range" id="lfR" min="0" max="50" step="1" value="25" oninput="lfDraw()"></div>
+        <svg id="lfCurve" viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg"
+             style="width:100%;height:auto;">
+          <line x1="60" y1="200" x2="500" y2="200" stroke="#1f2d3d" stroke-width="2.2"/>
+          <line x1="60" y1="200" x2="60" y2="20" stroke="#1f2d3d" stroke-width="2.2"/>
+          <text x="60.0" y="30.0" font-size="20" fill="#5b7288" text-anchor="start" font-weight="400">Tax revenue</text>
+          <text x="280.0" y="232.0" font-size="20" fill="#5b7288" text-anchor="middle" font-weight="400">Tax rate (same units)</text>
+          <polyline id="lfLine" points="" fill="none" stroke="#1f2d3d" stroke-width="4"/>
+          <circle id="lfDot" cx="0" cy="0" r="8" fill="#1CADE4" stroke="#fff" stroke-width="3"/>
+          <text id="lfLab" x="0" y="0" font-size="20" font-weight="800" fill="#1CADE4"
+                paint-order="stroke" stroke="#fff" stroke-width="5"></text>
+        </svg>
+        <div class="verdict" id="lfVerdict" style="font-size:clamp(22px,2.2vh,25px);">At a tax of 25 you are at the peak.</div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber"><span class="lead">In 1981 the top US income-tax rate was <b>70%</b>; by 1988 it was <b>28%</b>. Economists still argue about what that did to revenue.</span>
+      <ul class="tight"><li>The curve is hypothetical &mdash; nobody knows where the peak is for a real economy, which is why &ldquo;tax cuts pay for themselves&rdquo; is a claim about <b>where you start</b>.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s10">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; The story</div>
+  <h2>The napkin, the candidate and the tax cut</h2>
+
+  <div class="stage" style="gap:1vh;">
+    <div class="frow beats" style="flex:1;align-items:center;"><div class="beat"><img src="photos/5.4-illustration-1.jpg" alt=""><div class="bx"><div class="by">1974</div><div class="bt">The napkin</div><div class="bd">Arthur Laffer, at a Washington restaurant, sketches a curve on a napkin: cut the rate and revenue may <b>rise</b>.</div></div></div><div class="beat"><img src="photos/5.4-illustration-2.jpg" alt=""><div class="bx"><div class="by">1980</div><div class="bt">The candidate</div><div class="bd">Ronald Reagan campaigns on the idea that taxes are too high to collect.</div></div></div><div class="beat"><img src="photos/5.4-illustration-3.jpg" alt=""><div class="bx"><div class="by">1981&ndash;88</div><div class="bt">The axe</div><div class="bd">The top US income-tax rate falls from <b>70%</b> to <b>50%</b>, then to <b>28%</b> by 1988.</div></div></div><div class="beat"><img src="photos/5.4-illustration-4.jpg" alt=""><div class="bx"><div class="by">Since</div><div class="bt">The argument</div><div class="bd">Revenue did not visibly jump. Economists still disagree &mdash; because nobody knows where the peak is.</div></div></div></div>
+    <div class="plate" style="flex:0 0 auto;padding:1vh 1.2vw;">
+      <div class="f" style="font-size:clamp(26px,3vh,36px);">top rate <b>70%</b> <span style="color:#5b7288">&rarr;</span> <b>50%</b> <span style="color:#5b7288">&rarr;</span> <b>28%</b> &nbsp;<span style="font-size:.62em;color:#5b7288;font-weight:700;">1981 &rarr; 1988</span></div>
+    </div>
+    <div class="s-foot"><div class="hl amber"><span class="lead">This is why the Laffer curve is taught as a <b>hypothesis</b>, not a result.</span>
+      <ul class="tight"><li>The 1980s cut is the natural experiment &mdash; and it is still contested, because the counterfactual is unobservable.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s11">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Three toolboxes</div>
+  <h2>Fiscal, monetary, supply-side &mdash; side by side</h2>
+
+  <div class="stage">
+    <table class="cmp">
+      <tr><th style="text-align:left;">&nbsp;</th>
+          <th style="color:#1CADE4">Fiscal<br><span class="thsub">demand side</span></th>
+          <th style="color:#5b7793">Monetary<br><span class="thsub">demand side</span></th>
+          <th style="color:#2e9e6b">Supply-side fiscal<br><span class="thsub">supply side</span></th></tr>
+      <tr><td class="l"><b>What moves</b></td><td>AD</td><td>AD</td><td><b>SRAS and LRAS</b></td></tr>
+      <tr><td class="l"><b>Short run: output</b></td><td class="yes">rises</td><td class="yes">rises</td><td class="yes">rises</td></tr>
+      <tr><td class="l"><b>Short run: price level</b></td><td class="no">rises</td><td class="no">rises</td><td class="yes">falls</td></tr>
+      <tr><td class="l"><b>Long run: output</b></td><td>back to potential</td><td>back to potential</td><td class="big">potential is <b>higher</b></td></tr>
+      <tr><td class="l"><b>Long run: price level</b></td><td class="no">higher</td><td class="no">higher</td><td class="yes">lower</td></tr>
+      <tr><td class="l"><b>Time to bite</b></td><td>1&ndash;2 years</td><td>2&ndash;6 quarters</td><td>5&ndash;10 years</td></tr>
+      <tr><td class="l"><b>Binding constraint</b></td><td>deficits &rarr; crowding out</td><td>lags, zero lower bound</td><td>slow, uncertain; may widen the deficit</td></tr>
+    </table>
+    <div class="s-foot"><div class="hl"><span class="lead">One line to remember: <b>demand policy moves the economy along its capacity; supply policy moves the capacity</b>.</span>
+      <ul class="tight"><li>So in an exam, the horizon decides the answer &mdash; state it before you draw anything.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s12">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Simulator</div>
+  <h2>Scrub through ten years</h2>
+
+  <div class="stage" style="gap:.8vh;">
+    <div class="split2" style="gap:1.2vw;">
+      <div style="flex:0 0 56%;gap:.2vh;justify-content:center;"><svg id="simSvg" viewBox="0 0 660 340" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:780px;height:auto;align-self:center;">
+  <line x1="64" y1="284" x2="640" y2="284" stroke="#1f2d3d" stroke-width="2.2"/>
+  <line x1="64" y1="284" x2="64" y2="36" stroke="#1f2d3d" stroke-width="2.2"/>
+  <text x="64.0" y="26.0" font-size="21" fill="#5b7288" text-anchor="start" font-weight="400">Price level</text>
+  <text x="352.0" y="316.0" font-size="21" fill="#5b7288" text-anchor="middle" font-weight="400">Real GDP</text>
+  <polyline id="simAD0" points="" fill="none" stroke="#c6d6e3" stroke-width="3" stroke-dasharray="6 5"/>
+  <polyline id="simAD" points="" fill="none" stroke="#1CADE4" stroke-width="4.5"/>
+  <polyline id="simS0" points="" fill="none" stroke="#e3c79a" stroke-width="3" stroke-dasharray="6 5"/>
+  <polyline id="simS" points="" fill="none" stroke="#e6a23c" stroke-width="4.5"/>
+  <line id="simL0" x1="0" y1="40" x2="0" y2="284" stroke="#c6d6e3" stroke-width="3" stroke-dasharray="6 5"/>
+  <line id="simL" x1="0" y1="40" x2="0" y2="284" stroke="#2e9e6b" stroke-width="4.5"/>
+  <circle id="simDot" cx="0" cy="0" r="9" fill="#1f2d3d" stroke="#fff" stroke-width="3"/>
+  <text id="labAD" x="0" y="0" font-size="20" font-weight="800" fill="#1CADE4" paint-order="stroke" stroke="#fff" stroke-width="5">AD</text>
+  <text id="labS" x="0" y="0" font-size="20" font-weight="800" fill="#9a6a12" paint-order="stroke" stroke="#fff" stroke-width="5">SRAS</text>
+  <text id="labL" x="0" y="0" font-size="20" font-weight="800" fill="#2e9e6b" text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="5">LRAS</text>
+  <text id="simLab" x="0" y="0" font-size="21" font-weight="800" fill="#1f2d3d"
+        paint-order="stroke" stroke="#fff" stroke-width="6"></text>
+</svg></div>
+      <div style="flex:1 1 0;gap:.6vh;justify-content:center;">
+        <svg id="pathSvg" viewBox="0 0 420 190" xmlns="http://www.w3.org/2000/svg"
+     style="width:100%;max-width:420px;height:auto;align-self:center;">
+  <line x1="44" y1="150" x2="404" y2="150" stroke="#1f2d3d" stroke-width="2"/>
+  <line x1="44" y1="150" x2="44" y2="16" stroke="#1f2d3d" stroke-width="2"/>
+  <text x="44.0" y="24.0" font-size="22" fill="#5b7288" text-anchor="start" font-weight="400">Real GDP</text>
+  <text x="224.0" y="184.0" font-size="22" fill="#5b7288" text-anchor="middle" font-weight="400">years from the policy</text>
+  <line id="pathBase" x1="44" y1="0" x2="404" y2="0" stroke="#5b7288" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text id="pathBaseT" x="404" y="0" font-size="22" fill="#5b7288" font-weight="700" text-anchor="end">potential</text>
+  <polyline id="pathLine" points="" fill="none" stroke="#1CADE4" stroke-width="4.5"/>
+  <circle id="pathDot" cx="0" cy="0" r="8" fill="#1CADE4" stroke="#fff" stroke-width="3"/>
+</svg>
+        <div class="btnrow" style="gap:.5vw;">
+          <button class="btn ghost act" id="pbF" onclick="simPick('fiscal')">Fiscal</button>
+          <button class="btn ghost act" id="pbM" onclick="simPick('money')">Monetary</button>
+          <button class="btn ghost act" id="pbS" onclick="simPick('supply')">Supply-side</button>
+        </div>
+        <div class="sld"><div class="sl"><span>Years since the policy</span><b><span id="simT">0</span></b></div>
+          <input type="range" id="simR" min="0" max="10" step="0.1" value="0" oninput="simDraw()"></div>
+        <div class="verdict" id="simVerdict">Pick a policy, then scrub right.</div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">Demand policy: output <b>jumps and returns</b>. Supply policy: output <b>climbs and stays</b>.</span>
+      <ul class="tight"><li>Watch the number on the right, not the shape on the left &mdash; that is the whole unit in one strip.</li></ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s13">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Test</div>
+  <h2>Which curve does it move?</h2>
+
+  <div class="stage">
+    <div class="dm" style="flex:1;justify-content:center;gap:1.4vh;max-width:1080px;width:100%;margin:0 auto;">
+      <div class="game-meta"><span>Pick the curve(s) that move</span><span id="qzProg">Question 1 of 4</span></div>
+      <div class="game-card" id="qzQ"></div>
+      <div class="ds-btns" id="qzBtns" style="justify-content:center;"></div>
+      <div class="game-fb" id="qzFb"></div>
+      <div class="btnrow" style="justify-content:center;">
+        <button class="btn ghost" id="qzNext" onclick="qzNext()" disabled>Next question &#9654;</button>
+        <span class="slidenote" id="qzScore" style="margin-left:.6vw;">Score 0</span>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><span class="lead">The trap: a corporate tax cut is <b>not</b> just AD.</span>
+      <ul class="tight"><li>It changes incentives, so it also moves SRAS and LRAS &mdash; the same policy can appear in two rows.</li></ul>
+    </div></div>
+  </div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Deficits, debt, interest</div>
+  <h2>Three words people mix up</h2>
+  <div class="stage">
+    <div class="svgwrap"><svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;height:auto;align-self:center;"><defs><marker id="ah11f2d3d" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#1f2d3d"/></marker></defs><rect data-bg="1" x="38.5" y="26.4" width="255.0" height="92.4" fill="#1CADE4"/><rect data-bg="1" x="616.5" y="26.4" width="255.0" height="92.4" fill="#a97422"/><rect data-bg="1" x="616.5" y="145.2" width="255.0" height="92.4" fill="#d9534f"/><text x="166.0" y="52.8" text-anchor="middle" font-size="24" fill="#ffffff" font-weight="700">DEFICIT</text><text x="166.0" y="92.4" text-anchor="middle" font-size="22" fill="#ffffff" font-weight="400">a flow, per year</text><text x="744.0" y="52.8" text-anchor="middle" font-size="24" fill="#ffffff" font-weight="700">DEBT</text><text x="744.0" y="92.4" text-anchor="middle" font-size="22" fill="#ffffff" font-weight="400">a stock, right now</text><text x="744.0" y="171.6" text-anchor="middle" font-size="24" fill="#ffffff" font-weight="700">INTEREST</text><text x="744.0" y="211.2" text-anchor="middle" font-size="22" fill="#ffffff" font-weight="400">spending, per year</text><line x1="302.0" y1="72.6" x2="599.5" y2="72.6" stroke="#1f2d3d" stroke-width="4" marker-end="url(#ah11f2d3d)"/><text x="450.8" y="55.0" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">adds to</text><line x1="744.0" y1="121.0" x2="744.0" y2="143.0" stroke="#1f2d3d" stroke-width="4" marker-end="url(#ah11f2d3d)"/><text x="712.5" y="132.0" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">generates</text><line x1="608.0" y1="191.4" x2="166.0" y2="191.4" stroke="#1f2d3d" stroke-width="4"/><line x1="166.0" y1="191.4" x2="166.0" y2="121.0" stroke="#1f2d3d" stroke-width="4" marker-end="url(#ah11f2d3d)"/><text x="387.0" y="176.0" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">widens the deficit</text></svg></div>
+    <div class="cards" style="flex:0 0 auto;">
+      <div class="card"><h3>Deficit &mdash; a flow</h3><p>Tax revenue &minus; (government purchases + transfers). Measured <b>per year</b>.</p></div>
+      <div class="card warn"><h3>Debt &mdash; a stock</h3><p>Everything still owed at a moment: the sum of <b>every deficit ever run</b>.</p></div>
+      <div class="card lose"><h3>Interest &mdash; spending</h3><p>Rate &times; debt. It sits in the budget, so paying it <b>reopens the deficit</b>.</p></div>
+    </div>
+    <div class="s-foot"><div class="hl"><ul class="tight">
+      <li><b>One loop:</b> this year&rsquo;s <b>deficit</b> is added to the <b>debt</b>.</li>
+      <li>The debt then <b>generates interest</b>.</li>
+      <li>Interest is itself spending, so it <b>widens the deficit</b> again &mdash; which is why the debt grows even in a normal year.</li>
+    </ul>
+    </div></div>
+  </div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Who holds the debt</div>
+  <h2>From deficit to debt &mdash; and who holds it</h2>
+  <div class="stage">
+    <div class="svgwrap"><svg viewBox="0 0 1140 270" xmlns="http://www.w3.org/2000/svg" id="debtSvg" style="width:100%;max-width:1140px;height:auto;align-self:center;"><defs></defs><rect data-bg="1" x="94.8" y="180.3" width="34.8" height="23.7" fill="#7fc4e8"/><rect data-bg="1" x="94.8" y="178.9" width="34.8" height="1.4" fill="#e6a23c"/><rect data-bg="1" x="94.8" y="172.7" width="34.8" height="6.2" fill="#d9534f"/><rect data-bg="1" x="167.3" y="186.2" width="34.8" height="17.8" fill="#7fc4e8"/><rect data-bg="1" x="167.3" y="180.9" width="34.8" height="5.3" fill="#e6a23c"/><rect data-bg="1" x="167.3" y="175.9" width="34.8" height="4.9" fill="#d9534f"/><rect data-bg="1" x="239.8" y="170.7" width="34.8" height="33.3" fill="#7fc4e8"/><rect data-bg="1" x="239.8" y="161.7" width="34.8" height="8.9" fill="#e6a23c"/><rect data-bg="1" x="239.8" y="157.4" width="34.8" height="4.3" fill="#d9534f"/><rect data-bg="1" x="312.3" y="179.3" width="34.8" height="24.7" fill="#7fc4e8"/><rect data-bg="1" x="312.3" y="166.7" width="34.8" height="12.7" fill="#e6a23c"/><rect data-bg="1" x="312.3" y="160.8" width="34.8" height="5.9" fill="#d9534f"/><rect data-bg="1" x="384.8" y="175.0" width="34.8" height="29.0" fill="#7fc4e8"/><rect data-bg="1" x="384.8" y="144.1" width="34.8" height="30.9" fill="#e6a23c"/><rect data-bg="1" x="384.8" y="137.9" width="34.8" height="6.2" fill="#d9534f"/><rect data-bg="1" x="457.3" y="167.7" width="34.8" height="36.3" fill="#7fc4e8"/><rect data-bg="1" x="457.3" y="130.3" width="34.8" height="37.4" fill="#e6a23c"/><rect data-bg="1" x="457.3" y="111.0" width="34.8" height="19.3" fill="#d9534f"/><rect data-bg="1" x="500.8" y="139.9" width="34.8" height="64.1" fill="#7fc4e8"/><rect data-bg="1" x="500.8" y="105.5" width="34.8" height="34.4" fill="#e6a23c"/><rect data-bg="1" x="500.8" y="88.3" width="34.8" height="17.3" fill="#d9534f"/><line x1="76" y1="204" x2="540" y2="204" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="204" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Public debt (% of GDP)</text><text x="308.0" y="258.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Year</text><text x="112.2" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1970</text><text x="184.8" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1980</text><text x="257.2" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1990</text><text x="329.8" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2000</text><text x="402.2" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2010</text><text x="518.2" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2026</text><text x="68.0" y="212.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="153.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">50</text><text x="68.0" y="94.6" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="112.2" y="162.7" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">27</text><text x="184.8" y="165.9" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">24</text><text x="257.2" y="147.4" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">40</text><text x="329.8" y="150.7" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">37</text><text x="402.2" y="128.0" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">56</text><text x="474.8" y="101.0" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">79</text><text x="518.2" y="78.3" text-anchor="middle" font-size="22" fill="#1f2d3d" font-weight="700">99</text><line x1="650" y1="204" x2="1114" y2="204" stroke="#1f2d3d" stroke-width="2.5"/><line x1="650" y1="204" x2="650" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="650.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Federal debt (% of GDP)</text><text x="882.0" y="258.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Year</text><text x="715.6" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1950</text><text x="816.4" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1970</text><text x="917.3" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1990</text><text x="1018.2" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2010</text><text x="642.0" y="212.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="642.0" y="153.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">50</text><text x="642.0" y="94.6" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">100</text><polyline points="660.1,143.4 665.1,146.1 670.2,151.8 675.2,148.0 680.3,121.6 685.3,97.3 690.3,70.1 695.4,64.2 700.4,83.1 705.5,96.2 710.5,95.2 715.6,103.4 720.6,117.6 725.7,121.2 730.7,123.8 735.7,122.6 740.8,128.3 745.8,132.7 750.9,136.6 755.9,135.8 761.0,139.3 766.0,141.1 771.0,143.0 776.1,145.1 781.1,146.8 786.2,149.8 791.2,153.1 796.3,156.6 801.3,157.5 806.3,158.0 811.4,161.9 816.4,162.3 821.5,162.9 826.5,164.0 831.6,165.6 836.6,167.3 841.7,166.2 846.7,164.6 851.7,164.2 856.8,165.3 861.8,166.9 866.9,166.7 871.9,167.6 877.0,164.1 882.0,159.7 887.0,158.5 892.1,154.8 897.1,149.6 902.2,147.3 907.2,145.7 912.3,144.4 917.3,140.8 922.3,135.4 927.4,131.9 932.4,129.6 937.5,129.2 942.5,128.4 947.6,128.6 952.6,130.5 957.7,133.1 962.7,135.7 967.7,139.6 972.8,140.0 977.8,137.4 982.9,134.7 987.9,133.3 993.0,132.9 998.0,132.2 1003.0,131.5 1008.1,124.6 1013.1,107.7 1018.2,98.5 1023.2,92.9 1028.3,88.0 1033.3,87.8 1038.3,85.3 1043.4,87.8 1048.4,82.0 1053.5,83.1 1058.5,82.0 1063.6,80.5 1068.6,56.2 1073.7,63.6 1078.7,65.0 1083.7,64.8 1088.8,62.9 1093.8,61.4" fill="none" stroke="#d9534f" stroke-width="4.5"/><polyline points="816.4,172.7 821.5,173.8 826.5,173.4 831.6,175.0 836.6,177.0 841.7,177.0 846.7,174.3 851.7,173.0 856.8,172.8 861.8,174.7 866.9,175.9 871.9,174.9 877.0,173.2 882.0,168.8 887.0,167.3 892.1,164.7 897.1,161.4 902.2,158.3 907.2,157.7 912.3,158.6 917.3,157.4 922.3,153.4 927.4,150.1 932.4,148.4 937.5,147.3 942.5,147.7 947.6,147.9 952.6,149.6 957.7,152.7 962.7,156.7 967.7,160.7 972.8,165.5 977.8,166.6 982.9,165.0 987.9,162.9 993.0,162.0 998.0,162.0 1003.0,162.2 1008.1,161.4 1013.1,148.4 1018.2,138.0 1023.2,130.2 1028.3,124.5 1033.3,119.9 1038.3,117.7 1043.4,118.9 1048.4,115.7 1053.5,116.4 1058.5,114.9 1063.6,113.8 1068.6,111.0 1073.7,90.1 1078.7,92.8 1083.7,97.4 1088.8,91.4 1093.8,91.0 1098.9,88.1" fill="none" stroke="#1CADE4" stroke-width="4.5" stroke-dasharray="9 7"/><circle cx="695.4" cy="64.2" r="9" fill="#d9534f"/><text x="705.4" y="90.2" text-anchor="start" font-size="22" fill="#0e7fae" font-weight="700">1946  119%</text><circle cx="1068.6" cy="56.2" r="9" fill="#d9534f"/><text x="1058.6" y="42.2" text-anchor="end" font-size="22" fill="#d9534f" font-weight="700">2020  126%</text></svg></div>
+    <div class="note" style="display:flex;gap:1vw;justify-content:center;align-items:center;flex:0 0 auto;margin:.3vh 0 .1vh;flex-wrap:wrap;">
+      <span><span style="display:inline-block;width:18px;height:18px;background:#7fc4e8;border-radius:3px;vertical-align:-2px;margin-right:.3vw;"></span>US investors</span>
+      <span><span style="display:inline-block;width:18px;height:18px;background:#e6a23c;border-radius:3px;vertical-align:-2px;margin-right:.3vw;"></span>Foreign holders</span>
+      <span><span style="display:inline-block;width:18px;height:18px;background:#d9534f;border-radius:3px;vertical-align:-2px;margin-right:.3vw;"></span>Federal Reserve</span>
+      <span><span style="display:inline-block;width:24px;height:4px;background:#d9534f;border-radius:2px;vertical-align:5px;margin-right:.3vw;"></span>Gross debt</span>
+      <span><span style="display:inline-block;width:24px;height:4px;background:#1CADE4;border-radius:2px;vertical-align:5px;margin-right:.3vw;"></span>Held by public</span>
+    </div>
+    <div class="cards" style="flex:0 0 auto;">
+      <div class="card win"><h3>Not a burden</h3><p><b>55%</b> is owed to Americans, so the interest comes back home.</p></div>
+      <div class="card lose"><h3>A burden</h3><p><b>30%</b> is owed abroad &mdash; a claim on real output, and it must be taxed.</p></div>
+    </div>
+    <div class="s-foot"><div class="hl"><ul class="tight">
+      <li><b>Left:</b> <b>who holds it</b>, 1970&ndash;2026 &mdash; bar height = debt as a share of GDP.</li>
+      <li><b>Right:</b> the <b>longer view</b>, 1939&ndash;2026 &mdash; solid = <b>gross</b> debt, dashed = <b>held by the public</b>.</li>
+      <li>The gap between the two lines is what government trust funds hold.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Real data &middot; U.S. Treasury, FY2025</div>
+  <h2>Where the money actually goes</h2>
+  <div class="stage">
+    <div class="svgwrap"><svg viewBox="0 0 1140 270" xmlns="http://www.w3.org/2000/svg" id="costSvg" style="width:100%;max-width:1140px;height:auto;align-self:center;"><defs></defs><rect data-bg="1" x="880.0" y="178.1" width="232.6" height="19.4" fill="#1CADE4"/><rect data-bg="1" x="880.0" y="145.7" width="154.1" height="19.4" fill="#1CADE4"/><rect data-bg="1" x="880.0" y="113.3" width="113.8" height="19.4" fill="#d9534f"/><rect data-bg="1" x="880.0" y="80.9" width="81.3" height="19.4" fill="#1CADE4"/><rect data-bg="1" x="880.0" y="48.5" width="35.2" height="19.4" fill="#1CADE4"/><line x1="76" y1="204" x2="540" y2="204" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="204" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Interest (% of receipts)</text><text x="308.0" y="258.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Fiscal year</text><text x="87.3" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1950</text><text x="228.8" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1975</text><text x="370.2" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2000</text><text x="511.7" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2025</text><text x="68.0" y="175.2" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="68.0" y="138.4" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">10</text><text x="68.0" y="101.5" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">15</text><text x="68.0" y="64.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">20</text><polyline points="87.3,114.2 93.0,137.4 98.6,151.7 104.3,149.4 110.0,153.2 115.6,149.4 121.3,153.9 126.9,154.7 132.6,152.2 138.2,150.5 143.9,148.7 149.6,151.6 155.2,153.1 160.9,150.5 166.5,150.4 172.2,149.9 177.9,151.2 183.5,153.2 189.2,150.6 194.8,153.9 200.5,149.1 206.1,145.6 211.8,149.0 217.5,148.6 223.1,144.0 228.8,142.7 234.4,137.9 240.1,142.1 245.8,138.7 251.4,136.3 257.1,129.2 262.7,119.5 268.4,102.7 274.0,93.9 279.7,81.2 285.4,74.1 291.0,73.8 296.7,84.5 302.3,81.0 308.0,78.5 313.7,72.5 319.3,68.3 325.0,69.5 330.6,77.3 336.3,85.3 342.0,77.6 347.6,81.8 353.3,90.2 358.9,100.9 364.6,111.4 370.2,122.9 375.9,127.8 381.6,136.1 387.2,140.7 392.9,141.3 398.5,141.1 404.2,134.7 409.9,136.0 415.5,130.3 421.2,138.6 426.8,137.2 432.5,130.5 438.1,137.7 443.8,145.4 449.5,148.2 455.1,153.4 460.8,149.9 466.4,145.7 472.1,132.1 477.8,124.3 483.4,129.6 489.1,139.9 494.7,132.4 500.4,94.9 506.0,72.3 511.7,67.6" fill="none" stroke="#1CADE4" stroke-width="4.5"/><circle cx="489.1" cy="139.9" r="10" fill="#2e9e6b"/><text x="479.1" y="131.9" text-anchor="end" font-size="22" fill="#2e9e6b" font-weight="700">2021  8.7%</text><circle cx="511.7" cy="67.6" r="10" fill="#d9534f"/><text x="503.7" y="51.6" text-anchor="end" font-size="22" fill="#d9534f" font-weight="700">FY2025  18.5%</text><line x1="880" y1="204" x2="1114" y2="204" stroke="#1f2d3d" stroke-width="2.5"/><line x1="880" y1="204" x2="880" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="880.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400"></text><text x="997.0" y="258.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Outlays, FY2025 ($ billions)</text><text x="880.0" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="973.6" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1000</text><text x="1067.2" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2000</text><line x1="993.8" y1="204.0" x2="993.8" y2="42.0" stroke="#d9534f" stroke-width="3" stroke-dasharray="9 7"/><text x="870.0" y="187.8" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Medicare & Medicaid</text><text x="870.0" y="155.4" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Social Security</text><text x="870.0" y="123.0" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Interest on the public debt</text><text x="870.0" y="90.6" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Defense (military programs)</text><text x="870.0" y="58.2" text-anchor="end" font-size="22" fill="#1f2d3d" font-weight="700">Veterans</text></svg></div>
+    <div class="cards" style="flex:0 0 auto;">
+      <div class="card lose"><h3>Interest &mdash; $1.22T</h3><p>The <b>3rd largest</b> item in the budget.</p></div>
+      <div class="card warn"><h3>More than defence</h3><p>$1,216B of interest versus $868B for the whole military.</p></div>
+      <div class="card"><h3>Share of tax revenue</h3><p><b>18.5%</b> in FY2025 &mdash; up from 8.7% in 2021, and about 6% in the 1950s.</p></div>
+    </div>
+    <div class="s-foot"><div class="hl red"><ul class="tight">
+      <li>Interest buys <b>nothing</b> &mdash; no roads, no schools, no soldiers.</li>
+      <li><b>Left:</b> about <b>6%</b> of federal receipts in the 1950s &rarr; <b>18.5%</b> today.</li>
+      <li><b>Right:</b> it now outranks every department except Social Security and health.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; What a surplus does</div>
+  <h2>What a surplus does instead</h2>
+  <div class="stage">
+    <div class="svgwrap"><svg viewBox="0 0 1140 270" xmlns="http://www.w3.org/2000/svg" id="surplusSvg" style="width:100%;max-width:1140px;height:auto;align-self:center;"><defs></defs><rect data-bg="1" x="86.8" y="107.6" width="28.2" height="73.1" fill="#d9534f"/><rect data-bg="1" x="128.2" y="107.6" width="28.2" height="55.2" fill="#d9534f"/><rect data-bg="1" x="169.6" y="107.6" width="28.2" height="42.0" fill="#d9534f"/><rect data-bg="1" x="211.1" y="107.6" width="28.2" height="26.4" fill="#d9534f"/><rect data-bg="1" x="252.5" y="107.6" width="28.2" height="5.0" fill="#d9534f"/><rect data-bg="1" x="293.9" y="92.5" width="28.2" height="15.0" fill="#2e9e6b"/><rect data-bg="1" x="335.3" y="81.9" width="28.2" height="25.6" fill="#2e9e6b"/><rect data-bg="1" x="376.8" y="62.1" width="28.2" height="45.5" fill="#2e9e6b"/><rect data-bg="1" x="418.2" y="84.0" width="28.2" height="23.5" fill="#2e9e6b"/><rect data-bg="1" x="459.6" y="107.6" width="28.2" height="28.2" fill="#d9534f"/><rect data-bg="1" x="501.1" y="107.6" width="28.2" height="65.2" fill="#d9534f"/><line x1="76" y1="204" x2="540" y2="204" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="204" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Balance (% of GDP)</text><text x="308.0" y="258.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Fiscal year</text><text x="100.9" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1993</text><text x="225.1" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1996</text><text x="349.4" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1999</text><text x="473.7" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2002</text><text x="68.0" y="192.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">-4</text><text x="68.0" y="154.1" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">-2</text><text x="68.0" y="115.6" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="77.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2</text><text x="349.4" y="58.4" text-anchor="middle" font-size="22" fill="#2e9e6b" font-weight="700">four surpluses</text><line x1="650" y1="204" x2="1114" y2="204" stroke="#1f2d3d" stroke-width="2.5"/><line x1="650" y1="204" x2="650" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="650.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Public debt (% of GDP)</text><text x="882.0" y="258.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Fiscal year</text><text x="674.9" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1993</text><text x="799.1" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1996</text><text x="923.4" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">1999</text><text x="1047.7" y="226.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">2002</text><text x="642.0" y="198.5" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">30</text><text x="642.0" y="131.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">40</text><text x="642.0" y="63.5" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">50</text><polyline points="674.9,73.1 716.3,67.0 757.7,69.0 799.1,70.4 840.6,80.5 882.0,98.0 923.4,121.0 964.9,143.9 1006.3,171.6 1047.7,177.7 1089.1,168.9" fill="none" stroke="#1CADE4" stroke-width="4.5"/><circle cx="674.9" cy="73.1" r="9" fill="#0e7fae"/><text x="682.9" y="63.1" text-anchor="start" font-size="22" fill="#0e7fae" font-weight="700">1993  47%</text><circle cx="1006.3" cy="171.6" r="9" fill="#0e7fae"/><text x="1014.3" y="191.6" text-anchor="start" font-size="22" fill="#0e7fae" font-weight="700">2001  33%</text></svg></div>
+    <div class="cards" style="flex:0 0 auto;">
+      <div class="card win"><h3>1 &middot; Pay the debt down</h3><p>US 1998&ndash;2001: public debt <b>47% &rarr; 33%</b> of GDP.</p></div>
+      <div class="card"><h3>2 &middot; Save it in a fund</h3><p>Norway&rsquo;s oil fund; Alaska&rsquo;s Permanent Fund, <b>$86B</b>.</p></div>
+      <div class="card warn"><h3>3 &middot; Send it to households</h3><p>Macao, every year since <b>2008</b>: MOP 10,000 in 2025.</p></div>
+    </div>
+    <div class="s-foot"><div class="hl green"><span class="lead">A surplus is the same loop run <b>backwards</b>:</span>
+      <ul class="tight">
+        <li>Less borrowing &rarr; a smaller stock &rarr; a smaller interest bill.</li>
+        <li>Scale note &mdash; the balance moves inside <b>&plusmn;4%</b> of GDP; the debt ratio only between <b>30% and 50%</b>.</li>
+      </ul>
+    </div></div>
+  </div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Crowding out</div>
+  <h2>Crowding out, step by step</h2>
+  <div class="stage">
+    <div class="split">
+      <div class="pic" id="lfWrap"><svg viewBox="0 0 560 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;height:auto;align-self:center;"><line x1="76" y1="370" x2="540" y2="370" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="370" x2="76" y2="44" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="30.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Real interest rate (%)</text><text x="308.0" y="424.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Quantity of loanable funds ($T)</text><text x="144.7" y="392.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="265.0" y="392.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">3.7</text><text x="385.3" y="392.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4.4</text><text x="488.4" y="392.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="68.0" y="315.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2.5</text><text x="68.0" y="189.9" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">3.5</text><text x="68.0" y="64.5" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4.5</text><line x1="76.0" y1="338.3" x2="122.4" y2="315.3" stroke="#e6a23c" stroke-width="5"/><line x1="122.4" y1="315.3" x2="168.8" y2="292.3" stroke="#e6a23c" stroke-width="5"/><line x1="168.8" y1="292.3" x2="215.2" y2="269.3" stroke="#e6a23c" stroke-width="5"/><line x1="215.2" y1="269.3" x2="261.6" y2="246.3" stroke="#e6a23c" stroke-width="5"/><line x1="261.6" y1="246.3" x2="308.0" y2="223.3" stroke="#e6a23c" stroke-width="5"/><line x1="308.0" y1="223.3" x2="354.4" y2="200.3" stroke="#e6a23c" stroke-width="5"/><line x1="354.4" y1="200.3" x2="400.8" y2="177.4" stroke="#e6a23c" stroke-width="5"/><line x1="400.8" y1="177.4" x2="447.2" y2="154.4" stroke="#e6a23c" stroke-width="5"/><line x1="447.2" y1="154.4" x2="493.6" y2="131.4" stroke="#e6a23c" stroke-width="5"/><line x1="493.6" y1="131.4" x2="540.0" y2="108.4" stroke="#e6a23c" stroke-width="5"/><text x="148.2" y="292.5" text-anchor="start" font-size="22" fill="#e6a23c" font-weight="700">S</text><line id="lfD" x1="76.0" y1="151.0" x2="540.0" y2="380.8" stroke="#1CADE4" stroke-width="5" opacity="1"/><line id="lfD0" x1="76.0" y1="151.0" x2="540.0" y2="380.8" stroke="#8a9aab" stroke-width="4" stroke-dasharray="9 7" opacity="0"/><line id="lfR0" x1="76.0" y1="244.6" x2="265.0" y2="244.6" stroke="#8a9aab" stroke-width="3" stroke-dasharray="6 5" opacity="1"/><line id="lfR1" x1="76.0" y1="163.7" x2="428.3" y2="163.7" stroke="#d9534f" stroke-width="3" stroke-dasharray="6 5" opacity="0"/><line id="lfV" x1="428.3" y1="370.0" x2="428.3" y2="163.7" stroke="#8a9aab" stroke-width="3" stroke-dasharray="6 5" opacity="0"/><line id="lfG1" x1="101.8" y1="349.9" x2="101.8" y2="163.7" stroke="#8a9aab" stroke-width="3" stroke-dasharray="6 5" opacity="0"/><line id="lfG2" x1="265.0" y1="349.9" x2="265.0" y2="244.6" stroke="#8a9aab" stroke-width="3" stroke-dasharray="6 5" opacity="0"/><line id="lfBrk" x1="101.8" y1="349.9" x2="265.0" y2="349.9" stroke="#d9534f" stroke-width="4" opacity="0"/><marker id="lfAh" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker><line id="lfArrow" x1="170.5" y1="197.8" x2="337.2" y2="118.6" stroke="#d9534f" stroke-width="4" opacity="0" marker-end="url(#lfAh)"/><circle id="lfE0" cx="265.0" cy="244.6" r="11" fill="#2e9e6b" opacity="1"/><circle id="lfE1" cx="428.3" cy="163.7" r="11" fill="#d9534f" opacity="0"/><text id="lfDt" x="411.1" y="305.0" text-anchor="start" font-size="22" fill="#0e7fae" font-weight="700" opacity="1">D</text><text id="lfD0t" x="316.6" y="294.2" text-anchor="start" font-size="22" fill="#8a9aab" font-weight="700" opacity="0">D</text><text id="lfR0t" x="96.6" y="252.6" text-anchor="start" font-size="22" fill="#2e9e6b" font-weight="700" opacity="1">r 3.00%</text><text id="lfR1t" x="444.3" y="173.7" text-anchor="start" font-size="22" fill="#d9534f" font-weight="700" opacity="0">r 3.65%</text><text id="lfE0t" x="281.0" y="220.0" text-anchor="start" font-size="22" fill="#1f2d3d" font-weight="700" opacity="1"></text><text id="lfBrkT" x="183.4" y="329.9" text-anchor="middle" font-size="22" fill="#d9534f" font-weight="700" opacity="0">crowded out  $0.95T</text></svg></div>
+      <div class="txt">
+        <div class="btnrow" style="margin:0 0 .6vh;">
+          <button class="btn" id="lfBtn" onclick="cqNext()">Next step &#9654;</button>
+          <button class="btn ghost" onclick="cqReset()">Reset</button>
+          <span class="slidenote" id="lfProg">Step 1 of 4</span>
+        </div>
+        <div class="sliderbox" style="margin-bottom:.6vh;">
+          <input type="range" id="lfG" min="0" max="2.5" step="0.1" value="0" oninput="cqSlide(this.value)">
+          <div class="slidenote">Government borrowing: <b><span id="lfGv">$0.0T</span></b><br>Drag the slider &mdash; or drag the D line.</div>
+        </div>
+        <div class="hl" id="lfText" style="flex:0 0 auto;">Step 1 &mdash; the market with <b>no government borrowing</b>: <b>S</b> is saving, <b>D</b> is private demand, and the crossing sets r = 3.00%.</div>
+        <div class="note" id="lfRead" style="margin-top:.6vh;font-weight:700;"></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl"><ul class="tight">
+      <li><b>Step 2</b> &mdash; the government borrows, so demand shifts right to <b>D + G</b>: the red arrow.</li>
+      <li><b>Step 3</b> &mdash; the new crossing: <b>r rises</b>.</li>
+      <li><b>Step 4</b> &mdash; at that rate, private borrowing falls.</li>
+      <li>The two <b>vertical dashed guides</b> show where that segment comes from.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; From deficit to slower growth</div>
+  <h2>From a deficit to slower growth</h2>
+  <div class="stage">
+    <div class="split">
+      <div class="txt">
+        <div class="chain" id="chWrap">
+          <div class="lk"><div class="n">1</div><div class="t"><b>Deficit.</b> Spending exceeds tax revenue, so the government <b>sells bonds</b>.</div></div>
+          <div class="ar"></div>
+          <div class="lk"><div class="n">2</div><div class="t"><b>Borrowing.</b> Demand for loanable funds shifts <b>right</b> &mdash; supply did not move.</div></div>
+          <div class="ar"></div>
+          <div class="lk"><div class="n">3</div><div class="t"><b>The real interest rate rises</b>, because saving must be bid away from private borrowers.</div></div>
+          <div class="ar"></div>
+          <div class="lk hot"><div class="n">4</div><div class="t"><b>Crowding out.</b> Interest-sensitive private investment <b>falls</b> &mdash; the short-run step.</div></div>
+          <div class="ar"></div>
+          <div class="lk hot"><div class="n">5</div><div class="t"><b>Less capital per worker</b> &rarr; lower labour productivity &rarr; <b>potential GDP grows more slowly</b>.</div></div>
+        </div>
+      </div>
+      <div class="pic" id="lrWrap" style="flex-direction:column;align-items:stretch;gap:.9vh;">
+        <div style="flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;"><svg id="growthSvg" viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-width:none;max-height:none;display:block;"><line x1="76" y1="170" x2="540" y2="170" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="170" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Index (start = 100)</text><text x="308.0" y="224.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Years from now</text><text x="76.0" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="188.6" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">25</text><text x="301.2" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">50</text><text x="413.9" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">75</text><text x="526.5" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">100</text><text x="68.0" y="178.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="117.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">1000</text><text x="68.0" y="56.1" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">2000</text><polygon data-bg="1" points="323.8,151.9 346.3,150.0 368.8,147.9 391.3,145.6 413.9,143.1 436.4,140.3 458.9,137.2 481.4,133.8 504.0,130.0 526.5,125.8 526.5,52.9 504.0,69.0 481.4,82.8 458.9,94.8 436.4,105.1 413.9,114.1 391.3,121.7 368.8,128.4 346.3,134.1 323.8,139.0" fill="#fdeaea"/><line x1="76.0" y1="163.9" x2="99.2" y2="163.3" stroke="#2e9e6b" stroke-width="5"/><line x1="99.2" y1="163.3" x2="122.4" y2="162.5" stroke="#2e9e6b" stroke-width="5"/><line x1="122.4" y1="162.5" x2="145.6" y2="161.7" stroke="#2e9e6b" stroke-width="5"/><line x1="145.6" y1="161.7" x2="168.8" y2="160.8" stroke="#2e9e6b" stroke-width="5"/><line x1="168.8" y1="160.8" x2="192.0" y2="159.9" stroke="#2e9e6b" stroke-width="5"/><line x1="192.0" y1="159.9" x2="215.2" y2="158.8" stroke="#2e9e6b" stroke-width="5"/><line x1="215.2" y1="158.8" x2="238.4" y2="157.6" stroke="#2e9e6b" stroke-width="5"/><line x1="238.4" y1="157.6" x2="261.6" y2="156.2" stroke="#2e9e6b" stroke-width="5"/><line x1="261.6" y1="156.2" x2="284.8" y2="154.7" stroke="#2e9e6b" stroke-width="5"/><line x1="284.8" y1="154.7" x2="308.0" y2="153.1" stroke="#2e9e6b" stroke-width="5"/><line x1="308.0" y1="153.1" x2="331.2" y2="151.3" stroke="#2e9e6b" stroke-width="5"/><line x1="331.2" y1="151.3" x2="354.4" y2="149.3" stroke="#2e9e6b" stroke-width="5"/><line x1="354.4" y1="149.3" x2="377.6" y2="147.1" stroke="#2e9e6b" stroke-width="5"/><line x1="377.6" y1="147.1" x2="400.8" y2="144.6" stroke="#2e9e6b" stroke-width="5"/><line x1="400.8" y1="144.6" x2="424.0" y2="141.9" stroke="#2e9e6b" stroke-width="5"/><line x1="424.0" y1="141.9" x2="447.2" y2="138.8" stroke="#2e9e6b" stroke-width="5"/><line x1="447.2" y1="138.8" x2="470.4" y2="135.5" stroke="#2e9e6b" stroke-width="5"/><line x1="470.4" y1="135.5" x2="493.6" y2="131.8" stroke="#2e9e6b" stroke-width="5"/><line x1="493.6" y1="131.8" x2="516.8" y2="127.7" stroke="#2e9e6b" stroke-width="5"/><line x1="516.8" y1="127.7" x2="540.0" y2="123.1" stroke="#2e9e6b" stroke-width="5"/><line x1="76.0" y1="163.9" x2="99.2" y2="162.9" stroke="#d9534f" stroke-width="5"/><line x1="99.2" y1="162.9" x2="122.4" y2="161.7" stroke="#d9534f" stroke-width="5"/><line x1="122.4" y1="161.7" x2="145.6" y2="160.4" stroke="#d9534f" stroke-width="5"/><line x1="145.6" y1="160.4" x2="168.8" y2="158.8" stroke="#d9534f" stroke-width="5"/><line x1="168.8" y1="158.8" x2="192.0" y2="157.0" stroke="#d9534f" stroke-width="5"/><line x1="192.0" y1="157.0" x2="215.2" y2="154.8" stroke="#d9534f" stroke-width="5"/><line x1="215.2" y1="154.8" x2="238.4" y2="152.3" stroke="#d9534f" stroke-width="5"/><line x1="238.4" y1="152.3" x2="261.6" y2="149.4" stroke="#d9534f" stroke-width="5"/><line x1="261.6" y1="149.4" x2="284.8" y2="146.0" stroke="#d9534f" stroke-width="5"/><line x1="284.8" y1="146.0" x2="308.0" y2="142.1" stroke="#d9534f" stroke-width="5"/><line x1="308.0" y1="142.1" x2="331.2" y2="137.5" stroke="#d9534f" stroke-width="5"/><line x1="331.2" y1="137.5" x2="354.4" y2="132.1" stroke="#d9534f" stroke-width="5"/><line x1="354.4" y1="132.1" x2="377.6" y2="125.9" stroke="#d9534f" stroke-width="5"/><line x1="377.6" y1="125.9" x2="400.8" y2="118.6" stroke="#d9534f" stroke-width="5"/><line x1="400.8" y1="118.6" x2="424.0" y2="110.2" stroke="#d9534f" stroke-width="5"/><line x1="424.0" y1="110.2" x2="447.2" y2="100.4" stroke="#d9534f" stroke-width="5"/><line x1="447.2" y1="100.4" x2="470.4" y2="88.9" stroke="#d9534f" stroke-width="5"/><line x1="470.4" y1="88.9" x2="493.6" y2="75.6" stroke="#d9534f" stroke-width="5"/><line x1="493.6" y1="75.6" x2="516.8" y2="60.1" stroke="#d9534f" stroke-width="5"/><line x1="516.8" y1="60.1" x2="540.0" y2="42.0" stroke="#d9534f" stroke-width="5"/><circle cx="526.5" cy="125.8" r="8" fill="#2e9e6b"/><circle cx="526.5" cy="52.9" r="8" fill="#d9534f"/><text x="166.1" y="148.9" text-anchor="start" font-size="22" fill="#2e9e6b" font-weight="700">2% a year</text><text x="323.8" y="127.0" text-anchor="start" font-size="22" fill="#d9534f" font-weight="700">3% a year</text><text x="518.5" y="113.8" text-anchor="end" font-size="22" fill="#2e9e6b" font-weight="700">≈ 7×</text><text x="518.5" y="82.9" text-anchor="end" font-size="22" fill="#d9534f" font-weight="700">≈ 19×</text></svg></div>
+        <div style="flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;"><svg id="lrpcSvg" viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-width:none;max-height:none;display:block;"><defs><marker id="ah11d9534f" markerWidth="7" markerHeight="7" refX="5.6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d9534f"/></marker></defs><line x1="76" y1="170" x2="540" y2="170" stroke="#1f2d3d" stroke-width="2.5"/><line x1="76" y1="170" x2="76" y2="42" stroke="#1f2d3d" stroke-width="2.5"/><text x="76.0" y="28.0" text-anchor="start" font-size="22" fill="#5b7288" font-weight="400">Inflation rate (%)</text><text x="308.0" y="224.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">Unemployment rate (%)</text><text x="76.0" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">3</text><text x="168.8" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="261.6" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">5</text><text x="354.4" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">6</text><text x="447.2" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">7</text><text x="540.0" y="192.0" text-anchor="middle" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="178.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">0</text><text x="68.0" y="135.3" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">4</text><text x="68.0" y="92.7" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">8</text><text x="68.0" y="50.0" text-anchor="end" font-size="22" fill="#5b7288" font-weight="400">12</text><line x1="205.9" y1="170.0" x2="205.9" y2="42.0" stroke="#8a9aab" stroke-width="4" stroke-dasharray="9 7"/><line x1="289.4" y1="170.0" x2="289.4" y2="42.0" stroke="#d9534f" stroke-width="5"/><line x1="76.0" y1="79.3" x2="134.0" y2="87.7" stroke="#1CADE4" stroke-width="4"/><line x1="134.0" y1="87.7" x2="192.0" y2="96.0" stroke="#1CADE4" stroke-width="4"/><line x1="192.0" y1="96.0" x2="250.0" y2="104.3" stroke="#1CADE4" stroke-width="4"/><line x1="250.0" y1="104.3" x2="308.0" y2="112.7" stroke="#1CADE4" stroke-width="4"/><line x1="308.0" y1="112.7" x2="366.0" y2="121.0" stroke="#1CADE4" stroke-width="4"/><line x1="366.0" y1="121.0" x2="424.0" y2="129.3" stroke="#1CADE4" stroke-width="4"/><line x1="424.0" y1="129.3" x2="482.0" y2="137.7" stroke="#1CADE4" stroke-width="4"/><line x1="482.0" y1="137.7" x2="540.0" y2="146.0" stroke="#1CADE4" stroke-width="4"/><line x1="210.6" y1="144.4" x2="280.2" y2="144.4" stroke="#d9534f" stroke-width="4" marker-end="url(#ah11d9534f)"/><text x="197.9" y="157.2" text-anchor="end" font-size="22" fill="#8a9aab" font-weight="700">LRPC</text><text x="297.4" y="157.2" text-anchor="start" font-size="22" fill="#d9534f" font-weight="700">LRPC′</text><text x="400.8" y="118.0" text-anchor="start" font-size="22" fill="#1CADE4" font-weight="700">SRPC</text></svg></div>
+      </div>
+    </div>
+    <div class="s-foot"><div class="hl amber"><span class="lead">Learn the chain &mdash; not five separate facts:</span>
+      <ul class="tight">
+        <li>Links <b>1&ndash;4</b> are the short run: the market clears at a higher r.</li>
+        <li>Link <b>5</b> is the long run &mdash; <b>the one that turns a deficit into slower growth</b>.</li>
+        <li>The lower figure is <b>our extension</b>: link 5 redrawn in the Phillips diagram.</li>
+      </ul>
+    </div></div>
+  </div>
+</section>
+<section class="slide" id="s20">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; The price of each route</div>
+  <h2>Three policies, three different bills to pay</h2>
+  <div class="stage">
+    <table class="cmp" style="flex:1 1 auto;align-self:center;">
+      <tr>
+        <th>&nbsp;</th>
+        <th>Fiscal policy</th>
+        <th>Monetary policy</th>
+        <th>Supply-side policy</th>
+      </tr>
+      <tr>
+        <td><b>Short run</b></td>
+        <td colspan="2" class="yes" style="text-align:center;"><b>Output rises, but inflation is higher.</b></td>
+        <td class="no">Output can rise, but slowly. <b>Usually painful</b>: firms restructure, jobs are lost, and the gains take years to show up.</td>
+      </tr>
+      <tr>
+        <td><b>Long run</b></td>
+        <td class="no" style="text-align:left;">
+          <b>Crowding out.</b><br>
+          Persistent borrowing bids up r and squeezes private investment.<br>
+          <span style="color:var(--red);">Research: danger zone &asymp; <b>80&ndash;100% debt/GDP</b>.</span><br>
+          <span style="color:var(--sub);">You borrow growth, repay with investment.</span>
+        </td>
+        <td class="no" style="text-align:left;">
+          <b>Expected inflation can de-anchor.</b><br>
+          Once &pi;<sup>e</sup> drifts loose, credibility erodes.<br>
+          <span style="color:var(--red);">Future monetary policy works less.</span><br>
+          <span style="color:var(--sub);">You borrow growth, repay with credibility.</span>
+        </td>
+        <td class="yes"><b>Sustained growth.</b></td>
+      </tr>
+    </table>
+    <div class="s-foot"><div class="hl amber"><span class="lead">The exam distinction:</span> demand policy trades <b>today's output for tomorrow's inflation or debt</b>; supply-side policy accepts <b>short-run pain for a higher long-run path</b>. State the horizon before you draw.</div></div>
+  </div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="tag">Unit 5 &middot; Lesson 7 &middot; Wrap-up</div>
+  <h2>Fill in the blanks</h2>
+
+  <div class="stage">
+    <div style="display:flex;flex-direction:column;gap:.3vh;flex:1;justify-content:center;">
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">1 &nbsp;Economic growth is measured as the growth rate of real GDP <span class="bk" id="bk1">________</span>.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">2 &nbsp;In the long run, income per person grows only when <span class="bk" id="bk2">________</span> rises.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">3 &nbsp;With human capital inside the labour term, output per worker is y = A &middot; k<sup>0.3</sup> &middot; E<sup><span class="bk" id="bk3">________</span></sup>.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">4 &nbsp;The mainstream explanation for long-run income differences is <span class="bk" id="bk4">________</span>.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">5 &nbsp;Supply-side fiscal policy shifts <span class="bk" id="bk5">________</span> and LRAS to the right.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">6 &nbsp;Demand policy raises output in the <span class="bk" id="bk6">________</span> run only.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">7 &nbsp;On the Laffer curve, revenue first rises with the tax rate and then <span class="bk" id="bk7">________</span>.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">8 &nbsp;Per-capita growth &asymp; output growth &minus; <span class="bk" id="bk8">________</span> growth.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">9 &nbsp;<b>Deficit vs debt.</b> A deficit is a flow; the debt is the <span class="bk" id="bk9">________</span> that every deficit adds to.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">10 &nbsp;<b>Interest.</b> In FY2025 interest on the debt took <span class="bk" id="bk10">________</span> of all US tax revenue &mdash; and it buys nothing.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">11 &nbsp;<b>Crowding out.</b> Government borrowing shifts loanable-funds demand right, so r rises and private investment is <span class="bk" id="bk11">________</span>.</p>
+      <p style="font-size:clamp(22px,2.2vh,25px);line-height:1.5;">12 &nbsp;<b>The long run.</b> Less capital per worker is why a persistent deficit slows the growth of <span class="bk" id="bk12">________</span>.</p>
+    </div>
+    <div class="s-foot"><div class="btnrow">
+        <button class="btn" id="bkBtn" onclick="bkNext()">Reveal answer &#9654;</button>
+        <button class="btn ghost" onclick="bkAll()">Show all</button>
+        <button class="btn ghost" onclick="bkReset()">Reset</button>
+        <span class="slidenote" id="bkProg" style="margin-left:.5vw;">0 / 12</span>
+      </div>
+      <div class="hl" style="margin-top:.5vh;"><span class="lead">Next: <b>5.R</b> &mdash; the whole unit in one chain, and the graphs you must be able to draw cold.</span></div>
+    </div>
+  </div>
+</section>
+</main>
+<nav>
+  <button class="navbtn" id="prevBtn" onclick="gotoSlide(cur-1)">&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <div class="pageinfo" id="pageinfo">1 / 21</div>
+  <button class="navbtn" id="nextBtn" onclick="gotoSlide(cur+1)">Next &rarr;</button>
+</nav>
+<script>/* ═══════════ 挤出示意（迁自 5.4 s6）——包进 IIFE，避免与 5.7 自己的 lf* 重名 ═══════════ */
+(function(){
+/* 几何与 Python 出图一致：[76,44,540,370]，Q 2.6–5.3 / r 2.0–4.6，viewBox 560×460 */
+const LF_Q0 = 3.7, LF_R0 = 3.0, LF_K = 0.679;
+function lfX(q){ return 76 + (q - 2.6) / 2.7 * 464; }
+function lfY(r){ return 370 - (r - 2.0) / 2.6 * 326; }
+function lfLine(id, p, q){
+  const el = document.getElementById(id); if (!el) return;
+  const x0 = 76, y0 = 44, x1 = 540, y1 = 370;
+  let ax = lfX(p[0]), ay = lfY(p[1]), bx = lfX(q[0]), by = lfY(q[1]);
+  const dx = bx - ax, dy = by - ay; let t0 = 0, t1 = 1;
+  const T = [[-dx, ax - x0], [dx, x1 - ax], [-dy, ay - y0], [dy, y1 - ay]];
+  for (let k = 0; k < 4; k++) {
+    const pp = T[k][0], qq = T[k][1];
+    if (pp === 0) { if (qq < 0) { el.setAttribute("opacity", "0"); return; } }
+    else { const rr = qq / pp;
+      if (pp < 0) { if (rr > t1) { el.setAttribute("opacity", "0"); return; } if (rr > t0) t0 = rr; }
+      else { if (rr < t0) { el.setAttribute("opacity", "0"); return; } if (rr < t1) t1 = rr; } }
+  }
+  el.setAttribute("x1", (ax + t0 * dx).toFixed(1)); el.setAttribute("y1", (ay + t0 * dy).toFixed(1));
+  el.setAttribute("x2", (ax + t1 * dx).toFixed(1)); el.setAttribute("y2", (ay + t1 * dy).toFixed(1));
+}
+function lfSup(q){ return LF_R0 + LF_K * (q - LF_Q0); }
+function lfDem(g){ return q => LF_R0 - LF_K * (q - LF_Q0 - g); }
+function lfEq(g){ const dQ = g / 2; return { q: LF_Q0 + dQ, r: LF_R0 + LF_K * dQ }; }
+function lfPriv(g){ return LF_Q0 - (lfEq(g).r - LF_R0) / LF_K; }
+let lfG = 0, lfN = 1, lfDrag = null;          /* ★ 初始状态：政府没有借钱 */
+function lfSet(id, x, y, s, anchor){
+  const el = document.getElementById(id); if (!el) return;
+  el.setAttribute("x", x.toFixed(1)); el.setAttribute("y", y.toFixed(1));
+  if (anchor) el.setAttribute("text-anchor", anchor);
+  if (s !== null && s !== undefined) el.textContent = s;
+}
+function lfDraw(){
+  const e1 = lfEq(lfG), e0 = lfEq(0), priv = lfPriv(lfG), on = lfG > 0.2;
+  lfLine("lfD", [2.6, lfDem(lfG)(2.6)], [5.3, lfDem(lfG)(5.3)]);
+  lfLine("lfD0", [2.6, lfDem(0)(2.6)], [5.3, lfDem(0)(5.3)]);
+  lfLine("lfR0", [2.6, e0.r], [e0.q, e0.r]);
+  lfLine("lfR1", [2.6, e1.r], [e1.q, e1.r]);
+  lfLine("lfV", [e1.q, 2.0], [e1.q, e1.r]);
+  lfLine("lfBrk", [priv, 2.16], [e0.q, 2.16]);
+  /* 量尺两端各一条垂直虚线：左端指向 D（新利率下的私人需求），右端指向 E0 */
+  lfLine("lfG1", [priv, 2.16], [priv, e1.r]);
+  lfLine("lfG2", [e0.q, 2.16], [e0.q, e0.r]);
+  lfLine("lfArrow", [e0.q - 0.55, lfDem(0)(e0.q - 0.55)], [e0.q + 0.42, lfDem(lfG)(e0.q + 0.42)]);
+  const d = id => document.getElementById(id);
+  if (d("lfE0")) { d("lfE0").setAttribute("cx", lfX(e0.q).toFixed(1)); d("lfE0").setAttribute("cy", lfY(e0.r).toFixed(1)); }
+  if (d("lfE1")) { d("lfE1").setAttribute("cx", lfX(e1.q).toFixed(1)); d("lfE1").setAttribute("cy", lfY(e1.r).toFixed(1)); }
+  lfSet("lfDt", lfX(4.3), lfY(lfDem(lfG)(4.3)) - 14, on ? "D + G" : "D", "start");
+  lfSet("lfD0t", lfX(4.0), lfY(lfDem(0)(4.0)) + 24, "D", "start");
+  lfSet("lfR0t", lfX(2.72), lfY(e0.r) + 8, "r " + e0.r.toFixed(2) + "%", "start");
+  lfSet("lfR1t", lfX(e1.q) + 16, lfY(e1.r) + 10, "r " + e1.r.toFixed(2) + "%", "start");
+  lfSet("lfE0t", lfX(e0.q) + 16, lfY(e0.r) - 24, "$" + e0.q.toFixed(2) + "T", "start");
+  lfSet("lfBrkT", (lfX(priv) + lfX(e0.q)) / 2, lfY(2.32),
+        "crowded out  $" + (e0.q - priv).toFixed(2) + "T", "middle");
+  const sl = document.getElementById("lfG"); if (sl) sl.value = lfG;
+  lfSet("lfGv", 0, 0, "$" + lfG.toFixed(1) + "T");
+  lfSet("lfRead", 0, 0, on ? ("r " + e0.r.toFixed(2) + "% \u2192 " + e1.r.toFixed(2) +
+        "%   \u00b7   private funds $" + e0.q.toFixed(2) + "T \u2192 $" + priv.toFixed(2) + "T")
+        : "No government borrowing \u2014 nothing is crowded out.");
+  lfPaint();
+}
+function lfPaint(){
+  const on = (id, c) => { const el = document.getElementById(id); if (el) el.setAttribute("opacity", c ? "1" : "0"); };
+  const live = lfG > 0.2;
+  on("lfD", 1); on("lfE0", 1); on("lfE0t", 1); on("lfR0", 1); on("lfR0t", 1); on("lfDt", 1);
+  on("lfD0", lfN >= 2 && live); on("lfD0t", lfN >= 2 && live); on("lfArrow", lfN >= 2 && live);
+  on("lfE1", lfN >= 3 && live);
+  on("lfR1", lfN >= 3 && live); on("lfR1t", lfN >= 3 && live); on("lfV", lfN >= 3 && live);
+  on("lfBrk", lfN >= 4 && live); on("lfBrkT", lfN >= 4 && live);
+  on("lfG1", lfN >= 4 && live); on("lfG2", lfN >= 4 && live);
+  const LD = {
+    1: "Step 1 \u2014 the market with <b>no government borrowing</b>: <b>S</b> is saving, <b>D</b> is private demand, and the crossing sets r = 3.00%.",
+    2: "Step 2 \u2014 the government borrows, so demand shifts right to <b>D + G</b> (red arrow). Use the slider to change how much.",
+    3: "Step 3 \u2014 the new crossing: r rises. Higher r is what pulls in more saving.",
+    4: "Step 4 \u2014 at that rate private borrowing falls: <b>crowded out</b>. The dashed guides drop from <b>E\u2080</b> (what private borrowers used to get) and from <b>D</b> at the new rate."
+  };
+  const tx = document.getElementById("lfText");
+  if (tx) tx.innerHTML = LD[lfN];
+  const p = document.getElementById("lfProg");
+  if (p) p.textContent = "Step " + lfN + " of 4";
+  const b = document.getElementById("lfBtn");
+  if (b) { b.disabled = lfN >= 4; b.textContent = lfN >= 4 ? "All steps shown" : "Next step \u25b6"; }
+}
+function lfNext(){ if (lfN < 4) { lfN++; if (lfN === 2 && lfG < 0.2) lfG = 1.9; lfDraw(); } }
+function lfReset(){ lfN = 1; lfG = 0; const s = document.getElementById("lfG"); if (s) s.value = 0; lfDraw(); }
+function lfSlide(v){
+  lfG = Math.max(0, Math.min(2.5, +v));
+  const s = document.getElementById("lfG"); if (s) s.value = lfG;
+  if (lfN === 1 && lfG > 0.2) lfN = 2;                     /* 直接拖滑块时自动进入第 2 步 */
+  lfDraw();
+}
+function lfVX(ev, svg){ const r = svg.getBoundingClientRect(); return (ev.clientX - r.left) / r.width * 560; }
+function lfVY(ev, svg){ const r = svg.getBoundingClientRect(); return (ev.clientY - r.top) / r.height * 460; }
+function lfDragG(vx, vy){
+  const q = 2.6 + (vx - 76) / 464 * 2.7;
+  const r = 4.6 - (vy - 44) / 326 * 2.6;
+  return q - LF_Q0 - (LF_R0 - r) / LF_K;
+}
+function lfDown(ev){
+  const svg = ev.currentTarget;
+  const vx = lfVX(ev, svg);
+  if (vx < 76 || vx > 540) return;
+  lfDrag = true;
+  try { svg.setPointerCapture(ev.pointerId); } catch (e) {}
+  svg.style.cursor = "grabbing";
+  lfMove(ev);
+  ev.preventDefault();
+}
+function lfMove(ev){
+  if (lfDrag === null) return;
+  const svg = ev.currentTarget;
+  lfSlide(Math.round(lfDragG(lfVX(ev, svg), lfVY(ev, svg)) * 10) / 10);
+  ev.preventDefault();
+}
+function lfUp(){ lfDrag = null; }
+  window.cqNext=function(){ lfNext(); };
+  window.cqReset=function(){ lfReset(); };
+  window.cqSlide=function(v){ lfSlide(v); };
+  lfDraw();
+  const s=document.querySelector("#lfWrap svg");
+  if(s){ s.style.cursor="grab"; s.style.touchAction="none";
+    s.addEventListener("pointerdown", lfDown);
+    s.addEventListener("pointermove", lfMove);
+    s.addEventListener("pointerup", lfUp);
+    s.addEventListener("pointercancel", lfUp); }
+})();
+
+
+
+const slides = document.querySelectorAll(".slide");
+const TOTAL = slides.length;
+let cur = 0;
+function gotoSlide(i){
+  if(i < 0 || i >= TOTAL) return;
+  slides[cur].classList.remove("active");
+  cur = i;
+  slides[cur].classList.add("active");
+  document.getElementById("progress").style.width = ((cur+1)/TOTAL*100) + "%";
+  document.getElementById("prevBtn").disabled = (cur === 0);
+  document.getElementById("nextBtn").disabled = (cur === TOTAL-1);
+  document.getElementById("pageinfo").textContent = (cur+1) + " / " + TOTAL;
+  document.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active", di===cur));
+  location.hash = cur;
+}
+const dotsBox = document.getElementById("dots");
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement("div");
+  d.className = "dot" + (i===0?" active":"");
+  d.onclick = ()=>gotoSlide(i);
+  dotsBox.appendChild(d);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();gotoSlide(cur+1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();gotoSlide(cur-1);}
+});
+const $ = id => document.getElementById(id);
+
+/* ═══════════ s9 Laffer: market panel + revenue panel, one slider ═══════════ */
+const QMAX = 50, PMAX = 50, RMAX = 320;
+const mpx = q => 60 + q/QMAX*440;
+const mpy = p => 250 - p/PMAX*210;
+const rpx = t => 60 + t/QMAX*440;
+const rpy = r => 200 - r/RMAX*180;
+const demandP = q => 50 - q;          // P = 50 - Q
+function lfState(t){
+  const q = (50 - t)/2;              // supply P = Q ; buyers pay P_b = 50 - q
+  return {q, pb: 50 - q, ps: q, rev: t*q};
+}
+function lfDraw(){
+  const t = +$("lfR").value;
+  $("lfT").textContent = t;
+  const s = lfState(t);
+  // market panel
+  const x = mpx(s.q), yb = mpy(s.pb), ys = mpy(s.ps);
+  $("lfRect").setAttribute("x", 60); $("lfRect").setAttribute("width", Math.max(0, x-60));
+  $("lfRect").setAttribute("y", yb); $("lfRect").setAttribute("height", Math.max(0, ys-yb));
+  $("lfWedge").setAttribute("x1", x); $("lfWedge").setAttribute("x2", x);
+  $("lfWedge").setAttribute("y1", yb); $("lfWedge").setAttribute("y2", ys);
+  $("lfQb").setAttribute("cx", x); $("lfQb").setAttribute("cy", yb);
+  $("lfQs").setAttribute("cx", x); $("lfQs").setAttribute("cy", ys);
+  $("lfQlab").setAttribute("x", x + 12); $("lfQlab").setAttribute("y", (yb+ys)/2 + 7);
+  $("lfQlab").textContent = "Q = " + s.q.toFixed(0);
+  // revenue panel
+  let pts = [];
+  for(let i=0;i<=50;i++) pts.push(rpx(i).toFixed(1)+","+rpy(i*(50-i)/2).toFixed(1));
+  $("lfLine").setAttribute("points", pts.join(" "));
+  $("lfDot").setAttribute("cx", rpx(t)); $("lfDot").setAttribute("cy", rpy(s.rev));
+  const right = t < 34;
+  $("lfLab").setAttribute("x", right ? rpx(t)+12 : rpx(t)-12);
+  $("lfLab").setAttribute("y", Math.max(30, rpy(s.rev)-14));
+  $("lfLab").setAttribute("text-anchor", right ? "start" : "end");
+  $("lfLab").textContent = "$" + s.rev.toFixed(0);
+  const v = $("lfVerdict");
+  if (t < 23) { v.className = "verdict g"; v.innerHTML = "At a tax of "+t+" the state is on the <b>rising</b> side &mdash; a higher rate would raise more revenue."; }
+  else if (t <= 27) { v.className = "verdict a"; v.innerHTML = "At a tax of "+t+" you are at the <b>peak</b> &mdash; revenue barely changes either way."; }
+  else { v.className = "verdict r"; v.innerHTML = "At a tax of "+t+" you are on the <b>falling</b> side &mdash; a cut could raise revenue."; }
+}
+
+/* ═══════════ s12 policy simulator ═══════════ */
+const SIMX0 = 64, SIMX1 = 640, SIMY0 = 284, SIMY1 = 36;
+const simx = Y => SIMX0 + (Y-40)/120*(SIMX1-SIMX0);
+const simy = P => SIMY0 - (P-30)/80*(SIMY0-SIMY1);
+let SIM = {policy:null};
+const POLICY = {
+  fiscal: {da:15, db:15, dl:0},
+  money:  {da:18, db:18, dl:0},
+  supply: {da:0,  db:-12, dl:12}
+};
+function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+function simState(t){
+  if(!SIM.policy) return {a:120, b:20, l:100, Y:100, P:70};
+  const p = POLICY[SIM.policy];
+  let ua, ub, ul;
+  if(SIM.policy === "supply"){ ul = clamp01(t/8); ua = 0; ub = ul; }
+  else { ua = clamp01(t/1); ub = clamp01((t-1)/7); ul = 0; }
+  const a = 120 + p.da*ua, b = 20 + p.db*ub, l = 100 + p.dl*ul;
+  return {a, b, l, Y: a-b, P: (a+b)/2};
+}
+function simLine(fn, id){
+  let p = [];
+  for(let Y=40;Y<=160;Y+=2){
+    const P = fn(Y);
+    if(P < 28 || P > 112) continue;
+    p.push(simx(Y).toFixed(1)+","+simy(P).toFixed(1));
+  }
+  $(id).setAttribute("points", p.join(" "));
+}
+function simDraw(){
+  const t = +$("simR").value;
+  $("simT").textContent = t.toFixed(1);
+  const s = simState(t);
+  simLine(Y => 120 - 0.5*Y, "simAD0");
+  simLine(Y => 20 + 0.5*Y, "simS0");
+  simLine(Y => s.a - 0.5*Y, "simAD");
+  simLine(Y => s.b + 0.5*Y, "simS");
+  $("simL0").setAttribute("x1", simx(100)); $("simL0").setAttribute("x2", simx(100));
+  $("simL").setAttribute("x1", simx(s.l)); $("simL").setAttribute("x2", simx(s.l));
+  $("simDot").setAttribute("cx", simx(s.Y)); $("simDot").setAttribute("cy", simy(s.P));
+  const right = simx(s.Y) < 520;
+  $("simLab").setAttribute("x", right ? simx(s.Y)+14 : simx(s.Y)-14);
+  $("simLab").setAttribute("y", simy(s.P)-16);
+  $("simLab").setAttribute("text-anchor", right ? "start" : "end");
+  $("simLab").textContent = "Y "+s.Y.toFixed(0)+" \u00b7 P "+s.P.toFixed(0);
+  const ay = s.a - 0.5*50, sy2 = s.b + 0.5*152;
+  $("labAD").setAttribute("x", simx(46)+6); $("labAD").setAttribute("y", simy(ay)-8);
+  $("labAD").textContent = (SIM.policy && SIM.policy!=="supply") ? (SIM.policy==="money"?"AD\u2032":"AD\u2032") : "AD";
+  $("labS").setAttribute("x", Math.min(simx(152)+10, 600)); $("labS").setAttribute("y", simy(sy2)+6);
+  $("labS").textContent = SIM.policy ? "SRAS\u2032" : "SRAS";
+  $("labL").setAttribute("x", simx(s.l)+10); $("labL").setAttribute("y", 52);
+  $("labL").textContent = (SIM.policy==="supply") ? "LRAS\u2032" : "LRAS";
+  const base = 150 - (100-95)/25*120;
+  $("pathBase").setAttribute("y1", base); $("pathBase").setAttribute("y2", base);
+  let pts = [];
+  for(let x=0;x<=10;x+=0.25){
+    const st = simState(x);
+    pts.push((44 + x/10*360).toFixed(1)+","+(150 - (st.Y-95)/25*120).toFixed(1));
+  }
+  $("pathLine").setAttribute("points", pts.join(" "));
+  $("pathBaseT").setAttribute("y", base - 8);
+  const curP = simState(t);
+  $("pathDot").setAttribute("cx", 44 + t/10*360);
+  $("pathDot").setAttribute("cy", 150 - (curP.Y-95)/25*120);
+  const v = $("simVerdict");
+  if(!SIM.policy){ v.className="verdict"; v.innerHTML="Pick a policy, then scrub right."; return; }
+  if(SIM.policy === "supply"){
+    v.className="verdict g";
+    v.innerHTML = t < 1 ? "Supply-side policy is slow: nothing visible yet." :
+      (t < 8 ? "Output is rising on a <b>new, higher</b> capacity path." :
+       "Output settles <b>12 higher</b> &mdash; and it stays there.");
+  } else {
+    v.className = (t > 6) ? "verdict r" : "verdict a";
+    v.innerHTML = t < 1 ? "AD moves first: output up, price level up." :
+      (t < 6 ? "Wages and prices catch up; SRAS drifts left and the output gain fades." :
+       "Output is back at potential. All that is left is a <b>higher price level</b>.");
+  }
+}
+function simPick(name){
+  SIM.policy = name;
+  ["pbF","pbM","pbS"].forEach(id => $(id).classList.remove("on"));
+  const map = {fiscal:"pbF", money:"pbM", supply:"pbS"};
+  $(map[name]).classList.add("on");
+  $("simR").value = 0;
+  simDraw();
+}
+
+
+/* ═══════════ s13 test ═══════════ */
+const QZ = [{"q": "A cut in the corporate income tax", "o": ["AD only", "SRAS and LRAS", "LRAS only"], "a": 1, "why": "It changes incentives to invest, so it also moves the supply curves &mdash; not just spending."}, {"q": "The central bank buys government bonds", "o": ["AD", "SRAS", "LRAS"], "a": 0, "why": "Open-market purchases lower the policy rate and raise investment and consumption: AD."}, {"q": "A new motorway network", "o": ["AD only", "SRAS and LRAS", "Neither"], "a": 1, "why": "Infrastructure raises productivity, so both supply curves shift right."}, {"q": "A one-off stimulus cheque to households", "o": ["AD", "SRAS and LRAS", "Both"], "a": 0, "why": "One-off cash raises spending today; it does not change capacity."}];
+let qzI = 0, qzScore = 0, qzAnswered = false;
+function qzPaint(){
+  const it = QZ[qzI];
+  $("qzQ").textContent = it.q;
+  $("qzProg").textContent = "Question " + (qzI+1) + " of " + QZ.length;
+  const box = $("qzBtns"); box.innerHTML = "";
+  it.o.forEach((lab,k)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = lab;
+    b.onclick = ()=>qzPick(k);
+    box.appendChild(b);
+  });
+  const fb = $("qzFb"); fb.className = "game-fb"; fb.textContent = " ";
+  $("qzNext").disabled = true;
+  $("qzNext").textContent = (qzI === QZ.length-1) ? "See the score \u25b6" : "Next question \u25b6";
+  qzAnswered = false;
+  $("qzScore").textContent = "Score " + qzScore;
+}
+function qzPick(k){
+  if(qzAnswered) return;
+  qzAnswered = true;
+  const it = QZ[qzI], fb = $("qzFb");
+  if(k === it.a){ qzScore++; fb.className = "game-fb good"; fb.textContent = "Correct \u2014 " + it.why; }
+  else { fb.className = "game-fb bad"; fb.textContent = "Not quite. The answer is \u201c" + it.o[it.a] + "\u201d: " + it.why; }
+  $("qzNext").disabled = false;
+  $("qzScore").textContent = "Score " + qzScore;
+}
+function qzNext(){
+  if(qzI < QZ.length-1){ qzI++; qzPaint(); return; }
+  $("qzQ").textContent = "You scored " + qzScore + " out of " + QZ.length + ".";
+  const box = $("qzBtns"); box.innerHTML = "";
+  const fb = $("qzFb");
+  fb.className = qzScore === QZ.length ? "game-fb good" : "game-fb bad";
+  fb.textContent = qzScore === QZ.length ? "All four correct." : "Re-run it with \u21ba Reset.";
+  $("qzNext").disabled = true;
+  const r = document.createElement("button");
+  r.className = "opt"; r.textContent = "\u21ba Reset";
+  r.onclick = ()=>{ qzI = 0; qzScore = 0; qzPaint(); };
+  box.appendChild(r);
+}
+
+/* ═══════════ s14 blanks ═══════════ */
+const BK = ["per capita", "productivity", "0.7", "institutions",
+            "SRAS", "short", "falls", "population",
+            "stock", "18.5%", "crowded out", "potential"];
+let bkN = 0;
+function bkPaint(){
+  for(let k=0;k<BK.length;k++){
+    const el = $("bk"+(k+1)); if(!el) continue;
+    if(k < bkN){ el.textContent = BK[k]; el.classList.add("on"); }
+    else { el.textContent = "________"; el.classList.remove("on"); }
+  }
+  $("bkProg").textContent = bkN + " / " + BK.length;
+  const b = $("bkBtn");
+  b.disabled = bkN >= BK.length;
+  b.textContent = bkN >= BK.length ? "All revealed" : "Reveal answer \u25b6";
+}
+function bkNext(){ if(bkN < BK.length){ bkN++; bkPaint(); } }
+function bkAll(){ bkN = BK.length; bkPaint(); }
+function bkReset(){ bkN = 0; bkPaint(); }
+
+/* ═══════════ init ═══════════ */
+lfDraw(); simDraw(); qzPaint(); bkReset();
+(function(){
+  const hashInit = parseInt(location.hash.slice(1) || "0", 10);
+  if(!isNaN(hashInit) && hashInit < TOTAL) gotoSlide(hashInit); else gotoSlide(0);
+})();
+
+</script>
+</body>
+</html>
