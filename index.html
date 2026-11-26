@@ -1776,6 +1776,10 @@ a { color: var(--gold-deep); }
         <span class="pick__dot" aria-hidden="true"></span>
         <span>IGCSE Econ</span>
       </button>
+      <button class="pick__chip pick__rev" type="button" data-reverse aria-pressed="false">
+        <span class="pick__dot" aria-hidden="true"></span>
+        <span>Reverse order</span>
+      </button>
   </nav>
 
   <!-- ===================== 三部卷册 ===================== -->
@@ -2723,6 +2727,32 @@ a { color: var(--gold-deep); }
     });
     pick('all');
   })();
+
+  /* ---------- 卡片倒序 ----------
+     不碰 DOM 顺序（筛选/reveal 都依赖原 DOM），只给每个卷册的卡片设 order。
+     正序=清空 order；倒序=按数量反向编号。状态记住，刷新后保持。 */
+  (function () {
+    var btn = document.querySelector('[data-reverse]');
+    var lists = [].slice.call(document.querySelectorAll('.volume .entries'));
+    if (!btn || !lists.length) return;
+    var KEY = 'econ-index-reverse';
+    var on = false;
+    try { on = localStorage.getItem(KEY) === '1'; } catch (e) { /* noop */ }
+    function apply() {
+      lists.forEach(function (ul) {
+        var items = [].slice.call(ul.children);
+        items.forEach(function (li, i) {
+          li.style.order = on ? String(items.length - 1 - i) : '';
+        });
+      });
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) { /* noop */ }
+    }
+    btn.addEventListener('click', function () { on = !on; apply(); });
+    apply();
+  })();
+
 </script>
 </body>
 </html>
